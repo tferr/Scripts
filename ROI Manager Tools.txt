@@ -4,6 +4,7 @@
  * then use the '>>' drop down menu to activate it. Requires IJ 1.45d or newer.
  *
  * tiago ferreira, 04.2012;
+ * 12.2013: Fixed a bug in which labels were not being saved.
  */
 
 var labels= getPrefList("labels");
@@ -156,6 +157,7 @@ function createNewList(type, prompt) {
       call("ij.Prefs.set", "rmtools."+type, "no"+type);
       createNewList(type, prompt);
   }
+  call("ij.Prefs.set", "rmtools."+type, prefs); // store new list
   if (add) { // keep prompting for new items
       prefs+= "-";
       call("ij.Prefs.set", "rmtools."+type, prefs);
