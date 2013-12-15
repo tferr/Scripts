@@ -2,7 +2,7 @@ Scripts
 =======
 https://github.com/tferr/Scripts
 
-Miscellaneous macros and scripts for ImageJ/ Fiji:
+Miscellaneous macros and scripts for ImageJ/Fiji:
 
 1. Neuronal morphometry
   1. Strahler Analysis (BeanShell), http://fiji.sc/Strahler_Analysis
