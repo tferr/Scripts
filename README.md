@@ -2,6 +2,10 @@ Scripts
 =======
 https://github.com/tferr/Scripts
 
-ImageJ/ Fiji scripts, including:
+Miscellaneous macros and scripts for ImageJ/ Fiji:
 
-Strahler Analysis, http://fiji.sc/Strahler_Analysis
+1. Neuronal morphometry
+  1. Strahler Analysis (BeanShell), http://fiji.sc/Strahler_Analysis
+
+2. ROI handling
+  1. ROI Manager Tools, http://imagej.net/plugins/roi-manager-tools
