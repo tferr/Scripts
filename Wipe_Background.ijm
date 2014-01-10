@@ -7,6 +7,9 @@
  * but it could be easily extended to other dimensions. It could be greatly simplified if
  * the goal was to deal exclusively with 2D/3D images
  *
+ * Know issues:
+ * - 5D stacks escape batch mode
+ *
  * TF, 01.2014
  */
 
@@ -37,7 +40,7 @@ setBatchMode(true);
 			Dialog.addChoice("Scope:", optnsA);
 		if (depth>1)
 			Dialog.addChoice("Apply to:", optnsB);
-		Dialog.addMessage("Clusters of thresholded pixels\nwithin the range of the"+
+		Dialog.addMessage("Clusters of thresholded pixels\nwithin the range of the "+
 				"specified\nsettings will be cleared (set to 0)");
 	Dialog.show();
 
@@ -67,38 +70,45 @@ setBatchMode(true);
 		run("Select None");
 	run("Analyze Particles...", analyzerArg);
 
-	// Active image is now a mask from ParticleAnalyzer (background= 255). As of IJ 1.48o,
-	// this mask is never a multidimensional stack, so we'll convert it. Then, chosen
-	// noise within the selected range will be set to 0, all remaining pixels to 1
-	run("Invert", "stack");
-	if (channels*frames > 1)
-		run("Stack to Hyperstack...", "channels="+ channels +" slices="+ depth +" frames="+ frames);
 	maskID = getImageID();
-	for (c=1; c<=channels; c++) {
-		for (t=1; t<=frames; t++) {
-			for (z=1; z<=depth; z++) {
-				Stack.setPosition(c, z, t);
-				if (z>=start && z<=end)
-					run("Divide...", "value=255 slice");
-				else
-					run("Set...", "value=1 slice");
+	if (maskID==imgID) {
+		beep(); showStatus("No particles found!"); exit();
+	} else {
+		// Active image is now a mask from ParticleAnalyzer (background= 255). This mask
+		// is never a multidimensional stack (IJ 1.48o), so we'll convert it. Then, chosen
+		// noise within the selected range will be set to 0, all remaining pixels to 1
+		run("Invert", "stack");
+		if (channels*frames >1 && scope!=optnsB[0]) {
+			run("Stack to Hyperstack...", "channels="+ channels +" slices="+ depth +" frames="+ frames);
+			maskID = getImageID();
+		}
+		for (c=1; c<=channels; c++) {
+			for (t=1; t<=frames; t++) {
+				for (z=1; z<=depth; z++) {
+					Stack.setPosition(c, z, t);
+					if (z>=start && z<=end)
+						run("Divide...", "value=255 slice");
+					else
+						run("Set...", "value=1 slice");
+				}
 			}
 		}
+
+		// Perform the filtering
+		if (scope==optnsB[0])
+			imageCalculator("Multiply stack", imgID, maskID);
+		else
+			imageCalculator("Multiply", imgID, maskID);
+
+		// Restore original settings
+		Stack.setPosition(channel, activeSlice, frame);
+		run("Restore Selection");
+		setThreshold(lower, upper);
+		closeImg(maskID);
 	}
-
-	// Perform the filtering. For whatever reason (at least in 1.48o) maskID is sometimes
-	// displayed even in BatchMode (if isHyperstack?) so we'll make sure it remains closed
-	if (scope==optnsB[0])
-		imageCalculator("Multiply stack", imgID, maskID);
-	else
-		imageCalculator("Multiply", imgID, maskID);
-	selectImage(maskID);
-	close();
-
-	// Restore original settings
-	Stack.setPosition(channel, activeSlice, frame);
-	run("Restore Selection");
-	setThreshold(lower, upper);
-	//updateDisplay();
-
 setBatchMode(false);
+
+// For whatever reason (IJ 1.48o) some hyperstacks manage to be displayed in BatchMode
+function closeImg(id) {
+	selectImage(id); close();
+}
