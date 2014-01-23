@@ -22,3 +22,7 @@ These scripts are free software: you can redistribute it and/or modify it under 
 Authors
 -------
 Tiago Ferreira
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tferr/scripts/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
