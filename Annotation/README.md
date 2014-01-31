@@ -6,6 +6,7 @@
 
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
    generating particle-size heat maps. More details [here][RCC page].
+
    [![][RCC image]][RCC page]
 
 

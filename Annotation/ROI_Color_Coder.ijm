@@ -1,12 +1,12 @@
 /* ROI_Color_Coder.ijm
- http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
-
- Colorizes ROIs by matching LUT indexes to measurements in the Results table. It is
- complementary to the ParticleAnalyzer (Analyze>Analyze Particles...), generating
- particle-size heat maps. Requires IJ 1.46h.
-
- Tiago Ferreira, v.5 2012.03.01
-*/
+ * http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
+ *
+ * Colorizes ROIs by matching LUT indexes to measurements in the Results table. It is
+ * complementary to the ParticleAnalyzer (Analyze>Analyze Particles...), generating
+ * particle-size heat maps. Requires IJ 1.46h.
+ *
+ * Tiago Ferreira, v.5.1 2014.01.31
+ */
 
 // For a demo run the following line:
 // run("Blobs (25K)"); setThreshold(126, 255); run("Analyze Particles...", "display clear add"); resetThreshold;
@@ -115,9 +115,7 @@
   }
 
 // parse symbols in unit and draw final label below ramp
-  label= replace(label, "(?<![A-Za-z0-9])u(?=m)", fromCharCode(181)); // micrometer units
-  label= replace(label, "\\^2", fromCharCode(178)); // superscript 2
-  label= replace(label, "\\^3", fromCharCode(179)); // superscript 3
+  label= cleanLabel(label);
   uW= minOf(getStringWidth(label), rampW);
   drawString(label, (rampW-uW)/2, canvasH);
   restoreSettings;
@@ -175,4 +173,12 @@ function loadLutColors(lut) {
 
 function pad(n) {
   n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
+}
+
+function cleanLabel(string) {
+  string= replace(string, "\\^2", fromCharCode(178)); // superscript 2
+  string= replace(string, "\\^3", fromCharCode(179)); // superscript 3
+  string= replace(string, "(?<![A-Za-z0-9])u(?=m)", fromCharCode(181)); // micrometer units
+  string= replace(string, "\\b[aA]ngstrom\\b", fromCharCode(197)); // angstrom symbol
+  return string;
 }
