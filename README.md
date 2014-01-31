@@ -2,7 +2,7 @@
 
 Miscellaneous routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/):
 
-1. Image segmentation
+1. [Image segmentation](https://github.com/tferr/Scripts/tree/master/Segmentation)
   1. (ijm) [Apply Threshold To ROI](https://raw.github.com/tferr/Scripts/master/Apply_Threshold_To_ROI.ijm)
   2. (ijm) [Clear Thresholded Pixels](https://raw.github.com/tferr/Scripts/master/Clear_Thresholded_Pixels.ijm)
   3. (ijm) [Wipe Background](https://raw.github.com/tferr/Scripts/master/Wipe_Background.ijm)
@@ -13,7 +13,7 @@ Miscellaneous routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fij
 3. ROI handling
   1. (ijm) [ROI Manager Tools](http://imagej.net/plugins/roi-manager-tools)
 
-4. Tools
+4. [Tools](https://github.com/tferr/Scripts/tree/master/Tools)
   1. (ijm) [Calibration Menu](https://raw.github.com/tferr/Scripts/master/Tools/Calibration_Menu.ijm)
 
 
