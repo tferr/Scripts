@@ -1,8 +1,8 @@
 # Annotation
 
-[Routines](../) related to annotation of images.
+[Routines](../README.md#scripts) related to annotation of images.
 
-###[ROI Color Coder](./ROI_Color_Coder.ijm)
+###[ROI Color Coder](./ROI_Color_Coder.ijm) ([Download](./ROI_Color_Coder.ijm?raw=true))
 
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
    generating particle-size heat maps. More details [here][RCC page].
@@ -16,4 +16,4 @@
 
 ##See Also
 
-1. [Calibration Menu](../Tools/Calibration_Menu.ijm)
+* [Calibration Menu](../Tools/README.md#calibration-menu)
