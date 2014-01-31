@@ -2,10 +2,11 @@
 
 [Routines](../README.md#scripts) related to annotation of images.
 
-###[ROI Color Coder](./ROI_Color_Coder.ijm) ([Download](./ROI_Color_Coder.ijm?raw=true))
-
+###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
-   generating particle-size heat maps. More details [here][RCC page].
+   generating particle-size heat maps.
+   ([Download](./ROI_Color_Coder.ijm?raw=true))
+   ([Documentation][RCC page])
 
    [![][RCC image]][RCC page]
 
