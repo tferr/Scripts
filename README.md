@@ -15,6 +15,7 @@ Miscellaneous routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fij
 
 4. [Tools](https://github.com/tferr/Scripts/tree/master/Tools)
   1. (ijm) [Calibration Menu](https://raw.github.com/tferr/Scripts/master/Tools/Calibration_Menu.ijm)
+  2. (ijm) [Shortcuts Menu](https://raw.github.com/tferr/Scripts/master/Tools/Shortcuts_Menu.ijm)
 
 
 License
