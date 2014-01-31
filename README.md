@@ -13,10 +13,13 @@ Miscellaneous routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fij
 3. ROI handling
   1. (ijm) [ROI Manager Tools](http://imagej.net/plugins/roi-manager-tools)
 
+4. Tools
+  1. (ijm) [Calibration Menu](https://raw.github.com/tferr/Scripts/master/Tools/Calibration_Menu.ijm)
+
 
 License
 -------
-These scripts are free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+These scripts are free software: you can redistribute them and/or modify them under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 
 Authors
