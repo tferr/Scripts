@@ -2,8 +2,14 @@
 
 Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
-## [Image segmentation](./Segmentation/README.md#segmentation)
-  Threshold-based routines:
+## [Image Annotation](./Annotation/README.md#annotation)
+  Aiders for the annotation of scientific images.
+
+  1. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
+
+
+## [Image Segmentation](./Segmentation/README.md#segmentation)
+  Threshold-based routines.
 
   1. (ijm) [Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
@@ -11,20 +17,20 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   4. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
-## Neuronal morphometry
-  Scripts related to the quantification of neuronal arbors
+## Neuronal Morphometry
+  Scripts related to the quantification of neuronal arbors.
 
   1. (bsh) [Strahler Analysis](http://fiji.sc/Strahler_Analysis)
 
 
-## ROI handling
+## ROI Handling
   Manipulation of Regions Of Interest.
 
   1. (ijm) [ROI Manager Tools](http://imagej.net/plugins/roi-manager-tools)
 
 
 ## [Tools](./Tools/README.md#tools)
-  Tools registered in the ImageJ toolbar.
+  Additions to the ImageJ toolbar.
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
   2. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
