@@ -15,4 +15,4 @@ drop-down menu in the main ImageJ window
 
 ##See Also
 
-* [Annotation](../Annotation/README.md)
+* [Annotation](../Annotation/README.md#annotation)
