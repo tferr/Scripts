@@ -5,7 +5,8 @@ Miscellaneous routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fij
 1. [Image segmentation](https://github.com/tferr/Scripts/tree/master/Segmentation)
   1. (ijm) [Apply Threshold To ROI](https://raw.github.com/tferr/Scripts/master/Segmentation/Apply_Threshold_To_ROI.ijm)
   2. (ijm) [Clear Thresholded Pixels](https://raw.github.com/tferr/Scripts/master/Segmentation/Clear_Thresholded_Pixels.ijm)
-  3. (ijm) [Wipe Background](https://raw.github.com/tferr/Scripts/master/Segmentation/Wipe_Background.ijm)
+  3. (ijm) [Threshold_From_Background](https://raw.github.com/tferr/Scripts/master/Segmentation/Threshold_From_Background.ijm)
+  4. (ijm) [Wipe Background](https://raw.github.com/tferr/Scripts/master/Segmentation/Wipe_Background.ijm)
 
 2. Neuronal morphometry
   1. (bsh) [Strahler Analysis](http://fiji.sc/Strahler_Analysis)
