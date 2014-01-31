@@ -5,8 +5,8 @@
 ###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
    generating particle-size heat maps.
-   ([Download](./ROI_Color_Coder.ijm?raw=true))
-   ([Documentation][RCC page])
+   ([Download .ijm](./ROI_Color_Coder.ijm?raw=true))
+   ([Documentation page][RCC page])
 
    [![][RCC image]][RCC page]
 

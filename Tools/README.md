@@ -7,11 +7,11 @@ drop-down menu in the main ImageJ window
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
    A Menu Tool providing shortcuts for spatial calibration of images lacking metadata
-   ([Download](./Calibration_Menu.ijm?raw=true))
+   ([Download .ijm](./Calibration_Menu.ijm?raw=true))
 
 ###[Shortcuts Menu](./Shortcuts_Menu.ijm)
    A Menu Tool listing the user's most used commands. List is remembered across restarts
-   ([Download](./Shortcuts_Menu.ijm?raw=true))
+   ([Download .ijm](./Shortcuts_Menu.ijm?raw=true))
 
 
 ##See Also
