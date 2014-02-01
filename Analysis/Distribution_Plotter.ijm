@@ -3,9 +3,9 @@
  *
  * Plots cumulative (left Y-axis) and relative frequencies (right Y-axis) using values
  * from the Results table. To increase readability, height of modal class is matched to
- * the 50th-percentile.
+ * the 50th-percentile. Requires at least IJ 1.47.
  *
- * TF, 2010.13
+ * TF, 2014.01 Modernized code
  */
 
 // Uncomment the two lines below to obtain demo values
@@ -13,25 +13,24 @@
     //run("Analyze Particles...", "size=0-Infinity circularity=0.00-1.00 show=Nothing display");
 
 unit = "Image Units"; graphTtl = ""; xTitle = "";
-pmSign = fromCharCode(177); sqSign= fromCharCode(178);
-countNaN = max2 = y2scale = y2unit = dgs = 0;
+sqSign= fromCharCode(178); countNaN = max2 = y2scale = y2unit = dgs = 0;
 nRes = nResults; values = newArray(nRes); cumFreq = newArray(nRes);
 
 if (nRes==0)
-	exit("The \"Results\" table is empty");
+	exit("The Results table is empty.");
 
 prmtrs = getMeasurements();
 Dialog.create('Distribution Plotter');
   Dialog.addChoice("Parameter:", prmtrs, "Area");
-  Dialog.addChoice('Frequencies as:', newArray('Count','Fraction','Percentage'));
-  Dialog.addChoice('Trim curves at:', newArray('Q1','Median','Q3', 'P95', "Don't Trim "));
-  Dialog.addNumber("Number of bins:", 10);
-  Dialog.addCheckbox("Use info from frontmost image", true);
+  Dialog.addChoice('Frequencies as:', newArray('Percentage','Fraction','Count'));
+  Dialog.addChoice('Trim curves at:', newArray("Max. (Do not trim)", 'Q1', 'Q2 (Median)', 'Q3', 'P90', 'P95'));
+  Dialog.addSlider("Number of bins:", 1, nRes, nRes/2);
+  Dialog.addCheckbox("Use information from frontmost image", true);
 Dialog.show;
   parameter = Dialog.getChoice;
   yAxis = Dialog.getChoice;
-  xAxis = Dialog.getChoice;
-  nBins = Dialog.getNumber;
+  xAxis = split(Dialog.getChoice);
+  nBins = minOf(Dialog.getNumber, nRes);
   info = Dialog.getCheckbox;
 
 if (nImages!=0 && info) {
@@ -45,8 +44,6 @@ if (parameter=="Perim." || parameter=="Feret" || parameter=="Length")
 	xTitle = unit;
 if (parameter=="Area")
 	xTitle = unit+sqSign;
-
-run("Profile Plot Options...", "width=350 height=350 "); // remove default gridlines
 
 if (yAxis=="Count") {
 	cumFreq[0] = 1; yLimit = nRes; yTick = nRes/80;
@@ -69,21 +66,24 @@ for (i=1; i<nRes; i++)
 Array.sort(values);
 Array.getStatistics(values, min1, max1, mean1, stdDev1);
 
-if (xAxis=="Q1")
+if (xAxis[0]=="Q1")
 	max1 = values[(nRes/4)-1];
-else if (xAxis=="Median")
+else if (xAxis[0]=="Q2")
 	max1 = values[(nRes/2)-1];
-else if (xAxis=="Q3")
+else if (xAxis[0]=="Q3")
 	max1 = values[(0.75*nRes)-1];
-else if (xAxis=="P95")
+else if (xAxis[0]=="P90")
+	max1 = values[(0.90*nRes)-1];
+else if (xAxis[0]=="P95")
 	max1 = values[(0.95*nRes)-1];
 else //if(xAxis=="Max")
 	max1 = values[nRes-1];
 
 Plot.create(parameter +" Distribution"+ graphTtl, parameter +" ["+ xTitle +"]", yAxis);
   Plot.setLimits(0, max1, 0, yLimit);
-  Plot.addText("Mean "+ pmSign +" StDev: "+ d2s(mean1,2) +" "+ pmSign +" "+ d2s(stdDev1,2), 0.02, 0.05);
-  Plot.addText("Min: "+ d2s(min1,2) +"    "+ xAxis +": "+ d2s(max1,2), 0.02, 0.09);
+  legend = "Mean: "+ d2s(mean1,2) +"  SD: "+ d2s(stdDev1,2)
+         + "  Min. "+ d2s(min1,2) +"  "+ xAxis[0] +" "+ d2s(max1,2);
+  Plot.addText(legend, 0,0);
 
   int = max1/nBins;
   bins = getBinsArray(nBins, int); // get bin center and draw bin limit
@@ -102,30 +102,28 @@ Plot.create(parameter +" Distribution"+ graphTtl, parameter +" ["+ xTitle +"]", 
   }
 
   drawScales();
-  Plot.setLineWidth(2); Plot.setJustification("left");
+  Plot.setLineWidth(2);
   Plot.setColor("red");
-  Plot.addText("---  Relative Freq.", 0.02, 0.18);
   Plot.add("line", bins, freq);
   Plot.setColor("blue");
-  Plot.addText("---  Cumulative Freq.", 0.02, 0.14);
   Plot.add("line", values, cumFreq);
+  Plot.setLineWidth(1);
 Plot.show;
 
 
-function getMeasurements(){
-    List.setMeasurements;
-    list = split(List.getList, "\n");
-    nList=list.length;
+function getMeasurements() {
+    list = split(String.getResultsHeadings);
+    nList = list.length;
     Array.sort(list);
     parameters = newArray(nList+1);
     for (i=0; i<nList; i++)
-       parameters[i] = substring(list[i], 0, indexOf(list[i], "="));
+       parameters[i] = list[i];
     parameters[nList] = "Other...";
     return parameters;
 }
 
 function getBinsArray(nInt, intBin) {
-    Plot.setLineWidth(2); bins=newArray(nInt);
+    bins = newArray(nInt);
     for (i=0; i<nInt; i++) {
        bins[i] = (i*intBin)+intBin;
        if (i<nInt-1)
@@ -151,18 +149,29 @@ function getHistoCounts(binArray, nB, colN) {
 }
 
 function drawScales() {
-    Plot.setColor("blue"); Plot.setJustification("lef"); // Left Y axis
-    Plot.addText(" "+d2s(cumFreq[(nRes*3/4)-1],dgs)+""+y2unit, 0, 0.25);
-    Plot.addText(" "+d2s(cumFreq[(nRes/2)-1],dgs)+""+y2unit, 0, 0.50);
-    Plot.addText(" "+d2s(cumFreq[(nRes/4)-1],dgs)+""+y2unit, 0, 0.75);
+    // Draw left Y-axis labels
+    Plot.setColor("#0000ff");
+    Plot.addText(" "+ d2s(cumFreq[(nRes*3/4)-1],dgs) +""+ y2unit, 0, 0.25);
+    Plot.addText(" "+ d2s(cumFreq[(nRes/2)-1],dgs) +""+ y2unit, 0, 0.50);
+    Plot.addText(" "+ d2s(cumFreq[(nRes/4)-1],dgs) +""+ y2unit, 0, 0.75);
 
-    Plot.setColor("red"); Plot.setJustification("right"); // Right Y axis
+    // Draw right Y-axis labels
+    Plot.setColor("#ff0000"); Plot.setJustification("right");
     Plot.addText(d2s(2*max2*y2scale,dgs)+y2unit, 1, 0.25);
     Plot.addText(d2s(max2*y2scale,dgs)+y2unit, 1, 0.50);
     Plot.addText(d2s(max2/2*y2scale,dgs)+y2unit, 1, 0.75);
 
-    Plot.setColor("lightGray"); Plot.setLineWidth(1); // Grid lines
-    Plot.drawLine(0, cumFreq[(nRes*3/4)-1], values[(nRes-1)], cumFreq[(nRes*3/4)-1]);
-    Plot.drawLine(0, cumFreq[(nRes/2)-1], values[(nRes-1)], cumFreq[(nRes/2)-1]);
-    Plot.drawLine(0, cumFreq[(nRes/4)-1], values[(nRes-1)], cumFreq[(nRes/4)-1]);
+    // Draw gridlines
+    for (x=max1; x>=0; x--) {
+        rgbR = x*255/max1;
+        rgbB = 255 - rgbR;
+        Plot.setColor("#"+ pad(toHex(rgbR)) +"00"+ pad(toHex(rgbB)));
+        Plot.drawLine(x, cumFreq[(nRes*3/4)-1], x, cumFreq[(nRes*3/4)-1]);
+        Plot.drawLine(x, cumFreq[(nRes/2)-1], x, cumFreq[(nRes/2)-1]);
+        Plot.drawLine(x, cumFreq[(nRes/4)-1], x, cumFreq[(nRes/4)-1]);
+    }
+}
+
+function pad(n) {
+  n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
 }
