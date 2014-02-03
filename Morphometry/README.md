@@ -8,7 +8,8 @@
    through progressive pruning of terminal branches.
    ([Documentation Page]((http://fiji.sc/Strahler_Analysis))
    ([Download .bsh](./Strahler_Analysis.bsh?raw=true))
-   
+
+
 #### Requirements
    If you are running [Fiji](http://fiji.sc/) you already have all the required
    dependencies. If you are not running Fiji, the script will tell you which files to
