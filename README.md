@@ -23,7 +23,7 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   4. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
-## Neuronal Morphometry(./Morphometry/README.md#morphometry)
+## [Neuronal Morphometry](./Morphometry/README.md#morphometry)
   Scripts related to the quantification of neuronal arbors.
 
   1. (bsh) [Strahler Analysis](./Morphometry/README.md#strahler-analysis)
