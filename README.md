@@ -3,9 +3,9 @@
 Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
 ## [Data Analysis](./Analysis/README.md#analysis)
-  Operations related  to statistics, profiles and histogram
+  Operations related  to statistics, profiles and histograms
 
-  1. (ijm) [Distribution Plotter(./Analysis/README.md#distribution-plotter)
+  1. (ijm) [Distribution Plotter](./Analysis/README.md#distribution-plotter)
 
 
 ## [Image Annotation](./Annotation/README.md#annotation)
