@@ -27,7 +27,7 @@ tabChoices[2] = 'Relative frequency (fractions)';
 binChoices = newArray(5);
 binChoices[0] = "Square-root";
 binChoices[1] = "Sturges";
-binChoices[2] = "Scott (IJ default)";
+binChoices[2] = "Scott (IJ's default)";
 binChoices[3] = "Freedman-Diaconis";
 binChoices[4] = "Specify manually below:";
 
@@ -102,7 +102,7 @@ saveSettings();
 removeGrids = eval("script", "PlotWindow.noGridLines=true;");
 Plot.create(parameter +" Distribution", parameter, yAxis);
   Plot.setLimits(min1, max1, 0, yLimit);
-  legend = "Mean: "+ d2s(mean1,2) +",  Median: "+ d2s(getMedian(),2) +",  SD: "+ d2s(stdDev1,2);
+  legend = "Mean: "+ d2s(mean1,2) +",  Median: "+ d2s(getMedian(),2) +",  SD: "+ d2s(stdDev1,2) +",  N: "+ nRes;
   Plot.addText(legend, 0,0);
   Plot.setColor("blue");
   Plot.add("dots", bins, freq);
