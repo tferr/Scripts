@@ -1,13 +1,20 @@
 # Tools
 
-[Routines](../README.md#scripts) that are installed in the ImageJ Toolbar. These files should
-be installed in the ImageJ/plugins/Tools/ directory so they can be loaded using the ">>"
-drop-down menu in the main ImageJ window
+[Routines](../README.md#scripts) that are installed in the ImageJ Toolbar. Tools should be
+be installed in the ImageJ/plugins/Tools/ directory. Toolsets in the ImageJ/macros/toolsets
+directory. By doing so they can be loaded using the ">>" drop-down menu in the main ImageJ
+window.
 
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
    A Menu Tool providing shortcuts for spatial calibration of images lacking metadata
    ([Download .ijm](./Calibration_Menu.ijm?raw=true))
+
+###[ROI Manager Tools](../ROI%20Manager%20Tools.txt)
+   An ImageJ toolset that renames selections stored in the ROI Manager. Place it in the
+   ImageJ/macros/toolsets folder and then use the toolbar's ">>" menu to activate it.
+   ([Download .ijm](../ROI%20Manager%20Tools.txt?raw=true))
+   ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
 
 ###[Shortcuts Menu](./Shortcuts_Menu.ijm)
    A Menu Tool listing the user's most used commands. List is remembered across restarts

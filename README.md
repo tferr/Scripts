@@ -3,7 +3,7 @@
 Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
 ## [Data Analysis](./Analysis/README.md#analysis)
-  Operations related  to statistics, profiles and histograms
+  Operations related  to statistics, profiles and histograms.
 
   1. (ijm) [Distribution Plotter](./Analysis/README.md#distribution-plotter)
 
@@ -29,17 +29,12 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   1. (bsh) [Strahler Analysis](http://fiji.sc/Strahler_Analysis)
 
 
-## ROI Handling
-  Manipulation of Regions Of Interest.
-
-  1. (ijm) [ROI Manager Tools](http://imagej.net/plugins/roi-manager-tools)
-
-
 ## [Tools](./Tools/README.md#tools)
   Additions to the ImageJ toolbar.
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
-  2. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
+  2. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
+  3. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
 
 
 License
