@@ -19,8 +19,9 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
   1. (ijm) [Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
-  3. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  4. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
+  3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
+  4. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
+  5. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
 ## [Neuronal Morphometry](./Morphometry/README.md#morphometry)
@@ -34,7 +35,8 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
   2. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
-  3. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
+  3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
+  4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
 
 
 License
