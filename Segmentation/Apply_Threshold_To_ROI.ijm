@@ -1,4 +1,5 @@
 /* Apply_Threshold_To_ROI.ijm
+ * https://github.com/tferr/Scripts#scripts
  * ImageJ macro that applies threshold levels to the active area ROI, or the entire image
  * if none exists. Useful when an image can only be segmented in a stepwise manner through
  * application of different threshold values to sub-regions of the image, as in tiled

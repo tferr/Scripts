@@ -1,4 +1,5 @@
 /* Clear_Thresholded_Pixels.ijm
+ * https://github.com/tferr/Scripts#scripts
  * ImageJ macro that sets to zero thresholded pixels inside the active area ROI, or the
  * entire image if no ROI exists. Useful for semi-automated segmentation, complementing
  * 'Apply Threshold To ROI.ijm' and the Paintbrush/Pencil Tools.

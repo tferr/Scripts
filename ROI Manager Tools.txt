@@ -1,10 +1,11 @@
 /* ROI Manager Tools.txt
+ * https://github.com/tferr/Scripts#scripts
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
  * then use the '>>' drop down menu to activate it. Requires IJ 1.45d or newer.
  *
- * tiago ferreira, 04.2012;
- * 12.2013: Fixed a bug in which labels were not being saved.
+ * TF, 04.2012: Initial version
+ * TF, 12.2013: Fixed a bug in which labels were not being saved.
  */
 
 var labels= getPrefList("labels");

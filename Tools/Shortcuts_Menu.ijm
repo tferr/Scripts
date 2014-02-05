@@ -1,4 +1,5 @@
 /* Shortcuts_Menu.ijm
+ * https://github.com/tferr/Scripts#scripts
  * An IJ Menu Tool listing the user's most used commands. List is remembered across restarts
  *
  * Place this file in ImageJ/plugins/Tools/. Re-start ImageJ. Load it using the ">>"

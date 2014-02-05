@@ -1,7 +1,7 @@
 /* BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
- *
- * Tiago Ferreira, v1.0 2013.03.07
+ * https://github.com/tferr/Scripts#scripts
+ * Tiago Ferreira, v1.0.1 2014.02.03
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton

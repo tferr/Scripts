@@ -1,4 +1,5 @@
 /* Calibration_Menu.ijm
+ * https://github.com/tferr/Scripts#scripts
  * An IJ Menu Tool providing shortcuts for spatial calibration of images lacking metadata.
  *
  *  - Place this file in ImageJ/plugins/Tools/. Re-start ImageJ. Load it using the ">>"

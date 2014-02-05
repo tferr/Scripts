@@ -1,4 +1,5 @@
 /* Threshold_From_Background.ijm
+ * https://github.com/tferr/Scripts#scripts
  * Sets the threshold as the ROI average plus a factor of its standard deviation
  * To call it from other macro: runMacro(pathToThisFile, factor);
  */

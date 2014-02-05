@@ -1,4 +1,5 @@
 /* Segment_Profile.ijm
+ * https://github.com/tferr/Scripts#scripts
  * This tool takes a straight line and extracts the segments within that line that are
  * above threshold levels (i.e., it measures the width of the peaks of the profile plot of
  * a given straight line. It can be used to cross-section objects, or measure repetitive
