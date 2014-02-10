@@ -1,10 +1,8 @@
 /* Distribution_Plotter.ijm
  * https://github.com/tferr/Scripts/#scripts
  *
- * Plots cumulative (left Y-axis) and relative frequencies (right Y-axis) using values
- * from the Results table. To increase readability, height of modal class is matched to
- * the 50th-percentile. A Gaussian curve (normal distribution) is fitted to the histogram.
- * Requires at least IJ 1.48q
+ * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
+ * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.48q.
  *
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
@@ -38,14 +36,14 @@ for (i=0, countNaN=0; i<resCount; i++) {
 	if (isNaN(getResult(parameter, i))) countNaN++;
 }
 obsCount = resCount-countNaN;
+if (obsCount==0)
+	exit("No valid data for \""+ parameter +"\" in the Results table");
+
 values = newArray(obsCount);
 for (i=0; i<resCount; i++) {
 	value = getResult(parameter, i);
 	if (!isNaN(value)) values[i] = value;
 }
-if (obsCount==0)
-	exit("No valid data for \""+ parameter +"\" in the Results table");
-
 cumFreq = newArray(obsCount);
 if (yAxis==tabChoices[0]) {
 	cumFreq[0] = 1; plotYmax = obsCount;
@@ -55,7 +53,7 @@ if (yAxis==tabChoices[0]) {
 	cumFreq[0] = 1/obsCount; plotYmax = 1;
 }
 for (i=1; i<obsCount; i++) {
-		cumFreq[i] = cumFreq[i-1] + cumFreq[0];
+	cumFreq[i] = cumFreq[i-1] + cumFreq[0];
 }
 
 Array.sort(values);
@@ -113,7 +111,6 @@ function drawHistogramBars(lineColor, fillColor) {
 			Plot.drawLine(x1, yfill, x2, yfill);
 			Plot.drawLine(x1, yfill, x2, yfill);
 		}
-		print(i, max);
 		Plot.setColor(lineColor);
 		Plot.drawLine(x1, y, x2, y);
 		Plot.drawLine(x1, 0, x1, y);
@@ -140,7 +137,7 @@ function drawHistogramLabels(color) {
 function drawLabel() {
 	leftMargin = 3/plotSize; topMargin = 15/plotSize;
 	colWidth = 83/plotSize;	 rowHeight = 13/plotSize;
-	row1 = topMargin;		 col1 = leftMargin;
+	row1 = topMargin;        col1 = leftMargin;
 	row2 = row1 + rowHeight; col2 = col1 + colWidth;
 	row3 = row2 + rowHeight; col3 = col2 + colWidth;
 	row4 = row3 + rowHeight;
@@ -190,7 +187,7 @@ function drawRotatedHistogramLabels(color, fontSize) {
 function getBinCenters(n, width, startValue) {
 	bins = newArray(n);
 	for (i=0; i<bins.length; i++)
-	   bins[i] = i * width + startValue + width/2;
+		bins[i] = i * width + startValue + width/2;
 	return bins;
 }
 
@@ -203,8 +200,8 @@ function getHistCounts(binArray, nB, colN) {
 		if (value>binArray[nB-1])
 			counts[nB-1] = counts[nB-1]+1;
 		for (j=1; j<counts.length; j++)
-			 if (value<=binArray[j] && value>binArray[j-1])
-				 counts[j]++;
+			if (value<=binArray[j] && value>binArray[j-1])
+				counts[j]++;
 	}
 	for (i=0; i<counts.length; i++){
 		if (yAxis==tabChoices[1])
@@ -240,5 +237,5 @@ function intersectsBin(x, y) {
 }
 
 function pad(n) {
-  n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
+	n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
 }
