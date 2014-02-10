@@ -4,7 +4,7 @@
  * Plots cumulative (left Y-axis) and relative frequencies (right Y-axis) using values
  * from the Results table. To increase readability, height of modal class is matched to
  * the 50th-percentile. A Gaussian curve (normal distribution) is fitted to the histogram.
- * Requires at least IJ 1.47.
+ * Requires at least IJ 1.48q
  *
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
@@ -25,7 +25,7 @@ Dialog.create('Distribution Plotter');
 	Dialog.addChoice('Tabulate:', tabChoices);
 	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
 	Dialog.addSlider("Bins:", 2, resCount, sqrt(resCount));
-	Dialog.addMessage(resCount +" data points in Results table");
+	Dialog.addMessage(resCount +" data points (NaN entries will be ignored)...");
 Dialog.show;
 	parameter = Dialog.getChoice;
 	yAxis = Dialog.getChoice;
