@@ -5,6 +5,8 @@
  * a given straight line. It can be used to cross-section objects, or measure repetitive
  * motifs in patterned structures, e.g., muscle sarcomeres or annual tree rings.
  * Built-in help is available by double-clicking on the Tool's icon.
+ * See also: http://imagej.nih.gov/ij/macros/FindMaxima1D.txt, a macro that exemplifies
+ * how to detect peaks in a line profile.
  *
  * TF 2014.02
  */
@@ -129,10 +131,12 @@ function promptForOptions() {
 		+ "<b>Run demo</b><p>"
 		+ "If selected, a demonstrative segmentation of the <i>Tree Rings</i> sample<p>"
 		+ "image is performed <p><p>"
-		+ "<b>Working with generated segments</b>"
+		+ "<b>Handling of segments</b>"
 		+ "<table >"
 		+ "<tr><td>&emsp;<b>Delete last</b></td><td>Alt-click on image</td></tr>"
-		+ "<tr><td>&emsp;<b>Segment labels</b></td><td>Use <i>Image>Overlay>Labels...</i></td></tr>"
+		+ "<tr><td>&emsp;<b>Labels</b></td><td>Use <i>Image>Overlay>Labels...</i> This allows activation of<p>"
+		+ "individual segments by Alt/Control-clicking or long-<p>"
+		+ "pressing on label</td></tr>"
 		+ "<tr><td>&emsp;<b>Retrieval</b></td><td>Use <i>Image>Overlay>To ROI Manager</i></td></tr>"
 		+ "</table>";
 	Dialog.create('Segment Profile Options...');
