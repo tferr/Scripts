@@ -3,6 +3,8 @@
  *
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
  * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.48q.
+ * Distribution tables can be accessed through the 'List' button of the plot window:
+ * X0: Bin start, X0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
@@ -74,8 +76,8 @@ if (autoBin==binChoices[0]) { // Square-root
 if (binWidth==0)
 	exit("Automatic binning could not be performed.\nRe-check settings or specify bins manually.");
 nBins = -floor(-( (max-min)/binWidth ));
-bins = getBinCenters(nBins, binWidth, min);
-freqs = getHistCounts(bins, nBins, parameter);
+bins = getBinStarts(nBins, binWidth, min);
+freqs = getHistCounts(bins, values);
 Array.getStatistics(freqs, histMin, histMax);
 plotXmin = min - binWidth;
 plotXmax = max + binWidth;
@@ -102,8 +104,7 @@ Plot.create(parameter +" Distribution", parameter, yAxis);
 function drawHistogramBars(lineColor, fillColor) {
 	drawingStep = plotYmax/plotSize;
 	for (i=0; i<bins.length; i++) {
-		x1 = bins[i]-(binWidth/2);
-		x2 = x1 + binWidth;
+		x1 = bins[i]; x2 = x1 + binWidth;
 		y = plotYmax * histScale * freqs[i] / histMax;
 		Plot.setColor(fillColor);
 		for (j=0; j<plotSize*histScale; j++) {
@@ -122,7 +123,7 @@ function drawHistogramLabels(color) {
 	Plot.setColor(color);
 	Plot.setJustification("center");
 	for (i=0; i<bins.length; i++) {
-		xpos = (bins[i]-plotXmin)/(plotXmax-plotXmin);
+		xpos = (binWidth/2+bins[i]-plotXmin)/(plotXmax-plotXmin);
 		ypos = 1-(histScale * freqs[i] / histMax);
 		if (yAxis==tabChoices[0])
 			label = freqs[i];
@@ -184,26 +185,26 @@ function drawRotatedHistogramLabels(color, fontSize) {
 	Overlay.show();
 }
 
-function getBinCenters(n, width, startValue) {
+function getBinStarts(n, width, startValue) {
 	bins = newArray(n);
 	for (i=0; i<bins.length; i++)
-		bins[i] = i * width + startValue + width/2;
+		bins[i] = i * width + startValue;
 	return bins;
 }
 
-function getHistCounts(binArray, nB, colN) {
-	counts = newArray(nB); // zero-filled array
+function getHistCounts(binArray, valuesArray) {
+	counts = newArray(nBins);
 	for (i=0; i<obsCount; i++) {
-		value = values[i];
-		if (value<=binArray[0])
-			counts[0] = counts[0]+1;
-		if (value>binArray[nB-1])
-			counts[nB-1] = counts[nB-1]+1;
-		for (j=1; j<counts.length; j++)
-			if (value<=binArray[j] && value>binArray[j-1])
-				counts[j]++;
+		value = valuesArray[i];
+		if (value>binArray[nBins-1])
+			counts[nBins-1] += 1;
+		else {
+			for (j=1; j<nBins; j++)
+				if (value>=binArray[j-1] && value<binArray[j])
+					counts[j-1] += 1;
+		}
 	}
-	for (i=0; i<counts.length; i++){
+	for (i=0; i<nBins; i++){
 		if (yAxis==tabChoices[1])
 			counts[i] = 100 * counts[i] / obsCount ;
 		else if (yAxis==tabChoices[2])
@@ -227,8 +228,8 @@ function getMedian() { // the values[] array is already sorted
 
 function intersectsBin(x, y) {
 	for (i=0; i<bins.length; i++) {
-		barLeft = bins[i]-(binWidth/2);
-		barRight = bins[i]+(binWidth/2);
+		barLeft = bins[i];
+		barRight = bins[i] + binWidth;
 		barHeight = plotYmax * histScale * freqs[i] / histMax;
 		if (y<=barHeight && x>=barLeft && x<=barRight)
 			return true;
