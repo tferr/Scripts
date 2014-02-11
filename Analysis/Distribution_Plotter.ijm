@@ -4,7 +4,7 @@
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
  * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.48q.
  * Distribution tables can be accessed through the 'List' button of the plot window:
- * X0: Bin start, X0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
+ * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
@@ -25,6 +25,7 @@ Dialog.create('Distribution Plotter');
 	Dialog.addChoice('Tabulate:', tabChoices);
 	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
 	Dialog.addSlider("Bins:", 2, resCount, sqrt(resCount));
+	Dialog.addCheckbox("Ignore zeros", false);
 	Dialog.addMessage(resCount +" data points (NaN entries will be ignored)...");
 Dialog.show;
 	parameter = Dialog.getChoice;
@@ -33,18 +34,21 @@ Dialog.show;
 	userBins = Dialog.getNumber;
 	if (isNaN(userBins)) userBins = 2;
 	userBins = maxOf(2, minOf(userBins, resCount));
+	ignoreZeros = Dialog.getCheckbox;
 
-for (i=0, countNaN=0; i<resCount; i++) {
-	if (isNaN(getResult(parameter, i))) countNaN++;
+for (i=0, countInvalid=0; i<resCount; i++) {
+	value = getResult(parameter, i);
+	if (isNaN(value)) countInvalid++;
+	if (ignoreZeros && value==0) countInvalid++;
 }
-obsCount = resCount-countNaN;
+obsCount = resCount-countInvalid;
 if (obsCount==0)
 	exit("No valid data for \""+ parameter +"\" in the Results table");
 
 values = newArray(obsCount);
 for (i=0; i<resCount; i++) {
 	value = getResult(parameter, i);
-	if (!isNaN(value)) values[i] = value;
+	if (!isNaN(value) && !(ignoreZeros && value==0)) values[i] = value;
 }
 cumFreq = newArray(obsCount);
 if (yAxis==tabChoices[0]) {
@@ -150,7 +154,7 @@ function drawLabel() {
 	Plot.addText("Median: "+ d2s(getMedian(),2), col2, row2);
 	Plot.addText("Bins: "+ nBins, col2, row3);
 	Plot.addText("Bin width: "+ d2s(binWidth,2), col2, row4);
-	if (countNaN!=0) Plot.addText("Invalid entries: "+ countNaN, col3, row1);
+	if (countInvalid!=0) Plot.addText("Ignored entries: "+ countInvalid, col3, row1);
 	//if (autoBin!=binChoices[4]) Plot.addText(autoBin, col3, row2);
 }
 
@@ -218,7 +222,7 @@ function getMeasurements() {
 	return Array.sort(list);
 }
 
-function getMedian() { // the values[] array is already sorted
+function getMedian() { // values[] is already sorted
 	if (obsCount%2==0)
 		median = (values[obsCount/2] + values[obsCount/2 -1])/2;
 	else
