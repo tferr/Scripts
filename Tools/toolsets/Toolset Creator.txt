@@ -55,7 +55,7 @@ macro "Toolset Creator" {
     if (File.exists(path))
         showMessageWithCancel("Toolset Creator","A file named \""+ name +".txt\" already exists.\nOverwrite?");
     showStatus("Creating the toolset: An empty file will be create if you hit \"Cancel\".");
-    
+
     folders= listPluginDirs();
     for (i=0; i<nColors; i++) {
         separator= indexOf(colors[i], ":");
@@ -67,9 +67,9 @@ macro "Toolset Creator" {
         sIcons[i]= substring(icons[i], 0, separator);
         hIcons[i]= substring(icons[i], separator+1);
     }
-    
+
     f= File.open(path);
-    printHeader(); 
+    printHeader();
     while (add && slot<maxTools) {
         add= promptForSettings(); slot++;
     }
