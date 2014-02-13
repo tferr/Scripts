@@ -30,7 +30,7 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   1. (bsh) [Strahler Analysis](./Morphometry/README.md#strahler-analysis)
 
 
-## [Tools](./Tools/README.md#tools)
+## [Tools and Toolsets](./Tools/README.md#tools-and-toolsets)
   Additions to the ImageJ toolbar.
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)

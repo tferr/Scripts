@@ -1,9 +1,10 @@
+# Tools and Toolsets
 [Routines](../README.md#scripts) that are installed in the ImageJ Toolbar.
 Single _Tools_ should be be placed in `ImageJ/plugins/Tools/` and are appended to the IJ
 toolbar. _Toolsets_ replace the user's toolbar and should be placed in `ImageJ/macros/toolsets`.
 Both can be loaded using the ">>" drop-down menu in the main ImageJ window.
 
-# Tools
+## Tools
 Tools are listed in the toolbar's ">>" menu when saved in `ImageJ/plugins/Tools/`
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
@@ -23,12 +24,12 @@ Tools are listed in the toolbar's ">>" menu when saved in `ImageJ/plugins/Tools/
    ([Download .ijm](./Shortcuts_Menu.ijm?raw=true))
 
 
-# Toolsets
+## Toolsets
 Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/toolsets`
 
-###[ROI Manager Tools](../ROI%20Manager%20Tools.txt)
+###[ROI Manager Tools](./toolsets/ROI%20Manager%20Tools.txt)
    Renames selections stored in the ROI Manager.
-   ([Download .ijm](../ROI%20Manager%20Tools.txt?raw=true))
+   ([Download .ijm](./toolsets/ROI%20Manager%20Tools.txt?raw=true))
    ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
 
    See also [Image Annotation](../Annotation/README.md#annotation)
