@@ -1,72 +1,38 @@
 /* Toolset Creator
- * Creates toolsets of Built-in Tools and Menu Tools listing installed plugins
+ * https://github.com/tferr/Scripts#scripts
+ * http://imagej.nih.gov/ij/macros/toolsets/Toolset%20Creator.txt
  *
- * v.10 2012.07 Appends built-in tools (requires IJ 1.47a)
- * v.09 2011.10 Commands from .jar files can be renamed
- * v.08 2010.12 Simplified prompts
- * v.06 2008.10 Added .ijm and .js support (Wayne Rasband);
- *
- * Icons based on tools at http://imagej.nih.gov/ij/macros/tools/ or created using
- * J. Mutterer's http://imagej.nih.gov/ij/macros/tools/Image_To_Tool_Icon.txt macro
- *
- * Tiago Ferreira, 2012.07
+ * Creates toolsets of Built-in Tools and Menu Tools listing installed plugins.
+ * v.11 2014.02 TF: Adds support for IJ's 1.48 expandable toolbar
  */
 
-var bTools= newArray("[Select from list]","Arrow", "Brush", "Developer Menu", "Flood Filler", "LUT Menu", "Overlay Brush", "Pencil", "Pixel Inspector", "Spray Can", "Stacks Menu");
-var colors= newArray("Default:C037","Black:C000","Gray:C555", "Red:Cd00","Green:C0d0","Blue:C00d");
-var icons= newArray("[None. Create icon text]:",
-    "Bricks:D00D03D06D09D0cD0fD10D13D16D19D1cD1fD20D21D22D23D26D27D28D29D2cD2dD2eD2fD30D33D36D39D3cD3fD40D43D46D49D4cD4fD50D53D54D55D56D59D5aD5bD5cD5fD60D63D66D69D6cD6fD70D73D76D79D7cD7fD80D83D86D89D8cD8fD90D91D92D93D96D97D98D99D9cD9dD9eD9fDa0Da3Da6Da9Db0Db3Db6Db9Dc0Dc3Dc4Dc5Dc6Dc9DcaDcbDd0Dd3Dd6Dd9De0De3De6De9Df0Df3Df6Df9",
-    "Down Arrow:D2aD3aD3bD4aD4bD4cD50D51D52D53D54D55D56D57D58D59D5aD5bD5cD5dD60D61D62D63D64D65D66D67D68D69D6aD6bD6cD6dD6eD70D71D72D73D74D75D76D77D78D79D7aD7bD7cD7dD7eD7fD80D81D82D83D84D85D86D87D88D89D8aD8bD8cD8dD8eD90D91D92D93D94D95D96D97D98D99D9aD9bD9cD9dDaaDabDacDbaDbbDca",
-    "Film:D00D01D02D03D04D05D06D07D08D09D0aD0bD0cD0dD0eD0fD12D17D1cD22D27D2cD30D31D32D33D34D35D36D37D38D39D3aD3bD3cD3dD3eD3fD40D4bD50D5bD60D6bD70D7bD80D8bD90D9bDa0DabDb0Db1Db2Db3Db4Db5Db6Db7Db8Db9DbaDbbDbcDbdDbeDbfDc2Dc7DccDd2Dd7DdcDe0De1De2De3De4De5De6De7De8De9DeaDebDecDedDeeDef",
-    "Floppy:D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D27D28D29D2aD2bD2cD2dD31D33D35D37D38D39D3aD3bD3cD3dD3eD41D43D45D47D48D4eD51D53D55D57D58D5aD5bD5cD5eD61D63D65D67D68D6aD6bD6cD6eD71D73D75D77D78D7eD81D83D85D87D88D8eD91D93D95D97D98D9eDa1Da3Da5Da7Da8DaeDb1Db7Db8DbeDc1Dc2Dc3Dc4Dc5Dc6Dc7Dc8Dc9DcaDcbDccDcdDce",    
-    "Folder:D13D14D16D17D18D19D1aD1bD1cD22D23D24D26D27D28D29D2aD2bD2cD31D32D33D34D36D37D38D39D3aD3bD3cD41D42D43D44D46D47D48D49D4aD4bD4cD51D52D53D54D56D57D58D59D5aD5bD5cD61D62D63D64D66D67D68D69D6aD6bD6cD72D73D74D76D77D78D79D7aD7bD7cD83D84D86D87D88D89D8aD8bD8cD93D94D96D97D98D99D9aD9bD9cDa3Da4Da6Da7Da8Da9DaaDabDacDb3Db4Db6Db7Db8Db9DbaDbbDbcDc3Dc4Dc6Dc7Dc8Dc9DcaDcbDccDd3Dd4Dd6Dd7Dd8Dd9DdaDdbDdcDe3De4De6De7De8De9DeaDebDec",
-    "Gear:D16D17D23D26D27D2aD32D33D34D35D36D37D38D39D3aD3bD43D44D45D46D47D48D49D4aD53D54D55D58D59D5aD61D62D63D64D69D6aD6bD6cD71D72D73D74D79D7aD7bD7cD83D84D85D88D89D8aD93D94D95D96D97D98D99D9aDa2Da3Da4Da5Da6Da7Da8Da9DaaDabDb3Db6Db7DbaDc6Dc7CcccD22D24D29D2bD42D4bD56D57D65D68D75D78D86D87D92D9bDb2Db4Db9Dbb",
-    "Histogram:D1eD2dD1fD2eD3cD3dD4bD4cD5aD5bD6aD14D15D16D17D18D19D1aD1bD1cD1dD20D21D22D23D24D25D26D27D28D29D2aD2bD2cD2fD33D34D35D36D37D38D39D3aD3bD3eD3fD47D48D49D4aD4dD4eD4fD5cD5dD5eD5fD6bD6cD6dD6eD6fD7dD7eD7fD8dD8eD8fD9dD9eD9fDaeDafDbeDbfDcfDdf",
-    "Hourglass:D10D1fD20D21D22D2dD2eD2fD30D33D3cD3fD40D44D4bD4fD50D55D5aD5fD60D66D67D68D69D6fD70D75D7aD7fD80D84D8bD8fD90D93D9cD9fDa0Da1Da2DadDaeDafDb0Dbf",
-    "Image:R01fbR2397",
-    "List:L00f0L03f3L06f6L09f9L0cfcL0fbf",
-    "Pen:D1dD2aD2bD2cD37D38D39D3aD3bD3eD43D44D45D46D47D48D49D4aD4dD4eD53D54D55D56D57D58D59D5cD5dD63D64D65D66D67D68D6bD6cD6dD73D74D75D76D77D7aD7bD7cD7dD84D85D86D87D89D8aD8bD8cD92D93D95D96D97D98D99D9aD9bD9cDa1Da2Da3Da4Da6Da7Da8Da9DaaDabDacDb2Db3Db4Db5Db7Db8Db9DbaDbbDbcDc3Dc4Dc5Dc6Dc8Dc9DcaDcbDccDd4Dd5Dd6De5De6",
-    "Reduce:D17D23D27D2bD33D34D37D3aD3bD40D41D42D43D44D45D47D49D4aD4bD4cD4dD4eD53D54D57D5aD5bD63D67D6bD77D83D87D8bD93D94D97D9aD9bDa0Da1Da2Da3Da4Da5Da7Da9DaaDabDacDadDaeDb3Db4Db7DbaDbbDc3Dc7DcbDd7",
-    "Robot:D0fD18D19D1aD1fD26D27D28D29D2aD2dD2eD2fD33D34D35D36D3bD3cD3dD3eD3fD42D43D44D45D46D49D4aD4bD4cD4dD4eD4fD52D53D54D55D56D57D58D59D5aD5bD5cD5dD5eD5fD60D61D62D63D64D65D66D67D68D69D70D71D72D73D74D75D76D77D78D79D82D83D84D85D86D87D88D89D8aD8bD8cD8dD8eD8fD92D93D94D95D96D99D9aD9bD9cD9dD9eD9fDa3Da4Da5Da6DabDacDadDaeDafDb6Db7Db8Db9DbaDbdDbeDbfDc8Dc9DcaDceDcfDdf",
-    "Ruler:L15f5L1519Lf5f9L8885L5855Lb8b5",
-    "Shuffle:D05D06D07D16D17D25D27D2aD34D3bD43D4cD52D5dD5fD6eD6fD7dD7eD7fD80D81D82D90D91Da0Da2DadDb3DbcDc4DcbDd5Dd8DdaDe8De9Df8Df9Dfa",
-    "Sigma:D00D01D02D03D0dD0eD0fD10D11D12D13D14D1cD1dD1eD1fD20D21D24D25D2bD2cD2eD2fD30D31D35D36D3aD3bD3eD3fD40D41D46D47D49D4aD4eD4fD50D51D57D58D59D5eD5fD60D61D68D6eD6fD70D71D7eD7fD80D81D82D83D8cD8dD8eD8fD90D91D92D93D9cD9dD9eD9f",
-    "Stacks:L00f0L01f1L04f4L05f5L08f8L09f9L0cbcL0dbd",
-    "Tag:D22D23D24D25D26D27D32D33D34D35D36D37D38D42D43D46D47D48D49D52D53D56D57D58D59D5aD62D63D64D65D66D67D68D69D6aD6bD72D73D74D75D76D77D78D79D7aD7bD7cD83D84D85D86D87D88D89D8aD8bD8cD8dD94D95D96D97D98D99D9aD9bD9cD9dD9eDa5Da6Da7Da8Da9DaaDabDacDadDaeDb6Db7Db8Db9DbaDbbDbcDbdDc7Dc8Dc9DcaDcbDccDd8Dd9DdaDdbDe9Dea",
-    "Tiles:R0066R9066R0966L99f9L999fL9fdfLf9fc",
-    "Wrench:D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2aD5dDa2Dd5D59D68D69D77D78D86D87D96D1aD1bD1cD29D2bD39D49D4bD4cD4dD58D67D76D85D92D93D94Da1Db1Db2Db4Dc1Dc4Dd4De3D5aD6aD79D88D95D97Da5Da6D19D91D4aD5bDa4Db5D3aD5cDa3Dc5");
-
-var nColors= colors.length; var sColors= newArray(nColors); var hColors= newArray(nColors);
-var nIcons= icons.length;   var sIcons=  newArray(nIcons);  var hIcons=  newArray(nIcons);
-var alphaCounter= "abcdefghijklmno";    var add= true; var maxTools= 7;
-var folders= listPluginDirs();          var color, prefersymbol, menus, slot;
+var maxTools= 10;
 
 macro "AutoRun"{
-    wait(15);
-    run("Toolset Creator");
+    wait(15); run("Toolset Creator");
 }
 
 macro "Toolset Creator" {
     Dialog.create("Toolset Creator");
-    Dialog.addMessage("This sequence of dialog prompts will create a toolset grouping Built-in\n"+
-                      "Tools and Menu Tools. Built-in tools are those listed at the bottom of\n"+
-                      "the '>>' menu, Menu Tools will list commands (macros, scripts and\n"+
-                      "plugins) from subfolders of the ImageJ/plugins/ directory.");
-    Dialog.addString("      Toolset name without extension:", getInfo("user.name") +"'s Toolset", 23);
+    msg = "This sequence of prompts will create a toolset grouping two types of\n"
+        + "tools: Built-in tools (those listed at the bottom of the '>>' menu) and\n"
+        + "Menu Tools listing commands from subfolders of ImageJ/plugins/";
+    Dialog.addMessage(msg);
+    Dialog.addString("      Toolset name without extension:", getInfo("user.name") +"'s Toolset", 22);
     Dialog.show;
     name= replace(Dialog.getString, "^[.]+|[\\/:\"*?<>|]+", ""); // remove leading dots & illegal chars
     path= getDirectory("macros");
-    if (path=="")
+    if (!File.exists(path))
         exit("macros directory not found!\n \nToolset cannot be saved...");
     path= path+ "toolsets" +File.separator;
     if (!File.exists(path))
         File.makeDirectory(path);
     path= path+ name +".txt";
     if (File.exists(path))
-        showMessageWithCancel("Redesign previous toolset?","A file named \""+ name +
-             ".txt\" already exists\nin ImageJ/macros/toolsets/. Overwrite?");
+        showMessageWithCancel("Redesign previous toolset?","A file named \""+ name
+                             +".txt\" already exists\nin ImageJ/macros/toolsets/. Overwrite?");
     showStatus("Creating the toolset: An empty file will be created if you hit \"Cancel\"");
-    
+
     for (i=0; i<nColors; i++) {
         separator= indexOf(colors[i], ":");
         sColors[i]= substring(colors[i], 0, separator);
@@ -77,7 +43,7 @@ macro "Toolset Creator" {
         sIcons[i]= substring(icons[i], 0, separator);
         hIcons[i]= substring(icons[i], separator+1);
     }
-    
+
     f= File.open(path);
     printHeader();
     while (add && slot<maxTools) {
@@ -106,41 +72,42 @@ function listPluginDirs() {
   return list;
 }
 
-function promptForSettings() {       
+function promptForSettings() {
   addMore= slot<maxTools-1;
   dirs= folders.length>0;
-  Dialog.create("Toolset Creator...  Designing slot "+ slot+1);
-    Dialog.addHelp("<html>For each slot you can either design a <i>Menu Tool</i> (when plugins<p>"+
-                   "subfolders are available) or append a <i>Built-in Tool</i>, not both.<p><p>"+
-                   "When building Menu Tools icons, the first two characters of the<p>"+
-                   "folder name are used if neither a symbol or a string is specified.<p><p>"+
-                   "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the<p>"+
-                   "design will lead to an empty toolset file.");
-    if (dirs) {
-        Dialog.setInsets(10, 4, 2);
-        Dialog.addMessage("Option 1) Add a Menu Tool to slot "+ slot+1 +":");
-        Dialog.addChoice("         Listing executables in:", folders);
-        Dialog.addChoice("Icon symbol:", sIcons, sIcons[prefersymbol]);
-        Dialog.addString("Icon text:", "", 2);
-        Dialog.setInsets(-30, 220, 0);
-        Dialog.addMessage("(maximum 2 chars.)");
-        Dialog.addChoice("Icon color:", sColors, color);
-        Dialog.setInsets(22, 4, 4);
-        Dialog.addMessage("Option 2) Register a Built-in Tool on slot "+ slot+1 + " instead:");
-    }
-    Dialog.addChoice("Built-in tool:", bTools);
-    if (addMore)
-        Dialog.addCheckbox("Keep adding tools ["+ maxTools-1-slot +" slot(s) remain available]", true);
+  Dialog.create("Toolset Creator: Designing slot "+ slot+1);
+  msg = "<html>For each slot you can either design a <i>Built-in Tool</i> or append a <i>Menu Tool</i>.<p>"
+      + "The latter option is only available when when <tt>ImageJ/plugins/</tt> contains<p>subdirectories.<p><p>"
+      + "When building menu icons, the first two characters of the folder name are<p>"
+      + "used if neither a symbol or a string is specified.<p><p>"
+      + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design<p>"
+      + "will lead to an empty toolset file.";
+  Dialog.addHelp(msg);
+  Dialog.setInsets(5, 0, 0);
+  Dialog.addMessage("Option 1) Add a Built-in Tool to slot "+ slot+1 +":");
+  Dialog.addChoice("Built-in tool:", bTools);
+  if (dirs) {
+      Dialog.setInsets(20, 0, 4);
+      Dialog.addMessage("Option 2) Add a Menu Tool to slot "+ slot+1 + " instead:");
+      Dialog.addChoice("       Listing executables in:", folders);
+      Dialog.addChoice("Icon symbol:", sIcons, sIcons[prefersymbol]);
+      Dialog.addString("Icon text:", "", 3);
+      Dialog.setInsets(-30, 218, 0);
+      Dialog.addMessage("(maximum 2 characters)");
+      Dialog.addChoice("Icon color:", sColors, color);
+  }
+  if (addMore)
+      Dialog.addCheckbox("Keep appending tools ["+ maxTools-1-slot +" slot(s) remain available]", true);
   Dialog.show();
-    if (dirs) {
-        folder= Dialog.getChoice;
-        icon= Dialog.getChoice;
-        text= Dialog.getString;
-        color= Dialog.getChoice;
-     }
-    btool= Dialog.getChoice;
-    if (addMore)
-        add= Dialog.getCheckbox;
+  btool= Dialog.getChoice;
+  if (dirs) {
+      folder = Dialog.getChoice;
+      icon = Dialog.getChoice;
+      text = Dialog.getString;
+      color = Dialog.getChoice;
+  }
+  if (addMore)
+      add= Dialog.getCheckbox;
 
   if (btool!=bTools[0]) {
       print(f, " macro \""+ btool +" Built-in Tool\" {}\n ");
@@ -158,7 +125,6 @@ function promptForSettings() {
       print(f, "   if (cmd!='-') run(cmd);");
       print(f, " }\n ");
   }
-
   return add;
 }
 
@@ -193,11 +159,8 @@ function printHeader() {
   date= ""+y+"."+IJ.pad(m+1,2)+"."+IJ.pad(d,2)+" "+IJ.pad(h,2)+":"+IJ.pad(min,2)+":"+IJ.pad(sec,2);
   print(f,"/* File created by Toolset Creator (ImageJ "+ getVersion +") on "+ date);
   print(f, " *");
-  print(f, " * This toolset was designed to group Menu Tools and Built-in tools");
-  print(f, " *");
   print(f, " * Buil-in Tools:");
-  print(f, " *   Those listed on the botoom of the '>>' list (e.g. drawing tools). This");
-  print(f, " *   file offers no further customizations of these tools.");
+  print(f, " *   Those listed on the botoom of the '>>' list (e.g. drawing tools).");
   print(f, " *");
   print(f, " * Menu Tools:");
   print(f, " *   List executable files in subfolders of the ImageJ/plugins/ directory. IJ");
@@ -216,7 +179,6 @@ function printHeader() {
   print(f," var AllowedFileExtensions= newArray('class','txt','ijm','jar','js');");
   print(f," var IgnoreFilenamesContaining= newArray('$');");
   print(f," var ReplaceFilenames= newArray('3D Viewer:ImageJ_3D_Viewer.jar');\n \n ");
-  print(f," macro 'Unused Tool -' {} //spacer\n "); 
 }
 
 function printFoot() {
@@ -255,3 +217,33 @@ function printFoot() {
   print(f, "  return list;");
   print(f, "}");
 }
+
+var bTools= newArray("[Select from list]","Arrow", "Brush", "Developer Menu", "Flood Filler", "LUT Menu", "Overlay Brush", "Pencil", "Pixel Inspector", "Spray Can", "Stacks Menu");
+var colors= newArray("Default:C037","Black:C000","Gray:C555", "Red:Cd00","Green:C0d0","Blue:C00d");
+var icons= newArray("[None. Create icon text]:",
+    "Bricks:D00D03D06D09D0cD0fD10D13D16D19D1cD1fD20D21D22D23D26D27D28D29D2cD2dD2eD2fD30D33D36D39D3cD3fD40D43D46D49D4cD4fD50D53D54D55D56D59D5aD5bD5cD5fD60D63D66D69D6cD6fD70D73D76D79D7cD7fD80D83D86D89D8cD8fD90D91D92D93D96D97D98D99D9cD9dD9eD9fDa0Da3Da6Da9Db0Db3Db6Db9Dc0Dc3Dc4Dc5Dc6Dc9DcaDcbDd0Dd3Dd6Dd9De0De3De6De9Df0Df3Df6Df9",
+    "Down Arrow:D2aD3aD3bD4aD4bD4cD50D51D52D53D54D55D56D57D58D59D5aD5bD5cD5dD60D61D62D63D64D65D66D67D68D69D6aD6bD6cD6dD6eD70D71D72D73D74D75D76D77D78D79D7aD7bD7cD7dD7eD7fD80D81D82D83D84D85D86D87D88D89D8aD8bD8cD8dD8eD90D91D92D93D94D95D96D97D98D99D9aD9bD9cD9dDaaDabDacDbaDbbDca",
+    "Film:D00D01D02D03D04D05D06D07D08D09D0aD0bD0cD0dD0eD0fD12D17D1cD22D27D2cD30D31D32D33D34D35D36D37D38D39D3aD3bD3cD3dD3eD3fD40D4bD50D5bD60D6bD70D7bD80D8bD90D9bDa0DabDb0Db1Db2Db3Db4Db5Db6Db7Db8Db9DbaDbbDbcDbdDbeDbfDc2Dc7DccDd2Dd7DdcDe0De1De2De3De4De5De6De7De8De9DeaDebDecDedDeeDef",
+    "Floppy:D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D27D28D29D2aD2bD2cD2dD31D33D35D37D38D39D3aD3bD3cD3dD3eD41D43D45D47D48D4eD51D53D55D57D58D5aD5bD5cD5eD61D63D65D67D68D6aD6bD6cD6eD71D73D75D77D78D7eD81D83D85D87D88D8eD91D93D95D97D98D9eDa1Da3Da5Da7Da8DaeDb1Db7Db8DbeDc1Dc2Dc3Dc4Dc5Dc6Dc7Dc8Dc9DcaDcbDccDcdDce",
+    "Folder:D13D14D16D17D18D19D1aD1bD1cD22D23D24D26D27D28D29D2aD2bD2cD31D32D33D34D36D37D38D39D3aD3bD3cD41D42D43D44D46D47D48D49D4aD4bD4cD51D52D53D54D56D57D58D59D5aD5bD5cD61D62D63D64D66D67D68D69D6aD6bD6cD72D73D74D76D77D78D79D7aD7bD7cD83D84D86D87D88D89D8aD8bD8cD93D94D96D97D98D99D9aD9bD9cDa3Da4Da6Da7Da8Da9DaaDabDacDb3Db4Db6Db7Db8Db9DbaDbbDbcDc3Dc4Dc6Dc7Dc8Dc9DcaDcbDccDd3Dd4Dd6Dd7Dd8Dd9DdaDdbDdcDe3De4De6De7De8De9DeaDebDec",
+    "Gear:D16D17D23D26D27D2aD32D33D34D35D36D37D38D39D3aD3bD43D44D45D46D47D48D49D4aD53D54D55D58D59D5aD61D62D63D64D69D6aD6bD6cD71D72D73D74D79D7aD7bD7cD83D84D85D88D89D8aD93D94D95D96D97D98D99D9aDa2Da3Da4Da5Da6Da7Da8Da9DaaDabDb3Db6Db7DbaDc6Dc7CcccD22D24D29D2bD42D4bD56D57D65D68D75D78D86D87D92D9bDb2Db4Db9Dbb",
+    "Histogram:D1eD2dD1fD2eD3cD3dD4bD4cD5aD5bD6aD14D15D16D17D18D19D1aD1bD1cD1dD20D21D22D23D24D25D26D27D28D29D2aD2bD2cD2fD33D34D35D36D37D38D39D3aD3bD3eD3fD47D48D49D4aD4dD4eD4fD5cD5dD5eD5fD6bD6cD6dD6eD6fD7dD7eD7fD8dD8eD8fD9dD9eD9fDaeDafDbeDbfDcfDdf",
+    "Hourglass:D10D1fD20D21D22D2dD2eD2fD30D33D3cD3fD40D44D4bD4fD50D55D5aD5fD60D66D67D68D69D6fD70D75D7aD7fD80D84D8bD8fD90D93D9cD9fDa0Da1Da2DadDaeDafDb0Dbf",
+    "Image:R01fbR2397",
+    "List:L00f0L03f3L06f6L09f9L0cfcL0fbf",
+    "Pen:D1dD2aD2bD2cD37D38D39D3aD3bD3eD43D44D45D46D47D48D49D4aD4dD4eD53D54D55D56D57D58D59D5cD5dD63D64D65D66D67D68D6bD6cD6dD73D74D75D76D77D7aD7bD7cD7dD84D85D86D87D89D8aD8bD8cD92D93D95D96D97D98D99D9aD9bD9cDa1Da2Da3Da4Da6Da7Da8Da9DaaDabDacDb2Db3Db4Db5Db7Db8Db9DbaDbbDbcDc3Dc4Dc5Dc6Dc8Dc9DcaDcbDccDd4Dd5Dd6De5De6",
+    "Reduce:D17D23D27D2bD33D34D37D3aD3bD40D41D42D43D44D45D47D49D4aD4bD4cD4dD4eD53D54D57D5aD5bD63D67D6bD77D83D87D8bD93D94D97D9aD9bDa0Da1Da2Da3Da4Da5Da7Da9DaaDabDacDadDaeDb3Db4Db7DbaDbbDc3Dc7DcbDd7",
+    "Robot:D0fD18D19D1aD1fD26D27D28D29D2aD2dD2eD2fD33D34D35D36D3bD3cD3dD3eD3fD42D43D44D45D46D49D4aD4bD4cD4dD4eD4fD52D53D54D55D56D57D58D59D5aD5bD5cD5dD5eD5fD60D61D62D63D64D65D66D67D68D69D70D71D72D73D74D75D76D77D78D79D82D83D84D85D86D87D88D89D8aD8bD8cD8dD8eD8fD92D93D94D95D96D99D9aD9bD9cD9dD9eD9fDa3Da4Da5Da6DabDacDadDaeDafDb6Db7Db8Db9DbaDbdDbeDbfDc8Dc9DcaDceDcfDdf",
+    "Ruler:L15f5L1519Lf5f9L8885L5855Lb8b5",
+    "Shuffle:D05D06D07D16D17D25D27D2aD34D3bD43D4cD52D5dD5fD6eD6fD7dD7eD7fD80D81D82D90D91Da0Da2DadDb3DbcDc4DcbDd5Dd8DdaDe8De9Df8Df9Dfa",
+    "Sigma:D00D01D02D03D0dD0eD0fD10D11D12D13D14D1cD1dD1eD1fD20D21D24D25D2bD2cD2eD2fD30D31D35D36D3aD3bD3eD3fD40D41D46D47D49D4aD4eD4fD50D51D57D58D59D5eD5fD60D61D68D6eD6fD70D71D7eD7fD80D81D82D83D8cD8dD8eD8fD90D91D92D93D9cD9dD9eD9f",
+    "Stacks:L00f0L01f1L04f4L05f5L08f8L09f9L0cbcL0dbd",
+    "Tag:D22D23D24D25D26D27D32D33D34D35D36D37D38D42D43D46D47D48D49D52D53D56D57D58D59D5aD62D63D64D65D66D67D68D69D6aD6bD72D73D74D75D76D77D78D79D7aD7bD7cD83D84D85D86D87D88D89D8aD8bD8cD8dD94D95D96D97D98D99D9aD9bD9cD9dD9eDa5Da6Da7Da8Da9DaaDabDacDadDaeDb6Db7Db8Db9DbaDbbDbcDbdDc7Dc8Dc9DcaDcbDccDd8Dd9DdaDdbDe9Dea",
+    "Tiles:R0066R9066R0966L99f9L999fL9fdfLf9fc",
+    "Wrench:D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2aD5dDa2Dd5D59D68D69D77D78D86D87D96D1aD1bD1cD29D2bD39D49D4bD4cD4dD58D67D76D85D92D93D94Da1Db1Db2Db4Dc1Dc4Dd4De3D5aD6aD79D88D95D97Da5Da6D19D91D4aD5bDa4Db5D3aD5cDa3Dc5");
+
+var nColors= colors.length;           var nIcons= icons.length;
+var sColors= newArray(nColors);       var sIcons= newArray(nIcons);
+var hColors= newArray(nColors);       var hIcons= newArray(nIcons);
+var alphaCounter= "abcdefghijklmno";  var add= true;
+var folders= listPluginDirs();        var color, prefersymbol, menus, slot;
