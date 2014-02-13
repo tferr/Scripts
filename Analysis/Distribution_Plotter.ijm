@@ -87,22 +87,22 @@ plotXmin = min - binWidth;
 plotXmax = max + binWidth;
 
 Plot.create(parameter +" Distribution", parameter, yAxis);
-	Plot.setFrameSize(plotSize, plotSize);
-	Plot.setLimits(plotXmin, plotXmax, 0, plotYmax);
-	drawLabel();
-	Plot.add("dots", bins, freqs);
-	Plot.setLineWidth(2);
-	drawHistogramBars("blue", "cyan");
-	drawNormalCurve(mean, stdDev, "black");
-	Plot.setColor("red");
-	Plot.add("line", values, cumFreq);
-	Plot.setLineWidth(1);
-	largebars = nBins < 20;
-	if (largebars) {
-		drawHistogramLabels("blue"); Plot.show;
-	} else {
-		Plot.show; drawRotatedHistogramLabels("blue", 11);
-	}
+Plot.setFrameSize(plotSize, plotSize);
+Plot.setLimits(plotXmin, plotXmax, 0, plotYmax);
+drawLabel();
+Plot.add("dots", bins, freqs);
+Plot.setLineWidth(2);
+drawHistogramBars("blue", "cyan");
+drawNormalCurve(mean, stdDev, "black");
+Plot.setColor("red");
+Plot.add("line", values, cumFreq);
+Plot.setLineWidth(1);
+largebars = nBins < 20;
+if (largebars) {
+	drawHistogramLabels("blue"); Plot.show;
+} else {
+	Plot.show; drawRotatedHistogramLabels("blue", 11);
+}
 
 
 function drawHistogramBars(lineColor, fillColor) {
@@ -191,7 +191,7 @@ function drawRotatedHistogramLabels(color, fontSize) {
 
 function getBinStarts(n, width, startValue) {
 	bins = newArray(n);
-	for (i=0; i<bins.length; i++)
+	for (i=0; i<n; i++)
 		bins[i] = i * width + startValue;
 	return bins;
 }

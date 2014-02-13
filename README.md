@@ -39,6 +39,13 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
 
 
+## Citations
+These scrips have contributed to the following publications:
+
+  - Soulet et al., Automated filtering of intrinsic movement artifacts during two-photon intravital microscopy, PLoS One. 2013; 8(1): e53942, [PMID 23326545](http://www.ncbi.nlm.nih.gov/pubmed/23326545)
+  - Carnevalli et al., S6K1 Plays a Critical Role in Early Adipocyte Differentiation, Dev Cell. 2010; 18(5): 763–774, [PMID 20493810](http://www.ncbi.nlm.nih.gov/pubmed/20493810)
+
+
 License
 -------
 These scripts are free software: you can redistribute them and/or modify them under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -46,7 +53,9 @@ These scripts are free software: you can redistribute them and/or modify them un
 
 Authors
 -------
-Tiago Ferreira
+[Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
+
+
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tferr/scripts/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
