@@ -1,12 +1,17 @@
 /* Segment_Profile.ijm
  * https://github.com/tferr/Scripts#scripts
+ *
  * This tool takes a straight line and extracts the segments within that line that are
  * above threshold levels (i.e., it measures the width of the peaks of the profile plot of
  * a given straight line. It can be used to cross-section objects, or measure repetitive
  * motifs in patterned structures, e.g., muscle sarcomeres or annual tree rings.
  * Built-in help is available by double-clicking on the Tool's icon.
+ *
  * See also: http://imagej.nih.gov/ij/macros/FindMaxima1D.txt, a macro that exemplifies
  * how to detect peaks in a line profile.
+ *
+ * Place this file in ImageJ/plugins/Tools/. Re-start ImageJ. Load it using the ">>"
+ * drop-down menu in the main ImageJ window
  *
  * TF 2014.02
  */
