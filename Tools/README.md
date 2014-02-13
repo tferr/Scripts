@@ -1,33 +1,44 @@
+[Routines](../README.md#scripts) that are installed in the ImageJ Toolbar.
+Single _Tools_ should be be placed in `ImageJ/plugins/Tools/` and are appended to the IJ
+toolbar. _Toolsets_ replace the user's toolbar and should be placed in `ImageJ/macros/toolsets`.
+Both can be loaded using the ">>" drop-down menu in the main ImageJ window.
+
 # Tools
-
-[Routines](../README.md#scripts) that are installed in the ImageJ Toolbar. Tools should be
-be installed in the ImageJ/plugins/Tools/ directory. Toolsets in the ImageJ/macros/toolsets
-directory. By doing so they can be loaded using the ">>" drop-down menu in the main ImageJ
-window.
-
+Tools are listed in the toolbar's ">>" menu when saved in `ImageJ/plugins/Tools/`
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
-   A Menu Tool providing shortcuts for spatial calibration of images lacking metadata
+   Provides shortcuts for spatial calibration of images lacking metadata.
    ([Download .ijm](./Calibration_Menu.ijm?raw=true))
 
 
-###[ROI Manager Tools](../ROI%20Manager%20Tools.txt)
-   An ImageJ toolset that renames selections stored in the ROI Manager. Place it in the
-   ImageJ/macros/toolsets folder and then use the toolbar's ">>" menu to activate it.
-   ([Download .ijm](../ROI%20Manager%20Tools.txt?raw=true))
-   ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
-
-   See also [Image Annotation](../Annotation/README.md#annotation)
-
-
 ###[Segment Profile Tool](./Segment_Profile.ijm)
-   A tool that extracts the segments within a straight line that are above a cutoff
-   threshold
+   Extracts the segments within a straight line that are above a cutoff threshold.
    ([Download .ijm](./Segment_Profile.ijm?raw=true))
 
    (See also [Image Segmentation](../Segmentation/README.md#segmentation))
 
 
 ###[Shortcuts Menu](./Shortcuts_Menu.ijm)
-   A Menu Tool listing the user's most used commands. List is remembered across restarts
+   Lists the user's most used commands. List is remembered across restarts.
    ([Download .ijm](./Shortcuts_Menu.ijm?raw=true))
+
+
+# Toolsets
+Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/toolsets`
+
+###[ROI Manager Tools](../ROI%20Manager%20Tools.txt)
+   Renames selections stored in the ROI Manager.
+   ([Download .ijm](../ROI%20Manager%20Tools.txt?raw=true))
+   ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
+
+   See also [Image Annotation](../Annotation/README.md#annotation)
+
+
+###[Toolset Creator](./toolsets/Toolset%20Creator.txt)
+   Creates toolbar menus for running plugins, macros and scripts. It can also group
+   built-in tools (such as drawing tools) in custom toolsets. It is distributed with ImageJ
+   since IJ 1.41 and later.
+   ([Download .ijm](./toolsets/Toolset%20Creator.txt?raw=true))
+
+
+[ [Home] ](../README.md#scripts)
