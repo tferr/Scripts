@@ -37,7 +37,7 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   2. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
   3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
-  5. (ijm) [Toolset Creator](./Tools/toolsets/README.md#toolset-creator)
+  5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
 
 ## Citations
