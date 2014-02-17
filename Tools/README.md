@@ -38,7 +38,7 @@ Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/tool
 ###[Toolset Creator](./toolsets/Toolset%20Creator.txt)
    Creates toolbar menus for running plugins, macros and scripts. It can also group
    built-in tools (such as drawing tools) in custom toolsets. It is distributed with ImageJ
-   since IJ 1.41 and later.
+   since IJ 1.41.
    ([Download .ijm](./toolsets/Toolset%20Creator.txt?raw=true))
 
 
