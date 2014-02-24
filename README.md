@@ -6,6 +6,7 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   Operations related  to statistics, profiles and histograms.
 
   1. (ijm) [Distribution Plotter](./Analysis/README.md#distribution-plotter)
+  2. (bsh) [Find Peaks](./Analysis/README.md#find-peaks)
 
 
 ## [Image Annotation](./Annotation/README.md#annotation)
