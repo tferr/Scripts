@@ -28,10 +28,13 @@
    ([Download .bsh](./Find_Peaks.bsh?raw=true))
    ([Documentation page][FP page])
 
+   [![][FP image]][FP page]
+
 
 [ [Home] ](../README.md#scripts)
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png
 [FP page]: http://fiji.sc/Find_Peaks
+[FP image]: http://fiji.sc/images/a/a1/FindPeaksSnapshot.png
 

@@ -7,8 +7,8 @@
  * motifs in patterned structures, e.g., muscle sarcomeres or annual tree rings.
  * Built-in help is available by double-clicking on the Tool's icon.
  *
- * See also: http://imagej.nih.gov/ij/macros/FindMaxima1D.txt, a macro that exemplifies
- * how to detect peaks in a line profile.
+ * See also: https://github.com/tferr/Scripts/blob/master/Analysis/README.md#find-peaks, a
+ * script that retrieve peaks (local maxima and minima) from a line profile.
  *
  * Place this file in ImageJ/plugins/Tools/. Re-start ImageJ. Load it using the ">>"
  * drop-down menu in the main ImageJ window
