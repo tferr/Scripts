@@ -1,0 +1,32 @@
+/* Plot_from_Results.bsh  https://github.com/tferr/Scripts#scripts */
+
+ResultsTable rt = ResultsTable.getResultsTable();
+if (rt==null || rt.getCounter()==0)
+	Opener.openResultsTable("");
+rt = ResultsTable.getResultsTable();
+if (rt==null || rt.getCounter()==0)
+	{ IJ.error("Error retrieving data from Results table"); return; }
+
+String[] headings = rt.getHeadings();
+GenericDialog gd = new GenericDialog("Plot Data");
+gd.addStringField("Plot title:", "Imported Data", 24);
+gd.addChoice("X values:", headings, headings[0]);
+gd.addChoice("Y values:", headings, headings[headings.length-1]);
+gd.addCheckbox("Ignore X values (use incremental counter)", false);
+gd.showDialog();
+if (gd.wasCanceled()) return;
+String title = gd.getNextString();
+
+int xCol = gd.getNextChoiceIndex();
+int yCol = gd.getNextChoiceIndex();
+double[] y = rt.getColumnAsDoubles(yCol);
+double[] x;
+if (gd.getNextBoolean()) {
+	x = new double[y.length];
+	for (int i=0; i<y.length; i++) x[i] = i;
+} else 
+	x = rt.getColumnAsDoubles(xCol);
+
+int flags = Plot.X_GRID + Plot.Y_GRID + Plot.X_NUMBERS + Plot.Y_NUMBERS;
+Plot plot = new Plot(title, headings[xCol], headings[yCol], x, y, flags);
+plot.show();
