@@ -5,7 +5,7 @@ if (rt==null || rt.getCounter()==0)
 	Opener.openResultsTable("");
 rt = ResultsTable.getResultsTable();
 if (rt==null || rt.getCounter()==0)
-	{ IJ.error("Error retrieving data from Results table"); return; }
+	{ IJ.error("Could not retrieve data from Results table"); return; }
 
 String[] headings = rt.getHeadings();
 GenericDialog gd = new GenericDialog("Plot Data");
