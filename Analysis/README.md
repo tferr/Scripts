@@ -7,9 +7,7 @@
 
   1. Retrives relative and cumulative frequencies
   2. Fits a Normal distribution to histogram of relative frequencies
-  3. Offers several methods to determine the optimal number of histogram bins: Square root
-     (used by e.g., M. Excel), Sturges', Scott's (used by _Analyze>Distribution..._) and
-     Freedman–Diaconis'
+  3. Offers several methods to determine the optimal number of histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by _Analyze>Distribution..._) and Freedman–Diaconis'
 
    ([Download .ijm](./Distribution_Plotter.ijm?raw=true))
    ([Documentation page][DP page])
@@ -18,8 +16,7 @@
 
 
 ###[Find Peaks](./Find_Peaks.bsh)
-   Retrieves local maxima and minima from an ImageJ plot, allowing several filtering
-   options such as:
+   Retrieves local maxima and minima from an ImageJ plot, allowing several filtering options such as:
 
   1. Peak amplitude
   2. Peak height
@@ -29,6 +26,10 @@
    ([Documentation page][FP page])
 
    [![][FP image]][FP page]
+
+
+###[Plot from Results](./Plot_from_Results.bsh)
+   Extremely simple routine that creates an XY plot from chosen columns of the Results table. Useful for plotting imported spreadsheets.
 
 
 [ [Home] ](../README.md#scripts)
