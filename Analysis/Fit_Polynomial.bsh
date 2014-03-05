@@ -3,7 +3,6 @@
  * March 2014, Tiago Ferreira
  */
 
-// to do: ensure xvalues and yvalues have the same length
 // to do: log best degree upon exception
 
 import ij.gui.Overlay;
@@ -72,9 +71,16 @@ double getRSquared(double[] sampledData, double[] fittedData) {
 	return rSquared;
 }
 
-/* Returns the number of points to be fitted */
-int getNumPoints(double[] xData, double[] yData) {
-	return Math.min(xData.length, yData.length);
+/* Ensures xvalues and yvalues have the same size and returns the n. of points to be fitted */
+int getNumPoints() {
+	int size1 = this.xvalues.length;
+	int size2 = this.yvalues.length;
+	int size = Math.min(size1, size2);
+	if (size1!=size2) {
+		this.xvalues = Arrays.copyOf(this.xvalues, size);
+		this.yvalues = Arrays.copyOf(this.yvalues, size);
+	}
+	return size;
 }
 
 /* Tries to guess the polynomial of best fit while providing some visual feedback */
@@ -191,7 +197,7 @@ if (win!=null && (win instanceof PlotWindow)) {
 
 if (!geUserInput()) return;
 long startTime = System.currentTimeMillis();
-nPoints = getNumPoints(xvalues, yvalues);
+nPoints = getNumPoints();
 if (nPoints==0)
 	{ IJ.error("Could not retrieve values from plot"); return;};
 
