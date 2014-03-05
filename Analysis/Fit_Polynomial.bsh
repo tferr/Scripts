@@ -1,0 +1,256 @@
+/**
+ * Implements polynomial fitting using the apache commons math library
+ * March 2014, Tiago Ferreira
+ */
+ 
+// to do: ensure xvalues and yvalues have the same length
+// to do: abort when choosing cancel in prompt
+// to do: log best degree upon exception
+  
+import ij.gui.Overlay;
+import ij.gui.Plot;
+import ij.util.Tools;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.CurveFitter;
+import org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer;
+
+boolean verbose = true;	// print details to the log window?
+boolean guess = true;	// guess a 'polynomial of best fit'?
+int minDegree = 2;		// the smallest polynomial order to consider when guessing POBF
+int maxDegree = 50;		// the highest polynomial order to consider when guessing POBF
+int defDegree = 12;		// the default polynomial degree
+
+
+/* Returns an array with the sum of y and y^2 */
+double[] calculateSumYandY2(double[] yArray) {
+	double sumY = 0.0; double sumY2 = 0.0;
+	for (int i=0; i<nPoints; i++) {
+		double y = yArray[i];
+		sumY += y;
+		sumY2 += y*y;
+	}
+	return new double[] {sumY, sumY2};
+}
+
+/* Returns a readable string of the chosen polynomial */
+String getDegreeString(int degree) {
+	String polynName;
+	if (degree==1) polynName = "Straight line";
+	else if (degree==2) polynName = "2nd degree polynomial";
+	else if (degree==3) polynName = "3rd degree polynomial";	
+	else polynName = degree +"th degree polynomial";
+	return polynName;
+}
+
+/* Returns details of the fit */
+String getLogMessage(PolynomialFunction fit, int degree) {
+	double[] coefficients = fit.getCoefficients();
+	String formula = "\ny = ";
+	String parameters = "";
+	char cChar = 'a';
+	for (int i=0; i<degree+1; i++) {
+		parameters += "\n"+ cChar +" = "+ IJ.d2s(coefficients[i], 5, 9);
+		formula += cChar +"x^"+ i;
+		if (i<degree) formula += " + ";
+		cChar++;
+		if (i==25) cChar = 'A'; // this won't work for more than 52 parameters
+	}
+	return "\n*** Polynomial fit ("+ this.polynomialName +")"+ formula + parameters;
+}
+
+/* Returns RSquared, http://en.wikipedia.org/wiki/Coefficient_of_determination */
+double getRSquared(double[] sampledData, double[] fittedData) {
+	double[] sSumYY2 = calculateSumYandY2(sampledData);
+	double[] fSumYY2 = calculateSumYandY2(fittedData);
+	double sSumY = sSumYY2[0];
+	double sSumY2 = sSumYY2[1];
+	double fSumY2 = fSumYY2[1];
+	double sumMeanDiffSqr = sSumY2 - sSumY*sSumY/nPoints;
+	double sumResidualsSqr = sSumY2 - fSumY2; 
+	double rSquared = 0.0;
+	if (sumMeanDiffSqr > 0.0)
+		rSquared = 1.0 - sumResidualsSqr/sumMeanDiffSqr;
+	return rSquared;
+}
+
+/* Returns the number of points to be fitted */
+int getNumPoints(double[] xData, double[] yData) {
+	return Math.min(xData.length, yData.length);
+}
+
+/* Tries to guess the polynomial of best fit while providing some visual feedback */
+int guessDegree(Plot plot) {
+	ImagePlus imp = pw.getImagePlus();
+	imp.setHideOverlay(false);
+	yfitted = new double[nPoints];
+	this.bestDegree = 1; double maxRSquared = 0;
+	for (int i=this.minDegree; i<=this.maxDegree; i++) {
+		curDegree = i; color = getColor(i);
+		CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
+		for (int j=0; j<nPoints; j++)
+			fitter.addObservedPoint(xvalues[j], yvalues[j]);
+		double[] best = fitter.fit(new PolynomialFunction.Parametric(), new double[i+1]);
+		PolynomialFunction fitted = new PolynomialFunction(best);
+		for (int k=0; k<nPoints; k++)
+			yfitted[k] = fitted.value(xvalues[k]);
+		double RSquared = getRSquared(yvalues, yfitted);
+		if (RSquared>maxRSquared)
+			{ this.bestDegree = i; maxRSquared = RSquared; }
+		if (verbose) {
+			IJ.log(getDegreeString(i) +":\tR^2="+ RSquared);
+			Roi roi = new TextRoi(0.0, 0.0, "Degree: "+ i);
+			Overlay overlay = new Overlay();
+			overlay.add(roi);
+			overlay.setFillColor(Color.GRAY);
+			overlay.setStrokeColor(colors[color]);
+			imp.setOverlay(overlay);
+			plot.setColor(colors[color]);
+			plot.addPoints(xvalues, yfitted, Plot.LINE);
+			pw.drawPlot(plot);
+			if (i==this.maxDegree) overlay.clear();
+		} else
+			IJ.showProgress(i + this.minDegree, this.maxDegree);
+	}
+	return this.bestDegree;
+}
+
+/* Returns an array of 256 'heatmap' colors */
+Color[] parabolicColors() {
+	int[] r = new int[256]; int[] g = new int[256]; int[] b = new int[256];
+	Color[] colors = new Color[256];
+	for (int i=0; i<256; i++) { // create parabolas of vertices (0,255; 255/2,255; 255,255)
+		r[i] = (int)Math.max(0, -255/(127.5*127.5) * (i-255)*(i-255) + 255);
+		g[i] = (int)(-255/(127.5*127.5) * (i-127.5)*(i-127.5) + 255);
+		b[i] = (int)Math.max(0, -255/(127.5*127.5) * i*i + 255);
+		colors[i] = new Color(r[i], g[i], b[i]);
+	}
+	return colors;
+}
+
+/* Returns the 8-bit position of index relatively to minDegree/maxDegree */
+int getColor(int index) {
+	return ((255*(index-this.minDegree))/(this.maxDegree-this.minDegree));	
+}
+
+/* Adds color ramp to plot */
+void makeLegend(Plot plot) {
+	ImageProcessor ip = plot.getProcessor();
+	int x = (int)(0.5 * (Plot.LEFT_MARGIN + ip.getWidth() - 256));
+	int y = ip.getHeight()-4;
+	for (int i=0; i<256; i++) {
+		ip.setColor( (i!=color) ? colors[i]:Color.BLACK );
+		ip.drawLine(x+i, y, x+i, y-5);
+	}
+	ip.setColor(Color.BLACK);
+	ip.setJustification(ip.CENTER_JUSTIFY);
+	ip.drawString("Degree", x+128, y-5); 
+	ip.drawString(""+this.minDegree, x, y-5);
+	ip.drawString(""+this.maxDegree, x+256, y-5);
+}
+
+/* Prompt user for settings */
+void prompt() {
+	GenericDialog gd = new GenericDialog("Fit Polynomial to Curve...");
+	gd.addSlider("Polynomial degree:", 1, maxDegree, defDegree);
+	gd.addCheckbox("Guess \"best fit\" (ignores specified degree)", guess);
+	gd.addStringField("          Degree range:", minDegree +"-"+ maxDegree, 12);
+	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", verbose);
+	gd.addHelp("http://fiji.sc/Fit_Polynomial");
+	gd.showDialog();
+	if (gd.wasCanceled()) return;
+
+	defDegree = (int)Math.min(Math.max(1, gd.getNextNumber()), maxDegree);
+	String[] minAndMax = Tools.split(gd.getNextString(), " -");
+	int min = minAndMax.length>=1 ? (int)gd.parseDouble(minAndMax[0]) : minDegree;
+	int max = minAndMax.length==2 ? (int)gd.parseDouble(minAndMax[1]) : maxDegree;
+	min = Double.isNaN(min) ? minDegree : Math.max(1, min);
+	max = Double.isNaN(max) ? maxDegree : max;
+	minDegree = min; maxDegree = max;
+	guess = gd.getNextBoolean();
+	verbose = gd.getNextBoolean();
+}
+
+double[] xvalues, yvalues, xfitted, yfitted;
+int color, curDegree, bestDegree, nPoints;
+String polynomialName;
+Color[] colors;
+PlotWindow pw;
+
+ImagePlus imp = WindowManager.getCurrentImage();
+if (imp==null)
+	{ IJ.error("There are no plots open."); return; }
+ImageWindow win = imp.getWindow();
+if (win!=null && (win instanceof PlotWindow)) {
+	pw = (PlotWindow)win;
+	xvalues = Tools.toDouble(pw.getXValues());
+	yvalues = Tools.toDouble(pw.getYValues());
+} else {
+	IJ.error(imp.getTitle() +" is not a plot window.");
+	return;
+}
+
+prompt();
+long startTime = System.currentTimeMillis();
+nPoints = getNumPoints(xvalues, yvalues);
+if (nPoints==0)
+	{ IJ.error("Could not retrieve values from plot"); return;};
+
+IJ.showStatus("Retrieving fits. Please wait...");
+colors = parabolicColors();
+String plotTitle = imp.getTitle();
+Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xvalues, yvalues);
+if (plotTitle.startsWith("Polynomial fit"))
+	pw.drawPlot(plot);
+else
+	pw = plot.show();
+
+try {
+
+	// Run fitting loop if degree is to be guessed
+	if (guess) defDegree = guessDegree(plot);
+
+	// Perform final fit
+	CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
+	for (int i=0; i<nPoints; i++)
+		fitter.addObservedPoint(xvalues[i], yvalues[i]);
+
+	// Compute optimal coefficients. The polynomial degree is deduced from the length of
+	// the array containing the initial guess for the coefficients (all set to zero here)
+	double[] best = fitter.fit(new PolynomialFunction.Parametric(), new double[defDegree+1]);
+
+	// Construct the polynomial that best fits the data
+	PolynomialFunction fitted = new PolynomialFunction(best);
+
+	xfitted = new double[nPoints];
+	yfitted = new double[nPoints];
+	for (int i=0; i<nPoints; i++) {
+		xfitted[i] = xvalues[i];
+		yfitted[i] = fitted.value(xvalues[i]);
+	}
+
+	polynomialName = getDegreeString(defDegree);
+	if (verbose) IJ.log(getLogMessage(fitted, defDegree));
+
+} catch (Exception e) {
+
+	IJ.showStatus("Done. "+ (System.currentTimeMillis()-startTime)/1000.0 +" seconds");
+	IJ.error("Optimizer failed when dealing with a polynomial of degree\n"
+		+ curDegree +" ["+ nPoints +" data points] and will now terminate (see console\n"
+		+ "for details)... Perhaps initial conditions should be revised?" );
+	IJ.log("\n*** Exception ***\n"+ e);
+	return;
+
+}
+
+double RSquared = getRSquared(yvalues, yfitted);
+color = getColor(defDegree);
+plot.setColor(colors[color]);
+plot.setLineWidth(2);
+plot.addPoints(xfitted, yfitted, Plot.LINE);
+plot.setColor(Color.BLACK);
+String plotLabel = (guess) ? polynomialName +" (guessed)": polynomialName;
+plot.addLabel(0.00, 0, plotLabel +"  R^2= "+ IJ.d2s(RSquared, 5, 9) +"  "+ nPoints +" data points");
+pw.drawPlot(plot);
+if (guess) makeLegend(plot);
+IJ.showStatus("Done. "+ (System.currentTimeMillis()-startTime)/1000.0 +" seconds");
+IJ.showProgress(0,0);
