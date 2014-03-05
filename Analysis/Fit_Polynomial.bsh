@@ -2,11 +2,10 @@
  * Implements polynomial fitting using the apache commons math library
  * March 2014, Tiago Ferreira
  */
- 
+
 // to do: ensure xvalues and yvalues have the same length
-// to do: abort when choosing cancel in prompt
 // to do: log best degree upon exception
-  
+
 import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.util.Tools;
@@ -37,7 +36,7 @@ String getDegreeString(int degree) {
 	String polynName;
 	if (degree==1) polynName = "Straight line";
 	else if (degree==2) polynName = "2nd degree polynomial";
-	else if (degree==3) polynName = "3rd degree polynomial";	
+	else if (degree==3) polynName = "3rd degree polynomial";
 	else polynName = degree +"th degree polynomial";
 	return polynName;
 }
@@ -66,7 +65,7 @@ double getRSquared(double[] sampledData, double[] fittedData) {
 	double sSumY2 = sSumYY2[1];
 	double fSumY2 = fSumYY2[1];
 	double sumMeanDiffSqr = sSumY2 - sSumY*sSumY/nPoints;
-	double sumResidualsSqr = sSumY2 - fSumY2; 
+	double sumResidualsSqr = sSumY2 - fSumY2;
 	double rSquared = 0.0;
 	if (sumMeanDiffSqr > 0.0)
 		rSquared = 1.0 - sumResidualsSqr/sumMeanDiffSqr;
@@ -129,7 +128,7 @@ Color[] parabolicColors() {
 
 /* Returns the 8-bit position of index relatively to minDegree/maxDegree */
 int getColor(int index) {
-	return ((255*(index-this.minDegree))/(this.maxDegree-this.minDegree));	
+	return ((255*(index-this.minDegree))/(this.maxDegree-this.minDegree));
 }
 
 /* Adds color ramp to plot */
@@ -143,13 +142,13 @@ void makeLegend(Plot plot) {
 	}
 	ip.setColor(Color.BLACK);
 	ip.setJustification(ip.CENTER_JUSTIFY);
-	ip.drawString("Degree", x+128, y-5); 
+	ip.drawString("Degree", x+128, y-5);
 	ip.drawString(""+this.minDegree, x, y-5);
 	ip.drawString(""+this.maxDegree, x+256, y-5);
 }
 
 /* Prompt user for settings */
-void prompt() {
+boolean geUserInput() {
 	GenericDialog gd = new GenericDialog("Fit Polynomial to Curve...");
 	gd.addSlider("Polynomial degree:", 1, maxDegree, defDegree);
 	gd.addCheckbox("Guess \"best fit\" (ignores specified degree)", guess);
@@ -157,7 +156,7 @@ void prompt() {
 	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", verbose);
 	gd.addHelp("http://fiji.sc/Fit_Polynomial");
 	gd.showDialog();
-	if (gd.wasCanceled()) return;
+	boolean proceed = (gd.wasCanceled()) ? false : true;
 
 	defDegree = (int)Math.min(Math.max(1, gd.getNextNumber()), maxDegree);
 	String[] minAndMax = Tools.split(gd.getNextString(), " -");
@@ -168,6 +167,7 @@ void prompt() {
 	minDegree = min; maxDegree = max;
 	guess = gd.getNextBoolean();
 	verbose = gd.getNextBoolean();
+	return proceed;
 }
 
 double[] xvalues, yvalues, xfitted, yfitted;
@@ -189,7 +189,7 @@ if (win!=null && (win instanceof PlotWindow)) {
 	return;
 }
 
-prompt();
+if (!geUserInput()) return;
 long startTime = System.currentTimeMillis();
 nPoints = getNumPoints(xvalues, yvalues);
 if (nPoints==0)
