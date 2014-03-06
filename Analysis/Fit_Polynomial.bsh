@@ -1,7 +1,7 @@
 /* Fit_Polynomial.bsh
  * https://github.com/tferr/Scripts#scripts
  *
- * Implements polynomial fitting in Image using the apache commons math library.
+ * Implements polynomial fitting in ImageJ using the apache commons math library.
  * March 2014, Tiago Ferreira
  *
  * N.B.: CurveFitter will be deprecated after commons-math3.3. It should be replaced by
@@ -93,14 +93,14 @@ double getAdjustedRSquared(double rSquared, int p) {
 	return ( rSquared - ((1-rSquared) * p) / (this.nPoints-p-1) );
 }
 
-/* Ensures xvalues and yvalues have the same size and returns the n. of points to be fitted */
+/* Ensures xsampled and ysampled have the same size and returns the n. of points to be fitted */
 int getNumPoints() {
-	int size1 = this.xvalues.length;
-	int size2 = this.yvalues.length;
+	int size1 = this.xsampled.length;
+	int size2 = this.ysampled.length;
 	int size = Math.min(size1, size2);
 	if (size1!=size2) {
-		this.xvalues = Arrays.copyOf(this.xvalues, size);
-		this.yvalues = Arrays.copyOf(this.yvalues, size);
+		this.xsampled = Arrays.copyOf(this.xsampled, size);
+		this.ysampled = Arrays.copyOf(this.ysampled, size);
 	}
 	return size;
 }
@@ -115,12 +115,12 @@ int guessDegree(Plot plot) {
 		curDegree = i; color = getColor(i);
 		CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
 		for (int j=0; j<nPoints; j++)
-			fitter.addObservedPoint(xvalues[j], yvalues[j]);
+			fitter.addObservedPoint(xsampled[j], ysampled[j]);
 		double[] best = fitter.fit(new PolynomialFunction.Parametric(), new double[i+1]);
 		PolynomialFunction fitted = new PolynomialFunction(best);
 		for (int k=0; k<nPoints; k++)
-			yfitted[k] = fitted.value(xvalues[k]);
-		double RSquared = getRSquared(yvalues, yfitted);
+			yfitted[k] = fitted.value(xsampled[k]);
+		double RSquared = getRSquared(ysampled, yfitted);
 		double ARSquared = getAdjustedRSquared(RSquared, i-1);
 		if (RSquared>maxRSquared) { //(ARSquared>maxARSquared)
 			bestDegree = i; maxRSquared = RSquared; //maxARSquared = ARSquared;
@@ -134,7 +134,7 @@ int guessDegree(Plot plot) {
 			overlay.setStrokeColor(colors[color]);
 			imp.setOverlay(overlay);
 			plot.setColor(colors[color]);
-			plot.addPoints(xvalues, yfitted, Plot.LINE);
+			plot.addPoints(xsampled, yfitted, Plot.LINE);
 			pw.drawPlot(plot);
 			if (i==this.maxDegree) overlay.clear();
 		} else
@@ -156,7 +156,7 @@ Color[] parabolicColors() {
 	return colors;
 }
 
-/* Returns the 8-bit position of index relatively to minDegree/maxDegree */
+/* Returns the 8-bit position of index relatively to [minDegree maxDegree] */
 int getColor(int index) {
 	return ((255*(index-this.minDegree))/(this.maxDegree-this.minDegree));
 }
@@ -200,7 +200,7 @@ boolean geUserInput() {
 	return proceed;
 }
 
-double[] xvalues, yvalues, xfitted, yfitted;
+double[] xsampled, ysampled, xfitted, yfitted;
 int color, curDegree, nPoints, bestDegree = 1;
 String polynomialName;
 Color[] colors;
@@ -212,8 +212,8 @@ if (imp==null)
 ImageWindow win = imp.getWindow();
 if (win!=null && (win instanceof PlotWindow)) {
 	pw = (PlotWindow)win;
-	xvalues = Tools.toDouble(pw.getXValues());
-	yvalues = Tools.toDouble(pw.getYValues());
+	xsampled = Tools.toDouble(pw.getXValues());
+	ysampled = Tools.toDouble(pw.getYValues());
 } else {
 	IJ.error(imp.getTitle() +" is not a plot window.");
 	return;
@@ -229,7 +229,7 @@ IJ.showStatus("Retrieving fits. Please wait...");
 colors = parabolicColors();
 String plotTitle = imp.getTitle();
 boolean plotExists = plotTitle.startsWith("Polynomial fit");
-Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xvalues, yvalues);
+Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xsampled, ysampled);
 
 try {
 
@@ -245,7 +245,7 @@ try {
 	// Perform final fit
 	CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
 	for (int i=0; i<nPoints; i++)
-		fitter.addObservedPoint(xvalues[i], yvalues[i]);
+		fitter.addObservedPoint(xsampled[i], ysampled[i]);
 
 	// Compute optimal coefficients. The polynomial degree is deduced from the length of
 	// the array containing the initial guess for the coefficients (all set to zero here)
@@ -257,8 +257,8 @@ try {
 	xfitted = new double[nPoints];
 	yfitted = new double[nPoints];
 	for (int i=0; i<nPoints; i++) {
-		xfitted[i] = xvalues[i];
-		yfitted[i] = fitted.value(xvalues[i]);
+		xfitted[i] = xsampled[i];
+		yfitted[i] = fitted.value(xsampled[i]);
 	}
 
 	polynomialName = getDegreeString(defDegree);
@@ -280,7 +280,7 @@ try {
 
 }
 
-double RSquared = getRSquared(yvalues, yfitted);
+double RSquared = getRSquared(ysampled, yfitted);
 color = getColor(defDegree);
 plot.setColor(colors[color]);
 plot.setLineWidth(2);
