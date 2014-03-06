@@ -87,6 +87,11 @@ double getRSquared(double[] sampledData, double[] fittedData) {
 	return rSquared;
 }
 
+/* Returns Adjusted RSquared, http://en.wikipedia.org/wiki/Coefficient_of_determination */
+double getAdjustedRSquared(double rSquared, int p) {
+	return ( rSquared - ((1-rSquared) * p) / (this.nPoints-p-1) );
+}
+
 /* Ensures xvalues and yvalues have the same size and returns the n. of points to be fitted */
 int getNumPoints() {
 	int size1 = this.xvalues.length;
@@ -104,7 +109,7 @@ int guessDegree(Plot plot) {
 	ImagePlus imp = this.pw.getImagePlus();
 	imp.setHideOverlay(false);
 	yfitted = new double[nPoints];
-	double maxRSquared = 0;
+	double maxRSquared = 0; //double maxARSquared = 0;
 	for (int i=this.minDegree; i<=this.maxDegree; i++) {
 		curDegree = i; color = getColor(i);
 		CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
@@ -115,10 +120,12 @@ int guessDegree(Plot plot) {
 		for (int k=0; k<nPoints; k++)
 			yfitted[k] = fitted.value(xvalues[k]);
 		double RSquared = getRSquared(yvalues, yfitted);
-		if (RSquared>maxRSquared)
-			{ bestDegree = i; maxRSquared = RSquared; }
+		double ARSquared = getAdjustedRSquared(RSquared, i-1);
+		if (RSquared>maxRSquared) { //(ARSquared>maxARSquared)
+			bestDegree = i; maxRSquared = RSquared; //maxARSquared = ARSquared;
+		}
 		if (verbose) {
-			IJ.log(getDegreeString(i) +":\tR^2="+ RSquared);
+			IJ.log(getDegreeString(i) +": R^2= "+ RSquared +" Adj. R^2= "+ ARSquared);
 			Roi roi = new TextRoi(0.0, 0.0, "Degree: "+ i);
 			Overlay overlay = new Overlay();
 			overlay.add(roi);
@@ -215,7 +222,7 @@ if (!geUserInput()) return;
 long startTime = System.currentTimeMillis();
 nPoints = getNumPoints();
 if (nPoints==0)
-	{ IJ.error("Could not retrieve values from plot"); return;};
+	{ IJ.error("Could not retrieve values from plot"); return; }
 
 IJ.showStatus("Retrieving fits. Please wait...");
 colors = parabolicColors();
@@ -260,7 +267,7 @@ try {
 	IJ.error("Optimizer failed when dealing with a polynomial of degree\n"
 		+ curDegree +" ["+ nPoints +" data points] and will now terminate (see console\n"
 		+ "for details)... Perhaps settings should be revised?" );
-	IJ.log("\n*** Exception ***\n"+ e);
+	IJ.log("\n*** Exception when parsing data from "+ plotTitle +" ***\n"+ e);
 	IJ.log(">>> Polynomial of 'best fit' until exception: "+ getDegreeString(bestDegree));
 	return;
 
