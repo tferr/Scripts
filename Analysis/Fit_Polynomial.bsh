@@ -1,10 +1,13 @@
-/* Fit_Polynomial.bsh, https://github.com/tferr/Scripts#scripts
+/* Fit_Polynomial.bsh
+ * https://github.com/tferr/Scripts#scripts
  *
  * Implements polynomial fitting in Image using the apache commons math library.
  * March 2014, Tiago Ferreira
  *
- * N.B.: CurveFitter is deprecated as of commons-math3.3. It should be replaced by
+ * N.B.: CurveFitter will be deprecated after commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.
+ * TODO: Plot confidence bands (perhaps using stat.correlation.Covariance to determine the
+ *       covariance matrix?)
  */
 
 import ij.gui.Overlay;
@@ -230,11 +233,12 @@ Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xvalues, yvalues);
 
 try {
 
-	// Run fitting loop if degree is to be guessed
-	if (guess) {
-		if (verbose && !plotExists) // Display plot for visual feedback
-			{ pw = plot.show(); plotExists = true; }
-		IJ.log("\nGuessing polynomial of 'best fit' for "+ plotTitle +":");
+	if (guess) { // Run fitting loop if degree is to be guessed
+		if (verbose) {
+			IJ.log("\nGuessing polynomial of 'best fit' for "+ plotTitle +":");
+			if (!plotExists) // Display plot for visual feedback
+				{ pw = plot.show(); plotExists = true; }
+		}
 		defDegree = guessDegree(plot);
 	}
 
