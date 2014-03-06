@@ -1,6 +1,8 @@
-/**
- * Implements polynomial fitting using the apache commons math library
+/* Fit_Polynomial.bsh, https://github.com/tferr/Scripts#scripts
+ *
+ * Implements polynomial fitting in Image using the apache commons math library
  * March 2014, Tiago Ferreira
+ *
  * N.B.: CurveFitter is deprecated as of commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.
  */
@@ -17,9 +19,21 @@ import org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquar
 boolean verbose = true;	// print details to the log window?
 boolean guess = true;	// guess a 'polynomial of best fit'?
 int minDegree = 2;		// the smallest polynomial order to consider when guessing POBF
-int maxDegree = 50;		// the highest polynomial order to consider when guessing POBF
+int maxDegree = 40;		// the highest polynomial order to consider when guessing POBF
 int defDegree = 12;		// the default polynomial degree
 
+
+// Check upfront if required dependencies exist and alert non-Fiji users about them
+try {
+	Class.forName("org.apache.commons.math3.analysis.polynomials.PolynomialFunction");
+} catch( ClassNotFoundException e ) {
+	String URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/jars/commons-math3-3.2.jar";
+	IJ.log("\n**** Fit Polynomial Error: Required library not found:\n"+ e +"\n \n"
+		+ "The apache commons math library must be installed in the plugins folder.\n"
+		+ "Please install it in plugins/jars/ by double-clicking on the link below:\n"+ URL);
+	IJ.error("Dependencies missing! Check the Log window for details.");
+	return;
+}
 
 /* Returns an array with the sum of y and y^2 */
 double[] calculateSumYandY2(double[] yArray) {
@@ -155,7 +169,7 @@ void makeLegend(Plot plot) {
 	ip.drawString(""+this.maxDegree, x+256, y-5);
 }
 
-/* Prompt user for settings */
+/* Prompts user for settings. Returns false if dialog is dismissed */
 boolean geUserInput() {
 	GenericDialog gd = new GenericDialog("Fit Polynomial to Curve...");
 	gd.addSlider("Polynomial degree:", 1, maxDegree, defDegree);
