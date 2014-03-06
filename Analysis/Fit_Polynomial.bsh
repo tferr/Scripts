@@ -185,7 +185,7 @@ boolean geUserInput() {
 	gd.showDialog();
 	boolean proceed = (gd.wasCanceled()) ? false : true;
 
-	defDegree = (int)Math.min(Math.max(1, gd.getNextNumber()), maxDegree);
+	defDegree = (int)Math.max(1, gd.getNextNumber());
 	String[] minAndMax = Tools.split(gd.getNextString(), " -");
 	int min = minAndMax.length>=1 ? (int)gd.parseDouble(minAndMax[0]) : minDegree;
 	int max = minAndMax.length==2 ? (int)gd.parseDouble(minAndMax[1]) : maxDegree;
@@ -263,11 +263,15 @@ try {
 } catch (Exception e) {
 
 	IJ.showStatus("Done. "+ (System.currentTimeMillis()-startTime)/1000.0 +" seconds");
+	int errD = (guess) ? curDegree : defDegree;
 	IJ.error("Optimizer failed when dealing with a polynomial of degree\n"
-		+ curDegree +" ["+ nPoints +" data points] and will now terminate (see console\n"
+		+ errD +" ["+ nPoints +" data points] and will now terminate (see console\n"
 		+ "for details)... Perhaps settings should be revised?" );
-	IJ.log("\n*** Exception when parsing data from "+ plotTitle +" ***\n"+ e);
-	IJ.log(">>> Polynomial of 'best fit' until exception: "+ getDegreeString(bestDegree));
+	IJ.log("\n*** Exception when parsing data from "+ plotTitle +":\n"+ e);
+	if (guess)
+		IJ.log(">>> Polynomial of 'best fit' until exception: "+ getDegreeString(bestDegree));
+	else
+		IJ.log(">>> Specified polynomial: "+ getDegreeString(defDegree));
 	return;
 
 }
