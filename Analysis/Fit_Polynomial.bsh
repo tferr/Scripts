@@ -1,13 +1,11 @@
 /* Fit_Polynomial.bsh, https://github.com/tferr/Scripts#scripts
  *
- * Implements polynomial fitting in Image using the apache commons math library
+ * Implements polynomial fitting in Image using the apache commons math library.
  * March 2014, Tiago Ferreira
  *
  * N.B.: CurveFitter is deprecated as of commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.
  */
-// to do: log some identifier so that results can be linked to original data.
-
 
 import ij.gui.Overlay;
 import ij.gui.Plot;
@@ -69,7 +67,7 @@ String getLogMessage(PolynomialFunction fit, int degree) {
 		cChar++;
 		if (i==25) cChar = 'A'; // this won't work for more than 52 parameters
 	}
-	return "\n>>> Polynomial fit ("+ this.polynomialName +")"+ formula + parameters +"\n<<<\n";
+	return "\nPolynomial fit ("+ this.polynomialName +"):"+ formula + parameters +"\n";
 }
 
 /* Returns RSquared, http://en.wikipedia.org/wiki/Coefficient_of_determination */
@@ -232,10 +230,11 @@ Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xvalues, yvalues);
 
 try {
 
- 	// Run fitting loop if degree is to be guessed
+	// Run fitting loop if degree is to be guessed
 	if (guess) {
 		if (verbose && !plotExists) // Display plot for visual feedback
 			{ pw = plot.show(); plotExists = true; }
+		IJ.log("\nGuessing polynomial of 'best fit' for "+ plotTitle +":");
 		defDegree = guessDegree(plot);
 	}
 
@@ -259,7 +258,7 @@ try {
 	}
 
 	polynomialName = getDegreeString(defDegree);
-	if (verbose) IJ.log(getLogMessage(fitted, defDegree));
+	if (verbose) IJ.log("\nFitting "+ plotTitle + ":"+ getLogMessage(fitted, defDegree));
 
 } catch (Exception e) {
 
