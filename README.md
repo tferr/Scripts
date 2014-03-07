@@ -3,11 +3,12 @@
 Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
 
 ## [Data Analysis](./Analysis/README.md#analysis)
-  Operations related  to statistics, profiles and histograms.
+  Operations related to statistics, profiles, histograms and curve fitting.
 
   1. (ijm) [Distribution Plotter](./Analysis/README.md#distribution-plotter)
   2. (bsh) [Find Peaks](./Analysis/README.md#find-peaks)
-  3. (bsh) [Plot from Results](./Analysis/README.md#plot-from-results)
+  3. (bsh) [Fit Polynomial](./Analysis/README.md#fit-polynomial)
+  4. (bsh) [Plot from Results](./Analysis/README.md#plot-from-results)
 
 
 ## [Image Annotation](./Annotation/README.md#annotation)

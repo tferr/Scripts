@@ -1,4 +1,7 @@
-/* Plot_from_Results.bsh  https://github.com/tferr/Scripts#scripts */
+/* Plot_from_Results.bsh
+ * https://github.com/tferr/Scripts#scripts
+ * Creates an ImageJ XY plot from imported spreadsheet data.
+ */
 
 ResultsTable rt = ResultsTable.getResultsTable();
 if (rt==null || rt.getCounter()==0)

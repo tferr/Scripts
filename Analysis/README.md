@@ -27,9 +27,20 @@
    [![][FP image]][FP page]
 
 
+###[Fit Polynomial](./Fit_Polynomial.bsh)
+   Fits a polynomial function (of arbitrary degree) to sampled data from an ImageJ plot.
+   Features an heuristic algorithm for guessing a polynomial 'best fit'.
+
+   Requires the apache commons math library, distributed with Fiji. Non-Fiji users that do
+   not have it installed are provided with a direct download link that will install all
+   required dependencies.
+
+   ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
+
+
 ###[Plot from Results](./Plot_from_Results.bsh)
    Extremely simple routine that creates an XY plot from data in the Results table. Useful
-   for plotting imported spreadsheets.
+   for plotting data from imported spreadsheets.
 
    ([Download .bsh](./Plot_from_Results.bsh?raw=true))
 
