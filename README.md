@@ -8,7 +8,7 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   1. (ijm) [Distribution Plotter](./Analysis/README.md#distribution-plotter)
   2. (bsh) [Find Peaks](./Analysis/README.md#find-peaks)
   3. (bsh) [Fit Polynomial](./Analysis/README.md#fit-polynomial)
-  4. (bsh) [Plot from Results](./Analysis/README.md#plot-from-results)
+  4. (bsh) [Plot Results](./Analysis/README.md#plot-results)
 
 
 ## [Image Annotation](./Annotation/README.md#annotation)
