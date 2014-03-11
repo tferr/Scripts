@@ -281,7 +281,7 @@ try {
 }
 
 double RSquared = getRSquared(ysampled, yfitted);
-color = getColor(defDegree);
+color = getColor(Math.min(defDegree,maxDegree));
 plot.setColor(colors[color]);
 plot.setLineWidth(2);
 plot.addPoints(xfitted, yfitted, Plot.LINE);
