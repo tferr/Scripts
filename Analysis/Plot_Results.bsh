@@ -3,6 +3,31 @@
  * Creates an ImageJ XY plot from imported spreadsheet data.
  */
 
+// flags for axis design
+int[] flags = new int[12]; String[] labels = new String[12]; boolean[] choices = new boolean[12];
+flags[0] = Plot.X_LOG_NUMBERS;  choices[0] = false;  labels[0] = "Logarithmic scale";
+flags[1] = Plot.Y_LOG_NUMBERS;  choices[1] = false;  labels[1] = labels[0];
+flags[2] = Plot.X_GRID;         choices[2] = true;   labels[2] = "Gridlines";
+flags[3] = Plot.Y_GRID;         choices[3] = true;   labels[3] = labels[2];
+flags[4] = Plot.X_FORCE2GRID;   choices[4] = false;  labels[4] = "Grid expands axis";
+flags[5] = Plot.Y_FORCE2GRID;   choices[5] = false;  labels[5] = labels[4];
+flags[6] = Plot.X_NUMBERS;      choices[6] = true;   labels[6] = "Labels at intervals";
+flags[7] = Plot.Y_NUMBERS;      choices[7] = true;   labels[7] = labels[6];
+flags[8] = Plot.X_TICKS;        choices[8] = true;   labels[8] = "Major ticks";
+flags[9] = Plot.Y_TICKS;        choices[9] = true;   labels[9] = labels[8];
+flags[10]= Plot.X_MINOR_TICKS;  choices[10]= false;  labels[10]= "Minor ticks";
+flags[11]= Plot.Y_MINOR_TICKS;  choices[11]= false;  labels[11]= labels[10];
+
+// flags for dataset design
+int[] shapes = new int[6]; String[] slabels = new String[6]; String[] colors = new String[6];
+shapes[0] = Plot.LINE;   slabels[0] = "Line";   colors[0] = "Black";
+shapes[1] = Plot.BOX;    slabels[1] = "Square"; colors[1] = "Gray";
+shapes[2] = Plot.CIRCLE; slabels[2] = "Circle"; colors[2] = "Red";
+shapes[3] = Plot.CROSS;  slabels[3] = "Cross";  colors[3] = "Green";
+shapes[4] = Plot.DOT;    slabels[4] = "Dot";    colors[4] = "Blue";
+shapes[5] = Plot.X;      slabels[5] = "X";      colors[5] = "Magenta";
+
+
 ResultsTable rt = ResultsTable.getResultsTable();
 if (rt==null || rt.getCounter()==0)
 	Opener.openResultsTable("");
@@ -10,26 +35,98 @@ rt = ResultsTable.getResultsTable();
 if (rt==null || rt.getCounter()==0)
 	{ IJ.error("Could not retrieve data from Results table"); return; }
 
+String title = "Imported Data";
 String[] headings = rt.getHeadings();
-GenericDialog gd = new GenericDialog("Plot Data");
-gd.addStringField("Plot title:", "Imported Data", 24);
-gd.addChoice("X values:", headings, headings[0]);
-gd.addChoice("Y values:", headings, headings[headings.length-1]);
-gd.addCheckbox("Ignore X values (use incremental counter)", false);
-gd.showDialog();
-if (gd.wasCanceled()) return;
-String title = gd.getNextString();
+int nCols = headings.length;
+boolean noXvalues = (nCols>1) ? false : true;
+int xCol = 0; int yCol = (nCols>1) ? 1 : 0;
+int cColor = 1; int cShape = 3;
+boolean addSeries = true;
 
-int xCol = gd.getNextChoiceIndex();
-int yCol = gd.getNextChoiceIndex();
+GenericDialog gd = new GenericDialog("Plot Data");
+gd.addStringField("Plot title:", title, 24);
+gd.addChoice("X-values:", headings, headings[xCol]);
+gd.setInsets(-5,20,10);
+gd.addCheckbox("Ignore X-values (use incremental counter)", noXvalues);
+gd.addChoice("Y-values:", headings, headings[yCol]);
+gd.setInsets(12,0,0);
+gd.addChoice("Style:", slabels, slabels[cShape]);
+gd.addChoice("Color:", colors, colors[cColor]);
+gd.addCheckboxGroup(flags.length/2, 2, labels, choices, new String[]{"X-axis:","Y-axis:"});
+if (this.nCols>1) gd.enableYesNoCancel("Finish", "Add More Datasets");
+gd.showDialog();
+if (gd.wasCanceled())
+	return;
+else if (gd.wasOKed())
+	 addSeries = false;
+
+title = gd.getNextString();
+noXvalues = gd.getNextBoolean();
+xCol = gd.getNextChoiceIndex();
+yCol = gd.getNextChoiceIndex();
+cShape = gd.getNextChoiceIndex();
+cColor = gd.getNextChoiceIndex();
+int cFlags = 0;
+for (int i=0; i<flags.length; i++)
+	if (gd.getNextBoolean()) cFlags += flags[i];
+if ((cFlags&Plot.X_LOG_NUMBERS)!=0 && (cFlags&Plot.X_NUMBERS)!=0)
+	cFlags -= Plot.X_NUMBERS;
+if ((cFlags&Plot.Y_LOG_NUMBERS)!=0 && (cFlags&Plot.Y_NUMBERS)!=0)
+	cFlags -= Plot.Y_NUMBERS;
+
 double[] y = rt.getColumnAsDoubles(yCol);
 double[] x;
-if (gd.getNextBoolean()) {
+if (noXvalues) {
 	x = new double[y.length];
 	for (int i=0; i<y.length; i++) x[i] = i;
 } else 
 	x = rt.getColumnAsDoubles(xCol);
 
-int flags = Plot.X_GRID + Plot.Y_GRID + Plot.X_NUMBERS + Plot.Y_NUMBERS;
-Plot plot = new Plot(title, headings[xCol], headings[yCol], x, y, flags);
+// NB: addErrorBars requires a Plot constructor with intial arrays
+plot = new Plot(title, headings[xCol], headings[yCol], cFlags);
+xlimits = Tools.getMinMax(x);
+ylimits = Tools.getMinMax(y);
+plot.setLimits(xlimits[0], xlimits[1], ylimits[0], ylimits[1]);
+plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
+plot.addPoints(x,y,shapes[cShape]);
+
+int datasets = 2;
+//boolean errorBars = false;
+while (addSeries) {
+	cColor = (cColor<colors.length-1) ? cColor+=1 : 0;
+	yCol = (yCol<nCols-1) ? yCol+=1 : 0;
+
+	GenericDialog gd = new GenericDialog("Append Series");
+	if (!noXvalues)
+		gd.addChoice("X-values "+ datasets +":", headings, headings[xCol]);
+	gd.addChoice("Y-values "+ datasets +":", headings, headings[yCol]);
+	//gd.setInsets(-5,20,10);
+	//gd.addCheckbox("Plot as error bars", errorBars);
+	gd.setInsets(12,0,0);
+	gd.addChoice("Style:", slabels, slabels[cShape]);
+	gd.addChoice("Color:", colors, colors[cColor]);
+	if (datasets<nCols)
+		gd.enableYesNoCancel("Finish", "Add More Datasets");
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return;
+	else if (gd.wasOKed())
+		addSeries = false;
+
+	if (!noXvalues) xCol = gd.getNextChoiceIndex();
+	yCol = gd.getNextChoiceIndex();
+	//errorBars = gd.getNextBoolean();
+	cShape = gd.getNextChoiceIndex();
+	cColor = gd.getNextChoiceIndex();
+	double[] y2 = rt.getColumnAsDoubles(yCol);
+	double[] x2 = (noXvalues) ? Arrays.copyOf(x, y2.length) : rt.getColumnAsDoubles(xCol);
+
+	plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
+	//if (errorBars)
+	//	plot.addErrorBars(y2);
+	//else
+	plot.addPoints(x2,y2,shapes[cShape]);
+	datasets++;
+}
+
 plot.show();
