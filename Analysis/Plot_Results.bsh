@@ -88,20 +88,22 @@ xlimits = Tools.getMinMax(x);
 ylimits = Tools.getMinMax(y);
 plot.setLimits(xlimits[0], xlimits[1], ylimits[0], ylimits[1]);
 plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
-plot.addPoints(x,y,shapes[cShape]);
+plot.addPoints(x, y, shapes[cShape]);
 
 int datasets = 2;
-//boolean errorBars = false;
+boolean noBars = true;
+//double labelYpos = 0.09;
 while (addSeries) {
 	cColor = (cColor<colors.length-1) ? cColor+=1 : 0;
 	yCol = (yCol<nCols-1) ? yCol+=1 : 0;
 
-	GenericDialog gd = new GenericDialog("Append Series");
+	GenericDialog gd = new GenericDialog("Append Series #"+ datasets);
 	if (!noXvalues)
-		gd.addChoice("X-values "+ datasets +":", headings, headings[xCol]);
-	gd.addChoice("Y-values "+ datasets +":", headings, headings[yCol]);
-	//gd.setInsets(-5,20,10);
-	//gd.addCheckbox("Plot as error bars", errorBars);
+		gd.addChoice("X-values:", headings, headings[xCol]);
+	gd.addChoice("Y-values:", headings, headings[yCol]);
+	gd.addChoice("Error bars:", headings, headings[yCol]);
+	gd.setInsets(-5,20,10);
+	gd.addCheckbox("Ignore error bars", noBars);
 	gd.setInsets(12,0,0);
 	gd.addChoice("Style:", slabels, slabels[cShape]);
 	gd.addChoice("Color:", colors, colors[cColor]);
@@ -115,17 +117,20 @@ while (addSeries) {
 
 	if (!noXvalues) xCol = gd.getNextChoiceIndex();
 	yCol = gd.getNextChoiceIndex();
-	//errorBars = gd.getNextBoolean();
+	eCol = gd.getNextChoiceIndex();
+	noBars = gd.getNextBoolean();
 	cShape = gd.getNextChoiceIndex();
 	cColor = gd.getNextChoiceIndex();
 	double[] y2 = rt.getColumnAsDoubles(yCol);
 	double[] x2 = (noXvalues) ? Arrays.copyOf(x, y2.length) : rt.getColumnAsDoubles(xCol);
 
 	plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
-	//if (errorBars)
-	//	plot.addErrorBars(y2);
-	//else
-	plot.addPoints(x2,y2,shapes[cShape]);
+	if (noBars && eCol!=yCol)
+		plot.addPoints(x2, y2, shapes[cShape]);
+	else
+		plot.addPoints(x2, y2, rt.getColumnAsDoubles(eCol), shapes[cShape]);
+	//plot.addLabel(0.02, labelYpos, headings[yCol]);
+	//labelYpos += 0.06;
 	datasets++;
 }
 
