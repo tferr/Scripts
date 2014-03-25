@@ -59,8 +59,3 @@ Authors
 -------
 [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
 
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tferr/scripts/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
