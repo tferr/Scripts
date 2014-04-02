@@ -112,7 +112,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 }
 
 /* Outputs measurements to a dedicated table */
-void printResults(order, tips, junctions) {
+void printResults(order, tips, ratios, junctions) {
     strahlerTable = "Strahler_Table";
     window = WindowManager.getFrame(strahlerTable);
     if (window == null)
@@ -124,6 +124,7 @@ void printResults(order, tips, junctions) {
     rt.addLabel("Image", title);
     rt.addValue("Strahler order", order);
     rt.addValue("# Terminal branches", tips);
+    rt.addValue("Bifurcation ratios", IJ.d2s(ratios,5));
     rt.addValue("# Remaining junctions", junctions);
     rt.show(strahlerTable);
 }
@@ -171,7 +172,7 @@ skel.setup("", imp);
 if (debug)
     newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 
-int order = 1; boolean loop = true;
+int order = 1; boolean loop = true; double prevTotalEndPoints = Double.NaN;
 
 do {
 
@@ -212,7 +213,8 @@ do {
     }
 
     // Print results
-    printResults(order++, totalEndPoints, totalJunctions);
+    printResults(order++, totalEndPoints, prevTotalEndPoints/totalEndPoints, totalJunctions);
+    prevTotalEndPoints = totalEndPoints;
 
     // Eliminate terminal branches
     skel.run(AnalyzeSkeleton_.NONE, true, false, null, true, false);
