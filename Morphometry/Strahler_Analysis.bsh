@@ -20,7 +20,6 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
 
-import ij.*;
 import ij.text.*;
 import skeleton_analysis.*;
 import Skeletonize3D_.*;
