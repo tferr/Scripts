@@ -132,9 +132,9 @@ void printResults(order, tips, ratios, junctions) {
     rt.incrementCounter();
     rt.addLabel("Image", title);
     rt.addValue("Strahler order", order);
-    rt.addValue("# Terminal branches", tips);
+    rt.addValue("# End-point branches", tips);
     rt.addValue("Bifurcation ratios", IJ.d2s(ratios,5));
-    rt.addValue("# Remaining junctions", junctions);
+    rt.addValue("# Prevailing junctions", junctions);
     rt.show(strahlerTable);
 }
 
