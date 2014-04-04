@@ -2,7 +2,7 @@
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
  * https://github.com/tferr/Scripts#scripts
- * Tiago Ferreira, v1.1.1 2014.04.03
+ * Tiago Ferreira, v1.1.1 2014.04.04
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -78,7 +78,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
         + "page, <u>http://fiji.sc/AnalyzeSkeleton</u>.<br><br>"
         + "<b>Original grayscale image</b> The initial non-thinned image to be used for intensity-<br>"
         + "based elimination of closed loops (this option is only available when at least two<br>"
-        + "images areopened).";
+        + "images are opened).";
 
     ImagePlus origImg = currentImp;
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
