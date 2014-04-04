@@ -1,7 +1,8 @@
-/* BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
+/* Strahler_Analysis.bsh
+ * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
  * https://github.com/tferr/Scripts#scripts
- * Tiago Ferreira, v1.1.0 2014.04.02
+ * Tiago Ferreira, v1.1.1 2014.04.03
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -23,6 +24,16 @@ import ij.*;
 import ij.text.*;
 import skeleton_analysis.*;
 import Skeletonize3D_.*;
+
+
+/* Output definitions */
+String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};
+int OUT_NONE = 0, OUT_IS = 1, OUT_CM = 2, OUT_ISCM = 3;
+
+/* Default settings */
+int maxPruning = 10;	// Max. number of prunning cycles
+int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;	// default option for loop detection
+int outChoice = OUT_CM;	// Default OUT_CHOICES choice
 
 
 /* Reminds the user to install required dependencies */
@@ -62,15 +73,14 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
         + "skeletonized representation of the original structure is accurate.<br><br>"
         + "<b>Max. number of iterations</b> The maximum number of elimination steps to be used,<br>"
         + "i.e., the highest Strahler order (\"root node\") to be considered. Note that the analysis<br>"
-        + "will stop as soon as there is only one end-point/branch in the skeleton, which may<br>"
-        + "happen before the specified cycle.<br><br>"
+        + "will stop as soon as there are no junction points in the skeleton, which may happen<br>"
+        + "before the specified cycle.<br><br>"
         + "<b>Elimination of skeleton loops</b> AnalyzeSkeleton is able to resolve closed loops in<br>"
         + "the skeleton. The available methods are described on the plugin documentation<br>"
         + "page, <u>http://fiji.sc/AnalyzeSkeleton</u>.<br><br>"
         + "<b>Original grayscale image</b> The initial non-thinned image to be used for intensity-<br>"
-        + "based elimination of closed loops. Requires at least two open images.<br><br>"
-        + "Hold down <i>Alt</i> while confirming the dialog prompt</b> (or activate <i>Debug mode</i> in<br>"
-        + "<i>Edit>Options>Misc...</i>) to document individual pruning cycles.";
+        + "based elimination of closed loops (this option is only available when at least two<br>"
+        + "images areopened).";
 
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
     gd.addNumericField("Max. number of iterations:", maxPruning, 0);
@@ -81,9 +91,9 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     if (singleImage) { // Only skeleton image is open
 
-        String[] sngChoices = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
+        String[] S_CHOICES = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
                     AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.SHORTEST_BRANCH]};
-        gd.addChoice("Elimination of skeleton loops:", sngChoices, sngChoices[pruneChoice]);
+        gd.addChoice("Elimination of skeleton loops:", S_CHOICES, S_CHOICES[pruneChoice]);
 
     } else { // Non-thinned image may be available
 
@@ -96,14 +106,14 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     }
 
-    gd.addCheckbox("Debug mode (displays an animation stack)", debug);
+    gd.addChoice("Output image(s):", OUT_CHOICES , OUT_CHOICES[outChoice]);
     gd.addHelp(msg);
     gd.showDialog();
     if (gd.wasCanceled())
         return null;
     maxPruning = (int)gd.getNextNumber();
     pruneChoice = gd.getNextChoiceIndex();
-    debug = gd.getNextBoolean();
+    outChoice = gd.getNextChoiceIndex();
     if ( !singleImage && (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL ||
                           pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH) )
         return WindowManager.getImage( ids[gd.getNextChoiceIndex()] );
@@ -134,27 +144,26 @@ void printResults(order, tips, ratios, junctions) {
 if (!validInstallation())
     { IJ.error("Missing files? See Log window for details."); return; }
 
-// Get active image, avoiding IJ.getImage() Target exception when no images open
-imp = WindowManager.getCurrentImage();
-if (imp==null)
+// Get active image
+srcImp = WindowManager.getCurrentImage();
+if (srcImp==null)
     { IJ.error("There are no images open."); return; }
-
-// Get ImageProcessor
-ip = imp.getProcessor();
-if (ip.getBitDepth()!=8)
+if (srcImp.getBitDepth()!=8)
     { IJ.error("Only 8-bit grayscale images can be processed."); return; }
 
-// Define max. number of pruning cycles and default option for loop detection
-int maxPruning = 10;
-int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
-boolean debug = IJ.altKeyDown() || IJ.debugMode; // Run in debug mode?
-
 // Prompt for options & retrieve original image for intensity-based pruning of skel. loops
-origImp = getOriginalImp(imp, title = imp.getTitle() );
+origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
 if (origImp==null)
     return;
 
-// Use Z-projections to populate debug animation when dealing with 3D skeletons
+// Produce an image output?
+boolean debug = outChoice!=OUT_NONE;
+
+// Work on an copy, since the original image will be modified
+imp = srcImp.duplicate();
+ip = imp.getProcessor();
+
+// Use Z-projections to populate animation stacks when dealing with 3D skeletons
 int nSlices = imp.getNSlices();
 if (nSlices>1 && debug) {
     zp = new ZProjector(imp);
@@ -203,6 +212,7 @@ do {
     branchNumbers = skelResult.getBranches();
     junctionNumbers = skelResult.getJunctions();
 
+    // Calculate sums
     totalEndPoints = 0;
     for (i=0; i<endPoints.length; i++) {
         totalEndPoints += endPoints[i];
@@ -224,12 +234,30 @@ do {
 
 } while (loop);
 
+if (debug) {
+
+    cal = imp.getCalibration();
+    imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
+    imp2.setCalibration(cal);
+
+    if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
+        imp2.show();
+    }
+    if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Create color map
+        zp = new ZProjector(imp2);
+        zp.setMethod(ZProjector.SUM_METHOD);
+        zp.doProjection();
+        ip3 = zp.getProjection().getProcessor();
+        ip3.multiply(1/255.0);
+        ip3.setMinAndMax(0, order-1);
+        imp3 = new ImagePlus("StrahlerColors_"+ title, ip3.convertToShortProcessor(false));
+        IJ.run(imp3, "Fire", "");
+        IJ.run(imp3, "Calibration Bar...", " overlay");
+        imp3.setCalibration(cal);
+        imp3.show();
+    }
+}
+
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
 imp.updateAndDraw();
-
-if (debug) {
-    imp2 = new ImagePlus("Strahler_"+ title, newStack);
-    imp2.setCalibration(imp.getCalibration());
-    imp2.show();
-}
