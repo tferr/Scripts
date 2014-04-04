@@ -224,11 +224,11 @@ do {
     }
 
     // Exit if elimination of terminal branches has ended
-    if (endPointBranches==0) break;
+    if (endPointBranches<1) break;
 
     // Are there any loops upon elimination of terminal branches?
     if (prevEndPointBranches==endPointBranches)
-        IJ.log("\n**** Strahler Analysis for "+ title +", iteration "+ order +":\n"
+        IJ.log("\n*** Strahler analysis of "+ title +", iteration "+ order +":\n"
              + "It is likely that the skeleton contains loops at this step. Revise parameters?");
 
     // Print results
