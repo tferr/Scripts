@@ -27,13 +27,12 @@ import Skeletonize3D_.*;
 
 /* Output definitions */
 String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};
-int OUT_NONE = 0, OUT_IS = 1, OUT_CM = 2, OUT_ISCM = 3;
+int OUT_NONE = 0; int OUT_IS = 1; int OUT_CM = 2; int OUT_ISCM = 3;
 
 /* Default settings */
-int maxPruning = 10;	// Max. number of prunning cycles
-int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;	// default option for loop detection
-int outChoice = OUT_CM;	// Default OUT_CHOICES choice
-
+int maxPruning = 10; // Max. number of prunning cycles
+int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH; // default option for loop detection
+int outChoice = OUT_CM; // Default OUT_CHOICES choice
 
 /* Reminds the user to install required dependencies */
 boolean validInstallation() {
@@ -81,6 +80,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
         + "based elimination of closed loops (this option is only available when at least two<br>"
         + "images areopened).";
 
+    ImagePlus origImg = currentImp;
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
     gd.addNumericField("Max. number of iterations:", maxPruning, 0);
 
@@ -112,12 +112,13 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
         return null;
     maxPruning = (int)gd.getNextNumber();
     pruneChoice = gd.getNextChoiceIndex();
+    if (!singleImage) {
+        imgChoice = gd.getNextChoiceIndex();
+        if (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL || pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH)
+        origImg = WindowManager.getImage(imgChoice);
+    }
     outChoice = gd.getNextChoiceIndex();
-    if ( !singleImage && (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL ||
-                          pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH) )
-        return WindowManager.getImage( ids[gd.getNextChoiceIndex()] );
-    else
-        return currentImp;
+    return origImg;
 }
 
 /* Outputs measurements to a dedicated table */
@@ -133,7 +134,7 @@ void printResults(order, tips, ratios, junctions) {
     rt.addLabel("Image", title);
     rt.addValue("Strahler order", order);
     rt.addValue("# End-point branches", tips);
-    rt.addValue("Bifurcation ratios", IJ.d2s(ratios,5));
+    rt.addValue("Ramification ratios", IJ.d2s(ratios,5));
     rt.addValue("# Prevailing junctions", junctions);
     rt.show(strahlerTable);
 }
@@ -180,7 +181,7 @@ skel.setup("", imp);
 if (debug)
     newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 
-int order = 1; boolean loop = true; double prevTotalEndPoints = Double.NaN;
+int order = 1; boolean loop = true; double prevEndPointBranches = Double.NaN;
 
 do {
 
@@ -207,29 +208,38 @@ do {
     skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
 
     // Read results
+    nBranches = skelResult.getBranches();
     endPoints = skelResult.getEndPoints();
-    branchNumbers = skelResult.getBranches();
-    junctionNumbers = skelResult.getJunctions();
+    nJunctions = skelResult.getJunctions();
+    maxLengths = skelResult.getMaximumBranchLength();
 
     // Calculate sums
-    totalEndPoints = 0;
-    for (i=0; i<endPoints.length; i++) {
-        totalEndPoints += endPoints[i];
-    }
-    totalJunctions = 0;
-    for (i=0; i<junctionNumbers.length; i++) {
-        totalJunctions += junctionNumbers[i];
+    endPointBranches = 0; totalJunctions = 0;
+    for (i=0; i<nBranches.length; i++) {
+        if (maxLengths[i]!=0) { // Ignore any branch of length zero
+            endPointBranches += endPoints[i]; // Sum all endPointVoxels
+            if (nBranches[i]==1) endPointBranches--; // Isolated branches have 2 end-points
+            totalJunctions += nJunctions[i];
+        }
     }
 
+    // Exit if elimination of terminal branches has ended
+    if (endPointBranches==0) break;
+
+    // Are there any loops upon elimination of terminal branches?
+    if (prevEndPointBranches==endPointBranches)
+        IJ.log("\n**** Strahler Analysis for "+ title +", iteration "+ order +":\n"
+             + "It is likely that the skeleton contains loops at this step. Revise parameters?");
+
     // Print results
-    printResults(order++, totalEndPoints, prevTotalEndPoints/totalEndPoints, totalJunctions);
-    prevTotalEndPoints = totalEndPoints;
+    printResults(order++, endPointBranches, prevEndPointBranches/endPointBranches, totalJunctions);
+    prevEndPointBranches = endPointBranches;
 
     // Eliminate terminal branches
     skel.run(AnalyzeSkeleton_.NONE, true, false, null, true, false);
 
     // Continue?
-    loop = order<=maxPruning && totalJunctions>0;
+    loop = order<=maxPruning && totalJunctions>0 ;
 
 } while (loop);
 
