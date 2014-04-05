@@ -20,6 +20,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
 
+import ij.gui.Overlay;
 import ij.text.*;
 import skeleton_analysis.*;
 import Skeletonize3D_.*;
@@ -93,9 +94,9 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
     gd.addMessage("Branches of highest Strahler order (roots):", new Font("SansSerif", Font.BOLD, 12));
     gd.setInsets(2, 30, 0);
     if (protectRoot)
-    	gd.addCheckbox("Protect branches inside ROI from iterative prunning", protectRoot);
+        gd.addCheckbox("Protect branches inside ROI from iterative prunning", protectRoot);
     else
-    	gd.addMessage("No Area ROI was found. No roots will be considered.\nAll branches will be affected by the iteration.");
+        gd.addMessage("No area ROI was found. No roots will be considered.\nAll branches will be affected by the iteration.");
     gd.addHelp("http://fiji.sc/Strahler_Analysis");
     gd.showDialog();
     if (gd.wasCanceled())
@@ -130,6 +131,18 @@ void printResults(order, tips, ratios, junctions) {
     rt.show(strahlerTable);
 }
 
+/* Adds "Root ROI" to the image overlay */
+void addRootToOverlay(ImagePlus imp, Roi roi, boolean label) {
+    Overlay overlay = imp.getOverlay();
+    if (overlay==null) overlay = new Overlay();
+    roi.setName("Root");
+    overlay.add(roi);
+    if (label) {
+        overlay.setLabelColor(roi.getColor());
+        overlay.drawNames(true);
+    }
+    imp.setOverlay(overlay);
+}
 
 // Exit if required plugins are not installed
 if (!validInstallation())
@@ -158,20 +171,24 @@ boolean debug = outChoice!=OUT_NONE;
 if (roi!=null) srcImp.killRoi();
 ImagePlus imp = srcImp.duplicate();
 ImageProcessor ip = imp.getProcessor();
+if (roi!=null) srcImp.setRoi(roi);
 
 // Create image that will reinstate the root ROI
 ImagePlus rootImp;
 if (protectRoot) {
-	rootImp = imp.duplicate();
-	rootImp.setRoi(roi);
-	for (i=1; i<=rootImp.getNSlices(); i++) {
-		rootIp = rootImp.getStack().getProcessor(i);
-		rootIp.setValue(0.0);
-		rootIp.fillOutside(roi);
-	}
-	thinRoot = new Skeletonize3D_();
-	thinRoot.setup("", rootImp);
-	thinRoot.run(rootImp.getProcessor());
+
+    rootImp = imp.duplicate();
+    rootImp.setRoi(roi);
+    for (i=1; i<=rootImp.getNSlices(); i++) {
+        rootIp = rootImp.getStack().getProcessor(i);
+        rootIp.setValue(0.0);
+        rootIp.fillOutside(roi);
+    }
+    // Skeletonize root
+    thinRoot = new Skeletonize3D_();
+    thinRoot.setup("", rootImp);
+    thinRoot.run(rootImp.getProcessor());
+
 }
 
 // Use Z-projections to populate animation stacks when dealing with 3D skeletons
@@ -254,7 +271,7 @@ do {
 
     // Reinstate root ROI
     if (protectRoot) {
-    	(new ImageCalculator()).run("OR stack", imp, rootImp);
+        (new ImageCalculator()).run("OR stack", imp, rootImp);
     }
 
     // Continue?
@@ -269,6 +286,7 @@ if (debug) {
     imp2.setCalibration(cal);
 
     if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
+        if (protectRoot) addRootToOverlay(imp2, roi, true);
         imp2.show();
     }
     if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Create color map
@@ -280,12 +298,12 @@ if (debug) {
         ip3.setMinAndMax(0, order-1);
         imp3 = new ImagePlus("StrahlerColors_"+ title, ip3.convertToShortProcessor(false));
         IJ.run(imp3, "Fire", "");
-        IJ.run(imp3, "Calibration Bar...", " overlay");
+        IJ.run(imp3, "Calibration Bar...", " overlay"); // Calibration bar seems to clear pre-existing overlays
         imp3.setCalibration(cal);
+        if (protectRoot) addRootToOverlay(imp3, roi, false);
         imp3.show();
     }
 }
 
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
-imp.updateAndDraw();
