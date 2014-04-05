@@ -245,7 +245,7 @@ do {
 
 if (debug) {
 
-    cal = imp.getCalibration();
+    cal = srcImp.getCalibration();
     imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
     imp2.setCalibration(cal);
 
