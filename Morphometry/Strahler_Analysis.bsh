@@ -94,9 +94,9 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
     gd.addMessage("Branches of highest Strahler order (roots):", new Font("SansSerif", Font.BOLD, 12));
     gd.setInsets(2, 30, 0);
     if (protectRoot)
-        gd.addCheckbox("Protect branches inside ROI from iterative prunning", protectRoot);
+        gd.addCheckbox("Protect branches inside ROI from iterative pruning", protectRoot);
     else
-        gd.addMessage("No area ROI was found. No roots will be considered.\nAll branches will be affected by the iteration.");
+        gd.addMessage("No area ROI was found. All branches will be affected\nby the iterative pruning.");
     gd.addHelp("http://fiji.sc/Strahler_Analysis");
     gd.showDialog();
     if (gd.wasCanceled())
