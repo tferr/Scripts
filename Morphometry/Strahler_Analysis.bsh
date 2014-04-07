@@ -2,15 +2,14 @@
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
  * https://github.com/tferr/Scripts#scripts
- * Tiago Ferreira, v1.2.1 2014.04.05
+ * Tiago Ferreira, v1.2.1 2014.04.07
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
  * (http://fiji.sc/AnalyzeSkeleton) plugins, both bundled with Fiji (http://fiji.sc/)
  *
  * Installation:
- * Update ImageJ to version 1.47m (or newer). Save this file in the plugins/ folder using
- * the 'Plugins>Install...' command.
+ * Save this file in the plugins/ folder using the 'Plugins>Install...' command.
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software Foundation
@@ -31,10 +30,11 @@ String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both 
 int OUT_NONE = 0; int OUT_IS = 1; int OUT_CM = 2; int OUT_ISCM = 3;
 
 /* Default settings */
-int maxPruning = 10; // Max. number of prunning cycles
-int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH; // default option for loop detection
-int outChoice = OUT_CM; // Default OUT_CHOICES choice
+int maxPruning = 10;        // Max. number of prunning cycles
+int outChoice = OUT_CM;     // Default OUT_CHOICES choice
 boolean protectRoot = true; // If an area ROI is present, should we assume it contains the root branch?
+int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH; // Default option for loop detection
+
 
 /* Reminds the user to install required dependencies */
 boolean validInstallation() {
@@ -176,7 +176,7 @@ if (roi!=null) srcImp.setRoi(roi);
 // Create image that will reinstate the root ROI
 ImagePlus rootImp;
 if (protectRoot) {
-
+    // Create copy of image containing only ROI contents
     rootImp = imp.duplicate();
     rootImp.setRoi(roi);
     for (i=1; i<=rootImp.getNSlices(); i++) {
@@ -188,7 +188,6 @@ if (protectRoot) {
     thinRoot = new Skeletonize3D_();
     thinRoot.setup("", rootImp);
     thinRoot.run(rootImp.getProcessor());
-
 }
 
 // Use Z-projections to populate animation stacks when dealing with 3D skeletons
@@ -210,7 +209,6 @@ if (debug)
     newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 
 int order = 1; boolean loop = true; double prevEndPointBranches = Double.NaN;
-//int smallestNBranches = Integer.MAX_VALUE;
 
 do {
 
@@ -262,7 +260,6 @@ do {
 
     // Print results
     printResults(order++, endPointBranches, prevEndPointBranches/endPointBranches, totalJunctions);
-    //smallestNBranches = Math.min(branches.length, smallestNBranches);
     prevEndPointBranches = endPointBranches;
 
 
@@ -275,7 +272,7 @@ do {
     }
 
     // Continue?
-    loop = order<=maxPruning && totalJunctions>0 ;
+    loop = order<=maxPruning && totalJunctions>0;
 
 } while (loop);
 
@@ -298,7 +295,7 @@ if (debug) {
         ip3.setMinAndMax(0, order-1);
         imp3 = new ImagePlus("StrahlerColors_"+ title, ip3.convertToShortProcessor(false));
         IJ.run(imp3, "Fire", "");
-        IJ.run(imp3, "Calibration Bar...", " overlay"); // Calibration bar seems to clear pre-existing overlays
+        IJ.run(imp3, "Calibration Bar...", " overlay"); // NB: Calibration bar clears pre-existing overlays. Bug?
         imp3.setCalibration(cal);
         if (protectRoot) addRootToOverlay(imp3, roi, false);
         imp3.show();
