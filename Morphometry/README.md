@@ -15,7 +15,7 @@
    dependencies. If you are not using Fiji, make sure you are running the latest versions of
    [AnalyzeSkeleton](http://fiji.sc/AnalyzeSkeleton) and [Skeletonize 3D](http://fiji.sc/Skeletonize3D)
    (for 3D analysis).
-   Without running Fiji, a way to ensure is to delete your local copies of _AnalyzeSkeleton_
+   Without running Fiji, a way to ensure this, is to delete your local copies of _AnalyzeSkeleton_
    and _Skeletonize3D_ .jar files. The script will then provide you with the diret download links
    from [jenkins][jenkins plugins].
 
