@@ -2,7 +2,7 @@
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
  * https://github.com/tferr/Scripts#scripts
- * Tiago Ferreira, v1.2.1 2014.04.07
+ * Tiago Ferreira, v1.2.2 2014.04.09
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -174,8 +174,9 @@ ImageProcessor ip = imp.getProcessor();
 if (roi!=null) srcImp.setRoi(roi);
 
 // Create image that will reinstate the root ROI
-ImagePlus rootImp;
+ImagePlus rootImp; int rootTotalJunctions = 0;
 if (protectRoot) {
+
     // Create copy of image containing only ROI contents
     rootImp = imp.duplicate();
     rootImp.setRoi(roi);
@@ -184,11 +185,26 @@ if (protectRoot) {
         rootIp.setValue(0.0);
         rootIp.fillOutside(roi);
     }
+
     // Skeletonize root
     thinRoot = new Skeletonize3D_();
     thinRoot.setup("", rootImp);
     thinRoot.run(rootImp.getProcessor());
+
+    // Analyze root. We'll use its total n. of junctions as an identifier
+    root = new AnalyzeSkeleton_();
+    root.setup("", rootImp);
+    rootResult = root.run(pruneChoice, false, false, origImp, true, false);
+    rootBranches = rootResult.getBranches();
+    rootJunctions = rootResult.getJunctions();
+    rootMaxLengths = rootResult.getMaximumBranchLength();
+    for (i=0; i<rootBranches.length; i++) {
+        if (rootMaxLengths[i]!=0) // Ignore any branch of length zero
+            rootTotalJunctions += rootJunctions[i];
+    }
+
 }
+
 
 // Use Z-projections to populate animation stacks when dealing with 3D skeletons
 int nSlices = imp.getNSlices();
@@ -209,6 +225,7 @@ if (debug)
     newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 
 int order = 1; boolean loop = true; double prevEndPointBranches = Double.NaN;
+String msg = "\n*** Strahler analysis of "+ title +" ***\n";
 
 do {
 
@@ -255,8 +272,7 @@ do {
 
     // Are there any loops upon elimination of terminal branches?
     if (prevEndPointBranches==endPointBranches)
-        IJ.log("\n*** Strahler analysis of "+ title +", iteration "+ order +":\n"
-             + "It is likely that the skeleton contains loops at this step. Revise parameters?");
+    	msg += "Iteration "+ order + ": Skeleton may contain loops at this step. Revise parameters?\n";
 
     // Print results
     printResults(order++, endPointBranches, prevEndPointBranches/endPointBranches, totalJunctions);
@@ -272,7 +288,7 @@ do {
     }
 
     // Continue?
-    loop = order<=maxPruning && totalJunctions>0;
+    loop = order<=maxPruning && totalJunctions>0 && totalJunctions>rootTotalJunctions;
 
 } while (loop);
 
@@ -301,6 +317,11 @@ if (debug) {
         imp3.show();
     }
 }
+
+if (protectRoot && rootTotalJunctions>0)
+    msg += "Root ROI contains "+ rootTotalJunctions +" junction(s). # End-point branches for order "+ (order-1) +" and higher may not be accurate.";
+if (!msg.endsWith(" ***\n"))
+    IJ.log(msg);
 
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
