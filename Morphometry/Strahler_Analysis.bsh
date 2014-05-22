@@ -1,8 +1,9 @@
 /* Strahler_Analysis.bsh
+ * https://github.com/tferr/Scripts#scripts
+ *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
- * https://github.com/tferr/Scripts#scripts
- * Tiago Ferreira, v1.2.3 2014.04.14
+ * Tiago Ferreira, v1.3.0 2014.05.16
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -10,6 +11,10 @@
  *
  * Installation:
  * Save this file in the plugins/ folder using the 'Plugins>Install...' command.
+ *
+ * Resources:
+ * http://jenkins.imagej.net/job/Fiji-javadoc/javadoc/Skeletonize3D_/Skeletonize3D_.html
+ * http://jenkins.imagej.net/job/Fiji-javadoc/javadoc/skeleton_analysis/package-summary.html
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software Foundation
@@ -24,16 +29,17 @@ import ij.text.*;
 import skeleton_analysis.*;
 import Skeletonize3D_.*;
 
-
-/* Output definitions */
+/* Definitions */
 String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};
 int OUT_NONE = 0; int OUT_IS = 1; int OUT_CM = 2; int OUT_ISCM = 3;
+boolean protectRoot;
 
 /* Default settings */
 int maxPruning = 10;        // Max. number of prunning cycles
-int outChoice = OUT_CM;     // Default OUT_CHOICES choice
-boolean protectRoot = true; // If an area ROI is present, should we assume it contains the root branch?
-int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH; // Default option for loop detection
+int outChoice = OUT_CM;     // Default choice for output image
+
+/* Default option for loop detection */
+int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
 
 
 /* Reminds the user to install required dependencies */
@@ -61,65 +67,72 @@ boolean validInstallation() {
  * Creates the dialog prompt, retrieving the image with the original structure. While it
  * is unlikely that the iterative pruning of terminal branches will cause new loops on
  * pre-existing skeletons, offering the option to resolve loops with intensity based
- * methods remains useful when analyzing non-thinned grayscale images.
+ * methods remains useful specially when analyzing non-thinned grayscale images.
  */
 ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     ImagePlus origImg = currentImp;
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
-    gd.addSlider("Max. number of iterations:", 1, 20, maxPruning);
 
-    // Can we offer intensity based pruning?
+    // Part 1. Main Options
+    createDialogHeader(gd, "I. Strahler Numbering:", true);
+    gd.addSlider("Max. n. of iterations:", 1, 20, maxPruning);
+    gd.addChoice("Output image(s):", OUT_CHOICES , OUT_CHOICES[outChoice]);
+
+    // Part 2: Root protection
+    createDialogHeader(gd, "II. Non-radial Arbors:", false);
+    String protectMsg;
+    if (protectRoot) {
+        gd.addCheckbox("Protect ROI from iterative pruning", protectRoot);
+        protectMsg = "ROI should contain a single branch corresponding\nto the root node.";
+    } else
+        protectMsg = "No area ROI was found. All segments will be exposed\n"
+                   + "to the iterative elimination of terminal branches.";
+
+    gd.setInsets(0, 20, 0);
+    gd.addMessage(protectMsg);
+
+    // Part 3: Loop elimination
+    createDialogHeader(gd, "III. Elimination of Skeleton Loops:", false);
     int[] ids = WindowManager.getIDList();
-    singleImage = (ids==null || ids.length<2);
+    boolean singleImage = (ids==null || ids.length<2);
 
-    if (singleImage) { // Only skeleton image is open
+    if (singleImage) { // Only skeleton image is open: intensity based pruning is not available
 
         String[] S_CHOICES = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
                     AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.SHORTEST_BRANCH]};
-        gd.addChoice("Elimination of skeleton loops:", S_CHOICES, S_CHOICES[pruneChoice]);
+        gd.addChoice("Method:", S_CHOICES, S_CHOICES[pruneChoice]);
 
-    } else { // Non-thinned image may be available
+    } else { // Non-thinned image may be available: Allow intensity based pruning
 
-        gd.addChoice("Elimination of skeleton loops:", AnalyzeSkeleton_.pruneCyclesModes,
+        gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
                     AnalyzeSkeleton_.pruneCyclesModes[pruneChoice]);
-        imgTitles = new String[ids.length];
-        for (i = 0; i < ids.length; ++i )
+        String[] imgTitles = new String[ids.length];
+        for (int i=0; i<ids.length; ++i )
             imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
         gd.addChoice("Original grayscale image:", imgTitles, currentTitle);
 
     }
 
-    gd.addChoice("Output image(s):", OUT_CHOICES , OUT_CHOICES[outChoice]);
-    gd.addMessage("Non-radial arbors:", new Font("SansSerif", Font.BOLD, 12));
-    gd.setInsets(2, 20, 0);
-    if (protectRoot) {
-        gd.addCheckbox("Protect branch inside ROI from iterative pruning", protectRoot);
-        gd.addMessage("ROI should contain a single terminal branch corresponding\n"
-                    + "   to the root node and having the highest Strahler order.");
-    }
-    else
-        gd.addMessage("No area ROI was found. All branches will be affected\nby the iterative pruning.");
     gd.addHelp("http://fiji.sc/Strahler_Analysis");
     gd.showDialog();
-    if (gd.wasCanceled())
-        return null;
+    if (gd.wasCanceled()) return null;
+
     maxPruning = (int)gd.getNextNumber();
+    outChoice = gd.getNextChoiceIndex();
+    if (protectRoot) protectRoot = gd.getNextBoolean();
     pruneChoice = gd.getNextChoiceIndex();
     if (!singleImage) {
         imgChoice = gd.getNextChoiceIndex();
         if (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL || pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH)
-        origImg = WindowManager.getImage(imgChoice);
+            origImg = WindowManager.getImage(imgChoice);
     }
-    outChoice = gd.getNextChoiceIndex();
-    if (protectRoot) {
-        protectRoot = gd.getNextBoolean();
-    }
+
     return origImg;
 }
 
 /* Outputs measurements to a dedicated table */
-void printResults(order, tips, ratios, junctions) {
+void printResults(order, tips, ratios) {
     strahlerTable = "Strahler_Table";
     window = WindowManager.getFrame(strahlerTable);
     if (window == null)
@@ -132,8 +145,13 @@ void printResults(order, tips, ratios, junctions) {
     rt.addValue("Strahler order", order);
     rt.addValue("# End-point branches", tips);
     rt.addValue("Ramification ratios", IJ.d2s(ratios,5));
-    rt.addValue("# Prevailing junctions", junctions);
     rt.show(strahlerTable);
+}
+
+/* Adds a section header to a GenericDialog */
+void createDialogHeader(GenericDialog gd, String text, boolean supressAboveSpace) {
+     gd.setInsets(supressAboveSpace?0:12, 0, 0);
+     gd.addMessage(text, new Font("SansSerif", Font.BOLD, 12));
 }
 
 /* Adds "Root ROI" to the image overlay */
@@ -149,28 +167,36 @@ void addRootToOverlay(ImagePlus imp, Roi roi, boolean label) {
     imp.setOverlay(overlay);
 }
 
-// Exit if required plugins are not installed
+/*
+ * Paints junction points. NB: BeanShell does not seem to suport generics. This triggers
+ * a ParseException: paintBranchPoints(ImageProcessor ip, ArrayList<Point> points, int value)
+ */
+void paintBranchPoints(ImageProcessor ip, points, int value) {
+    if (points!=null) {
+        for (int j=0; j<points.size(); j++) {
+            Point point = points.get(j);
+            ip.putPixel(point.x, point.y, value);
+        }
+    }
+}
+
+
+// Startup checks
 if (!validInstallation())
     { IJ.error("Missing files? See Log window for details."); return; }
-
-// Get active image
-srcImp = WindowManager.getCurrentImage();
+ImagePlus srcImp = WindowManager.getCurrentImage();
 if (srcImp==null)
     { IJ.error("There are no images open."); return; }
 if (srcImp.getBitDepth()!=8)
-    { IJ.error("Only 8-bit grayscale images can be processed."); return; }
+    { IJ.error("Cannot process "+ srcImp.getTitle() +".\nOnly 8-bit images can be processed."); return; }
 
 // Root protection?
 Roi roi = srcImp.getRoi();
-protectRoot = roi!=null && roi.isArea();
+boolean protectRoot = roi!=null && roi.isArea();
 
-// Prompt for options & retrieve original image for intensity-based pruning of skel. loops
-origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
-if (origImp==null)
-    return;
-
-// Produce an image output?
-boolean debug = outChoice!=OUT_NONE;
+// Prompt for options and retrieve image for intensity-based pruning of skel. loops
+ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
+if (origImp==null) return;
 
 // Work on a copy, since the original image will be modified
 if (roi!=null) srcImp.killRoi();
@@ -180,54 +206,51 @@ if (roi!=null) srcImp.setRoi(roi);
 
 // Skeletonize in case image is not a skeleton
 if (roi!=null) imp.killRoi();
-thin = new Skeletonize3D_();
+Skeletonize3D_ thin = new Skeletonize3D_();
 thin.setup("", imp);
 thin.run(ip);
 
-ImagePlus rootImp;
-int rootTotalJunctions = 0;
-int rootEndPointBranches = 0;
+// Extract coordinates of all junction pixels
+initialSkel = new AnalyzeSkeleton_();
+initialSkel.setup("", imp);
+initialResult = initialSkel.run(pruneChoice, false, false, origImp, true, false);
+junctionsList = initialResult.getListOfJunctionVoxels();
 
+ImagePlus rootImp = null;
+int rootNjunctions = 0;
+String warning = "";
+
+// Create root image: a skeleton containing only branches inside a ROI
 if (protectRoot) {
-
-    // Create root image: a skeleton containing only branches inside ROI
     rootImp = imp.duplicate();
     rootImp.setRoi(roi);
-    for (i=1; i<=rootImp.getNSlices(); i++) {
-        rootIp = rootImp.getStack().getProcessor(i);
+    for (int i=1; i<=rootImp.getNSlices(); i++) {
+        ImageProcessor rootIp = rootImp.getStack().getProcessor(i);
         rootIp.setValue(0.0);
-        rootIp.fillOutside(roi);
+        rootIp.fillOutside(roi); //NB: This will fail if the ROI is the entire image
     }
     rootImp.killRoi();
 
-    // Analyze root. We'll use its total n. of junctions as an identifier
-    root = new AnalyzeSkeleton_();
+    // Analyze root. We'll use n. of junctions as an identifier
+    AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
     root.setup("", rootImp);
-    rootResult = root.run(pruneChoice, false, false, origImp, true, false);
-    rootBranches = rootResult.getBranches();
-    rootEndPoints = rootResult.getEndPoints();
-    rootJunctions = rootResult.getJunctions();
-    rootMaxLengths = rootResult.getMaximumBranchLength();
-    for (i=0; i<rootBranches.length; i++) {
-        if (rootMaxLengths[i]!=0) { // Ignore any branch of length zero
-            rootEndPointBranches += rootEndPoints[i];
-            if (rootBranches[i]==1) rootEndPointBranches--;
-            rootTotalJunctions += rootJunctions[i];
-        }
-    }
-
+    SkeletonResult rootResult = root.run(pruneChoice, false, false, origImp, true, false);
+    if (rootResult.getNumOfTrees()>0) {
+        int[] rootJunctions = rootResult.getJunctions();
+        for (int i=0; i<rootJunctions.length; i++)
+            rootNjunctions += rootJunctions[i];
+    } else
+        warning = "ROI contains no branches. Iteration was applied to entire image.\n";
 }
 
-String warning = "";
-if (protectRoot && rootEndPointBranches>1) {
-    warning = "ROI contains "+ rootEndPointBranches +" branches. Strahler counts will likely be inaccurate.\n";
-    if (!IJ.showMessageWithCancel("Warning", warning +"Continue nevertheless?"))
-        return;
+if (protectRoot && rootNjunctions>0) {
+    warning = "ROI contains "+ rootNJunctions +" branch point(s). Strahler counts will likely be inaccurate.\n";
+    if (!IJ.showMessageWithCancel("Warning", warning +"Continue nevertheless?")) return;
 }
 
-// Use Z-projections to populate animation stacks when dealing with 3D skeletons
+// Use Z-projections to populate iteration stack when dealing with 3D skeletons
 int nSlices = imp.getNSlices();
-if (nSlices>1 && debug) {
+if (nSlices>1) {
     zp = new ZProjector(imp);
     zp.setMethod(ZProjector.MAX_METHOD);
     zp.setStartSlice(1);
@@ -235,78 +258,48 @@ if (nSlices>1 && debug) {
 }
 
 // Initialize AnalyzeSkeleton_
-skel = new AnalyzeSkeleton_();
+AnalyzeSkeleton_ skel = new AnalyzeSkeleton_();
 skel.setup("", imp);
 
-if (debug)
-    newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
-
-int order = 1; boolean loop = true; double prevEndPointBranches = Double.NaN;
+ImageStack newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
+int order = 1; int prevNjunctions = 0; boolean loop = true;
 String msg = "\n*** Strahler analysis of "+ title +" ***\n"+ warning;
 
 do {
 
-    // Re-skeletonize image. This ensures no disconnected pixels exist after prunning
+    IJ.showStatus("Retrieving measurements for order "+ order++ +"...");
+    IJ.showProgress(order, maxPruning);
+
+    // Re-skeletonize image. This ensures 1) no disconnected pixels exist after pruning
+    // and 2) that pruned structure is always a skeleton
     thin.run(ip);
 
     // Add current skeleton to debug animation
-    if (debug) {
-        if (nSlices>1) {
-            zp.doProjection();
-            ipd = zp.getProjection().getProcessor();
-        } else {
-            ipd = ip.duplicate();
-        }
-        newStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
+    if (nSlices>1) {
+        zp.doProjection();
+        ipd = zp.getProjection().getProcessor();
+    } else {
+        ipd = ip.duplicate();
     }
+    newStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
 
-    IJ.showStatus("Retrieving measurements for order "+ order +"...");
-    IJ.showProgress(order, maxPruning);
-
-    // Retrieve measurements (http://fiji.sc/javadoc/skeleton_analysis/):
-    // AnalyzeSkeleton_.run(int pruneIndex, boolean pruneEnds, boolean shortPath, ImagePlus origIP, boolean silent, boolean verbose)
-    skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
-
-    // Read results
-    branches = skelResult.getBranches();
-    endPoints = skelResult.getEndPoints();
-    junctions = skelResult.getJunctions();
-    maxLengths = skelResult.getMaximumBranchLength();
-
-    // Calculate sums
-    endPointBranches = -rootEndPointBranches; // initialized to zero if !protectRoot
-    totalJunctions = -rootTotalJunctions;     // initialized to zero if !protectRoot
-    for (i=0; i<branches.length; i++) {
-        if (maxLengths[i]!=0) { // Ignore any branch of length zero
-            endPointBranches += endPoints[i]; // Sum all endPointVoxels
-            if (branches[i]==1) endPointBranches--; // Isolated branches have 2 end-points
-            totalJunctions += junctions[i];
-        }
+    // We'll monitor the n. of remaining junctions
+    SkeletonResult skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
+    int[] junctions = skelResult.getJunctions();
+    if (junctions==null) {
+        msg += "Iteration "+ order +": No branches were found! Revise parameters?\n";
+        break;
     }
+    int nJunctions = -rootNjunctions; // initialized to 0 if !protectRoot
+    for (int i=0; i<junctions.length; i++)
+        nJunctions += junctions[i];
 
     // Are there any loops in the skeleton?
-    if (prevEndPointBranches==endPointBranches) {
+    if (prevNjunctions==nJunctions) {
         msg += "Iteration "+ order + ": Skeleton may contain loops at this step. Revise parameters?\n";
         break;
     }
-
-    // Have a final look at the last iteration
-    if (protectRoot && (order==maxPruning || totalJunctions==0)) {
-
-        if (endPointBranches<0) { // Something strange happened
-            msg += "Inaccurate count. Please revise analysis.\n";
-            endPointBranches = Math.max(1, rootEndPointBranches-1);
-        } else if (endPointBranches==0) { // Root remains connected to arbor
-            endPointBranches = Math.max(1, rootEndPointBranches-1);
-        } else  { // Root is disconnected
-            endPointBranches = endPointBranches + rootEndPointBranches;
-        }
-
-    }
-
-    // Print results
-    printResults(order++, endPointBranches, prevEndPointBranches/endPointBranches, totalJunctions);
-    prevEndPointBranches = endPointBranches;
+    prevNjunctions = nJunctions;
 
     // Eliminate terminal branches
     skel.run(AnalyzeSkeleton_.NONE, true, false, null, true, false);
@@ -316,40 +309,65 @@ do {
     }
 
     // Continue?
-    loop = order<=maxPruning && totalJunctions>0;
+    loop = order<=maxPruning && nJunctions>0;
 
 } while (loop);
 
-if (debug) {
+// Create iteration stack. Add branch points to last slice
+ImageProcessor pointsIp = ip.createProcessor(ip.getWidth(), ip.getHeight());
+paintBranchPoints(pointsIp, junctionsList, 255);
+newStack.addSlice("Branch points", pointsIp);
+ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
 
-    cal = srcImp.getCalibration();
-    imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
-    imp2.setCalibration(cal);
+// Create Strahler mask (16-bit image)
+ZProjector zp = new ZProjector(imp2);
+zp.setMethod(ZProjector.SUM_METHOD);
+zp.setStartSlice(1);
+zp.setStopSlice(order-1);
+zp.doProjection();
+ImageProcessor ip3 = zp.getProjection().getProcessor();
+ip3.multiply(1/255.0);
+ip3 = ip3.convertToShortProcessor(false);
+paintBranchPoints(ip3, junctionsList, 0); // Remove branch points
+ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
 
-    if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
-        if (protectRoot) addRootToOverlay(imp2, roi, true);
-        imp2.show();
-    }
-    if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Create color map
-        zp = new ZProjector(imp2);
-        zp.setMethod(ZProjector.SUM_METHOD);
-        zp.doProjection();
-        ip3 = zp.getProjection().getProcessor();
-        ip3.multiply(1/255.0);
-        ip3.setMinAndMax(0, order-1);
-        imp3 = new ImagePlus("StrahlerColors_"+ title, ip3.convertToShortProcessor(false));
-        IJ.run(imp3, "Fire", "");
-        IJ.run(imp3, "Calibration Bar...", " overlay"); // NB: Calibration bar clears pre-existing overlays. Bug?
-        imp3.setCalibration(cal);
-        if (protectRoot) addRootToOverlay(imp3, roi, false);
-        imp3.show();
-    }
+// Retrieve counts using ParticleAnalyzer
+ResultsTable tempRt = new ResultsTable();
+ParticleAnalyzer pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, 0, tempRt, 0, Double.MAX_VALUE);
+double currOrderCount = Double.NaN;
+double nextOrderCount = Double.NaN;
+for (int i=1; i<order; i++) {
+    ip3.setThreshold(i, i, ImageProcessor.NO_LUT_UPDATE);
+    pa.analyze(imp3);
+    currOrderCount = (double)tempRt.getCounter();
+    printResults(i, currOrderCount, currOrderCount/nextOrderCount);
+    tempRt.reset();
+    nextOrderCount = currOrderCount;
 }
 
+// Display images
+Calibration cal = srcImp.getCalibration();
+if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
+    imp2.setCalibration(cal);
+    if (protectRoot) addRootToOverlay(imp2, roi, true);
+    imp2.show();
+}
+if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Display color map
+    ip3.resetThreshold();
+    ip3.setMinAndMax(0, order-1);
+    IJ.run(imp3, "Fire", "");
+    IJ.run(imp3, "Calibration Bar...", " overlay"); // NB: Calibration bar clears pre-existing overlays. Bug?
+    imp3.setCalibration(cal);
+    if (protectRoot) addRootToOverlay(imp3, roi, false);
+    imp3.show();
+}
+
+// Log messages
 if (!msg.endsWith(" ***\n")) {
-    if (protectRoot)
-        msg += "Properties of arbor inside ROI: "+ (rootEndPointBranches-1) +" terminal branches; "+ rootTotalJunctions +" junction(s).";
+    if (protectRoot) msg += "Number of branch points (junctions) inside ROI: "+ rootNjunctions;
     IJ.log(msg);
 }
+
+// Exit
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
