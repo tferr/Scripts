@@ -21,12 +21,13 @@ The top-level _BAR_ Menu is organized in the following manner:
     │   ├── Clear Thresholded Pixels
     │   ├── Threshold From Background
     │   └── Wipe Background
-    └── Tool Installers
-        ├── Install Calibration Menu
-        ├── Install ROI Manager Tools
-        ├── Install Segment Profile
-        ├── Install Shortcuts Menu
-        └── Install Toolset Creator
+    ├── Tool Installers
+    │   ├── Install Calibration Menu
+    │   ├── Install ROI Manager Tools
+    │   ├── Install Segment Profile
+    │   ├── Install Shortcuts Menu
+    │   └── Install Toolset Creator
+    └── About BAR...
 
 
 The relevant files get stored in:
@@ -38,8 +39,8 @@ The relevant files get stored in:
     │   │   ├── Segment_Profile.ijm
     │   │   └── Shortcuts_Menu.ijm
     │   └── toolsets
-    │       ├── ROI_Manager_Tools.ijm
-    │       └── Toolset_Creator.ijm
+    │       ├── ROI Manager Tools.ijm
+    │       └── Toolset Creator.ijm
     └── plugins
         └── Scripts
             └── BAR
@@ -47,27 +48,24 @@ The relevant files get stored in:
                 │   ├── Distribution_Plotter.ijm
                 │   ├── Find_Peaks.bsh
                 │   ├── Fit_Polynomial.bsh
-                │   ├── Plot_Results.bsh
-                │   └── README.md
+                │   └── Plot_Results.bsh
                 ├── Annotation
-                │   ├── README.md
                 │   └── ROI_Color_Coder.ijm
                 ├── Morphometry
-                │   ├── README.md
                 │   └── Strahler_Analysis.bsh
-                ├── README.md
                 ├── Segmentation
                 │   ├── Apply_Threshold_To_ROI.ijm
                 │   ├── Clear_Thresholded_Pixels.ijm
-                │   ├── README.md
                 │   ├── Threshold_From_Background.ijm
                 │   └── Wipe_Background.ijm
-                └── Tool_Installers
-                    ├── Install_Calibration_Menu.bsh
-                    ├── Install_ROI_Manager_Tools.bsh
-                    ├── Install_Segment_Profile.bsh
-                    ├── Install_Shortcuts_Menu.bsh
-                    └── Install_Toolset_Creator.bsh
+                ├── Tool_Installers
+                │   ├── Install_Calibration_Menu.bsh
+                │   ├── Install_ROI_Manager_Tools.bsh
+                │   ├── Install_Segment_Profile.bsh
+                │   ├── Install_Shortcuts_Menu.bsh
+                │   └── Install_Toolset_Creator.bsh
+                └── Toolset Creator.ijm
+
 
 (Recursive lists created with [tree](http://mama.indstate.edu/users/ice/tree/))
 

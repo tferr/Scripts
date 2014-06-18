@@ -56,3 +56,6 @@
         mkdir $DIR
     fi
     ln -f -s $SRC_DIR/Tools/Toolsets/*.ijm $DIR
+
+## 8. Symlink remaining commands such as the "About" box
+    ln -f -s $SRC_DIR/BAR/*.bsh $BAR_DIR
