@@ -38,7 +38,7 @@
    ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
 
 
-###[Create Plot](./Create_Plot.bsh)
+###[Plot Results](./Plot_Results.bsh)
    Routine that creates an XY plot from data in the Results table. Useful for plotting
    data from imported spreadsheets.
 

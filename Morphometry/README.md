@@ -6,9 +6,10 @@
 ###[Strahler Analysis](./Strahler_Analysis.bsh)
    A BeanShell script that performs Strahler analysis on topographic skeletons (2D/3D)
    through progressive pruning of terminal branches.
-   ([Documentation Page](http://fiji.sc/Strahler_Analysis))
+   ([Documentation Page][SA page])
    ([Download .bsh](./Strahler_Analysis.bsh?raw=true))
 
+   [![][SA image]][SA page]
 
 #### Requirements
    If you are running [Fiji](http://fiji.sc/) you already have all the required
@@ -27,9 +28,13 @@
 
 ##See Also
 
-* [Sholl Analysis](https://github.com/tferr/ASA#sholl-analysis)
+* Sholl Analysis: [Repository](https://github.com/tferr/ASA#sholl-analysis) /
+  [Home page](http://fiji.sc/Sholl_Analysis)
 
 
 [ [Home] ](../README.md#scripts)
 
 [jenkins plugins]: http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/
+
+[SA page]: http://fiji.sc/Strahler_Analysis
+[SA image]: http://fiji.sc/images/9/97/Strahler_RootProtection.png

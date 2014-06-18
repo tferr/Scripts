@@ -296,7 +296,7 @@ do {
 
     // Are there any loops in the skeleton?
     if (prevNjunctions==nJunctions) {
-        msg += "Iteration "+ order + ": Skeleton may contain loops at this step. Revise parameters?\n";
+        msg += "Iteration "+ order +": Skeleton may contain loops at this step. Revise parameters?\n";
         break;
     }
     prevNjunctions = nJunctions;
