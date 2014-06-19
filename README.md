@@ -1,6 +1,8 @@
-# Scripts
+# <a name="scripts"></a>IJ BAR
 
-Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
+Welcome to the **IJ BAR**: A collection of **B**roadly **A**pplicable **R**outines for [ImageJ][ij1]/[Fiji][fiji]. The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
+For more details refer to the [BAR homepage][fijibar].
+
 
 ## [Data Analysis](./Data_Analysis/README.md#analysis)
   Operations related to statistics, profiles, histograms and curve fitting.
@@ -42,12 +44,24 @@ Routines for [ImageJ](http://imagej.nih.gov/ij/)/[Fiji](http://fiji.sc/).
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
   5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
+## [BARcode](./BAR/README.md#bar-specific-files)
+  Things related to the BAR [update site]().
+
 
 ## Citations
 These scrips have contributed to the following publications:
 
   - Soulet et al., Automated filtering of intrinsic movement artifacts during two-photon intravital microscopy, PLoS One. 2013; 8(1): e53942, [PMID 23326545](http://www.ncbi.nlm.nih.gov/pubmed/23326545)
   - Carnevalli et al., S6K1 Plays a Critical Role in Early Adipocyte Differentiation, Dev Cell. 2010; 18(5): 763–774, [PMID 20493810](http://www.ncbi.nlm.nih.gov/pubmed/20493810)
+
+
+## Help?
+ * Want to Contribute to BAR? Thanks!
+    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR.
+ * Having problems? Need to ask a question?
+    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ)
+    * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
+    * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
 
 
 License
@@ -59,3 +73,6 @@ Authors
 -------
 [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
 
+[ij1]: http://imagej.nih.gov/ij/
+[fiji]: http://fiji.sc/
+[fijibar]: http://fiji.sc/BAR
