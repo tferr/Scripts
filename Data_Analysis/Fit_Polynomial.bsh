@@ -2,7 +2,7 @@
  * https://github.com/tferr/Scripts#scripts
  *
  * Implements polynomial fitting in ImageJ using the apache commons math library.
- * March 2014, Tiago Ferreira
+ * 2014.06, Tiago Ferreira
  *
  * N.B.: CurveFitter will be deprecated after commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.
@@ -10,8 +10,17 @@
  *       covariance matrix?)
  */
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.gui.ImageWindow;
 import ij.gui.Overlay;
 import ij.gui.Plot;
+import ij.gui.PlotWindow;
+import ij.gui.Roi;
+import ij.gui.TextRoi;
+import ij.process.ImageProcessor;
 import ij.util.Tools;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.CurveFitter;

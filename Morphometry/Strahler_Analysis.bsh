@@ -3,7 +3,7 @@
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
- * Tiago Ferreira, v1.3.0 2014.05.16
+ * Tiago Ferreira, v1.3.1 2014.06.19
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -24,10 +24,25 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
 import ij.gui.Overlay;
-import ij.text.*;
-import skeleton_analysis.*;
-import Skeletonize3D_.*;
+import ij.gui.Roi;
+import ij.plugin.ZProjector;
+import ij.plugin.filter.ParticleAnalyzer;
+import ij.measure.Calibration;
+import ij.measure.ResultsTable;
+import ij.process.ImageProcessor;
+import ij.text.TextWindow;
+
+import skeleton_analysis.AnalyzeSkeleton_;
+import skeleton_analysis.Point;
+import skeleton_analysis.SkeletonResult;
+import Skeletonize3D_.Skeletonize3D_;
+
 
 /* Definitions */
 String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};

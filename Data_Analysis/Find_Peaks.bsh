@@ -2,8 +2,20 @@
  * https://github.com/tferr/Scripts#scripts
  *
  * Requires ImageJ 1.48d or newer. See http://fiji.sc/Find_Peaks for details.
- * Tiago Ferreira, v1.0.2 2014.03.07
+ * Tiago Ferreira, v1.0.3 2014.06.19
  */
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.gui.ImageWindow;
+import ij.gui.Plot;
+import ij.gui.PlotWindow;
+import ij.plugin.filter.MaximumFinder;
+import ij.util.ArrayUtil;
+import ij.util.Tools;
+
 
 double tolerance;
 double minPeakDistance;

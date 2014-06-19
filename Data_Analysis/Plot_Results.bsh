@@ -1,7 +1,15 @@
-/* Plot_from_Results.bsh
+/* Plot_Results.bsh
  * https://github.com/tferr/Scripts#scripts
- * Creates an ImageJ XY plot from imported spreadsheet data.
+ * Creates an ImageJ XY plot from imported spreadsheet data. TF, 2014.06
  */
+
+import ij.gui.GenericDialog;
+import ij.gui.Plot;
+import ij.io.Opener;
+import ij.plugin.Colors;
+import ij.util.Tools;
+import ij.measure.ResultsTable;
+
 
 // flags for axis design
 int[] flags = new int[12]; String[] labels = new String[12]; boolean[] choices = new boolean[12];
