@@ -1,6 +1,6 @@
 # <a name="scripts"></a>IJ BAR
 
-Welcome to the **IJ BAR**: A collection of **B**roadly **A**pplicable **R**outines for [ImageJ][ij1]/[Fiji][fiji]. The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
+Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for [ImageJ][ij1]/[Fiji][fiji]. The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
 For more details refer to the [BAR homepage][fijibar].
 
 
@@ -45,7 +45,7 @@ For more details refer to the [BAR homepage][fijibar].
   5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
 ## [BARcode](./BAR/README.md#bar-specific-files)
-  Things related to the BAR [update site]().
+  Things related to the BAR [update site](http://sites.imagej.net/Tiago/).
 
 
 ## Citations
@@ -56,7 +56,7 @@ These scrips have contributed to the following publications:
 
 
 ## Help?
- * Want to Contribute to BAR? Thanks!
+ * Want to Contribute to BAR?
     * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR.
  * Having problems? Need to ask a question?
     * See the BAR [FAQs](http://fiji.sc/BAR#FAQ)
