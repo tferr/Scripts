@@ -8,12 +8,12 @@
     BAR_DIR="$FIJI_HOME/plugins/Scripts/BAR"
 
 
-## 1. Symlink Analysis/ files (create $BAR_DIR if needed)
-    DIR="$BAR_DIR/Analysis"
+## 1. Symlink Data_Analysis/ files (create $BAR_DIR if needed)
+    DIR="$BAR_DIR/Data_Analysis"
     if [ ! -d $DIR ]; then
         mkdir -p $DIR
     fi
-    ln -f -s $SRC_DIR/Analysis/* $DIR
+    ln -f -s $SRC_DIR/Data_Analysis/* $DIR
 
 ## 2. Symlink Annotation/ files
     DIR="$BAR_DIR/Annotation"

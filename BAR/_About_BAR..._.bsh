@@ -10,10 +10,10 @@ DOC_URL = "http://fiji.sc/BAR";
 SRC_URL = "https://github.com/tferr/Scripts";
 
 void aboutBox() {
-    
+
     Font plainf = new Font("SansSerif", Font.PLAIN, 12);
     Font boldf = new Font("SansSerif", Font.BOLD, 12);
-    
+
     GenericDialog gd = new GenericDialog("About the MenuBAR...");
     gd.addMessage("BAR", boldf);
     gd.setInsets(0, 20, 0);
