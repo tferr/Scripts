@@ -31,6 +31,7 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.gui.Overlay;
 import ij.gui.Roi;
+import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.measure.Calibration;
