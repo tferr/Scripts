@@ -1,6 +1,6 @@
 # Morphometry
 
-[Routines](../README.md#scripts) related to the quantification of neuronal arbors
+[BARs](../README.md#scripts) related to the quantification of neuronal arbors
 
 
 ###[Strahler Analysis](./Strahler_Analysis.bsh)
@@ -18,11 +18,11 @@
    (for 3D analysis).
    Without running Fiji, a way to ensure this, is to delete your local copies of _AnalyzeSkeleton_
    and _Skeletonize3D_ .jar files. The script will then provide you with the diret download links
-   from [jenkins][jenkins plugins].
+   from [jenkins.imagej.net][jenkins plugins].
 
 
 #### Installation:
-   Save [Strahler_Analysis.bsh](./Strahler_Analysis.bsh?raw=true) in the plugins/ folder
+   Subscribe to the BAR [update site](http://fiji.sc/BAR#Installation) in Fiji. Alternatively, save [Strahler_Analysis.bsh](./Strahler_Analysis.bsh?raw=true) in the plugins/ folder
    using the _Plugins>Install..._ command.
 
 
@@ -32,7 +32,7 @@
   [Home page](http://fiji.sc/Sholl_Analysis)
 
 
-[ [Home] ](../README.md#scripts)
+[ [BAR's Home] ](../README.md#scripts)
 
 [jenkins plugins]: http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/
 

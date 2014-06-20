@@ -1,6 +1,6 @@
 # Segmentation
 
-Thresholding [Routines](../README.md#scripts).
+Thresholding [BARs](../README.md#scripts).
 
 
 ###[Apply Threshold To ROI](./Apply_Threshold_To_ROI.ijm)
@@ -25,4 +25,4 @@ Thresholding [Routines](../README.md#scripts).
 * [Segment Profile Tool](../Tools/README.md#segment-profile-tool)
 
 
-[ [Home] ](../README.md#scripts)
+[ [BAR's Home] ](../README.md#scripts)

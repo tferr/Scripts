@@ -1,6 +1,6 @@
 # Annotation
 
-[Routines](../README.md#scripts) related to annotation of images.
+[BARs](../README.md#scripts) related to annotation of images.
 
 ###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
@@ -13,7 +13,7 @@
    See Also [Calibration Menu](../Tools/README.md#calibration-menu)
 
 
-[ [Home] ](../README.md#scripts)
+[ [BAR's Home] ](../README.md#scripts)
 
 [RCC page]: http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
 [RCC image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:roicolorcoderoutput.png

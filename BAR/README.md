@@ -2,7 +2,7 @@
 
 This directory contains BAR-specific files (namely [installers](./installers/) for IJ1 macro files 
 and [routines](./linkToFiji.sh) that generate the _BAR_ Menu hierarchy). They are only useful in the
-context of the BAR Update Site.
+context of the BAR [update site](http://sites.imagej.net/Tiago/).
 
 The top-level _BAR_ Menu is organized in the following manner:
 
@@ -69,4 +69,4 @@ The relevant files get stored in:
 
 (Recursive lists created with [tree](http://mama.indstate.edu/users/ice/tree/))
 
-[ [Home] ](../README.md#scripts)
+[ [BAR's Home] ](../README.md#scripts)

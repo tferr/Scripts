@@ -193,7 +193,7 @@ boolean geUserInput() {
 	gd.addCheckbox("Guess \"best fit\" (ignores specified degree)", guess);
 	gd.addStringField("          Degree range:", minDegree +"-"+ maxDegree, 12);
 	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", verbose);
-	gd.addHelp("http://fiji.sc/Fit_Polynomial");
+	gd.addHelp("http://fiji.sc/Sholl_Analysis#Complementary_Tools");
 	gd.showDialog();
 	boolean proceed = (gd.wasCanceled()) ? false : true;
 

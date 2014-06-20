@@ -1,6 +1,6 @@
 # Analysis
 
-[Routines](../README.md#scripts) related to data analysis.
+[BARs](../README.md#scripts) related to data analysis.
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
    Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
@@ -37,6 +37,8 @@
 
    ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
 
+   [![][Poly image]](http://fiji.sc/Sholl_Analysis#Complementary_Tools)
+
 
 ###[Plot Results](./Plot_Results.bsh)
    Routine that creates an XY plot from data in the Results table. Useful for plotting
@@ -45,10 +47,10 @@
    ([Download .bsh](./Plot_Results.bsh?raw=true))
 
 
-[ [Home] ](../README.md#scripts)
+[ [BAR's Home] ](../README.md#scripts)
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png
 [FP page]: http://fiji.sc/Find_Peaks
 [FP image]: http://fiji.sc/images/a/a1/FindPeaksSnapshot.png
-
+[Poly image]: http://fiji.sc/images/f/f0/AnimatedPolyFit.gif
