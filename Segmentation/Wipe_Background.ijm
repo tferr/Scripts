@@ -1,5 +1,6 @@
 /* Wipe_Background.ijm
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
  * ImageJ macro that clears (sets to zero) clusters of thresholded pixels of defined
  * circularity & size within the active area ROI (or the whole image if no ROI exists).
  *

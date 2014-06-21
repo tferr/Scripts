@@ -1,4 +1,5 @@
 #!/bin/bash
+## IJ BAR: https://github.com/tferr/Scripts#scripts
 ## Symlinks files in the repository to a Fiji installation
 ## TF 2014.06
 

@@ -1,5 +1,6 @@
 /* ROI Manager Tools.txt
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
  * then use the '>>' drop down menu to activate it. Requires IJ 1.45d or newer.

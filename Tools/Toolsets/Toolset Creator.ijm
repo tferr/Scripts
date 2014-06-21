@@ -1,5 +1,5 @@
 /* Toolset Creator
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  * http://imagej.nih.gov/ij/macros/toolsets/Toolset%20Creator.txt
  *
  * Creates toolsets of Built-in Tools and Menu Tools listing installed plugins.

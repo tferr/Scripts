@@ -1,5 +1,5 @@
 /* Plot_Results.bsh
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  * Creates an ImageJ XY plot from imported spreadsheet data. TF, 2014.06
  */
 

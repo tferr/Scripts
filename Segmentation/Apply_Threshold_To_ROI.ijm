@@ -1,18 +1,23 @@
 /* Apply_Threshold_To_ROI.ijm
- * https://github.com/tferr/Scripts#scripts
- * ImageJ macro that applies threshold levels to the active area ROI, or the entire image
- * if none exists. Useful when an image can only be segmented in a stepwise manner through
- * application of different threshold values to sub-regions of the image, as in tiled
- * fields of view (see also 'Clear Thresholded Pixels.ijm').
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Works with grayscale images but in the case of multi-dimensional stacks, threshold is
- * only applied to the Z-dimension. Examples on how to call it from other scripts:
- *   IJ.runMacroFile(pathToThisFile, "");          // show dialog prompt
- *   IJ.runMacroFile(pathToThisFile, "current")    // only active slice is considered
- *   IJ.runMacroFile(pathToThisFile, "preceding")  // apply threshold up to active slice
- *   IJ.runMacroFile(pathToThisFile, "subsequent") // apply threshold after active slice
+ * IJ1 macro that applies threshold levels to the active area ROI, or the entire image if none
+ * exists. Useful when an image can only be segmented in a stepwise manner through application of
+ * different threshold values to sub-regions of the image, as in tiled fields of view (see also
+ * 'Clear Thresholded Pixels.ijm').
  *
- * TF, 01.2014
+ * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
+ * applied to the Z-dimension. Examples on how to call it from other scripts (see http://fiji.sc/BAR
+ * for details):
+ *
+ *   attr = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
+ *          +"Segmentation"+ File.separator +"Apply_Threshold_To_ROI.ijm";
+ *   IJ.runMacroFile(attr, "");          // show dialog prompt
+ *   IJ.runMacroFile(attr, "current")    // only active slice is considered
+ *   IJ.runMacroFile(attr, "preceding")  // apply threshold up to active slice
+ *   IJ.runMacroFile(attr, "subsequent") // apply threshold after active slice
+ *
+ * TF 2014.06
  */
 
 getThreshold(lower, upper);

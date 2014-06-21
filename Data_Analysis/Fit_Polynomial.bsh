@@ -1,5 +1,5 @@
 /* Fit_Polynomial.bsh
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Implements polynomial fitting in ImageJ using the apache commons math library.
  * 2014.06, Tiago Ferreira

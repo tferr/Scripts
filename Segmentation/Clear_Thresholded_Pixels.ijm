@@ -1,17 +1,22 @@
 /* Clear_Thresholded_Pixels.ijm
- * https://github.com/tferr/Scripts#scripts
- * ImageJ macro that sets to zero thresholded pixels inside the active area ROI, or the
- * entire image if no ROI exists. Useful for semi-automated segmentation, complementing
- * 'Apply Threshold To ROI.ijm' and the Paintbrush/Pencil Tools.
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Works with grayscale images but in the case of multi-dimensional stacks, threshold is
- * only applied to the Z-dimension. Examples on how to call it from other scripts:
- *   IJ.runMacroFile(pathToThisFile, "");          // show dialog prompt
- *   IJ.runMacroFile(pathToThisFile, "current")    // only active slice is considered
- *   IJ.runMacroFile(pathToThisFile, "preceding")  // clear pixels until active slice
- *   IJ.runMacroFile(pathToThisFile, "subsequent") // clear pixels from active slice
+ * IJ1 macro that sets to zero thresholded pixels inside the active area ROI, or the entire image if
+ * no ROI exists. Useful for semi-automated segmentation, complementing 'Apply Threshold To ROI' and
+ * the Paintbrush/Pencil Tools.
  *
- * TF, 01.2014
+ * Works with grayscale images but in the case of multi-dimensional stacks threshold is only applied
+ * to the Z-dimension. Examples on how to call it from other scripts (see http://fiji.sc/BAR for
+ * details):
+ *
+ *   ctp = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
+ *         +"Segmentation"+ File.separator +"Clear_Thresholded_Pixels.ijm";
+ *   IJ.runMacroFile(ctp, "");          // show dialog prompt
+ *   IJ.runMacroFile(ctp, "current")    // only active slice is considered
+ *   IJ.runMacroFile(ctp, "preceding")  // clear pixels until active slice
+ *   IJ.runMacroFile(ctp, "subsequent") // clear pixels from active slice
+ *
+ * TF 2014.06
  */
 
 getThreshold(lower, upper);

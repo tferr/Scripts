@@ -1,5 +1,5 @@
 /* Distribution_Plotter.ijm
- * https://github.com/tferr/Scripts/#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
  * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.48q.

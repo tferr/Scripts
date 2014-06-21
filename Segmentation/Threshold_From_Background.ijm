@@ -1,7 +1,14 @@
 /* Threshold_From_Background.ijm
- * https://github.com/tferr/Scripts#scripts
- * Sets the threshold as the ROI average plus a factor of its standard deviation
- * To call it from other macro: runMacro(pathToThisFile, factor);
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Sets the threshold as the ROI average plus a factor of its standard deviation. To call it from
+ * other scripts (see http://fiji.sc/BAR for details):
+ *
+ *   tfb = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
+ *         +"Segmentation"+ File.separator +"Threshold_From_Background.ijm";
+ *   runMacro(tfb, factor);
+ *
+ * TF 2014.06
  */
 
 if (selectionType==-1)

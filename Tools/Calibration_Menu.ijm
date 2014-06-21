@@ -1,9 +1,8 @@
 /* Calibration_Menu.ijm
- * https://github.com/tferr/Scripts#scripts
- * An IJ Menu Tool providing shortcuts for spatial calibration of images lacking metadata.
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- *  - Place this file in ImageJ/plugins/Tools/. Re-start ImageJ. Load it using the ">>"
- *    drop-down menu in the main ImageJ window
+ * An IJ1 Menu Tool providing shortcuts for spatial calibration of images lacking metadata.
+ *
  *  - Create "Calibration files" for each of your microscopes. These are simple 3-column
  *    .csv tables listing the objective, pixel size and unit. Choose "Demo File..." for
  *    more details
@@ -12,8 +11,8 @@
 
 // Editable variables
 var prmpt= false;  // With stacks and hyperstacks, should you be prompted for voxel depth?
-var cpath= getDirectory("imagej") + "Microscope Profiles Collection/"; // Path to calibration files
-var tpath= getDirectory("plugins") + "Tools/Calibration_Menu.ijm";     // Path to this file
+var cpath= getDirectory("imagej") +"Microscope Profiles Collection/"; // Path to calibration files
+var tpath= getDirectory("macros") +"tools"+ File.separator +"Calibration_Menu.ijm"; // Path to this file
 
 // Fixed variables
 var cFile= call("ij.Prefs.get", "qcm.file", " ");

@@ -1,5 +1,5 @@
 /* Strahler_Analysis.bsh
- * https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons

@@ -1,7 +1,8 @@
-/* Find Peaks: Returns the local maxima and minima of an ImageJ plot.
- * https://github.com/tferr/Scripts#scripts
+/* Fit_Polynomial.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Requires ImageJ 1.48d or newer. See http://fiji.sc/Find_Peaks for details.
+ * Returns the local maxima and minima of an ImageJ plot. Requires ImageJ 1.48d or newer.
+ * See http://fiji.sc/Find_Peaks for details.
  * Tiago Ferreira, v1.0.3 2014.06.19
  */
 

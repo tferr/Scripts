@@ -1,5 +1,5 @@
 /* ROI_Color_Coder.ijm
- * https://github.com/tferr/Scripts/#scripts
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
  * http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
  *
  * Colorizes ROIs by matching LUT indexes to measurements in the Results table. It is
