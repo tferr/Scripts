@@ -22,11 +22,12 @@ For more details refer to the [BAR documentation page][fijibar].
 ## [Image Segmentation](./Segmentation/README.md#segmentation)
   Threshold-based routines.
 
-  1. (ijm) [Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
+  1. (ijm)[Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
   3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   4. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  5. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
+  5. (java) [ShenCastan Edge Detector](./Segmentation/README.md#ShenCastan-edge-detector)
+  6. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
 ## [Neuronal Morphometry](./Morphometry/README.md#morphometry)
@@ -49,7 +50,7 @@ For more details refer to the [BAR documentation page][fijibar].
 
 
 ## Citations
-These scrips have contributed to the following publications:
+BAR scripts have contributed to the following publications:
 
   - Medda et al. Investigation of early cell-surface interactions of human mesenchymal stem cells on nanopatterned β-type titanium-niobium alloy surfaces. Interface Focus (2014) vol. 4 (1) pp. 20130046 [PMID 24501674](http://www.ncbi.nlm.nih.gov/pubmed/24501674)
   - Dobens and Dobens. FijiWings: an open source toolkit for semiautomated morphometric analysis of insect wings. G3 (Bethesda) (2013) vol. 3 (8) pp. 1443-9 [PMID 23797110](http://www.ncbi.nlm.nih.gov/pubmed/23797110)
@@ -76,7 +77,8 @@ These scripts are free software: you can redistribute them and/or modify them un
 
 Authors
 -------
-[Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
+* [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
+* Maxime Pinchon
 
 [ij1]: http://imagej.nih.gov/ij/
 [fiji]: http://fiji.sc/

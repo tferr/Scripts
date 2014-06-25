@@ -35,7 +35,7 @@ import java.awt.AWTEvent;
 import java.awt.Rectangle;
 
 
-public class Shen_Castan_514 implements ExtendedPlugInFilter, DialogListener {
+public class ShenCastan_Edge_Detector implements ExtendedPlugInFilter, DialogListener {
 
 	private ImagePlus imp;
 	private boolean canceled;
