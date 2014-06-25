@@ -26,7 +26,7 @@ For more details refer to the [BAR documentation page][fijibar].
   2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
   3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   4. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  5. (java) [ShenCastan Edge Detector](./Segmentation/README.md#ShenCastan-edge-detector)
+  5. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shencastan-edge-detector)
   6. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 

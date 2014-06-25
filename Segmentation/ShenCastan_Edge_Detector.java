@@ -7,9 +7,9 @@
  * 2014.06, Tiago Ferreira
  *      - Works with 16-bit and 32-bit images and stacks (multithreadable)
  *      - If present, only area ROI is processed
- *      - Added "preview" mode
+ *      - Added "preview" mode and undo support
  * 2004.07, Maxime Pinchon
- *      - Algorithm implementation
+ *      - Algorithm implementation[2]. This initial version no longer works with IJ
  *
  * [1] Shen and Castan, CVGIP, 1992, 54 (2) 112-133. http://dx.doi.org/10.1016/1049-9652(92)90060-B
  * [2] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
