@@ -63,7 +63,7 @@ public class ShenCastan_Edge_Detector implements ExtendedPlugInFilter, DialogLis
 				+ "and 1 (no smoothing, suitable for non-noisy images).";
 
 		final GenericDialog gd = new GenericDialog(command);
-		gd.addSlider("Coefficient:", 0.0, 1.0, f);
+		gd.addSlider("Coefficient:", 0.0001d, 1.0001d, f);
 		gd.addPreviewCheckbox(pfr);
 		gd.addDialogListener(this);
 		gd.addHelp(msg);
@@ -79,8 +79,8 @@ public class ShenCastan_Edge_Detector implements ExtendedPlugInFilter, DialogLis
 	/** Read dialog parameters (during preview or after dialog prompt) */
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		f = gd.getNextNumber();
-		if (f < 0) f = 0;
-		if (f > 1) f = 1;
+		if (f < 0) f = 0d;
+		if (f > 1) f = 1d;
 		canceled = gd.invalidNumber();
 		if (gd.wasOKed() && canceled) {
 			IJ.error("Value is invalid.");
