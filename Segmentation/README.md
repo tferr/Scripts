@@ -15,7 +15,7 @@ Thresholding [BARs](../README.md#scripts).
    Sets a threshold based on a background ROI
    ([Download .ijm](./Threshold_From_Background.ijm?raw=true))
 
-###[ShenCastan Edge Detector](../BAR#bar-plugins)
+###[Shen-Castan Edge Detector](../BAR/README.md#bar-plugins)
    Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54 (2) 112-133. Effective alternative to Canny-Deriche filtering.
    ([Source code](../BAR/src/main/java/bar/ShenCastan.java))
 

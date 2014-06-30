@@ -7,7 +7,6 @@ While most of BAR commands are macros and scripts, some BAR commands are pre-com
 The top-level _BAR_ Menu is organized in the following manner (version 1.0.2):
 
     BAR
-    ├── About BAR...
     ├── Annotation
     │   └── ROI Color Coder
     ├── Data Analysis
@@ -18,17 +17,20 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.2):
     ├── Morphometry
     │   └── Strahler Analysis
     ├── Segmentation
+    │   ├── Shen-Castan Edge Detector
     │   ├── Apply Threshold To ROI
     │   ├── Clear Thresholded Pixels
     │   ├── Threshold From Background
     │   ├── Wipe Background
     │   └── Shen-Castan Edge Detector
-    └── Tool Installers
-        ├── Install Calibration Menu
-        ├── Install Segment Profile
-        ├── Install Shortcuts Menu
-        ├── Install ROI Manager Tools
-        └── Toolset Creator...
+    ├── Tool Installers
+    │   ├── Install Calibration Menu
+    │   ├── Install Segment Profile
+    │   ├── Install Shortcuts Menu
+    │   ├── ROI Manager Tools
+    │   └── Toolset Creator...
+    └── About BAR...
+
 
 
 The relevant files get stored in the following locations (version 1.0.2):
@@ -36,12 +38,12 @@ The relevant files get stored in the following locations (version 1.0.2):
     Fiji.app
     ├── macros
     │   ├── tools
-    │   │   ├── Calibration_Menu.ijm
-    │   │   ├── Segment_Profile.ijm
-    │   │   └── Shortcuts_Menu.ijm
+    │   │   ├── Calibration_Menu.ijm
+    │   │   ├── Segment_Profile.ijm
+    │   │   └── Shortcuts_Menu.ijm
     │   └── toolsets
-    │       ├── ROI Manager Tools.ijm
-    │       └── Toolset Creator.ijm
+    │       ├── ROI Manager Tools.ijm
+    │       └── Toolset Creator.ijm
     └── plugins
         ├── BAR_-1.0.2-SNAPSHOT.jar
         └── Scripts
@@ -63,8 +65,8 @@ The relevant files get stored in the following locations (version 1.0.2):
 
 
 ###Notes
-   - While all files could be bundled in a single jar file (arguably a tidier approach), spreading files across folders has the sole advantage of being compatible with the [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu hierarchy
-   - Files are placed in the proper locations through a [script](../misc/symlink_bar.sh) (which is only useful when uploading files to the BAR [update site](http://sites.imagej.net/Tiago/)
+   - While all files could be bundled in a single jar file (arguably a tidier approach), spreading files across folders has the main advantage of being compatible with the [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu hierarchy
+   - Files are placed in the proper locations through a [script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
    - The recursive lists above were created with [tree](http://mama.indstate.edu/users/ice/tree/)
 
 [ [BAR's Home] ](../README.md#scripts)
