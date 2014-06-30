@@ -1,6 +1,6 @@
 # BAR plugins
 
-While most of BAR commands are macros and scripts, some BAR commands are pre-compiled java plugins bundled in a single JAR file. This directory contains the source code (a [Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins. The project also includes [plugins.config](./src/main/resources/plugins.config) that organizes the BAR menu [hierarchy](#bar-menu).
+While macros and scripts form the bulk of [BAR][home], some BAR commands are pre-compiled java plugins bundled in a single JAR file. This directory contains the source code (a [Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins. The project also includes [plugins.config](./src/main/resources/plugins.config) that organizes the BAR menu [hierarchy](#bar-menu).
 
 
 ### BAR-menu
@@ -69,5 +69,17 @@ The relevant files get stored in the following locations (version 1.0.2):
    - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
    - The recursive lists above were created with [tree](http://mama.indstate.edu/users/ice/tree/)
 
-[ [BAR's Home] ](../README.md#scripts)
-[ [BAR documentation page] ](http://fiji.sc/BAR)
+
+
+
+| [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
+|:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
+
+[Home]: ../README.md#scripts
+[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
+[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
+[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
+[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Fiji documentation]: http://fiji.sc/BAR

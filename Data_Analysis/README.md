@@ -1,6 +1,6 @@
 # Analysis
 
-[BARs](../README.md#scripts) related to data analysis.
+[BARs][home] related to data analysis.
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
    Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
@@ -47,11 +47,24 @@
    ([Download .bsh](./Plot_Results.bsh?raw=true))
 
 
-[ [BAR's Home] ](../README.md#scripts)
-[ [BAR documentation page] ](http://fiji.sc/BAR)
-
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png
 [FP page]: http://fiji.sc/Find_Peaks
 [FP image]: http://fiji.sc/images/a/a1/FindPeaksSnapshot.png
 [Poly image]: http://fiji.sc/images/f/f0/AnimatedPolyFit.gif
+
+
+
+
+| [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
+|:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
+
+[Home]: ../README.md#scripts
+[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
+[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
+[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
+[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Fiji documentation]: http://fiji.sc/BAR
+

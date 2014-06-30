@@ -1,4 +1,5 @@
 # Segmentation
+  [Routines][home] for partitioning images into analyzable parts.
 
 
 ## Edge Detection Routines
@@ -26,8 +27,20 @@
    Clears thresholded particles of defined circularity & size within the active ROI
    ([Download .ijm](./Wipe_Background.ijm?raw=true))
 
-###[Segment Profile Tool](../Tools#segment-profile)
-   Described in [Tools](../Tools#segment-profile)
+###[Segment Profile Tool](../Tools/README.md#segment-profile)
+   Described in [Tools](../Tools/README.md#segment-profile)
 
-[ [BAR's Home] ](../README.md#scripts)
-[ [BAR documentation page] ](http://fiji.sc/BAR)
+
+
+
+| [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
+|:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
+
+[Home]: ../README.md#scripts
+[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
+[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
+[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
+[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Fiji documentation]: http://fiji.sc/BAR

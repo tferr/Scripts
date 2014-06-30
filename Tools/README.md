@@ -1,11 +1,8 @@
 # Tools and Toolsets
-[BARs](../README.md#scripts) that are installed in the ImageJ Toolbar.
-Single _Tools_ should be be placed in `ImageJ/plugins/Tools/` and are appended to the IJ
-toolbar. _Toolsets_ replace the user's toolbar and should be placed in `ImageJ/macros/toolsets`.
-Both can be loaded using the ">>" drop-down menu in the main ImageJ window.
+[BARs][home] that are installed in the ImageJ Toolbar and can be installed using the _BAR>Tool Installers_ menu (see [BAR Menu organization](../BAR/README.md#bar-menu)). 
 
 ## Tools
-Tools are listed in the toolbar's ">>" menu when saved in `ImageJ/plugins/Tools/`
+Single Tools are appended to the IJ toolbar and are typically saved in the `ImageJ/macro/tools/` directory. Note, however, that Tools placed in `ImageJ/plugins/Tools/` are automatically listed in the ">>" drop-menu in the main ImageJ window, which may be convenient when installing individual files manually.
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
    Provides shortcuts for spatial calibration of images lacking metadata.
@@ -25,9 +22,9 @@ Tools are listed in the toolbar's ">>" menu when saved in `ImageJ/plugins/Tools/
 
 
 ## Toolsets
-Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/toolsets`
+Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu when saved in the `ImageJ/macros/toolsets` directory.
 
-###[ROI Manager Tools](./toolsets/ROI%20Manager%20Tools.ijm)
+###[ROI Manager Tools](./Toolsets/ROI%20Manager%20Tools.ijm)
    Renames selections stored in the ROI Manager.
    ([Download .ijm](./Toolsets/ROI%20Manager%20Tools.ijm?raw=true))
    ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
@@ -35,12 +32,23 @@ Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/tool
    See also [Image Annotation](../Annotation/README.md#annotation)
 
 
-###[Toolset Creator](./toolsets/Toolset%20Creator.txt)
+###[Toolset Creator](./Toolsets/Toolset%20Creator.ijm)
    Creates toolbar menus for running plugins, macros and scripts. It can also group
    built-in tools (such as drawing tools) in custom toolsets. It is distributed with ImageJ
    since IJ 1.41.
    ([Download .ijm](./Toolsets/Toolset%20Creator.ijm?raw=true))
 
 
-[ [BAR's Home] ](../README.md#scripts)
-[ [BAR documentation page] ](http://fiji.sc/BAR)
+
+
+| [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
+|:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
+
+[Home]: ../README.md#scripts
+[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
+[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
+[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
+[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Fiji documentation]: http://fiji.sc/BAR
