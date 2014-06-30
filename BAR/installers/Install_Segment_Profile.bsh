@@ -1,5 +1,0 @@
-import ij.IJ;
-
-tool = "Segment_Profile.ijm";
-dir = IJ.getDirectory("macros") + "tools";
-IJ.run("Install...", "install="+ dir + File.separator + tool);

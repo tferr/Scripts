@@ -37,26 +37,19 @@
     fi
     ln -f -s $SRC_DIR/Segmentation/* $DIR
 
-## 5. Symlink installers
-    DIR="$BAR_DIR/Tool_Installers"
-    if [ ! -d $DIR ]; then
-        mkdir $DIR
-    fi
-    ln -f -s $SRC_DIR/BAR/installers/* $DIR
-
-## 6. Symlink macro tools
+## 5. Symlink macro tools
     DIR="$FIJI_HOME/macros/tools"
     if [ ! -d $DIR ]; then
         mkdir $DIR
     fi
     ln -f -s $SRC_DIR/Tools/*.ijm $DIR
 
-## 7. Symlink macro toolsets
+## 6. Symlink macro toolsets
     DIR="$FIJI_HOME/macros/toolsets"
     if [ ! -d $DIR ]; then
         mkdir $DIR
     fi
     ln -f -s $SRC_DIR/Tools/Toolsets/*.ijm $DIR
 
-## 8. Symlink remaining commands such as the "About" box
-    ln -f -s $SRC_DIR/BAR/*.bsh $BAR_DIR
+## 7. Symlink compiled .jar
+    ln -f -s $SRC_DIR/BAR/target/*.jar $FIJI_HOME/plugins/

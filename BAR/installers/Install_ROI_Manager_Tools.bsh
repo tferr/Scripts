@@ -1,5 +1,0 @@
-import ij.IJ;
-
-tool = "ROI Manager Tools.ijm";
-dir = IJ.getDirectory("macros") + "toolsets";
-IJ.run("Install...", "install=["+ dir + File.separator + tool +"]");

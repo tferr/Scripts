@@ -1,4 +1,4 @@
-/* ShenCastan_Edge_Detector.java
+/*
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
@@ -23,6 +23,7 @@
  * General Public License for more details.
  */
 
+package bar;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -35,7 +36,7 @@ import java.awt.AWTEvent;
 import java.awt.Rectangle;
 
 
-public class ShenCastan_Edge_Detector implements ExtendedPlugInFilter, DialogListener {
+public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	private ImagePlus imp;
 	private boolean canceled;

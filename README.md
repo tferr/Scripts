@@ -45,9 +45,8 @@ For more details refer to the [BAR documentation page][fijibar].
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
   5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
-## [BARcode](./BAR/README.md#bar-specific-files)
-  [Files](./BAR/README.md#bar-specific-files) related to the BAR update site.
-
+## [BAR plugins](./BAR/README.md#bar-plugins)
+  Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
 
 ## Citations
 BAR scripts have contributed to the following publications:

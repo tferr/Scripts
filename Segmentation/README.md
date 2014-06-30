@@ -15,9 +15,9 @@ Thresholding [BARs](../README.md#scripts).
    Sets a threshold based on a background ROI
    ([Download .ijm](./Threshold_From_Background.ijm?raw=true))
 
-###[ShenCastan Edge Detector](./ShenCastan_Edge_Detector.java)
-   Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54 (2) 112-133. Effective alternative to Canny-Deriche filtering.
-   ([Download .java](./ShenCastan_Edge_Detector.java?raw=true))
+###[ShenCastan Edge Detector](../BAR#bar-plugins)
+   Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54 (2) 112-133. Effective alternative to Canny-Deriche filtering.
+   ([Source code](../BAR/src/main/java/bar/ShenCastan.java))
 
    NB: Currently, it does not support RGB images directly: they need to be first  converted to _RGB-Stacks_: 1) Open RGB image; 2) Run _Image>Type>RGB-Stacks_; 3) Run the plugin, processing all 3 slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initial data type.
 
