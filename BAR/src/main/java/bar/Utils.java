@@ -20,7 +20,7 @@ import java.io.File;
 
 public class Utils implements PlugIn {
 
-	private static final String VERSION = "1.0.1";
+	private static final String VERSION = "1.0.2";
 	private static final String DOC_URL = "http://fiji.sc/BAR";
 	private static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
 

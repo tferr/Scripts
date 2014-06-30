@@ -66,7 +66,8 @@ The relevant files get stored in the following locations (version 1.0.2):
 
 ###Notes
    - While all files could be bundled in a single jar file (arguably a tidier approach), spreading files across folders has the main advantage of being compatible with the [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu hierarchy
-   - Files are placed in the proper locations through a [script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
+   - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
    - The recursive lists above were created with [tree](http://mama.indstate.edu/users/ice/tree/)
 
 [ [BAR's Home] ](../README.md#scripts)
+[ [BAR documentation page] ](http://fiji.sc/BAR)

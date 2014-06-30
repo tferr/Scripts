@@ -14,6 +14,7 @@
 
 
 [ [BAR's Home] ](../README.md#scripts)
+[ [BAR documentation page] ](http://fiji.sc/BAR)
 
 [RCC page]: http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
 [RCC image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:roicolorcoderoutput.png

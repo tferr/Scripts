@@ -43,3 +43,4 @@ Toolsets are listed in the toolbar's ">>" menu when saved in `ImageJ/macros/tool
 
 
 [ [BAR's Home] ](../README.md#scripts)
+[ [BAR documentation page] ](http://fiji.sc/BAR)

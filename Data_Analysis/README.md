@@ -48,6 +48,7 @@
 
 
 [ [BAR's Home] ](../README.md#scripts)
+[ [BAR documentation page] ](http://fiji.sc/BAR)
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png

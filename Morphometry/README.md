@@ -33,6 +33,7 @@
 
 
 [ [BAR's Home] ](../README.md#scripts)
+[ [BAR documentation page] ](http://fiji.sc/BAR)
 
 [jenkins plugins]: http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/
 

@@ -20,18 +20,18 @@ For more details refer to the [BAR documentation page][fijibar].
 
 
 ## [Image Segmentation](./Segmentation/README.md#segmentation)
-  Threshold-based routines.
+  Routines for partitioning images into analyzable parts.
 
   1. (ijm)[Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
   3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   4. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  5. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shencastan-edge-detector)
+  5. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
   6. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
 ## [Neuronal Morphometry](./Morphometry/README.md#morphometry)
-  Scripts related to the quantification of neuronal arbors.
+  Scripts related to the quantification of neuronal arbors and other tree-like structures.
 
   1. (bsh) [Strahler Analysis](./Morphometry/README.md#strahler-analysis)
 
@@ -45,8 +45,20 @@ For more details refer to the [BAR documentation page][fijibar].
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
   5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
+
 ## [BAR plugins](./BAR/README.md#bar-plugins)
   Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
+
+
+## Help?
+ * Want to Contribute to BAR?
+    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR
+    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][fijibar]
+ * Having problems? Need to ask a question?
+    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ)
+    * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
+    * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
+
 
 ## Citations
 BAR scripts have contributed to the following publications:
@@ -58,15 +70,8 @@ BAR scripts have contributed to the following publications:
   - Carnevalli et al. S6K1 plays a critical role in early adipocyte differentiation. Developmental Cell (2010) vol. 18 (5) pp. 763-74 [PMID 20493810](http://www.ncbi.nlm.nih.gov/pubmed/20493810)
 
 
-
-## Help?
- * Want to Contribute to BAR?
-    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR
-    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][fijibar]
- * Having problems? Need to ask a question?
-    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ)
-    * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
-    * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
+## References
+  - Shen and Castan. An optimal linear operator for step edge detection. CVGIP: Graphical Models and Image Processing (1992) vol. 54 (2) pp. 112-133 [DOI: 10.1016/1049-9652(92)90060-B](http://dx.doi.org/10.1016/1049-9652(92)90060-B)
 
 
 License
