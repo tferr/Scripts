@@ -1,5 +1,5 @@
 /*
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation
@@ -18,6 +18,7 @@ import ij.plugin.PlugIn;
 import java.awt.Font;
 import java.io.File;
 
+/** Simple commands related to the BAR update site */
 public class Utils implements PlugIn {
 
 	private static final String VERSION = "1.0.2";

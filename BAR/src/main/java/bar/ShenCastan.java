@@ -1,19 +1,5 @@
 /*
- * IJ BAR: https://github.com/tferr/Scripts#scripts
- *
- * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
- * Canny-Deriche filtering.
- *
- * 2014.06, Tiago Ferreira
- *      - Works with 16-bit and 32-bit images and stacks (multithreadable)
- *      - If present, only area ROI is processed
- *      - Added "preview" mode and undo support
- * 2004.07, Maxime Pinchon
- *      - Algorithm implementation[2]. This initial version no longer works with IJ
- *
- * [1] Shen and Castan, CVGIP, 1992, 54 (2) 112-133. http://dx.doi.org/10.1016/1049-9652(92)90060-B
- * [2] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
- *
+ * IJ BAR: https://github.com/tferr/Scripts
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation
@@ -35,7 +21,21 @@ import ij.process.ImageProcessor;
 import java.awt.AWTEvent;
 import java.awt.Rectangle;
 
-
+/**
+ * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
+ * Canny-Deriche filtering.
+ *
+ * 2014.06, Tiago Ferreira
+ *      - Works with 16-bit and 32-bit images and stacks (multithreadable)
+ *      - If present, only area ROI is processed
+ *      - Added "preview" mode and undo support
+ * 2004.07, Maxime Pinchon
+ *      - Algorithm implementation[2]. This initial version no longer works with IJ
+ *
+ * [1] Shen and Castan, CVGIP, 1992, 54 (2) 112-133. http://dx.doi.org/10.1016/1049-9652(92)90060-B
+ * [2] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
+ *
+ **/
 public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	private ImagePlus imp;
