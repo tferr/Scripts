@@ -1,6 +1,6 @@
 # BAR plugins
 
-While macros and scripts form the bulk of [BAR][home], some BAR commands are pre-compiled java plugins bundled in a single JAR file. This directory contains the source code (a [Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins. The project also includes [plugins.config](./src/main/resources/plugins.config) that organizes the BAR menu [hierarchy](#bar-menu).
+While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre-compiled java plugins bundled in a single JAR file. This directory contains the source code (a [Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins. The project also includes [plugins.config](./src/main/resources/plugins.config) that organizes the BAR menu [hierarchy](#bar-menu).
 
 
 ### BAR-menu
@@ -21,8 +21,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.2):
     │   ├── Apply Threshold To ROI
     │   ├── Clear Thresholded Pixels
     │   ├── Threshold From Background
-    │   ├── Wipe Background
-    │   └── Shen-Castan Edge Detector
+    │   └── Wipe Background
     ├── Tool Installers
     │   ├── Install Calibration Menu
     │   ├── Install Segment Profile
@@ -75,11 +74,11 @@ The relevant files get stored in the following locations (version 1.0.2):
 | [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
 |:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
 
-[Home]: ../README.md#scripts
-[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
-[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
-[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
-[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
-[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Home]: https://github.com/tferr/Scripts#ij-bar
+[Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
+[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [Fiji documentation]: http://fiji.sc/BAR

@@ -1,5 +1,5 @@
 # Tools and Toolsets
-[BARs][home] that are installed in the ImageJ Toolbar and can be installed using the _BAR>Tool Installers_ menu (see [BAR Menu organization](../BAR/README.md#bar-menu)). 
+[BARs][Home] that are installed in the ImageJ Toolbar and can be installed using the _BAR>Tool Installers_ menu (see [BAR Menu organization](../BAR/README.md#bar-menu)). 
 
 ## Tools
 Single Tools are appended to the IJ toolbar and are typically saved in the `ImageJ/macro/tools/` directory. Note, however, that Tools placed in `ImageJ/plugins/Tools/` are automatically listed in the ">>" drop-menu in the main ImageJ window, which may be convenient when installing individual files manually.
@@ -44,11 +44,11 @@ Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu wh
 | [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
 |:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
 
-[Home]: ../README.md#scripts
-[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
-[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
-[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
-[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
-[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Home]: https://github.com/tferr/Scripts#ij-bar
+[Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
+[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [Fiji documentation]: http://fiji.sc/BAR

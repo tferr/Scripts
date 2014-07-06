@@ -1,6 +1,6 @@
 # Analysis
 
-[BARs][home] related to data analysis.
+[BARs][Home] related to data analysis.
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
    Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
@@ -59,12 +59,12 @@
 | [Home] | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
 |:------:|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
 
-[Home]: ../README.md#scripts
-[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
-[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
-[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
-[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
-[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Home]: https://github.com/tferr/Scripts#ij-bar
+[Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
+[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [Fiji documentation]: http://fiji.sc/BAR
 

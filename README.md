@@ -4,7 +4,7 @@ Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R
 For more details refer to the [BAR documentation page][Fiji documentation].
 
 
-## [Data Analysis](./Data_Analysis/README.md#analysis)
+## [Data Analysis][Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
   1. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
@@ -13,30 +13,30 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   4. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
 
 
-## [Image Annotation](./Annotation/README.md#annotation)
+## [Image Annotation][Annotation]
   Aiders for the annotation of scientific images.
 
   1. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
 
 
-## [Image Segmentation](./Segmentation/README.md#segmentation)
+## [Image Segmentation][Segmentation]
   Routines for partitioning images into analyzable parts.
 
-  1. (ijm)[Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
-  2. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
-  3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
-  4. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  5. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
+  1. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
+  2. (ijm)[Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
+  3. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
+  4. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
+  5. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
   6. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
-## [Neuronal Morphometry](./Morphometry/README.md#morphometry)
+## [Neuronal Morphometry][Morphometry]
   Scripts related to the quantification of neuronal arbors and other tree-like structures.
 
   1. (bsh) [Strahler Analysis](./Morphometry/README.md#strahler-analysis)
 
 
-## [Tools and Toolsets](./Tools/README.md#tools-and-toolsets)
+## [Tools and Toolsets][Tools]
   Additions to the ImageJ toolbar.
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
@@ -46,7 +46,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
 
-## [BAR plugins](./BAR/README.md#bar-plugins)
+## [BAR plugins][Plugins]
   Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
 
 
@@ -79,8 +79,8 @@ License
 These scripts are free software: you can redistribute them and/or modify them under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 
-Authors
--------
+Contributors
+------------
 * [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
 * Maxime Pinchon
 
@@ -93,11 +93,11 @@ Authors
 | [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
 |:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
 
-[Analysis]: https://github.com/tferr/Scripts/blob/master/Data_Analysis/README.md#analysis
-[Annotation]: https://github.com/tferr/Scripts/blob/master/Annotation/README.md#annotation
-[Segmentation]: https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/blob/master/Morphometry/README.md#morphometry
-[Tools]: https://github.com/tferr/Scripts/blob/master/Tools/README.md#tools-and-toolsets
-[Plugins]: https://github.com/tferr/Scripts/blob/master/BAR/README.md#bar-plugins
+[Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
+[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
+[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
+[Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [Fiji documentation]: http://fiji.sc/BAR
 
