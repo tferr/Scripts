@@ -48,7 +48,7 @@ public class Utils implements PlugIn {
 				listDirectory(SNIPPETS_DIR);
 			else if (args[1].equalsIgnoreCase("reveal"))
 				revealFile(SNIPPETS_DIR);
-			else
+			else //TODO implement a "reload snippets" command
 				openFile(SNIPPETS_DIR, arg);
 
 		} else if (arg.indexOf(".ijm") != -1) {
@@ -88,7 +88,7 @@ public class Utils implements PlugIn {
 			return;
 		}
 
-		final TextWindow tw = new TextWindow(dir,"", 500, 200);
+		final TextWindow tw = new TextWindow(dir,"", 550, 200);
 		final TextPanel tp = tw.getTextPanel();
 		tp.setColumnHeadings("Double-click on a filename to open it");
 
@@ -119,7 +119,7 @@ public class Utils implements PlugIn {
 		installMacroFile(path);
 	}
 
-	/** Installs a toolset from macros/toolsets/ */
+	/** Installs a macro Toolset from macros/toolsets/ */
 	void installToolset(final String filename) {
 		final String path = IJ.getDirectory("macros") + "toolsets" + File.separator + filename;
 		installMacroFile(path);
@@ -131,6 +131,8 @@ public class Utils implements PlugIn {
 		if (!fileExists(f)) return;
 		//final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
 		//if (ed!=null) ed.open(filedir, filename);
+
+		// The following works with both the built-in editor and Fiji's Script Editor
 		IJ.run("Edit...", "open=["+ dir + filename +"]");
 	}
 

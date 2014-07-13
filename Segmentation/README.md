@@ -7,7 +7,9 @@
    Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54 (2) 112-133 [[ref](../README.md#references)]. Effective alternative to Canny-Deriche filtering.
    ([Source code](../BAR/src/main/java/bar/ShenCastan.java))
 
-   NB: Currently, it does not support RGB images directly: they need to be first  converted to _RGB-Stacks_: 1) Open RGB image; 2) Run _Image>Type>RGB-Stacks_; 3) Run the plugin, processing all 3 slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initial data type.
+It is a re-write of the [initial plugin](http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html) (that no longer works with IJ) written in 2004 by Maxime Pinchon under the supervision of Noël Bonnet at the UMRS-INSERM 514.
+
+Currently, it does not support RGB images directly: they need to be first  converted to _RGB-Stacks_: 1) Open RGB image; 2) Run _Image>Type>RGB-Stacks_; 3) Run the plugin, processing all three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initial data type.
 
 
 ## Threshold-based Routines

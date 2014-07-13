@@ -1,9 +1,8 @@
 # Median_Filter.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
-# This python[1] snippet performs a filtering operation on the frontmost (i.e.,
-# active) image and exemplifies how to create a generic, reusable script based
-# on the ImageJ API[2].
+# This python[1] snippet performs a filtering operation on the active image and
+# exemplifies how to create a generic, reusable script based on the IJ API[2].
 #
 # The getSettings(ImagePlus) function will only prompt the user for parameters
 # if the global variables xradius, yradius, zradius are undefined (i.e., None).

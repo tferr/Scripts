@@ -7,15 +7,14 @@ They are installed under `BAR>Snippets`, a menu containing two other commands:
  - *Reveal Snippets:* Opens this directory in the file browser of the operating system
 
 
-##Contents
-###[Process Folder](./Process_Folder.ijm)
-   A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
-   ([Download .ijm](./Process_Folder.ijm?raw=true))
-
+##List of Snippets
 ###[Median Filter](./Median_Filter.py)
    A [Python](#python) script that exemplifies how to perform a filtering operation.
    ([Download .py](./Median_Filter.py?raw=true))
 
+###[Process Folder](./Process_Folder.ijm)
+   A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
+   ([Download .ijm](./Process_Folder.ijm?raw=true))
 
 
 ##Useful Resources

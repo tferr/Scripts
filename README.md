@@ -1,6 +1,8 @@
 # <a name="scripts"></a>IJ BAR
 
-Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for [ImageJ][ij1]/[Fiji][fiji]. The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
+Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for [ImageJ][ij1]/[Fiji][fiji], the de facto standard in scientific image processing in the life sciences.
+
+The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
 For more details refer to the [BAR documentation page][Fiji documentation].
 
 
@@ -50,17 +52,20 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
 
 ## [Snippets][Snippets]
-  A depository of generic and reusable scripts to be used as scripting templates.
+  A depository of generic and reusable scripts to be used as scripting templates, such as:
+
+  1. (py) [Median Filter](./Snippets/README.md#median-filter)
+  2. (ijm) [Process Folder](./Morphometry/README.md#process-folder)
 
 
 ## Help?
  * Want to Contribute to BAR?
-    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR
+    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR or [here](https://help.github.com/articles/using-pull-requests) on how to initiate a [pull request](https://github.com/tferr/Scripts/pulls)
     * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Fiji documentation]
- * Having problems? Need to ask a question?
-    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ)
-    * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
-    * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
+ * Having problems? Found a bug? Need to ask a question?
+    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ) Fiji [FAQs](http://fiji.sc/Frequently_Asked_Questions) and [Bug reporting best practices](http://fiji.sc/Bug_reporting_best_practices). Then, you can either:
+      * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
+      * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
 
 
 ## Citations
@@ -84,8 +89,8 @@ These scripts are free software: you can redistribute them and/or modify them un
 
 Contributors
 ------------
-* [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
-* Maxime Pinchon
+BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com), with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho), [Wayne Rasband][ij1]. This project would not have been possible without the support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+
 
 [ij1]: http://imagej.nih.gov/ij/
 [fiji]: http://fiji.sc/
