@@ -9,7 +9,7 @@ They are installed under `BAR>Snippets`, a menu containing two other commands:
 
 ##Contents
 ###[Process Folder](./Process_Folder.ijm)
-   A [macro](#imagej-macro-language) tailored for processing bulk images. A more customizable alternative to the _Process>Batch>Macro_ command.
+   A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
    ([Download .ijm](./Process_Folder.ijm?raw=true))
 
 ###[Median Filter](./Median_Filter.py)

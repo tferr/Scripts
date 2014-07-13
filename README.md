@@ -49,6 +49,9 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 ## [BAR plugins][Plugins]
   Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
 
+## [Snippets][Snippets]
+  A depository of generic and reusable scripts to be used as scripting templates.
+
 
 ## Help?
  * Want to Contribute to BAR?
@@ -90,8 +93,10 @@ Contributors
 
 
 
-| [Analysis] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Fiji documentation] |
-|:----------:|:--------------:|:-------------:|:-------:|:---------:|:--------------------:|
+
+| [Analysis] | [Annotation] | [Segmentation] | [Morphometry] | [Tools] | [Plugins] | [Snippets] | [Fiji][Fiji documentation] |
+|:----------:|:------------:|:--------------:|:-------------:|:-------:|:---------:|:----------:|:--------------------------:|
+
 
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
@@ -99,5 +104,6 @@ Contributors
 [Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
+[Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
 [Fiji documentation]: http://fiji.sc/BAR
 
