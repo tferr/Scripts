@@ -32,7 +32,7 @@ def getSettings(img):
         canProceed = False
 
     # Get new values if at least one of the parameters is 'null'
-    if None in (xradius, yradius, zradius):
+    if canProceed and None in (xradius, yradius, zradius):
         gd = GenericDialog("Median Filter")
         gd.addNumericField("X radius:", 2.0, 1)
         gd.addNumericField("Y radius:", 2.0, 1)
