@@ -13,18 +13,18 @@ import ij.measure.ResultsTable;
 
 // flags for axis design
 int[] flags = new int[12]; String[] labels = new String[12]; boolean[] choices = new boolean[12];
-flags[0] = Plot.X_LOG_NUMBERS;  choices[0] = false;  labels[0] = "Logarithmic scale";
-flags[1] = Plot.Y_LOG_NUMBERS;  choices[1] = false;  labels[1] = labels[0];
-flags[2] = Plot.X_GRID;         choices[2] = true;   labels[2] = "Gridlines";
-flags[3] = Plot.Y_GRID;         choices[3] = true;   labels[3] = labels[2];
-flags[4] = Plot.X_FORCE2GRID;   choices[4] = false;  labels[4] = "Grid expands axis";
-flags[5] = Plot.Y_FORCE2GRID;   choices[5] = false;  labels[5] = labels[4];
-flags[6] = Plot.X_NUMBERS;      choices[6] = true;   labels[6] = "Labels at intervals";
-flags[7] = Plot.Y_NUMBERS;      choices[7] = true;   labels[7] = labels[6];
-flags[8] = Plot.X_TICKS;        choices[8] = true;   labels[8] = "Major ticks";
-flags[9] = Plot.Y_TICKS;        choices[9] = true;   labels[9] = labels[8];
-flags[10]= Plot.X_MINOR_TICKS;  choices[10]= false;  labels[10]= "Minor ticks";
-flags[11]= Plot.Y_MINOR_TICKS;  choices[11]= false;  labels[11]= labels[10];
+flags[0] = Plot.X_LOG_NUMBERS;  choices[0] = false;  labels[0] = "Logarithmic_scale_X";
+flags[1] = Plot.Y_LOG_NUMBERS;  choices[1] = false;  labels[1] = "Logarithmic_scale_Y";
+flags[2] = Plot.X_GRID;         choices[2] = true;   labels[2] = "Gridlines_X";
+flags[3] = Plot.Y_GRID;         choices[3] = true;   labels[3] = "Gridlines_Y";
+flags[4] = Plot.X_FORCE2GRID;   choices[4] = false;  labels[4] = "Grid_expands_axis_X";
+flags[5] = Plot.Y_FORCE2GRID;   choices[5] = false;  labels[5] = "Grid_expands_axis_Y";
+flags[6] = Plot.X_NUMBERS;      choices[6] = true;   labels[6] = "Labels_at_intervals_X";
+flags[7] = Plot.Y_NUMBERS;      choices[7] = true;   labels[7] = "Labels_at_intervals_Y";
+flags[8] = Plot.X_TICKS;        choices[8] = true;   labels[8] = "Major_ticks_X";
+flags[9] = Plot.Y_TICKS;        choices[9] = true;   labels[9] = "Major_ticks_Y";
+flags[10]= Plot.X_MINOR_TICKS;  choices[10]= false;  labels[10]= "Minor_ticks_X";
+flags[11]= Plot.Y_MINOR_TICKS;  choices[11]= false;  labels[11]= "Minor_ticks_Y";
 
 // flags for dataset design
 int[] shapes = new int[6]; String[] slabels = new String[6]; String[] colors = new String[6];
