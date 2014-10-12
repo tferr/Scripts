@@ -1,10 +1,10 @@
 #Snippets
 
 [BAR][Home] Snippets. This directory is a depository of generic and reusable scripts to be recycled by BAR users.
-They are installed under `BAR>Snippets`, a menu containing two other commands:
+They are installed under `BAR>Snippets>`, a menu containing two other commands:
 
- - *List Snippets:* Prints the contents of this directory to a dedicated window. Files can then be open in the Script Editor by double-click. This may be preferable to [Shift-clicking](http://fiji.sc/BAR#OpeningBAR) the Menu bar
- - *Reveal Snippets:* Opens this directory in the file browser of the operating system
+ - `List Snippets`: Prints the contents of this directory to a dedicated window. Files can then be open in the Script Editor by double-click. This may be preferable to [Shift-clicking](http://fiji.sc/BAR#OpeningBAR) the Menu bar
+ - `Reveal Snippets`: Opens this directory in the file browser of the operating system
 
 
 ##List of Snippets
