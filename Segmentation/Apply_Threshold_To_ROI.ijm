@@ -7,8 +7,8 @@
  * 'Clear Thresholded Pixels.ijm').
  *
  * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
- * applied to the Z-dimension. With 8-bit images thresholded values are to to 255, with 16/32-bit
- * images to the maximum of active ROI.
+ * applied to the Z-dimension. With 8-bit images thresholded values are se to to 255, with
+ * 16/32-bit images to the maximum of active ROI.
  * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
  *
  *   attr = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
@@ -54,6 +54,7 @@ for (i=start; i<=end; i++) {
 	changeValues(lower, upper, value);
 }
 Stack.setPosition(channel, currentSlice, frame);
+setThreshold(lower, upper);
 setBatchMode(false);
 
 

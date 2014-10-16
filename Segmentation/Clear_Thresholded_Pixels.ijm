@@ -16,7 +16,7 @@
  *   IJ.runMacroFile(ctp, "preceding")  // clear pixels until active slice
  *   IJ.runMacroFile(ctp, "subsequent") // clear pixels from active slice
  *
- * TF 2014.06
+ * TF 2014.10
  */
 
 getThreshold(lower, upper);
@@ -51,4 +51,5 @@ for (i=start; i<=end; i++) {
 	changeValues(lower, upper, 0);
 }
 Stack.setPosition(channel, currentSlice, frame);
+setThreshold(lower, upper);
 setBatchMode(false);

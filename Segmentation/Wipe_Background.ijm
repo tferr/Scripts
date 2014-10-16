@@ -12,7 +12,7 @@
  * Know issues:
  * - 5D stacks escape batch mode
  *
- * TF, 01.2014
+ * TF, 2014.10
  */
 
 getThreshold(lower, upper);
@@ -104,7 +104,7 @@ setBatchMode(true);
 
 		// Restore original settings
 		Stack.setPosition(channel, activeSlice, frame);
-		run("Restore Selection");
+		if (areaROI) run("Restore Selection");
 		setThreshold(lower, upper);
 		closeImg(maskID);
 	}
