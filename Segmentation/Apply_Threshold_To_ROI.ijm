@@ -7,8 +7,9 @@
  * 'Clear Thresholded Pixels.ijm').
  *
  * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
- * applied to the Z-dimension. Examples on how to call it from other scripts (see http://fiji.sc/BAR
- * for details):
+ * applied to the Z-dimension. With 8-bit images thresholded values are to to 255, with 16/32-bit
+ * images to the maximum of active ROI.
+ * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
  *
  *   attr = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
  *          +"Segmentation"+ File.separator +"Apply_Threshold_To_ROI.ijm";
@@ -17,7 +18,7 @@
  *   IJ.runMacroFile(attr, "preceding")  // apply threshold up to active slice
  *   IJ.runMacroFile(attr, "subsequent") // apply threshold after active slice
  *
- * TF 2014.06
+ * TF 2014.10
  */
 
 getThreshold(lower, upper);
@@ -47,9 +48,18 @@ if (scope=="" && depth>1) {
 
 setBatchMode(true);
 setupUndo();
+value = getMax();
 for (i=start; i<=end; i++) {
 	Stack.setPosition(channel, i, frame);
-	changeValues(lower, upper, 255);
+	changeValues(lower, upper, value);
 }
 Stack.setPosition(channel, currentSlice, frame);
 setBatchMode(false);
+
+
+function getMax() {
+	max = 255;
+	if (bitDepth()!=8)
+		getStatistics(null, null, null, max);
+	return max;
+}
