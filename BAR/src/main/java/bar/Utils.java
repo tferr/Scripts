@@ -259,9 +259,12 @@ public class Utils implements PlugIn {
 		gd.addMessage("A curated collection of Broadly Applicable Routines",
 				plainf);
 		gd.setInsets(10, 20, 0);
-		gd.addMessage("Authors", boldf);
+		gd.addMessage("Author and Maintainer", boldf);
 		gd.setInsets(0, 20, 0);
 		gd.addMessage("Tiago Ferreira", plainf);
+		gd.addMessage("Contributors", boldf);
+		gd.setInsets(0, 20, 0);
+		gd.addMessage("Johannes Schindelin, Kota Miura, Wayne Rasband, Maxime Pinchon", plainf);
 		gd.enableYesNoCancel("Browse Documentation", "Browse Repository");
 		gd.hideCancelButton();
 		gd.showDialog();
