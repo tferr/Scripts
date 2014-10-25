@@ -4,24 +4,32 @@ While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre
 
 
 ### BAR-menu
-The top-level _BAR_ Menu is organized in the following manner (version 1.0.2):
+The top-level _BAR_ Menu is organized in the following manner (version 1.0.3):
 
     BAR
     ├── Annotation
+    │   ├── Move Menu (Context<>Main)
     │   └── ROI Color Coder
     ├── Data Analysis
+    │   ├── Move Menu (Context<>Main)
     │   ├── Distribution Plotter
     │   ├── Find Peaks
     │   ├── Fit Polynomial
     │   └── Plot Results
     ├── Morphometry
+    │   ├── Move Menu (Context<>Main)
     │   └── Strahler Analysis
     ├── Segmentation
+    │   ├── Move Menu (Context<>Main)
     │   ├── Shen-Castan Edge Detector
     │   ├── Apply Threshold To ROI
     │   ├── Clear Thresholded Pixels
+    │   ├── Remove Isolated Pixels
     │   ├── Threshold From Background
     │   └── Wipe Background
+    ├── Snippets
+    │   ├── List Snippets
+    │   └── Reveal Snippets
     ├── Tool Installers
     │   ├── Install Calibration Menu
     │   ├── Install Segment Profile
@@ -32,7 +40,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.2):
 
 
 
-The relevant files get stored in the following locations (version 1.0.2):
+The relevant files get stored in the following locations (version 1.0.3):
 
     Fiji.app
     ├── macros
@@ -44,26 +52,31 @@ The relevant files get stored in the following locations (version 1.0.2):
     │       ├── ROI Manager Tools.ijm
     │       └── Toolset Creator.ijm
     └── plugins
-        ├── BAR_-1.0.2-SNAPSHOT.jar
+        ├── BAR_-1.0.3-SNAPSHOT.jar
         └── Scripts
             └── BAR
                 ├── Annotation
                 │   └── ROI_Color_Coder.ijm
-                ├── Data Analysis
+                ├── Data_Analysis
                 │   ├── Distribution_Plotter.ijm
                 │   ├── Find_Peaks.bsh
                 │   ├── Fit_Polynomial.bsh
                 │   └── Plot_Results.bsh
                 ├── Morphometry
                 │   └── Strahler_Analysis.bsh
-                └── Segmentation
-                    ├── Apply_Threshold_To_ROI.ijm
-                    ├── Clear_Thresholded_Pixels.ijm
-                    ├── Threshold_From_Background.ijm
-                    └── Wipe_Background.ijm
+                ├── Segmentation
+                │   ├── Apply_Threshold_To_ROI.ijm
+                │   ├── Clear_Thresholded_Pixels.ijm
+                │   ├── Remove_Isolated_Pixels.ijm
+                │   ├── Threshold_From_Background.ijm
+                │   └── Wipe_Background.ijm
+                └── Snippets
+                    ├── Median_Filter.py
+                    └── Process_Folder.ijm
 
 
 ###Notes
+   - You can place _BAR>_ submenus in the image's context menu (the menu that pops up when right-clicking on the image canvas) by using the _Move Menu (Context<>Main)_. This facilitates accessibility of commonly-used commands. The transfer is bi-directional: once in the context menu, chossing _Move Menu_ will replace the submenu in the main Menu bar.
    - While all files could be bundled in a single jar file (arguably a tidier approach), spreading files across folders has the main advantage of being compatible with the [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu hierarchy
    - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
    - The recursive lists above were created with [tree](http://mama.indstate.edu/users/ice/tree/)

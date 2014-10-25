@@ -27,9 +27,10 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   1. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
   2. (ijm)[Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   3. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
-  4. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
-  5. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
-  6. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
+  4. (ijm) [Remove Isolated Pixels](./Segmentation/README.md#remove-isolated-pixels)
+  5. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
+  6. (ijm) [Set Threshold From Background](./Segmentation/README.md#set-threshold-from-background)
+  7. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
 ## [Neuronal Morphometry][Morphometry]
@@ -89,7 +90,7 @@ These scripts are free software: you can redistribute them and/or modify them un
 
 Contributors
 ------------
-BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com) with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho) and [Wayne Rasband][ij1]. This project would not have been possible without the support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com) with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho), [Wayne Rasband][ij1] and [Kota Miura](https://github.com/cmci). This project would not have been possible without the support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
 
 
 [ij1]: http://imagej.nih.gov/ij/
