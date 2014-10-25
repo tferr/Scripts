@@ -11,6 +11,7 @@
 package bar;
 
 import ij.IJ;
+import ij.Menus;
 import ij.gui.GenericDialog;
 import ij.plugin.BrowserLauncher;
 import ij.plugin.MacroInstaller;
@@ -21,6 +22,8 @@ import ij.text.TextWindow;
 
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.Menu;
+import java.awt.PopupMenu;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +54,12 @@ public class Utils implements PlugIn {
 			else //TODO implement a "reload snippets" command
 				openFile(SNIPPETS_DIR, arg);
 
+		} else if (arg.startsWith("moveMenu:")) {
+
+			final String[] args = arg.split(":");
+			if (args.length==1) return;
+			moveSubmenu(args[1]);
+
 		} else if (arg.indexOf(".ijm") != -1) {
 
 			if (arg.indexOf("Tools") != -1) // filenames containing "Tools" and "Toolset"
@@ -63,6 +72,71 @@ public class Utils implements PlugIn {
 
 	}
 
+	/**
+	 * Transfers the specified BAR submenu between the main IJ's menu bar and the
+	 * image's context menu (vice-versa if the submenu is already in the context
+	 * menu). An acknowledgement message is displayed if !IJ.macroRunning().
+	 */
+	private void moveSubmenu(final String subMenu) {
+		final Menu barMenu = Menus.getImageJMenu("BAR");
+		final PopupMenu popMenu = Menus.getPopupMenu();
+
+		final Integer popmenuPos = getMenuItem(popMenu, subMenu);
+		final Integer barmenuPos = getMenuItem(barMenu, subMenu);
+		if (popmenuPos==null || barmenuPos==null) {
+			IJ.error("BAR v"+ VERSION +" Error", "Some menu items are not accessible.\n"
+					+"Perhaps the image's context menu is disabled?");
+			return;
+		}
+
+		if (popmenuPos==-1) { // parent is MenuBar
+
+			popMenu.addSeparator();
+			popMenu.add(barMenu.getItem(barmenuPos));
+			removeLastSeparator(barMenu);
+			if (!IJ.macroRunning())
+				IJ.showMessage("BAR v"+ VERSION, ""+ subMenu +"> transferred to context menu.\n"
+						+"Right-click on the image canvas to access it.");
+
+		} else { // parent is PopupMenu
+
+			barMenu.addSeparator();
+			barMenu.add(popMenu.getItem(popmenuPos));
+			removeLastSeparator(popMenu);
+			if (!IJ.macroRunning())
+				IJ.showMessage("BAR v"+ VERSION, "BAR>"+ subMenu +"> transferred to main menu.");
+
+		}
+	}
+
+	/** Removes any trailing separator(s) from the specified menu. */
+	private void removeLastSeparator(final Menu menu) {
+		if (menu==null) return;
+		final int lastItem = menu.getItemCount()-1;
+		if (menu.getItem(lastItem).getLabel().equals("-")) {
+			menu.remove(lastItem);
+			removeLastSeparator(menu);
+		}
+	}
+
+	/**
+	 * Returns the index of the MenuItem labeled by the specified string.
+	 * Returns -1 if no match is found, null if menu is not available.
+	 **/
+	private Integer getMenuItem(final Menu menu, final String label) {
+		int position = -1;
+		if (menu==null) {
+			return null;
+		} else {
+			for (int i=0; i<menu.getItemCount(); i++) {
+				if (menu.getItem(i).getLabel().equals(label)) {
+					position = i;
+					break;
+				}
+			}
+		}
+		return position;
+	}
 
 	/** Prints the contents of a directory to a dedicated table. */
 	private void listDirectory(final String dir) {
