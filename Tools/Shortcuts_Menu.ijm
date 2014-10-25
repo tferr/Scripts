@@ -54,19 +54,20 @@ function shortcutInstaller() {
     Dialog.addCheckboxGroup(1,2,newArray("Add more shortcuts", "Clear all entries"), newArray(2));
     Dialog.addHelp(help);
   Dialog.show();
-    add = Dialog.getCheckbox;
-    res = Dialog.getCheckbox;
+    add = Dialog.getCheckbox();
+    clear = Dialog.getCheckbox();
 
   for (i =0; i<k; i++) {
       entry = Dialog.getString;
       if (!blankString(entry))
           newitems+= entry +",";
   }
-  if (res) {
+  if (clear) {
       call("ij.Prefs.set", "sMenu.list", "-");
       shortcutInstaller();
   } else {
-      call("ij.Prefs.set", "sMenu.list", newitems);
+  	  if (!blankString(newitems))
+          call("ij.Prefs.set", "sMenu.list", newitems);
       if (add) {
           call("ij.Prefs.set", "sMenu.list", newitems+", , , ,");
           shortcutInstaller();
@@ -80,9 +81,9 @@ function shortcutInstaller() {
 
 function getMenuPrefs() {
     prefs = call("ij.Prefs.get", "sMenu.list", "-");
-    prefs = split(prefs, ",");
-    items = newArray("Save All Images", "-", "Define Shortcuts...");
-    return Array.concat(prefs,items);
+    if (!endsWith(prefs, ",")) prefs += ",";
+    prefs += "-,Save All Images,-,Define Shortcuts...";
+    return split(prefs, ",");
 }
 
 function blankString(string) {
