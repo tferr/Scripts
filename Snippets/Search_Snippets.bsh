@@ -28,7 +28,7 @@ import java.io.File;
 boolean searchContents = true;
 boolean caseInsensitive = true;
 String PATH = IJ.getDirectory("plugins") +"Scripts/BAR/Snippets/";
-String BAR_URL = "https://github.com/tferr/Scripts/tree/master/Snippets#snippets";
+String URL = "https://github.com/tferr/Scripts/tree/master/Snippets#snippets";
 
 
 /* Returns text from the system clipboard or an empty string if no text was found */
@@ -56,7 +56,7 @@ if (f.exists() && f.isDirectory()) {
     gd.addStringField("_", searchString, 25);
     gd.addCheckbox("Search contents", searchContents);
     gd.addCheckbox("Ignore case", caseInsensitive);
-    gd.addHelp(BAR_URL);
+    gd.addHelp(URL);
     gd.setHelpLabel("BAR");
     gd.showDialog();
 
@@ -73,7 +73,6 @@ if (f.exists() && f.isDirectory()) {
 
     // Pass the options string to Plugins>Utilies>Search...
     IJ.run("Search...", options);
-    IJ.log(options);
     
 } else {
 
