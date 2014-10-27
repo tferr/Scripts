@@ -16,6 +16,9 @@ They are installed under `BAR>Snippets>`, a menu containing two other commands:
    A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
    ([Download .ijm](./Process_Folder.ijm?raw=true))
 
+###[Search Snippets](./Search_Snippets.bsh)
+   A BeanShell script that searches for content in this directory.
+   ([Download .bsh](./Search_Snippets.bsh?raw=true))
 
 ##Useful Resources
 

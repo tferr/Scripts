@@ -1,0 +1,84 @@
+/* Search_Snippets.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * BeanShell script that instructs the built-in 'Search...' command (Plugins>Utilies>Search...) to
+ * search inside plugins/BAR/Snippets/ for clipboard contents.
+ * Caveats: The search string cannot contain quotes. Also, if it contains space(s) it cannot contain
+ * square brackets. This is because ImageJ uses these characters to delimit macro values passed as
+ * part of the run() function's second argument.
+ * NB: The 'Search' command is actually a macro[1]. This script would actually be simpler if itself
+ * would have been written using the same ImageJ macro language. Writing it in BeanShell exemplifies
+ * how different scripting languages can cooperate in ImageJ.
+ *
+ * [1] https://github.com/imagej/imagej1/blob/master/macros/Search.txt
+ * Tiago Ferreira, 2014.10.27
+ */
+
+import ij.IJ;
+import ij.gui.GenericDialog;
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.io.File;
+
+
+/* Options */
+boolean searchContents = true;
+boolean caseInsensitive = true;
+String PATH = IJ.getDirectory("plugins") +"Scripts/BAR/Snippets/";
+String BAR_URL = "https://github.com/tferr/Scripts/tree/master/Snippets#snippets";
+
+
+/* Returns text from the system clipboard or an empty string if no text was found */
+String getClipboardContents() {
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    Clipboard clipboard = toolkit.getSystemClipboard();
+    String s = null;
+    try {
+        s = (String)clipboard.getData(DataFlavor.stringFlavor);
+    } catch (Exception e) {
+        s = "";
+    }
+    return s;
+}
+
+
+File f = new File(PATH); // Any slash will be converted into platform-specific File.separator
+if (f.exists() && f.isDirectory()) {
+
+    // Get string from clipboard
+    String searchString = getClipboardContents();
+
+    // Build prompt
+    GenericDialog gd = new GenericDialog("Search Snippets Directory");
+    gd.addStringField("_", searchString, 25);
+    gd.addCheckbox("Search contents", searchContents);
+    gd.addCheckbox("Ignore case", caseInsensitive);
+    gd.addHelp(BAR_URL);
+    gd.setHelpLabel("BAR");
+    gd.showDialog();
+
+    // Retrieve options from prompt
+    searchString = gd.getNextString();
+    searchContents = gd.getNextBoolean();
+    caseInsensitive = gd.getNextBoolean();
+
+    // Concatenate all options into a single string
+    String options = "_=["+ searchString +"] ";
+    if (searchContents) options+= "search_contents ";
+    if (caseInsensitive) options+= "ignore ";
+    options += "search=Choose... choose=["+ PATH +"]";
+
+    // Pass the options string to Plugins>Utilies>Search...
+    IJ.run("Search...", options);
+    IJ.log(options);
+    
+} else {
+
+    // Acknowledge that directory could not be found
+    IJ.error("Search not performed", "Not a valid directory:\n"+ f);
+    return;
+
+}
