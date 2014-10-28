@@ -60,12 +60,16 @@ public class Utils implements PlugIn {
 			if (args.length==1) return;
 			moveSubmenu(args[1]);
 
-		} else if (arg.indexOf(".ijm") != -1) {
+		} else if (arg.endsWith(".ijm")) {
 
-			if (arg.indexOf("Tools") != -1) // filenames containing "Tools" and "Toolset"
-				installToolset(arg);
-			else
-				installTool(arg);
+			final String[] args = arg.split("/");
+			if (args.length==1) return;
+			final String dir = IJ.getDirectory("macros") + args[0] + File.separator;
+			if (IJ.shiftKeyDown()) {
+				openFile(dir, args[1]);
+			} else {
+				installMacroFile(dir, args[1]);
+			}
 
 		} else if (arg.equalsIgnoreCase("about"))
 			aboutBox();
@@ -179,24 +183,13 @@ public class Utils implements PlugIn {
 
 
 	/** Installs a macro file */
-	void installMacroFile(final String path) {
-		if (path == null) return;
+	void installMacroFile(final String directory, final String filename) {
+		if (directory==null || filename==null) return;
+		final String path = directory + File.separator + filename;
 		final File f = new File(path);
 		if (!fileExists(f)) return;
 		final MacroInstaller mi = new MacroInstaller();
 		mi.installFile(path);
-	}
-	
-	/** Installs a macro Tool from macros/tools/ */
-	void installTool(final String filename) {
-		final String path = IJ.getDirectory("macros") + "tools" + File.separator + filename;
-		installMacroFile(path);
-	}
-
-	/** Installs a macro Toolset from macros/toolsets/ */
-	void installToolset(final String filename) {
-		final String path = IJ.getDirectory("macros") + "toolsets" + File.separator + filename;
-		installMacroFile(path);
 	}
 
 	/** Opens a file in the Script Editor. */
