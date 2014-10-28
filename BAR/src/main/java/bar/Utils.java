@@ -185,7 +185,7 @@ public class Utils implements PlugIn {
 		while (it.hasNext())
 			tw.append( ""+ IJ.pad(counter++,2) +": "+ dir + it.next() );
 
-		IJ.showStatus("" + counter + " items in " + SNIPPETS_DIR);
+		IJ.showStatus("" + (counter-1) + " items in " + SNIPPETS_DIR);
 		tp.updateDisplay();
 
 	}
