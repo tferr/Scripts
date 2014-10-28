@@ -76,12 +76,21 @@ public class Utils implements PlugIn {
 
 	}
 
+	/** Displays a warning on Shift-Click being disabled */
+	private void shiftClickWarning() {
+		if (IJ.shiftKeyDown()) {
+			IJ.beep();
+			IJ.showStatus("Compiled plugin. Use 'About BAR...' to access source code repository.");
+		}
+	}
+
 	/**
 	 * Transfers the specified BAR submenu between the main IJ's menu bar and the
 	 * image's context menu (vice-versa if the submenu is already in the context
 	 * menu). An acknowledgement message is displayed if !IJ.macroRunning().
 	 */
 	private void moveSubmenu(final String subMenu) {
+		shiftClickWarning();
 		final Menu barMenu = Menus.getImageJMenu("BAR");
 		final PopupMenu popMenu = Menus.getPopupMenu();
 
@@ -144,7 +153,7 @@ public class Utils implements PlugIn {
 
 	/** Prints the contents of a directory to a dedicated table. */
 	private void listDirectory(final String dir) {
-
+		shiftClickWarning();
 		final File f = new File(dir);
 		if (!fileExists(f) || !f.isDirectory()) return;
 
@@ -229,6 +238,7 @@ public class Utils implements PlugIn {
 
 	/** Reveals a file in the operating system default file explorer */
 	private void revealFile(final String file) {
+		shiftClickWarning();
 		revealFile( new File(file) );
 	}
 
@@ -243,6 +253,7 @@ public class Utils implements PlugIn {
 
 	/** Implements the About BAR... command */
 	void aboutBox() {
+		shiftClickWarning();
 		final Font plainf = new Font("SansSerif", Font.PLAIN, 12);
 		final Font boldf = new Font("SansSerif", Font.BOLD, 12);
 
