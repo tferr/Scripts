@@ -49,6 +49,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	/** Returns types of supported images */
 	public int setup(final String arg, final ImagePlus imp) {
+		bar.Utils.shiftClickWarning();
 		this.imp = imp;
 		return flags;
 	}

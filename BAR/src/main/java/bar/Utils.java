@@ -77,7 +77,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Displays a warning on Shift-Click being disabled */
-	private void shiftClickWarning() {
+	static void shiftClickWarning() {
 		if (IJ.shiftKeyDown()) {
 			IJ.beep();
 			IJ.showStatus("Compiled plugin. Use 'About BAR...' to access source code repository.");
