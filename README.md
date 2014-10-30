@@ -19,7 +19,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   Aiders for the annotation of scientific images.
 
   1. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
-
+  2. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
 
 ## [Image Segmentation][Segmentation]
   Routines for partitioning images into analyzable parts.

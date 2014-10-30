@@ -3,7 +3,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Appends top, bottom and side views to a stack in a similar way to Image>Stacks>Ortogonal Views
- * but extending projected view to the entire volume rather than single slices.
+ * but extending projected views to the entire volume rather than displaying single slices.
  *
  * Notes:
  * - Empty spaces in the image canvas will be painted with background color[1] (frame around the
