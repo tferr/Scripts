@@ -18,13 +18,19 @@
 
 var upper= -1, minLength, count, lockedLevels;
 
-macro "AutoRun" { promptForOptions(); }
+macro "AutoRun" {
+	if (nImages!=0) promptForOptions();
+}
 
 macro "Segment Profile Tool - C037 L04f6 L0af9" {
 	if (!lockedLevels)
 		getThreshold(lower, upper);
-	if (upper==-1)
-		exit("Image is not thresholded or no threshold\nvalue was set in the Options prompt");
+	if (upper==-1) {
+		showMessageWithCancel("No threshold", "Image is not thresholded or no threshold value\n"
+			+ "was set in the Options prompt. Adjust levels?");
+		run("Threshold...");
+		exit();
+	}
 	count = Overlay.size;
 	getCursorLoc(x, y, z, flags);
 	xstart = x; ystart = y;
@@ -132,16 +138,16 @@ function promptForOptions() {
 		+ "If active, the specified threshold value is used, and thresholded<p>"
 		+ "pixels are not highlighted.<p><p>"
 		+ "<b>Undo last segmentation</b><p>"
-		+ "Removes the segments from the last segmented line.<p><p>"
+		+ "Removes all segments from the last segmented line. Alt-click on<p>"
+		+ "the image canvas to remove just the last segment.<p><p>"
 		+ "<b>Run demo</b><p>"
 		+ "If selected, a demonstrative segmentation of the <i>Tree Rings</i> sample<p>"
 		+ "image is performed <p><p>"
 		+ "<b>Handling of segments</b>"
 		+ "<table >"
 		+ "<tr><td>&emsp;<b>Delete last</b></td><td>Alt-click on image</td></tr>"
-		+ "<tr><td>&emsp;<b>Labels</b></td><td>Use <i>Image>Overlay>Labels...</i> This allows activation of<p>"
-		+ "individual segments by Alt/Control-clicking or long-<p>"
-		+ "pressing on label</td></tr>"
+		+ "<tr><td>&emsp;<b>Labels</b></td><td>Use <i>Image>Overlay>Labels...</i> This allows activation<p>"
+		+ "of individual segments by clicking on their labels</td></tr><p>"
 		+ "<tr><td>&emsp;<b>Retrieval</b></td><td>Use <i>Image>Overlay>To ROI Manager</i></td></tr>"
 		+ "</table>";
 	Dialog.create('Segment Profile Options...');
@@ -150,10 +156,12 @@ function promptForOptions() {
 	Dialog.setInsets(15, 0, 5);
 	Dialog.addCheckbox('Do not highlight threshold levels. Use this value instead:', lockedLevels);
 	Dialog.addNumber('Upper threshold level:', upper);
-	Dialog.setInsets(15, 0, 0);
+	Dialog.setInsets(10, 0, 0);
 	Dialog.addCheckbox('Undo last segmentation', false);
-	Dialog.setInsets(15, 0, 0);
+	Dialog.setInsets(10, 0, 0);
 	Dialog.addCheckbox('Run demo upon "OK" (internet connection required)', false);
+	Dialog.setInsets(15, 0, 0);
+	Dialog.addMessage("NB: Double-click on the tool icon to reconfigure these options");
 	Dialog.addHelp(msg);
 	Dialog.show;
 
