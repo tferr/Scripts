@@ -47,11 +47,13 @@ public class Utils implements PlugIn {
 
 			final String[] args = arg.split(":");
 			if (args.length==1) return;
-			if (args[1].equalsIgnoreCase("list"))
+			if (args[1].equalsIgnoreCase("list")) {
+				shiftClickWarning();
 				listDirectory(SNIPPETS_DIR);
-			else if (args[1].equalsIgnoreCase("reveal"))
+			} else if (args[1].equalsIgnoreCase("reveal")) {
+				shiftClickWarning();
 				revealFile(SNIPPETS_DIR);
-			else //TODO implement a "reload snippets" command
+			} else //TODO implement a "reload snippets" command
 				openFile(SNIPPETS_DIR, arg);
 
 		} else if (arg.startsWith("moveMenu:")) {
@@ -152,8 +154,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Prints the contents of a directory to a dedicated table. */
-	private void listDirectory(final String dir) {
-		shiftClickWarning();
+	public static void listDirectory(final String dir) {
 		final File f = new File(dir);
 		if (!fileExists(f) || !f.isDirectory()) return;
 
@@ -212,19 +213,21 @@ public class Utils implements PlugIn {
 		IJ.run("Edit...", "open=["+ dir + filename +"]");
 	}
 
-	/** Warns users if file cannot be found */
-	private boolean fileExists(final File file) {
-		if (file.exists())  {
-			return true;
-		} else {
-			IJ.error("File path not found:\n"+ file +"\n \nMake sure it "
-					+"exists or use the updater to re-install it.");
-			return false;
+	/** Checks for a valid file path, warning users if it cannot be found */
+	private static boolean fileExists(final File file) {
+		final boolean valid = file.exists();
+		if (!valid) {
+			IJ.showMessage("Invalid path or filename", "<html>Path not found:"
+				+ "<p style='width:300px;'><i>"+ file +"</i></p> <p><p>"
+				+ "If the file has been deleted and is part of your Fiji installation<p>"
+				+ "you can use the updater to re-install it.");
 		}
+		return valid;
 	}
 
 	/** Reveals a file in the operating system default file explorer */
-	private void revealFile(final File file) {
+	public static void revealFile(final String filePath) {
+		final File file = new File(filePath);
 		if (!fileExists(file)) return;
 		Desktop desktop = null;
 		if (Desktop.isDesktopSupported())
@@ -234,12 +237,6 @@ public class Utils implements PlugIn {
 		} catch (final IOException e) {
 			IJ.log(">>>> An error occured when opening\n"+ file +"\n"+ e);
 		}
-	}
-
-	/** Reveals a file in the operating system default file explorer */
-	private void revealFile(final String file) {
-		shiftClickWarning();
-		revealFile( new File(file) );
 	}
 
 	/** Opens an URL in the default browser */
