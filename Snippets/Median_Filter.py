@@ -28,7 +28,7 @@ def getSettings(img):
 
     if not img:
         IJ.error("No images open.")
-        print ">>>> No image to work with!"
+        print(">>>> No image to work with!")
         canProceed = False
 
     # Get new values if at least one of the parameters is 'null'
@@ -39,7 +39,7 @@ def getSettings(img):
         gd.addNumericField("Z radius:", 2.0, 1)
         gd.showDialog()
         if gd.wasCanceled():
-            print ">>>> User canceled dialog!"
+            print(">>>> User canceled dialog!")
             canProceed = False
         else:
             xradius = gd.getNextNumber();
