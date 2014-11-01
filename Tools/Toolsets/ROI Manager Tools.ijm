@@ -1,4 +1,4 @@
-/* ROI Manager Tools.txt
+/* ROI Manager Tools.ijm
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the

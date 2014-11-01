@@ -3,7 +3,8 @@
  * http://imagej.nih.gov/ij/macros/toolsets/Toolset%20Creator.txt
  *
  * Creates toolsets of Built-in Tools and Menu Tools listing installed plugins.
- * v.11 2014.02 TF: Adds support for IJ's 1.48 expandable toolbar
+ * v.13 2014.10 TF: Replace .txt with .ijm extensions in newly created files
+ * v.12 2014.02 TF: Adds support for IJ's 1.48 expandable toolbar
  */
 
 var maxTools= 10;
@@ -24,13 +25,13 @@ macro "Toolset Creator" {
     path= getDirectory("macros");
     if (!File.exists(path))
         exit("macros directory not found!\n \nToolset cannot be saved...");
-    path= path+ "toolsets" +File.separator;
+    path= path +"toolsets"+ File.separator;
     if (!File.exists(path))
         File.makeDirectory(path);
-    path= path+ name +".txt";
+    path= path + name + ".ijm";
     if (File.exists(path))
         showMessageWithCancel("Redesign previous toolset?","A file named \""+ name
-                             +".txt\" already exists\nin ImageJ/macros/toolsets/. Overwrite?");
+                             +".ijm\" already exists\nin ImageJ/macros/toolsets/. Overwrite?");
     showStatus("Creating the toolset: An empty file will be created if you hit \"Cancel\"");
 
     for (i=0; i<nColors; i++) {
@@ -76,8 +77,10 @@ function promptForSettings() {
   addMore= slot<maxTools-1;
   dirs= folders.length>0;
   Dialog.create("Toolset Creator: Designing slot "+ slot+1);
-  msg = "<html>For each slot you can either design a <i>Built-in Tool</i> or append a <i>Menu Tool</i>.<p>"
-      + "The latter option is only available when when <tt>ImageJ/plugins/</tt> contains<p>subdirectories.<p><p>"
+  msg = "<html>For each slot you can either append 1) a <i>Built-in Tool</i> or 2) a designed<p>"
+      + "<i>Menu Tool</i>, a drop-down menu listing commands (i.e., executable files) in<p>"
+      + "subfolders of the <tt>plugins/</tt> directory. This latter option is automatically<p>"
+      + "disabled if no subdirectories are found.<p><p>"
       + "When building menu icons, the first two characters of the folder name are<p>"
       + "used if neither a symbol or a string is specified.<p><p>"
       + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design<p>"
@@ -224,7 +227,7 @@ var icons= newArray("[None. Create icon text]:",
     "Bricks:D00D03D06D09D0cD0fD10D13D16D19D1cD1fD20D21D22D23D26D27D28D29D2cD2dD2eD2fD30D33D36D39D3cD3fD40D43D46D49D4cD4fD50D53D54D55D56D59D5aD5bD5cD5fD60D63D66D69D6cD6fD70D73D76D79D7cD7fD80D83D86D89D8cD8fD90D91D92D93D96D97D98D99D9cD9dD9eD9fDa0Da3Da6Da9Db0Db3Db6Db9Dc0Dc3Dc4Dc5Dc6Dc9DcaDcbDd0Dd3Dd6Dd9De0De3De6De9Df0Df3Df6Df9",
     "Down Arrow:D2aD3aD3bD4aD4bD4cD50D51D52D53D54D55D56D57D58D59D5aD5bD5cD5dD60D61D62D63D64D65D66D67D68D69D6aD6bD6cD6dD6eD70D71D72D73D74D75D76D77D78D79D7aD7bD7cD7dD7eD7fD80D81D82D83D84D85D86D87D88D89D8aD8bD8cD8dD8eD90D91D92D93D94D95D96D97D98D99D9aD9bD9cD9dDaaDabDacDbaDbbDca",
     "Film:D00D01D02D03D04D05D06D07D08D09D0aD0bD0cD0dD0eD0fD12D17D1cD22D27D2cD30D31D32D33D34D35D36D37D38D39D3aD3bD3cD3dD3eD3fD40D4bD50D5bD60D6bD70D7bD80D8bD90D9bDa0DabDb0Db1Db2Db3Db4Db5Db6Db7Db8Db9DbaDbbDbcDbdDbeDbfDc2Dc7DccDd2Dd7DdcDe0De1De2De3De4De5De6De7De8De9DeaDebDecDedDeeDef",
-    "Floppy:D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D27D28D29D2aD2bD2cD2dD31D33D35D37D38D39D3aD3bD3cD3dD3eD41D43D45D47D48D4eD51D53D55D57D58D5aD5bD5cD5eD61D63D65D67D68D6aD6bD6cD6eD71D73D75D77D78D7eD81D83D85D87D88D8eD91D93D95D97D98D9eDa1Da3Da5Da7Da8DaeDb1Db7Db8DbeDc1Dc2Dc3Dc4Dc5Dc6Dc7Dc8Dc9DcaDcbDccDcdDce",
+    "Floppy Disk:D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D27D28D29D2aD2bD2cD2dD31D33D35D37D38D39D3aD3bD3cD3dD3eD41D43D45D47D48D4eD51D53D55D57D58D5aD5bD5cD5eD61D63D65D67D68D6aD6bD6cD6eD71D73D75D77D78D7eD81D83D85D87D88D8eD91D93D95D97D98D9eDa1Da3Da5Da7Da8DaeDb1Db7Db8DbeDc1Dc2Dc3Dc4Dc5Dc6Dc7Dc8Dc9DcaDcbDccDcdDce",
     "Folder:D13D14D16D17D18D19D1aD1bD1cD22D23D24D26D27D28D29D2aD2bD2cD31D32D33D34D36D37D38D39D3aD3bD3cD41D42D43D44D46D47D48D49D4aD4bD4cD51D52D53D54D56D57D58D59D5aD5bD5cD61D62D63D64D66D67D68D69D6aD6bD6cD72D73D74D76D77D78D79D7aD7bD7cD83D84D86D87D88D89D8aD8bD8cD93D94D96D97D98D99D9aD9bD9cDa3Da4Da6Da7Da8Da9DaaDabDacDb3Db4Db6Db7Db8Db9DbaDbbDbcDc3Dc4Dc6Dc7Dc8Dc9DcaDcbDccDd3Dd4Dd6Dd7Dd8Dd9DdaDdbDdcDe3De4De6De7De8De9DeaDebDec",
     "Gear:D16D17D23D26D27D2aD32D33D34D35D36D37D38D39D3aD3bD43D44D45D46D47D48D49D4aD53D54D55D58D59D5aD61D62D63D64D69D6aD6bD6cD71D72D73D74D79D7aD7bD7cD83D84D85D88D89D8aD93D94D95D96D97D98D99D9aDa2Da3Da4Da5Da6Da7Da8Da9DaaDabDb3Db6Db7DbaDc6Dc7CcccD22D24D29D2bD42D4bD56D57D65D68D75D78D86D87D92D9bDb2Db4Db9Dbb",
     "Histogram:D1eD2dD1fD2eD3cD3dD4bD4cD5aD5bD6aD14D15D16D17D18D19D1aD1bD1cD1dD20D21D22D23D24D25D26D27D28D29D2aD2bD2cD2fD33D34D35D36D37D38D39D3aD3bD3eD3fD47D48D49D4aD4dD4eD4fD5cD5dD5eD5fD6bD6cD6dD6eD6fD7dD7eD7fD8dD8eD8fD9dD9eD9fDaeDafDbeDbfDcfDdf",
