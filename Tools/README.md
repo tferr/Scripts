@@ -8,6 +8,9 @@ Single Tools are appended to the IJ toolbar and are typically saved in the `Imag
    Provides shortcuts for spatial calibration of images lacking metadata.
    ([Download .ijm](./Calibration_Menu.ijm?raw=true))
 
+###[List Folder Menu](./List_Folder_Menu.ijm)
+   Provides a drop-down-list of the contents of a specified directory that is remembered across restarts. Offers commands to reveal directories in the native file browser and commands to list directory contents to dedicated windows.
+   ([Download .ijm](./List_Folder_Menu.ijm?raw=true))
 
 ###[Segment Profile](./Segment_Profile.ijm)<a name="segment-profile-tool"></a>
    Extracts the segments within a straight line that are above a cutoff threshold.

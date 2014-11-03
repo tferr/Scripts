@@ -18,8 +18,8 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 ## [Image Annotation][Annotation]
   Aiders for the annotation of scientific images.
 
-  1. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
-  2. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
+  1. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
+  2. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
 
 ## [Image Segmentation][Segmentation]
   Routines for partitioning images into analyzable parts.
@@ -43,10 +43,11 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   Additions to the ImageJ toolbar.
 
   1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
-  2. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
+  2. (ijm) [List Folder Menu](./Tools/README.md#list-folder-menu)
   3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
-  5. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
+  5. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
+  6. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
 
 ## [BAR plugins][Plugins]
