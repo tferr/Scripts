@@ -4,11 +4,12 @@ While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre
 
 
 ### BAR-menu
-The top-level _BAR_ Menu is organized in the following manner (version 1.0.3):
+The top-level _BAR_ Menu is organized in the following manner (version 1.0.4):
 
     BAR
     ├── Annotation
     │   ├── Move Menu (Context<>Main)
+    │   ├── Combine Orthogonal Views
     │   └── ROI Color Coder
     ├── Data Analysis
     │   ├── Move Menu (Context<>Main)
@@ -32,6 +33,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.3):
     │   └── Reveal Snippets
     ├── Tool Installers
     │   ├── Install Calibration Menu
+    │   ├── Install List Folder Menu
     │   ├── Install Segment Profile
     │   ├── Install Shortcuts Menu
     │   ├── ROI Manager Tools
@@ -46,6 +48,7 @@ The relevant files get stored in the following locations (version 1.0.3):
     ├── macros
     │   ├── tools
     │   │   ├── Calibration_Menu.ijm
+    │   │   ├── List_Folder_Menu.ijm
     │   │   ├── Segment_Profile.ijm
     │   │   └── Shortcuts_Menu.ijm
     │   └── toolsets
@@ -56,6 +59,7 @@ The relevant files get stored in the following locations (version 1.0.3):
         └── Scripts
             └── BAR
                 ├── Annotation
+                │   ├── Combine_Orthogonal_Views.ijm
                 │   └── ROI_Color_Coder.ijm
                 ├── Data_Analysis
                 │   ├── Distribution_Plotter.ijm
