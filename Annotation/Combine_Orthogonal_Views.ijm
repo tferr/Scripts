@@ -23,9 +23,9 @@
 
 // Open a suitable sample image if none can be found
 if (nImages==0)
- newSampleImage();
+	newSampleImage();
 if (nSlices()==1 || Stack.isHyperstack)
- newSampleImage();
+	newSampleImage();
 
 // Gather details on active image
 imgId= getImageID();
