@@ -130,7 +130,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     }
 
-    gd.addHelp("http://fiji.sc/Strahler_Analysis");
+    gd.addHelp("http://fiji.sc/Strahler");
     gd.showDialog();
     if (gd.wasCanceled()) return null;
 
