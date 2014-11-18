@@ -3,7 +3,7 @@
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons
- * Tiago Ferreira, v1.3.1 2014.06.19
+ * Tiago Ferreira, v1.3.2 2014.11.18
  *
  * Requirements:
  * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
@@ -141,7 +141,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
     if (!singleImage) {
         imgChoice = gd.getNextChoiceIndex();
         if (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL || pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH)
-            origImg = WindowManager.getImage(imgChoice);
+            origImg = WindowManager.getImage(ids[imgChoice]);
     }
 
     return origImg;
