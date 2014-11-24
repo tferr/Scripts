@@ -32,7 +32,8 @@ ProfilePlot getProfilePlot() {
 		IJ.wait(600);
 	}
 	if (invalidRoi(roi)) return null;
-	return new ProfilePlot(imp, super.averageHorizontally);
+	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
+	return new ProfilePlot(imp, averageHorizontally);
 }
 
 /* Returns the multichannel Plot for the active z,t position */
@@ -94,7 +95,6 @@ ImagePlus getSourceImage() {
 
 imp = IJ.getImage();
 if (invalidRequirements()) return;
-averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
 ci = (CompositeImage)imp;
 cal = imp.getCalibration();
 plot = getPlot();
