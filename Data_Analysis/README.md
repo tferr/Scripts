@@ -39,6 +39,14 @@
 
    [![][Poly image]](http://fiji.sc/Sholl_Analysis#Complementary_Tools)
 
+###[Multichannel Plot Profile](./Multichannel_Plot_Profile.bsh)
+   Extends the _Analyze> Plot Profile_ to multichannel (composite) images. It features a "live"
+   option, guesses displayed lookup tables and ignores disabled channels, i.e., those deselected
+   in the "Channels" widget (which can be called by pressing `Z`, the shortcut for _Image> Color>
+   Channels Tool_).
+
+   ([Download .bsh](./Multichannel_Plot_Profile.bsh?raw=true))
+
 
 ###[Plot Results](./Plot_Results.bsh)
    Routine that creates an XY plot from data in the Results table. Useful for plotting
