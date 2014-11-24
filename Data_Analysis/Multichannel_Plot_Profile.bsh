@@ -27,11 +27,7 @@ import java.util.Arrays;
 /* Returns the ProfilePlot for the active c,z,t position */
 ProfilePlot getProfilePlot() {
 	roi = imp.getRoi();
-	if (roi==null) {
-		IJ.run(imp, "Restore Selection", "");
-		IJ.wait(600);
-	}
-	if (invalidRoi(roi)) return null;
+	if (roi==null || invalidRoi(roi)) return null;
 	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
 	return new ProfilePlot(imp, averageHorizontally);
 }
@@ -39,8 +35,8 @@ ProfilePlot getProfilePlot() {
 /* Returns the multichannel Plot for the active z,t position */
 Plot getPlot() {
 	p = getProfilePlot();
-	if (p==null) return null;
-	n = p.getProfile().length;
+	n = (p==null) ? 0 : p.getProfile().length;
+	if (p==null || n==0) return null;
 	xvalues = assignXvalues(n);
 
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
