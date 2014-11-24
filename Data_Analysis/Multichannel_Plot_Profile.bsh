@@ -24,6 +24,8 @@ import ij.measure.Calibration;
 import java.util.Arrays;
 
 
+pixelUnits = false; // Set to true to ignore the image's spatial calibration
+
 /* Returns the ProfilePlot for the active c,z,t position */
 ProfilePlot getProfilePlot() {
 	roi = imp.getRoi();
@@ -83,6 +85,18 @@ boolean invalidRequirements() {
 	return invalid;
 }
 
+/* Returns the spatial calibration of the profile */
+Calibration getSpatialCalibration() {
+	if (super.pixelUnits) {
+		cal = new Calibration();
+		cal.pixelWidth = 1.0;
+		cal.pixelHeight = 1.0;
+		cal.setUnit("pixel");
+	} else
+		cal = imp.getCalibration();
+	return cal;
+}
+
 /* PlotMaker interface */
 ImagePlus getSourceImage() {
 	return imp;
@@ -92,7 +106,7 @@ ImagePlus getSourceImage() {
 imp = IJ.getImage();
 if (invalidRequirements()) return;
 ci = (CompositeImage)imp;
-cal = imp.getCalibration();
+cal = getSpatialCalibration();
 plot = getPlot();
 if (plot==null) return;
 plot.setPlotMaker(this);
