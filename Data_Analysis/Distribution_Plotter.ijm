@@ -8,6 +8,7 @@
  *
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
+ * TF, 2014.12 Bug fix: Column headings containing spaces were not parsed properly
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
@@ -20,7 +21,7 @@ if (resCount==0)
 tabChoices = newArray('Number of values', 'Relative frequency (%)', 'Relative frequency (fractions)');
 binChoices = newArray("Square-root", "Sturges", "Scott (IJ's default)", "Freedman-Diaconis", "Specify manually below:");
 Dialog.create('Distribution Plotter');
-	prmtrs = getMeasurements();
+	prmtrs = getParameters();
 	Dialog.addChoice("Parameter:", prmtrs);
 	Dialog.addChoice('Tabulate:', tabChoices);
 	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
@@ -217,8 +218,9 @@ function getHistCounts(binArray, valuesArray) {
 	return counts;
 }
 
-function getMeasurements() {
-	list = split(String.getResultsHeadings);
+function getParameters() {
+	list = split(String.getResultsHeadings, "\t");
+	if (list[0]==" ") list = Array.slice(list,1); // row numbers
 	return Array.sort(list);
 }
 
