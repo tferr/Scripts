@@ -17,14 +17,20 @@ xHeading = "X", yHeading = "Y", zHeading = "Z"
 # Retrieve Results Table
 rt = RT.getResultsTable()
 
-# Retrive positions. Exit if columns are not found
+# Retrive x,y positions. Exit if columns are not found
 try:
     x = rt.getColumn(rt.getColumnIndex(xHeading))
     y = rt.getColumn(rt.getColumnIndex(yHeading))
+except Exception, e:
+    IJ.error("Invalid Results Table","Data for X,Y positions not found.")
+    raise RuntimeException("Invalid Results Table: "+ str(e))
+
+# Retrive z positions. Ignore positions if column is not found
+try:
     z = rt.getColumn(rt.getColumnIndex(zHeading))
 except Exception, e:
-    IJ.error("Invalid Results Table","Data for X,Y,Z positions not found.")
-    raise RuntimeException("Invalid Results Table: "+ str(e))
+    IJ.log("Z-column not found: Assuming 2D distances...")
+    z = [0]*len(x)
 
 # Calculate distances for all positions. Retrieve NNs distances
 for i in range(len(x)):
