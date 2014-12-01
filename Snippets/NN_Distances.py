@@ -12,7 +12,7 @@ import ij.measure.ResultsTable as RT
 from java.lang import Exception, RuntimeException
 
 #Column headings listing x,y,z positions
-xHeading = "X", yHeading = "Y", zHeading = "Z"
+xHeading, yHeading, zHeading = "X", "Y", "Z"
 
 # Retrieve Results Table
 rt = RT.getResultsTable()
