@@ -15,7 +15,7 @@ plotSize = 300;     // Size (in pixels) of histogram canvas
 histScale = 0.77;   // Height of modal class relatively to axis of cumulative frequencies
 resCount = nResults;
 
-if (resCount==0)
+if (resCount==0 || !isOpen("Results"))
 	exit("The Results table is empty.");
 
 tabChoices = newArray('Number of values', 'Relative frequency (%)', 'Relative frequency (fractions)');
@@ -27,7 +27,7 @@ Dialog.create('Distribution Plotter');
 	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
 	Dialog.addSlider("Bins:", 2, resCount, sqrt(resCount));
 	Dialog.addCheckbox("Ignore zeros", false);
-	Dialog.addMessage(resCount +" data points (NaN entries will be ignored)...");
+	Dialog.addMessage(resCount +" data points (NB: 'NaN' values will be ignored)...");
 Dialog.show;
 	parameter = Dialog.getChoice;
 	yAxis = Dialog.getChoice;
@@ -80,6 +80,7 @@ if (autoBin==binChoices[0]) { // Square-root
 }
 if (binWidth==0)
 	exit("Automatic binning could not be performed.\nRe-check settings or specify bins manually.");
+
 nBins = -floor(-( (max-min)/binWidth ));
 bins = getBinStarts(nBins, binWidth, min);
 freqs = getHistCounts(bins, values);
@@ -98,8 +99,7 @@ drawNormalCurve(mean, stdDev, "black");
 Plot.setColor("red");
 Plot.add("line", values, cumFreq);
 Plot.setLineWidth(1);
-largebars = nBins < 20;
-if (largebars) {
+if (nBins<20) {
 	drawHistogramLabels("blue"); Plot.show;
 } else {
 	Plot.show; drawRotatedHistogramLabels("blue", 11);
@@ -156,7 +156,6 @@ function drawLabel() {
 	Plot.addText("Bins: "+ nBins, col2, row3);
 	Plot.addText("Bin width: "+ d2s(binWidth,2), col2, row4);
 	if (countInvalid!=0) Plot.addText("Ignored entries: "+ countInvalid, col3, row1);
-	//if (autoBin!=binChoices[4]) Plot.addText(autoBin, col3, row2);
 }
 
 function drawNormalCurve(mu, sigma, color) {
@@ -230,19 +229,4 @@ function getMedian() { // values[] is already sorted
 	else
 		median = values[obsCount/2];
 	return median;
-}
-
-function intersectsBin(x, y) {
-	for (i=0; i<bins.length; i++) {
-		barLeft = bins[i];
-		barRight = bins[i] + binWidth;
-		barHeight = plotYmax * histScale * freqs[i] / histMax;
-		if (y<=barHeight && x>=barLeft && x<=barRight)
-			return true;
-	}
-	return false;
-}
-
-function pad(n) {
-	n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
 }
