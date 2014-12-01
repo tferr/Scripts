@@ -7,7 +7,7 @@
 # TF 20141201
 
 import math, sys
-from ij import IJ
+from ij import IJ, Menus
 import ij.measure.ResultsTable as RT
 from java.lang import Exception, RuntimeException
 
@@ -45,3 +45,10 @@ for i in range(len(x)):
 # Display appended results
 rt.showRowNumbers(True)
 rt.show("Results")
+
+# Display distributions
+dp = "Distribution Plotter"
+if dp in Menus.getCommands().keySet().toArray():
+    IJ.run(dp, "parameter=[NN distance] automatic=Freedman-Diaconis");
+else:
+    IJ.error("File missing", dp+" not found.\nPlease check your BAR installation.")
