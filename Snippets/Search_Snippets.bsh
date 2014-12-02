@@ -27,7 +27,7 @@ import java.io.File;
 /* Options */
 boolean searchContents = true;
 boolean caseInsensitive = true;
-String PATH = IJ.getDirectory("plugins") +"Scripts/BAR/Snippets/";
+String PATH = IJ.getDirectory("plugins") +"Scripts/BAR/";
 String URL = "https://github.com/tferr/Scripts/tree/master/Snippets#snippets";
 
 
@@ -52,7 +52,7 @@ if (f.exists() && f.isDirectory()) {
     String searchString = getClipboardContents();
 
     // Build prompt
-    GenericDialog gd = new GenericDialog("Search Snippets Directory");
+    GenericDialog gd = new GenericDialog("Search BAR Directory");
     gd.addStringField("_", searchString, 25);
     gd.addCheckbox("Search contents", searchContents);
     gd.addCheckbox("Ignore case", caseInsensitive);
