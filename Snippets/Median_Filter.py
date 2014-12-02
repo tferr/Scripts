@@ -42,9 +42,9 @@ def getSettings(img):
             print(">>>> User canceled dialog!")
             canProceed = False
         else:
-            xradius = gd.getNextNumber();
-            yradius = gd.getNextNumber();
-            zradius = gd.getNextNumber();
+            xradius = gd.getNextNumber()
+            yradius = gd.getNextNumber()
+            zradius = gd.getNextNumber()
  
     return canProceed
 
