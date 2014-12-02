@@ -3,30 +3,60 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 		http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<modelVersion>4.0.0</modelVersion>
 
-	<parent>
+<parent>
 		<groupId>net.imagej</groupId>
 		<artifactId>pom-imagej</artifactId>
 		<version>2.51</version>
 		<relativePath />
 	</parent>
 
-	<groupId>com.github.tferr</groupId>
-	<artifactId>BAR_</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+<groupId>com.github.tferr</groupId>
+<artifactId>BAR_</artifactId>
+<version>1.0.4-SNAPSHOT</version>
 
-	<name>BAR_.jar</name>
-	<description>BAR: A collection of Broadly Applicable Routines for ImageJ1.</description>
+<name>BAR_.jar</name>
+<description>BAR: A collection of Broadly Applicable Routines for ImageJ1.</description>
+<url>http://fiji.sc/BAR</url>
 
-	<dependencies>
+<developers>
+		<developer>
+			<id>tferr</id>
+			<name>Tiago Ferreira</name>
+			<email>tiagoalvespedrosa@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+<scm>
+		<connection>scm:git:git://github.com/tferr/Scripts</connection>
+		<developerConnection>scm:git:git@github.com:tferr/Scripts</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/tferr/Scripts</url>
+	</scm>
+
+<repositories>
+		<!-- NB: for project parent -->
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+<dependencies>
+		<!-- ImageJ dependencies -->
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
 		</dependency>
 	</dependencies>
 
-	<build>
+<build>
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
@@ -59,27 +89,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
+</build>
 
-	<developers>
-		<developer>
-			<id>tferr</id>
-			<name>Tiago Ferreira</name>
-			<email>tiagoalvespedrosa@gmail.com</email>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-5</timezone>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:git:git://github.com/tferr/Scripts</connection>
-		<developerConnection>scm:git:git@github.com:tferr/Scripts</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/tferr/Scripts</url>
-	</scm>
-
-	<url>http://fiji.sc/BAR</url>
 </project>
