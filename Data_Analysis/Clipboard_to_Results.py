@@ -1,3 +1,14 @@
+# Clipboard_to_Results.py
+# IJ BAR: https://github.com/tferr/Scripts#scripts
+#
+# Imports numeric values copied to the clipboard into the Results table. Useful, since
+# BARs that analyze tabular data can only read values from the main IJ "Results" table
+#
+# NB: When copying data from withing IJ (e.g., lists from histograms or plot profiles),
+# Use Edit>Options>Input/Output... to specify if column headers/row numbers should be
+# copied to the clipboard
+
+
 import os
 from ij import IJ
 from ij.plugin.filter import Analyzer

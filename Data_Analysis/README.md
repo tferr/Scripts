@@ -2,6 +2,14 @@
 
 [BARs][Home] related to data analysis.
 
+###[Clipboard to Results](./Clipboard_to_Results.py)
+   Imports numeric values copied to the clipboard into the _Results_ table. Useful, since BARs that
+   analyze tabular data can only read values from the main IJ _Results_ table.
+   ([Download .py](./Clipboard_to_Results.py?raw=true))
+
+   See also [Plot Results](#plot-results)
+
+
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
    Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
 
@@ -34,7 +42,6 @@
    Requires the apache commons math library, distributed with Fiji. Non-Fiji users that do
    not have it installed are provided with a direct download link that will install all
    required dependencies.
-
    ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
 
    [![][Poly image]](http://fiji.sc/Sholl_Analysis#Complementary_Tools)
@@ -68,9 +75,9 @@
 ###[Plot Results](./Plot_Results.bsh)
    Routine that creates an XY plot from data in the Results table. Useful for plotting
    data from imported spreadsheets.
-
    ([Download .bsh](./Plot_Results.bsh?raw=true))
 
+   See also [Clipboard to Results](#clipboard-to-results)
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png

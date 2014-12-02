@@ -12,11 +12,12 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 ## [Data Analysis][Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
-  1. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
-  2. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
-  3. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
-  4. (bsh) [Multichannel Plot Profile](./Data_Analysis/README.md#multichannel-plot-profile)
-  5. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
+  1. (py) [Clipboard to Results](./Data_Analysis/README.md#clipboard-to-results)
+  2. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
+  3. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
+  4. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
+  5. (bsh) [Multichannel Plot Profile](./Data_Analysis/README.md#multichannel-plot-profile)
+  6. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
 
 
 ## [Image Annotation][Annotation]
