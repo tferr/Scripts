@@ -11,7 +11,7 @@ from ij import IJ, Menus
 import ij.measure.ResultsTable as RT
 from java.lang import Exception, RuntimeException
 
-#Column headings listing x,y,z positions
+# Specify column headings listing x,y,z positions
 xHeading, yHeading, zHeading = "X", "Y", "Z"
 
 # Retrieve Results Table

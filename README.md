@@ -61,6 +61,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   A depository of generic and reusable scripts to be used as scripting templates, including:
 
   1. (py) [Median Filter](./Snippets/README.md#median-filter)
+  2. (py) [NN Distances](./Snippets/README.md#nn-distances)
   2. (ijm) [Process Folder](./Snippets/README.md#process-folder)
   3. (bsh) [Search Snippets](./Snippets/README.md#search-snippets)
 

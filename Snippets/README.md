@@ -8,15 +8,19 @@ They are installed under `BAR>Snippets>`, a menu containing two other commands:
 
 
 ##List of Snippets
-###[Median Filter](./Median_Filter.py)
+####[Median Filter](./Median_Filter.py)
    A [Python](#python) script that exemplifies how to perform a filtering operation.
    ([Download .py](./Median_Filter.py?raw=true))
 
-###[Process Folder](./Process_Folder.ijm)
+####[NN Distances](./NN_Distances.py)
+   A [Python](#python) script that calculates nearest neighbor distances from a 2D/3D list of centroid coordinates.
+     ([Download .py](./NN_Distances.py?raw=true))
+
+####[Process Folder](./Process_Folder.ijm)
    A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
    ([Download .ijm](./Process_Folder.ijm?raw=true))
 
-###[Search Snippets](./Search_Snippets.bsh)
+####[Search Snippets](./Search_Snippets.bsh)
    A BeanShell script that searches for content in this directory.
    ([Download .bsh](./Search_Snippets.bsh?raw=true))
 
