@@ -155,12 +155,12 @@ void printResults(order, tips, ratios) {
         rt = new ResultsTable();
     else
         rt = ((TextWindow) window).getTextPanel().getResultsTable();
-    rt.setPrecision(0);
+    rt.setPrecision(5);
     rt.incrementCounter();
     rt.addLabel("Image", title);
     rt.addValue("Strahler order", order);
     rt.addValue("# End-point branches", tips);
-    rt.addValue("Ramification ratios", IJ.d2s(ratios,5));
+    rt.addValue("Ramification ratios", ratios);
     rt.show(strahlerTable);
 }
 
