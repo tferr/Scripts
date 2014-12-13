@@ -117,7 +117,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
         String[] S_CHOICES = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
                     AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.SHORTEST_BRANCH]};
-        gd.addChoice("Method:", S_CHOICES, S_CHOICES[pruneChoice]);
+        gd.addChoice("Method:", S_CHOICES, S_CHOICES[Math.min(pruneChoice,1)]);
 
     } else { // Non-thinned image may be available: Allow intensity based pruning
 
