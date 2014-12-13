@@ -45,17 +45,23 @@ import skeleton_analysis.SkeletonResult;
 import Skeletonize3D_.Skeletonize3D_;
 
 
-/* Definitions */
-String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};
-int OUT_NONE = 0; int OUT_IS = 1; int OUT_CM = 2; int OUT_ISCM = 3;
-boolean protectRoot;
-
-/* Default settings */
-int maxPruning = 10;        // Max. number of prunning cycles
-int outChoice = OUT_CM;     // Default choice for output image
+/* Default value for max. number of prunning cycles */
+int maxPruning = 10;
 
 /* Default option for loop detection */
 int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
+
+/* Default option for 'root-protection' ROI */
+boolean protectRoot = true;
+
+/* Default option for 'iteration-stack' output */
+boolean outIS = false;
+
+/* Default option for 'color map' output */
+boolean outCM = true;
+
+/* Default option for verbose mode */
+boolean verbose = false;
 
 
 /* Reminds the user to install required dependencies */
@@ -89,62 +95,60 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     ImagePlus origImg = currentImp;
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
+	headerFont = new Font("SansSerif", Font.BOLD, 12);
 
     // Part 1. Main Options
-    createDialogHeader(gd, "I. Strahler Numbering:", true);
-    gd.addSlider("Max. n. of iterations:", 1, 20, maxPruning);
-    gd.addChoice("Output image(s):", OUT_CHOICES , OUT_CHOICES[outChoice]);
+    gd.setInsets(0, 0, 0);
+    gd.addMessage("Strahler Numbering:", headerFont);
+    gd.addSlider("     Max. n. of iterations:", 1, 20, super.maxPruning);
+    gd.setInsets(5, 20, 0);
+    gd.addCheckbox("Infer root end-points from ROI", super.protectRoot);
+	if (this.srcImp.getRoi()==null) {
+		Checkbox roiOption = (Checkbox)gd.getCheckboxes().elementAt(0);
+		roiOption.setEnabled(false);
+	}
 
-    // Part 2: Root protection
-    createDialogHeader(gd, "II. Non-radial Arbors:", false);
-    String protectMsg;
-    if (protectRoot) {
-        gd.addCheckbox("Protect ROI from iterative pruning", protectRoot);
-        protectMsg = "ROI should contain a single branch corresponding\nto the root node.";
-    } else
-        protectMsg = "No area ROI was found. All segments will be exposed\n"
-                   + "to the iterative elimination of terminal branches.";
+    // Part 2: Loop elimination
+    gd.setInsets(25, 0, 0);
+    gd.addMessage("Elimination of Skeleton Loops:", headerFont);
+    gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
+                    AnalyzeSkeleton_.pruneCyclesModes[super.pruneChoice]);
 
-    gd.setInsets(0, 20, 0);
-    gd.addMessage(protectMsg);
-
-    // Part 3: Loop elimination
-    createDialogHeader(gd, "III. Elimination of Skeleton Loops:", false);
     int[] ids = WindowManager.getIDList();
+    String[] imgTitles = new String[ids.length];
+    for (int i=0; i<ids.length; ++i )
+        imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
+    gd.addChoice("Unsegmented image:", imgTitles, null);
+
     boolean singleImage = (ids==null || ids.length<2);
-
-    if (singleImage) { // Only skeleton image is open: intensity based pruning is not available
-
-        String[] S_CHOICES = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
-                    AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.SHORTEST_BRANCH]};
-        gd.addChoice("Method:", S_CHOICES, S_CHOICES[Math.min(pruneChoice,1)]);
-
-    } else { // Non-thinned image may be available: Allow intensity based pruning
-
-        gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
-                    AnalyzeSkeleton_.pruneCyclesModes[pruneChoice]);
-        String[] imgTitles = new String[ids.length];
-        for (int i=0; i<ids.length; ++i )
-            imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
-        gd.addChoice("Original grayscale image:", imgTitles, currentTitle);
-
+    if (singleImage) {
+		Choice methods = (Choice)gd.getChoices().elementAt(0);
+		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL]);
+		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH]);
+		Choice images = (Choice)gd.getChoices().elementAt(1);
+		images.setEnabled(false);
     }
+
+    // Part 3: Output
+    gd.setInsets(25, 0, 0);
+	gd.addMessage("Output Options:", headerFont);
+	gd.addCheckbox("Iteration stack (Document individual iterations)", super.outIS);
+	gd.addCheckbox("Heat-map image (Summarize analysis)", super.outCM);
+	gd.addCheckbox("Log detailed information (Verbose mode)", super.verbose);
 
     gd.addHelp("http://fiji.sc/Strahler");
     gd.showDialog();
     if (gd.wasCanceled()) return null;
 
-    maxPruning = (int)gd.getNextNumber();
-    outChoice = gd.getNextChoiceIndex();
-    if (protectRoot) protectRoot = gd.getNextBoolean();
-    pruneChoice = gd.getNextChoiceIndex();
-    if (!singleImage) {
-        imgChoice = gd.getNextChoiceIndex();
-        if (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL || pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH)
-            origImg = WindowManager.getImage(ids[imgChoice]);
-    }
+    super.maxPruning = (int)gd.getNextNumber();
+    super.protecRoot = gd.getNextBoolean();
+    super.pruneChoice = gd.getNextChoiceIndex();
+    imgChoice = gd.getNextChoiceIndex();
+    super.outIS = gd.getNextBoolean();
+    super.outCM = gd.getNextBoolean();
+    super.verbose = gd.getNextBoolean();
 
-    return origImg;
+    return (singleImage) ? currentImp : WindowManager.getImage(ids[imgChoice]);
 }
 
 /* Outputs measurements to a dedicated table */
@@ -162,12 +166,6 @@ void printResults(order, tips, ratios) {
     rt.addValue("# End-point branches", tips);
     rt.addValue("Ramification ratios", ratios);
     rt.show(strahlerTable);
-}
-
-/* Adds a section header to a GenericDialog */
-void createDialogHeader(GenericDialog gd, String text, boolean supressAboveSpace) {
-     gd.setInsets(supressAboveSpace?0:12, 0, 0);
-     gd.addMessage(text, new Font("SansSerif", Font.BOLD, 12));
 }
 
 /* Adds "Root ROI" to the image overlay */
@@ -363,12 +361,12 @@ for (int i=1; i<order; i++) {
 
 // Display images
 Calibration cal = srcImp.getCalibration();
-if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
     imp2.setCalibration(cal);
     if (protectRoot) addRootToOverlay(imp2, roi, true);
     imp2.show();
+if (outIS) { // Display iteration stack
 }
-if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Display color map
+if (outCM) { // Display color map
     ip3.resetThreshold();
     ip3.setMinAndMax(0, order-1);
     IJ.run(imp3, "Fire", "");
