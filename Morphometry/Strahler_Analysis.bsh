@@ -79,8 +79,6 @@ boolean validInstallation() {
             + "the plugins/ folder. Please install the missing file(s) by double-clicking on the links below:\n \n"
             + URL + AS_VRSN +"\n"+ URL + SK_VRSN;
         IJ.log(msg);
-        lw = WindowManager.getFrame("Log");
-        if (lw!=null) lw.setSize(645, 270);
         return false;
     }
 }
