@@ -166,18 +166,6 @@ void printResults(order, tips, ratios) {
     rt.show(strahlerTable);
 }
 
-/* Adds "Root ROI" to the image overlay */
-void addRootToOverlay(ImagePlus imp, Roi roi, boolean label) {
-    Overlay overlay = imp.getOverlay();
-    if (overlay==null) overlay = new Overlay();
-    roi.setName("Root");
-    overlay.add(roi);
-    if (label) {
-        overlay.setLabelColor(roi.getColor());
-        overlay.drawNames(true);
-    }
-    imp.setOverlay(overlay);
-}
 
 /*
  * Paints junction points. NB: BeanShell does not seem to suport generics. This triggers
@@ -370,7 +358,6 @@ if (outCM) { // Display color map
     IJ.run(imp3, "Fire", "");
     IJ.run(imp3, "Calibration Bar...", " overlay"); // NB: Calibration bar clears pre-existing overlays. Bug?
     imp3.setCalibration(cal);
-    if (protectRoot) addRootToOverlay(imp3, roi, false);
     imp3.show();
 }
 
