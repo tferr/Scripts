@@ -166,6 +166,19 @@ void printResults(order, tips, ratios) {
     rt.show(strahlerTable);
 }
 
+/* Returns the sum of elements of an int[] array */
+int sum(int[] array) {
+	int sum = 0;
+	if (array!=null) for (int i : array) sum += i;
+	return sum;
+}
+
+/* Returns the sum of elements of a double[] array */
+double sum(double[] array) {
+	double sum = 0;
+	if (array!=null) for (double i : array) sum += i;
+	return sum;
+}
 
 /*
  * Paints junction points. NB: BeanShell does not seem to suport generics. This triggers
