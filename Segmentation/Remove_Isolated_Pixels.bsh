@@ -1,0 +1,21 @@
+/* Remove_Isolated_Pixels.ijm
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Calls Wipe_Background.ijm to eliminate isolated pixels in segmented images
+ * TF, 2014.10
+ */
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.process.ByteProcessor;
+
+imp = IJ.getImage();
+if (!imp.getProcessor().isBinary()) {
+	IJ.error("Binary image required."); return;
+}
+
+stack = imp.getStack();
+for (i=1; i<=stack.getSize(); i++)
+	((ByteProcessor)stack.getProcessor(i)).erode(8, 0);
+imp.updateAndDraw();
