@@ -64,7 +64,7 @@ boolean outCM = true;
 /* Default option for verbose mode */
 boolean verbose = false;
 
-/* Remove isolated pixels from skeletons? */
+/* Remove isolated pixels from thinned images? */
 boolean erodeIsolatedPixels = true;
 
 /* Reminds the user to install required dependencies */
@@ -102,9 +102,9 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
     gd.setInsets(0, 0, 0);
     gd.addMessage("Strahler Numbering:", headerFont);
     gd.addSlider("     Max. n. of iterations:", 1, 20, super.maxPruning);
-    gd.setInsets(5, 20, 0);
-    gd.addCheckbox("Infer root end-points from ROI", super.protectRoot);
-	if (this.srcImp.getRoi()==null) {
+    gd.addCheckbox("Infer root end-points from rectangular ROI", super.protectRoot);
+    gd.addCheckbox("Ignore single-point arbors (Isolated pixels)", super.erodeIsolatedPixels);
+	if (!super.validRootRoi) {
 		Checkbox roiOption = (Checkbox)gd.getCheckboxes().elementAt(0);
 		roiOption.setEnabled(false);
 	}
@@ -124,9 +124,9 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
     boolean singleImage = (ids==null || ids.length<2);
     if (singleImage) {
 		Choice methods = (Choice)gd.getChoices().elementAt(0);
+		Choice images = (Choice)gd.getChoices().elementAt(1);
 		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL]);
 		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH]);
-		Choice images = (Choice)gd.getChoices().elementAt(1);
 		images.setEnabled(false);
     }
 
@@ -135,7 +135,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 	gd.addMessage("Output Options:", headerFont);
 	gd.addCheckbox("Iteration stack (Document individual iterations)", super.outIS);
 	gd.addCheckbox("Heat-map image (Summarize analysis)", super.outCM);
-	gd.addCheckbox("Log detailed information (Verbose mode)", super.verbose);
+	gd.addCheckbox("Show detailed information (Verbose mode)", super.verbose);
 
     gd.addHelp("http://fiji.sc/Strahler");
     gd.showDialog();
@@ -143,6 +143,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     super.maxPruning = (int)gd.getNextNumber();
     super.protecRoot = gd.getNextBoolean();
+    super.erodeIsolatedPixels = gd.getNextBoolean();
     super.pruneChoice = gd.getNextChoiceIndex();
     imgChoice = gd.getNextChoiceIndex();
     super.outIS = gd.getNextBoolean();
