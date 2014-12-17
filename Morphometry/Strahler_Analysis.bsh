@@ -93,6 +93,14 @@ boolean validInstallation() {
 	}
 }
 
+/* Checks if image fulfills analysis requirements */
+boolean validImage(ImagePlus imp) {
+	boolean valid = validInstallation() && imp!=null && imp.getBitDepth()==8;
+	if (!valid)
+		IJ.error("Strahler Analysis", "An 8-bit image is required but none was found.");
+	return valid;
+}
+
 /*
  * Creates the dialog prompt, retrieving the image with the original structure. While it
  * is unlikely that the iterative pruning of terminal branches will cause new loops on
@@ -219,18 +227,11 @@ void skeletonizeWithoutHermits(ImagePlus imp) {
 }
 
 
-// Startup checks
-if (!validInstallation())
-	{ IJ.error("Missing files? See Log window for details."); return; }
+// Retrieve analysis image and its ROI
 ImagePlus srcImp = WindowManager.getCurrentImage();
-if (srcImp==null)
-	{ IJ.error("There are no images open."); return; }
-if (srcImp.getBitDepth()!=8)
-	{ IJ.error("Cannot process "+ srcImp.getTitle() +".\nOnly 8-bit images can be processed."); return; }
-
+if (!validImage(srcImp)) return;
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
-
 
 // Retrieve grayscale image for intensity-based pruning of skel. loops
 ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
