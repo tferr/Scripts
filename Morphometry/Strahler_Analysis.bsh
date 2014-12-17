@@ -31,7 +31,6 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.gui.Roi;
 import ij.plugin.ZProjector;
-import ij.plugin.filter.ParticleAnalyzer;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
@@ -59,7 +58,7 @@ boolean protectRoot = true;
 /* Default option for 'iteration-stack' output */
 boolean outIS = false;
 
-/* Default option for 'color map' output */
+/* Default option for 'heat-map' output */
 boolean outCM = false;
 
 /* Default option for verbose mode */
@@ -187,8 +186,9 @@ double sum(double[] array) {
 }
 
 /*
- * Paints point positions. NB: BeanShell does not seem to suport generics. This triggers a
- * ParseException: paintPoints(ImageStack stack, ArrayList<Point> points, int value, String label)
+ * Paints point positions. NB: BeanShell does not seem to suport generics:
+ * paintPoints(ImageStack stack, ArrayList<Point> points, int value, String label)
+ * triggers a ParseException
  */
 void paintPoints(ImageStack stack, points, int value, String sliceLabel) {
 	if (points!=null) {
@@ -231,7 +231,8 @@ if (srcImp.getBitDepth()!=8)
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 
-// Prompt for options and retrieve image for intensity-based pruning of skel. loops
+
+// Retrieve grayscale image for intensity-based pruning of skel. loops
 ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
 if (origImp==null) return;
 
@@ -253,8 +254,8 @@ if (validRootRoi) {
 	rootIp = rootImp.getProcessor();
 	rootIp.setValue(0.0);
 	rootIp.fillOutside(roi);
-	
-	// Skeletonize, remove isolated pixels retrieve result
+
+	// Skeletonize, remove isolated pixels and retrieve result
 	skeletonizeWithoutHermits(rootImp);
 	AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
 	root.setup("", rootImp);
@@ -271,16 +272,16 @@ if (validRootRoi) {
 
 }
 
-// Initialize results table and display images. Use Z-projections
+// Initialize ResultsTable and display images. Use Z-projections
 // to populate iteration stack when dealing with 3D skeletons
 ResultsTable rt = getTable(STRAHLER_TABLE);
 rt.setPrecision(5);
 
 int nSlices = imp.getNSlices();
-ImageStack newStack;
+ImageStack iterationStack;
 ZProjector zp;
 if (outIS || outCM) {
-	newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
+	iterationStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 	if (nSlices>1) {
 		zp = new ZProjector(imp);
 		zp.setMethod(ZProjector.MAX_METHOD);
@@ -289,11 +290,11 @@ if (outIS || outCM) {
 	}
 }
 
-// Initialize AnalyzeSkeleton_, Skeletonize3D_
+// Initialize AnalyzeSkeleton_
 AnalyzeSkeleton_ skel = new AnalyzeSkeleton_();
 skel.setup("", imp);
 
-// Iterate through all the structures
+// Perform the iterative pruning
 int order = 1, nEndpoints = 0, nJunctions = 0, nJunctions2 = 0;
 double nEndpoints2 = Double.NaN;
 ArrayList endpointsList, junctionsList;
@@ -306,7 +307,7 @@ do {
 	// (Re)skeletonize image
 	skeletonizeWithoutHermits(imp);
 
-	// Add current skeleton to debug animation
+	// Add current tree(s) to debug animation
 	if (outIS || outCM) {
 		if (nSlices>1) {
 			zp.doProjection();
@@ -314,15 +315,15 @@ do {
 		} else {
 			ipd = ip.duplicate();
 		}
-		newStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
+		iterationStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
 	}
 
-	// Get properties of loop-resolved structure
+	// Get properties of loop-resolved tree(s)
 	SkeletonResult skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
 	nEndpoints = sum(skelResult.getEndPoints());
 	nJunctions = sum(skelResult.getJunctions());
 
-	// Retrieve initial properties
+	// Remember initial properties
 	if (order==1) {
 		endpointsList = skelResult.getListOfEndPoints();
 		junctionsList = skelResult.getListOfJunctionVoxels();
@@ -364,7 +365,7 @@ do {
 } while (order++ <= maxPruning && nJunctions > 0);
 
 
-// Append root properties to table
+// Append root properties to table and display results
 if (validRootRoi) {
 	rt.incrementCounter();
 	rt.addLabel("Image", title);
@@ -381,19 +382,20 @@ if (validRootRoi) {
 		rt.addValue("# Quadruple points", sum(rootResult.getQuadruples()));
 	}
 }
+rt.show(STRAHLER_TABLE);
 
 // Create results image(s)
 if (outIS || outCM) {
-	ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
+	ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, iterationStack);
 	Calibration cal = srcImp.getCalibration();
 	if (outIS) {
 		if (validRootRoi) {
-			newStack.addSlice("Root", rootIp);
-			paintPoints(newStack, rootEndpointsList, 255, "Root end-points");
+			iterationStack.addSlice("Root", rootIp);
+			paintPoints(iterationStack, rootEndpointsList, 255, "Root end-points");
 			imp2.setRoi(roi);
 		}
-		paintPoints(newStack, endpointsList, 255, "End-points");
-		paintPoints(newStack, junctionsList, 255, "Junction-points");
+		paintPoints(iterationStack, endpointsList, 255, "End-points");
+		paintPoints(iterationStack, junctionsList, 255, "Junction-points");
 		imp2.show();
 	}
 	if (outCM) {
@@ -414,7 +416,5 @@ if (outIS || outCM) {
 	}
 }
 
-// Exit
-rt.show(STRAHLER_TABLE);
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
