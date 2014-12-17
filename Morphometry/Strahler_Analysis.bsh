@@ -36,6 +36,7 @@ import ij.plugin.ZProjector;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import ij.text.TextWindow;
 
@@ -63,6 +64,8 @@ boolean outCM = true;
 /* Default option for verbose mode */
 boolean verbose = false;
 
+/* Remove isolated pixels from skeletons? */
+boolean erodeIsolatedPixels = true;
 
 /* Reminds the user to install required dependencies */
 boolean validInstallation() {
@@ -191,6 +194,23 @@ void paintBranchPoints(ImageProcessor ip, points, int value) {
             ip.putPixel(point.x, point.y, value);
         }
     }
+}
+
+/*
+ * Skeletonization method that erodes the thinned structure in order to eliminate
+ * isolated pixels. Thinning and pruning may give rise to single point arbors.
+ * These 'debris' trees have 1 end-point but no branches or junctions. If present
+ * they overestimate the total number of end-points
+ */
+void skeletonizeWithoutHermits(ImagePlus imp) {
+	Skeletonize3D_ thin = new Skeletonize3D_();
+	thin.setup("", imp);
+	thin.run(null);
+	if (super.erodeIsolatedPixels) {
+		ImageStack stack = imp.getStack();
+		for (int i=1; i<=stack.getSize(); i++)
+			((ByteProcessor)stack.getProcessor(i)).erode(8, 0);
+	}
 }
 
 
