@@ -29,13 +29,12 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
-import ij.gui.Overlay;
 import ij.gui.Roi;
-import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import ij.text.TextWindow;
 
@@ -44,19 +43,36 @@ import skeleton_analysis.Point;
 import skeleton_analysis.SkeletonResult;
 import Skeletonize3D_.Skeletonize3D_;
 
+import java.awt.Rectangle;
+import java.util.ArrayList;
 
-/* Definitions */
-String[] OUT_CHOICES = {"None", "Iteration Stack (IS)", "Color Map (CM)", "Both IS & CM"};
-int OUT_NONE = 0; int OUT_IS = 1; int OUT_CM = 2; int OUT_ISCM = 3;
-boolean protectRoot;
 
-/* Default settings */
-int maxPruning = 10;        // Max. number of prunning cycles
-int outChoice = OUT_CM;     // Default choice for output image
+/* Default value for max. number of prunning cycles */
+int maxPruning = 10;
 
 /* Default option for loop detection */
 int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
 
+/* Default option for 'root-protection' ROI */
+boolean protectRoot = true;
+
+/* Default option for 'iteration-stack' output */
+boolean outIS = false;
+
+/* Default option for 'color map' output */
+boolean outCM = false;
+
+/* Default option for verbose mode */
+boolean verbose = false;
+
+/* Title of results window */
+String STRAHLER_TABLE = "Strahler_Table";
+
+/* Remove isolated pixels from thinned images? */
+boolean erodeIsolatedPixels = true;
+
+/* Flag for 'root-protective' ROI */
+private static boolean validRootRoi;
 
 /* Reminds the user to install required dependencies */
 boolean validInstallation() {
@@ -66,15 +82,13 @@ boolean validInstallation() {
         return true;
     } catch( ClassNotFoundException e ) {
         URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/";
-        AS_VRSN = "AnalyzeSkeleton_-2.0.2.jar";
+        AS_VRSN = "AnalyzeSkeleton_-2.0.3.jar";
         SK_VRSN = "Skeletonize3D_-1.0.1.jar";
         msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
             + "Strahler Analysis requires AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be installed in\n"
             + "the plugins/ folder. Please install the missing file(s) by double-clicking on the links below:\n \n"
             + URL + AS_VRSN +"\n"+ URL + SK_VRSN;
         IJ.log(msg);
-        lw = WindowManager.getFrame("Log");
-        if (lw!=null) lw.setSize(645, 270);
         return false;
     }
 }
@@ -89,111 +103,118 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 
     ImagePlus origImg = currentImp;
     gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
+	headerFont = new Font("SansSerif", Font.BOLD, 12);
 
     // Part 1. Main Options
-    createDialogHeader(gd, "I. Strahler Numbering:", true);
-    gd.addSlider("Max. n. of iterations:", 1, 20, maxPruning);
-    gd.addChoice("Output image(s):", OUT_CHOICES , OUT_CHOICES[outChoice]);
+    gd.setInsets(0, 0, 0);
+    gd.addMessage("Strahler Numbering:", headerFont);
+    gd.addSlider("     Max. n. of iterations:", 1, 20, super.maxPruning);
+    gd.addCheckbox("Infer root end-points from rectangular ROI", super.protectRoot);
+    gd.addCheckbox("Ignore single-point arbors (Isolated pixels)", super.erodeIsolatedPixels);
+	if (!super.validRootRoi) {
+		Checkbox roiOption = (Checkbox)gd.getCheckboxes().elementAt(0);
+		roiOption.setEnabled(false);
+	}
 
-    // Part 2: Root protection
-    createDialogHeader(gd, "II. Non-radial Arbors:", false);
-    String protectMsg;
-    if (protectRoot) {
-        gd.addCheckbox("Protect ROI from iterative pruning", protectRoot);
-        protectMsg = "ROI should contain a single branch corresponding\nto the root node.";
-    } else
-        protectMsg = "No area ROI was found. All segments will be exposed\n"
-                   + "to the iterative elimination of terminal branches.";
+    // Part 2: Loop elimination
+    gd.setInsets(25, 0, 0);
+    gd.addMessage("Elimination of Skeleton Loops:", headerFont);
+    gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
+                    AnalyzeSkeleton_.pruneCyclesModes[super.pruneChoice]);
 
-    gd.setInsets(0, 20, 0);
-    gd.addMessage(protectMsg);
-
-    // Part 3: Loop elimination
-    createDialogHeader(gd, "III. Elimination of Skeleton Loops:", false);
     int[] ids = WindowManager.getIDList();
+    String[] imgTitles = new String[ids.length];
+    for (int i=0; i<ids.length; ++i )
+        imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
+    gd.addChoice("Unsegmented image:", imgTitles, null);
+
     boolean singleImage = (ids==null || ids.length<2);
-
-    if (singleImage) { // Only skeleton image is open: intensity based pruning is not available
-
-        String[] S_CHOICES = { AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.NONE],
-                    AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.SHORTEST_BRANCH]};
-        gd.addChoice("Method:", S_CHOICES, S_CHOICES[pruneChoice]);
-
-    } else { // Non-thinned image may be available: Allow intensity based pruning
-
-        gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
-                    AnalyzeSkeleton_.pruneCyclesModes[pruneChoice]);
-        String[] imgTitles = new String[ids.length];
-        for (int i=0; i<ids.length; ++i )
-            imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
-        gd.addChoice("Original grayscale image:", imgTitles, currentTitle);
-
+    if (singleImage) {
+		Choice methods = (Choice)gd.getChoices().elementAt(0);
+		Choice images = (Choice)gd.getChoices().elementAt(1);
+		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL]);
+		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH]);
+		images.setEnabled(false);
     }
+
+    // Part 3: Output
+    gd.setInsets(25, 0, 0);
+	gd.addMessage("Output Options:", headerFont);
+	gd.addCheckbox("Iteration stack (Document individual iterations)", super.outIS);
+	gd.addCheckbox("Heat-map image (Summarize analysis)", super.outCM);
+	gd.addCheckbox("Show detailed information (Verbose mode)", super.verbose);
 
     gd.addHelp("http://fiji.sc/Strahler");
     gd.showDialog();
     if (gd.wasCanceled()) return null;
 
-    maxPruning = (int)gd.getNextNumber();
-    outChoice = gd.getNextChoiceIndex();
-    if (protectRoot) protectRoot = gd.getNextBoolean();
-    pruneChoice = gd.getNextChoiceIndex();
-    if (!singleImage) {
-        imgChoice = gd.getNextChoiceIndex();
-        if (pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL || pruneChoice==AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH)
-            origImg = WindowManager.getImage(ids[imgChoice]);
-    }
+    super.maxPruning = (int)gd.getNextNumber();
+    super.protecRoot = gd.getNextBoolean();
+    super.erodeIsolatedPixels = gd.getNextBoolean();
+    super.pruneChoice = gd.getNextChoiceIndex();
+    imgChoice = gd.getNextChoiceIndex();
+    super.outIS = gd.getNextBoolean();
+    super.outCM = gd.getNextBoolean();
+    super.verbose = gd.getNextBoolean();
 
-    return origImg;
+    return (singleImage) ? currentImp : WindowManager.getImage(ids[imgChoice]);
 }
 
-/* Outputs measurements to a dedicated table */
-void printResults(order, tips, ratios) {
-    strahlerTable = "Strahler_Table";
-    window = WindowManager.getFrame(strahlerTable);
-    if (window == null)
+/* Returns the table of the specified window title */
+ResultsTable getTable(String title) {
+    ResultsTable rt = null;
+    window = WindowManager.getFrame(title);
+    if (window!=null)
+		 rt = ((TextWindow)window).getTextPanel().getResultsTable();
+    if (rt==null)
         rt = new ResultsTable();
-    else
-        rt = ((TextWindow) window).getTextPanel().getResultsTable();
-    rt.setPrecision(0);
-    rt.incrementCounter();
-    rt.addLabel("Image", title);
-    rt.addValue("Strahler order", order);
-    rt.addValue("# End-point branches", tips);
-    rt.addValue("Ramification ratios", IJ.d2s(ratios,5));
-    rt.show(strahlerTable);
+	return rt;
 }
 
-/* Adds a section header to a GenericDialog */
-void createDialogHeader(GenericDialog gd, String text, boolean supressAboveSpace) {
-     gd.setInsets(supressAboveSpace?0:12, 0, 0);
-     gd.addMessage(text, new Font("SansSerif", Font.BOLD, 12));
+/* Returns the sum of elements of an int[] array */
+int sum(int[] array) {
+	int sum = 0;
+	if (array!=null) for (int i : array) sum += i;
+	return sum;
 }
 
-/* Adds "Root ROI" to the image overlay */
-void addRootToOverlay(ImagePlus imp, Roi roi, boolean label) {
-    Overlay overlay = imp.getOverlay();
-    if (overlay==null) overlay = new Overlay();
-    roi.setName("Root");
-    overlay.add(roi);
-    if (label) {
-        overlay.setLabelColor(roi.getColor());
-        overlay.drawNames(true);
-    }
-    imp.setOverlay(overlay);
+/* Returns the sum of elements of a double[] array */
+double sum(double[] array) {
+	double sum = 0;
+	if (array!=null) for (double i : array) sum += i;
+	return sum;
 }
 
 /*
- * Paints junction points. NB: BeanShell does not seem to suport generics. This triggers
- * a ParseException: paintBranchPoints(ImageProcessor ip, ArrayList<Point> points, int value)
+ * Paints point positions. NB: BeanShell does not seem to suport generics. This triggers a
+ * ParseException: paintPoints(ImageStack stack, ArrayList<Point> points, int value, String label)
  */
-void paintBranchPoints(ImageProcessor ip, points, int value) {
+void paintPoints(ImageStack stack, points, int value, String sliceLabel) {
     if (points!=null) {
+        ImageProcessor ip = ip.createProcessor(stack.getWidth(), stack.getHeight());
         for (int j=0; j<points.size(); j++) {
             Point point = points.get(j);
             ip.putPixel(point.x, point.y, value);
         }
+        stack.addSlice(sliceLabel, ip);
     }
+}
+
+/*
+ * Skeletonization method that erodes the thinned structure in order to eliminate
+ * isolated pixels. Thinning and pruning may give rise to single point arbors.
+ * These 'debris' trees have 1 end-point but no branches or junctions. If present
+ * they overestimate the total number of end-points
+ */
+void skeletonizeWithoutHermits(ImagePlus imp) {
+	Skeletonize3D_ thin = new Skeletonize3D_();
+	thin.setup("", imp);
+	thin.run(null);
+	if (super.erodeIsolatedPixels) {
+		ImageStack stack = imp.getStack();
+		for (int i=1; i<=stack.getSize(); i++)
+			((ByteProcessor)stack.getProcessor(i)).erode(8, 0);
+	}
 }
 
 
@@ -206,9 +227,8 @@ if (srcImp==null)
 if (srcImp.getBitDepth()!=8)
     { IJ.error("Cannot process "+ srcImp.getTitle() +".\nOnly 8-bit images can be processed."); return; }
 
-// Root protection?
 Roi roi = srcImp.getRoi();
-boolean protectRoot = roi!=null && roi.isArea();
+validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 
 // Prompt for options and retrieve image for intensity-based pruning of skel. loops
 ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
@@ -217,173 +237,183 @@ if (origImp==null) return;
 // Work on a copy, since the original image will be modified
 if (roi!=null) srcImp.killRoi();
 ImagePlus imp = srcImp.duplicate();
-ImageProcessor ip = imp.getProcessor();
 if (roi!=null) srcImp.setRoi(roi);
+ImageProcessor ip = imp.getProcessor();
 
-// Skeletonize in case image is not a skeleton
-if (roi!=null) imp.killRoi();
-Skeletonize3D_ thin = new Skeletonize3D_();
-thin.setup("", imp);
-thin.run(ip);
+// Analyze root
+ImageProcessor rootIp;
+SkeletonResult rootResult;
+ArrayList rootEndpointsList;
 
-// Extract coordinates of all junction pixels
-initialSkel = new AnalyzeSkeleton_();
-initialSkel.setup("", imp);
-initialResult = initialSkel.run(pruneChoice, false, false, origImp, true, false);
-junctionsList = initialResult.getListOfJunctionVoxels();
+if (validRootRoi) {
 
-ImagePlus rootImp = null;
-int rootNjunctions = 0;
-String warning = "";
-
-// Create root image: a skeleton containing only branches inside a ROI
-if (protectRoot) {
-    rootImp = imp.duplicate();
-    rootImp.setRoi(roi);
-    for (int i=1; i<=rootImp.getNSlices(); i++) {
-        ImageProcessor rootIp = rootImp.getStack().getProcessor(i);
-        rootIp.setValue(0.0);
-        rootIp.fillOutside(roi); //NB: This will fail if the ROI is the entire image
-    }
-    rootImp.killRoi();
-
-    // Analyze root. We'll use n. of junctions as an identifier
+    // Duplicate entire canvas. Ignore tree(s) outside ROI
+    ImagePlus rootImp = imp.duplicate();
+    rootIp = rootImp.getProcessor();
+    rootIp.setValue(0.0);
+    rootIp.fillOutside(roi);
+    
+    // Skeletonize, remove isolated pixels retrieve result
+    skeletonizeWithoutHermits(rootImp);
     AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
     root.setup("", rootImp);
-    SkeletonResult rootResult = root.run(pruneChoice, false, false, origImp, true, false);
-    if (rootResult.getNumOfTrees()>0) {
-        int[] rootJunctions = rootResult.getJunctions();
-        for (int i=0; i<rootJunctions.length; i++)
-            rootNjunctions += rootJunctions[i];
-    } else
-        warning = "ROI contains no branches. Iteration was applied to entire image.\n";
+    rootResult = root.run(pruneChoice, false, false, origImp, true, false);
+
+    // Remove end-points at ROI boundaries
+    rootEndpointsList = rootResult.getListOfEndPoints();
+    Rectangle r = roi.getBounds();
+    for (int i=0; i<rootEndpointsList.size(); i++) {
+    	Point p = rootEndpointsList.get(i);
+    	if (p.x==r.x+1 || p.y==r.y+1 ||	p.x==r.x+r.getWidth()-2 || p.y==r.y+r.getHeight()-2)
+    		rootEndpointsList.remove(i);
+    }
+
 }
 
-if (protectRoot && rootNjunctions>0) {
-    warning = "ROI contains "+ rootNJunctions +" branch point(s). Strahler counts will likely be inaccurate.\n";
-    if (!IJ.showMessageWithCancel("Warning", warning +"Continue nevertheless?")) return;
-}
+// Initialize results table and display images. Use Z-projections
+// to populate iteration stack when dealing with 3D skeletons
+ResultsTable rt = getTable(STRAHLER_TABLE);
+rt.setPrecision(5);
 
-// Use Z-projections to populate iteration stack when dealing with 3D skeletons
 int nSlices = imp.getNSlices();
-if (nSlices>1) {
-    zp = new ZProjector(imp);
-    zp.setMethod(ZProjector.MAX_METHOD);
-    zp.setStartSlice(1);
-    zp.setStopSlice(nSlices);
+ImageStack newStack;
+ZProjector zp;
+if (outIS || outCM) {
+    newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
+    if (nSlices>1) {
+        zp = new ZProjector(imp);
+        zp.setMethod(ZProjector.MAX_METHOD);
+        zp.setStartSlice(1);
+        zp.setStopSlice(nSlices);
+    }
 }
 
-// Initialize AnalyzeSkeleton_
+// Initialize AnalyzeSkeleton_, Skeletonize3D_
 AnalyzeSkeleton_ skel = new AnalyzeSkeleton_();
 skel.setup("", imp);
 
-ImageStack newStack = new ImageStack( imp.getWidth(), imp.getHeight() );
-int order = 1; int prevNjunctions = 0; boolean loop = true;
-String msg = "\n*** Strahler analysis of "+ title +" ***\n"+ warning;
+// Iterate through all the structures
+int order = 1, nEndpoints = 0, nJunctions = 0, nJunctions2 = 0;
+double nEndpoints2 = Double.NaN;
+ArrayList endpointsList, junctionsList;
 
 do {
 
-    IJ.showStatus("Retrieving measurements for order "+ order++ +"...");
+    IJ.showStatus("Retrieving measurements for order "+ order +"...");
     IJ.showProgress(order, maxPruning);
 
-    // Re-skeletonize image. This ensures 1) no disconnected pixels exist after pruning
-    // and 2) that pruned structure is always a skeleton
-    thin.run(ip);
+    // (Re)skeletonize image
+    skeletonizeWithoutHermits(imp);
 
     // Add current skeleton to debug animation
-    if (nSlices>1) {
-        zp.doProjection();
-        ipd = zp.getProjection().getProcessor();
-    } else {
-        ipd = ip.duplicate();
+    if (outIS || outCM) {
+    	if (nSlices>1) {
+        	zp.doProjection();
+        	ipd = zp.getProjection().getProcessor();
+    	} else {
+        	ipd = ip.duplicate();
+    	}
+    	newStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
     }
-    newStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
 
-    // We'll monitor the n. of remaining junctions
+    // Get properties of loop-resolved structure
     SkeletonResult skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
-    int[] junctions = skelResult.getJunctions();
-    if (junctions==null) {
-        msg += "Iteration "+ order +": No branches were found! Revise parameters?\n";
+    nEndpoints = sum(skelResult.getEndPoints());
+    nJunctions = sum(skelResult.getJunctions());
+
+    // Retrieve initial properties
+    if (order==1) {
+    	endpointsList = skelResult.getListOfEndPoints();
+    	junctionsList = skelResult.getListOfJunctionVoxels();
+    }
+
+    // Is it worth proceeding?
+    if (nEndpoints==0) {
+        rt.addValue("Notes", "No end-poins detected!");
         break;
     }
-    int nJunctions = -rootNjunctions; // initialized to 0 if !protectRoot
-    for (int i=0; i<junctions.length; i++)
-        nJunctions += junctions[i];
-
-    // Are there any loops in the skeleton?
-    if (prevNjunctions==nJunctions) {
-        msg += "Iteration "+ order +": Skeleton may contain loops at this step. Revise parameters?\n";
+    if (nJunctions2==nJunctions) {
+        rt.addValue("Notes", "Unsolved loop(s) detected!");
         break;
     }
-    prevNjunctions = nJunctions;
 
-    // Eliminate terminal branches
-    skel.run(AnalyzeSkeleton_.NONE, true, false, null, true, false);
-
-    if (protectRoot) { // Reinstate branches in root ROI
-        (new ImageCalculator()).run("OR stack", imp, rootImp);
+    // Report counts
+    rt.incrementCounter();
+    rt.addLabel("Image", title);
+    rt.addValue("Strahler order", Integer.toString(order));
+    rt.addValue("# End-points", nEndpoints);
+    rt.addValue("Ramification ratios", nEndpoints2/nEndpoints);
+    rt.addValue("Notes", "");
+    if (verbose) {
+        rt.addValue("Average branch length", sum(skelResult.getAverageBranchLength()));
+        rt.addValue("# Trees", skelResult.getNumOfTrees());
+        rt.addValue("# Branches", sum(skelResult.getBranches()));
+        rt.addValue("# Junctions", nJunctions);
+        rt.addValue("# Triple points", sum(skelResult.getTriples()));
+        rt.addValue("# Quadruple points", sum(skelResult.getQuadruples()));
     }
 
-    // Continue?
-    loop = order<=maxPruning && nJunctions>0;
+    // Remember main results
+    nEndpoints2 = (double)nEndpoints;
+    nJunctions2 = nJunctions;
 
-} while (loop);
+    // Eliminate end-points
+    skel.run(pruneChoice, true, false, null, true, false, roi);
 
-// Create iteration stack. Add branch points to last slice
-ImageProcessor pointsIp = ip.createProcessor(ip.getWidth(), ip.getHeight());
-paintBranchPoints(pointsIp, junctionsList, 255);
-newStack.addSlice("Branch points", pointsIp);
-ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
+} while (order++ <= maxPruning && nJunctions > 0);
 
-// Create Strahler mask (16-bit image)
-ZProjector zp = new ZProjector(imp2);
-zp.setMethod(ZProjector.SUM_METHOD);
-zp.setStartSlice(1);
-zp.setStopSlice(order-1);
-zp.doProjection();
-ImageProcessor ip3 = zp.getProjection().getProcessor();
-ip3.multiply(1/255.0);
-ip3 = ip3.convertToShortProcessor(false);
-paintBranchPoints(ip3, junctionsList, 0); // Remove branch points
-ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
 
-// Retrieve counts using ParticleAnalyzer
-ResultsTable tempRt = new ResultsTable();
-ParticleAnalyzer pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, 0, tempRt, 0, Double.MAX_VALUE);
-double currOrderCount = Double.NaN;
-double nextOrderCount = Double.NaN;
-for (int i=1; i<order; i++) {
-    ip3.setThreshold(i, i, ImageProcessor.NO_LUT_UPDATE);
-    pa.analyze(imp3);
-    currOrderCount = (double)tempRt.getCounter();
-    printResults(i, currOrderCount, currOrderCount/nextOrderCount);
-    tempRt.reset();
-    nextOrderCount = currOrderCount;
+// Append root properties to table
+if (validRootRoi) {
+    rt.incrementCounter();
+    rt.addLabel("Image", title);
+    rt.addValue("Strahler order", Integer.toString(order)+" (Root)");
+    rt.addValue("# End-points", rootEndpointsList.size());
+    rt.addValue("Ramification ratios", nEndpoints2/rootEndpointsList.size());
+    rt.addValue("Notes", "Root-branches inferred from ROI");
+    if (verbose) {
+        rt.addValue("Average branch length", sum(rootResult.getAverageBranchLength()));
+        rt.addValue("# Trees", rootResult.getNumOfTrees());
+        rt.addValue("# Branches", sum(rootResult.getBranches()));
+        rt.addValue("# Junctions", sum(rootResult.getJunctions()));
+        rt.addValue("# Triple points", sum(rootResult.getTriples()));
+        rt.addValue("# Quadruple points", sum(rootResult.getQuadruples()));
+    }
 }
 
-// Display images
-Calibration cal = srcImp.getCalibration();
-if (outChoice==OUT_IS || outChoice==OUT_ISCM) { // Display iteration stack
-    imp2.setCalibration(cal);
-    if (protectRoot) addRootToOverlay(imp2, roi, true);
-    imp2.show();
-}
-if (outChoice==OUT_CM || outChoice==OUT_ISCM) { // Display color map
-    ip3.resetThreshold();
-    ip3.setMinAndMax(0, order-1);
-    IJ.run(imp3, "Fire", "");
-    IJ.run(imp3, "Calibration Bar...", " overlay"); // NB: Calibration bar clears pre-existing overlays. Bug?
-    imp3.setCalibration(cal);
-    if (protectRoot) addRootToOverlay(imp3, roi, false);
-    imp3.show();
-}
-
-// Log messages
-if (!msg.endsWith(" ***\n")) {
-    if (protectRoot) msg += "Number of branch points (junctions) inside ROI: "+ rootNjunctions;
-    IJ.log(msg);
+// Create results image(s)
+if (outIS || outCM) {
+	ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, newStack);
+	Calibration cal = srcImp.getCalibration();
+	if (outIS) {
+		if (validRootRoi) {
+			newStack.addSlice("Root", rootIp);
+			paintPoints(newStack, rootEndpointsList, 255, "Root end-points");
+			imp2.setRoi(roi);
+		}
+		paintPoints(newStack, endpointsList, 255, "End-points");
+		paintPoints(newStack, junctionsList, 255, "Junction-points");
+		imp2.show();
+	}
+	if (outCM) {
+		zp = new ZProjector(imp2);
+		zp.setMethod(ZProjector.SUM_METHOD);
+		zp.setStartSlice(1);
+		zp.setStopSlice(order-1);
+		zp.doProjection();
+		ImageProcessor ip3 = zp.getProjection().getProcessor();
+		ip3.multiply(1/255.0);
+		ip3.resetThreshold();
+		ip3.setMinAndMax(0, order-1);
+		ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
+		IJ.run(imp3, "Fire", "");
+		IJ.run(imp3, "Calibration Bar...", " overlay");
+		if (validRootRoi) imp3.setRoi(roi);
+		imp3.show();
+	}
 }
 
 // Exit
+rt.show(STRAHLER_TABLE);
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");

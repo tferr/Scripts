@@ -34,7 +34,7 @@ def error():
 s = getClipboard()
 if s!="":
     try:
-        path = IJ.getDirectory("temp") +"IJClipboardTable.csv"
+        path = IJ.getDirectory("temp") +"IJclipboardTable.csv"
         rtFile = open(path, "w")
         rtFile.write(s)
         rtFile.close()
