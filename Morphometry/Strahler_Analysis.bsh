@@ -308,17 +308,6 @@ do {
 	// (Re)skeletonize image
 	if (order>1) skeletonizeWithoutHermits(imp);
 
-	// Add current tree(s) to debug animation
-	if (outIS || outCM) {
-		if (nSlices>1) {
-			zp.doProjection();
-			ipd = zp.getProjection().getProcessor();
-		} else {
-			ipd = ip.duplicate();
-		}
-		iterationStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
-	}
-
 	// Get properties of loop-resolved tree(s)
 	SkeletonResult sr = as.run(pruneChoice, false, false, origImp, true, false);
 	nEndpoints = sum(sr.getEndPoints());
@@ -338,6 +327,17 @@ do {
 	if (nJunctions2==nJunctions) {
 		rt.addValue("Notes", "Unsolved loop(s) detected!");
 		break;
+	}
+
+	// Add current tree(s) to debug animation
+	if (outIS || outCM) {
+		if (nSlices>1) {
+			zp.doProjection();
+			ipd = zp.getProjection().getProcessor();
+		} else {
+			ipd = ip.duplicate();
+		}
+		iterationStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
 	}
 
 	// Report counts
