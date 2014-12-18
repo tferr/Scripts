@@ -260,9 +260,11 @@ if (validRootRoi) {
 	AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
 	root.setup("", rootImp);
 	rootResult = root.run(pruneChoice, false, false, origImp, true, false);
-
-	// Remove end-points at ROI boundaries
 	rootEndpointsList = rootResult.getListOfEndPoints();
+
+	// We're assuming that the ROI contains only end-point branches and slab
+	// voxels but no junction points (i.e., ROI only contains disconnected
+	// branches). Thus, we must remove end-points at ROI boundaries
 	ListIterator it = rootEndpointsList.listIterator();
 	Rectangle r = roi.getBounds();
 	while (it.hasNext()) {
@@ -321,11 +323,11 @@ do {
 
 	// Is it worth proceeding?
 	if (nEndpoints==0) {
-		rt.addValue("Notes", "No end-poins detected!");
+		rt.addValue("Notes", "Iteration aborted: No end-poins detected!");
 		break;
 	}
 	if (nJunctions2==nJunctions) {
-		rt.addValue("Notes", "Unsolved loop(s) detected!");
+		rt.addValue("Notes", "Iteration aborted: Unsolved loop(s) detected!");
 		break;
 	}
 
@@ -366,19 +368,25 @@ do {
 } while (order++ <= maxPruning && nJunctions > 0);
 
 
-// Append root properties to table and display results
 if (validRootRoi) {
+
+	// Check if ROI contains unexpected structures
+	int junctions = sum(rootResult.getJunctions());
+	String msg = (junctions > 0) ? "Error: ROI contains ramified root(s)"
+				: "Root-branches inferred from ROI";
+
+	// Append root properties to table and display results
 	rt.incrementCounter();
 	rt.addLabel("Image", title);
 	rt.addValue("Strahler order", Integer.toString(order)+" (Root)");
 	rt.addValue("# End-points", rootEndpointsList.size());
 	rt.addValue("Ramification ratios", nEndpoints2/rootEndpointsList.size());
-	rt.addValue("Notes", "Root-branches inferred from ROI");
+	rt.addValue("Notes", msg);
 	if (verbose) {
 		rt.addValue("Average branch length", sum(rootResult.getAverageBranchLength()));
 		rt.addValue("# Trees", rootResult.getNumOfTrees());
 		rt.addValue("# Branches", sum(rootResult.getBranches()));
-		rt.addValue("# Junctions", sum(rootResult.getJunctions()));
+		rt.addValue("# Junctions", junctions);
 		rt.addValue("# Triple points", sum(rootResult.getTriples()));
 		rt.addValue("# Quadruple points", sum(rootResult.getQuadruples()));
 	}
