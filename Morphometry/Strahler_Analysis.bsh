@@ -232,6 +232,15 @@ if (!validImage(srcImp)) return;
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 
+// 3D Roots are special. We need to assess first if:
+// 1) ROI is associated with all slices or just one
+// 2) We need to ignore counts above/below the ROI if needed
+// 3) All ip operations need to be extended to the stack
+if (srcImp.getNSlices()>1) {
+	IJ.error("'Root-ROI' works for 2D but not yet for 3D images.");
+	validRootRoi = false;
+}
+
 // Retrieve grayscale image for intensity-based pruning of skel. loops
 ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
 if (origImp==null) return;
