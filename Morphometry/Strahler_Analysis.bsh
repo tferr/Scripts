@@ -237,11 +237,12 @@ validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
 if (origImp==null) return;
 
-// Work on a copy, since the original image will be modified
+// Work on a skeletonized copy, since will be modifing the image
 if (roi!=null) srcImp.killRoi();
 ImagePlus imp = srcImp.duplicate();
 if (roi!=null) srcImp.setRoi(roi);
 ImageProcessor ip = imp.getProcessor();
+skeletonizeWithoutHermits(imp);
 
 // Analyze root
 ImageProcessor rootIp;
@@ -256,8 +257,7 @@ if (validRootRoi) {
 	rootIp.setValue(0.0);
 	rootIp.fillOutside(roi);
 
-	// Skeletonize, remove isolated pixels and retrieve result
-	skeletonizeWithoutHermits(rootImp);
+	// Get properties
 	AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
 	root.setup("", rootImp);
 	rootResult = root.run(pruneChoice, false, false, origImp, true, false);
@@ -306,7 +306,7 @@ do {
 	IJ.showProgress(order, maxPruning);
 
 	// (Re)skeletonize image
-	skeletonizeWithoutHermits(imp);
+	if (order>1) skeletonizeWithoutHermits(imp);
 
 	// Add current tree(s) to debug animation
 	if (outIS || outCM) {
