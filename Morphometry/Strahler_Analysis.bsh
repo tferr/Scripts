@@ -267,11 +267,12 @@ if (validRootRoi) {
 
 	// Remove end-points at ROI boundaries
 	rootEndpointsList = rootResult.getListOfEndPoints();
+	ListIterator it = rootEndpointsList.listIterator();
 	Rectangle r = roi.getBounds();
-	for (int i=0; i<rootEndpointsList.size(); i++) {
-		Point p = rootEndpointsList.get(i);
+	while (it.hasNext()) {
+		Point p = it.next();
 		if (p.x==r.x || p.y==r.y || p.x==r.x+r.getWidth()-1 || p.y==r.y+r.getHeight()-1)
-			rootEndpointsList.remove(i);
+			it.remove();
 	}
 
 }
