@@ -372,7 +372,7 @@ do {
 	nJunctions2 = nJunctions;
 
 	// Eliminate end-points
-	as.run(pruneChoice, true, false, null, true, false, roi);
+	as.run(pruneChoice, true, false, origImp, true, false, roi);
 
 } while (order++ <= maxPruning && nJunctions > 0);
 
