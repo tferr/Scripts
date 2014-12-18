@@ -95,7 +95,10 @@ boolean validInstallation() {
 
 /* Checks if image fulfills analysis requirements */
 boolean validImage(ImagePlus imp) {
-	boolean valid = validInstallation() && imp!=null && imp.getBitDepth()==8;
+	boolean valid = validInstallation();
+	if (!valid)
+		IJ.error("Strahler Analysis", "Dependencies not found.");
+	valid = imp!=null && imp.getBitDepth()==8;
 	if (!valid)
 		IJ.error("Strahler Analysis", "An 8-bit image is required but none was found.");
 	return valid;
