@@ -56,13 +56,13 @@ int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
 boolean protectRoot = true;
 
 /* Default option for 'iteration-stack' output */
-boolean outIS = false;
+boolean outIS = true;
 
 /* Default option for 'heat-map' output */
-boolean outCM = false;
+boolean outCM = true;
 
 /* Default option for verbose mode */
-boolean verbose = false;
+boolean verbose = true;
 
 /* Title of results window */
 String STRAHLER_TABLE = "Strahler_Table";
@@ -260,7 +260,7 @@ if (validRootRoi) {
 	rootIp.setValue(0.0);
 	rootIp.fillOutside(roi);
 
-	// Get properties
+	// Get tree properties
 	AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
 	root.setup("", rootImp);
 	rootResult = root.run(pruneChoice, false, false, origImp, true, false);
@@ -296,8 +296,8 @@ if (outIS || outCM) {
 }
 
 // Initialize AnalyzeSkeleton_
-AnalyzeSkeleton_ skel = new AnalyzeSkeleton_();
-skel.setup("", imp);
+AnalyzeSkeleton_ as = new AnalyzeSkeleton_();
+as.setup("", imp);
 
 // Perform the iterative pruning
 int order = 1, nEndpoints = 0, nJunctions = 0, nJunctions2 = 0;
@@ -324,14 +324,14 @@ do {
 	}
 
 	// Get properties of loop-resolved tree(s)
-	SkeletonResult skelResult = skel.run(pruneChoice, false, false, origImp, true, false);
-	nEndpoints = sum(skelResult.getEndPoints());
-	nJunctions = sum(skelResult.getJunctions());
+	SkeletonResult sr = as.run(pruneChoice, false, false, origImp, true, false);
+	nEndpoints = sum(sr.getEndPoints());
+	nJunctions = sum(sr.getJunctions());
 
 	// Remember initial properties
 	if (order==1) {
-		endpointsList = skelResult.getListOfEndPoints();
-		junctionsList = skelResult.getListOfJunctionVoxels();
+		endpointsList = sr.getListOfEndPoints();
+		junctionsList = sr.getListOfJunctionVoxels();
 	}
 
 	// Is it worth proceeding?
@@ -352,12 +352,12 @@ do {
 	rt.addValue("Ramification ratios", nEndpoints2/nEndpoints);
 	rt.addValue("Notes", "");
 	if (verbose) {
-		rt.addValue("Average branch length", sum(skelResult.getAverageBranchLength()));
-		rt.addValue("# Trees", skelResult.getNumOfTrees());
-		rt.addValue("# Branches", sum(skelResult.getBranches()));
+		rt.addValue("Average branch length", sum(sr.getAverageBranchLength()));
+		rt.addValue("# Trees", sr.getNumOfTrees());
+		rt.addValue("# Branches", sum(sr.getBranches()));
 		rt.addValue("# Junctions", nJunctions);
-		rt.addValue("# Triple points", sum(skelResult.getTriples()));
-		rt.addValue("# Quadruple points", sum(skelResult.getQuadruples()));
+		rt.addValue("# Triple points", sum(sr.getTriples()));
+		rt.addValue("# Quadruple points", sum(sr.getQuadruples()));
 	}
 
 	// Remember main results
@@ -365,7 +365,7 @@ do {
 	nJunctions2 = nJunctions;
 
 	// Eliminate end-points
-	skel.run(pruneChoice, true, false, null, true, false, roi);
+	as.run(pruneChoice, true, false, null, true, false, roi);
 
 } while (order++ <= maxPruning && nJunctions > 0);
 
