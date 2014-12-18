@@ -42,7 +42,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.4):
 
 
 
-The relevant files get stored in the following locations (version 1.0.3):
+The relevant files get stored in the following locations (version 1.0.4):
 
     Fiji.app
     ├── macros
@@ -70,13 +70,15 @@ The relevant files get stored in the following locations (version 1.0.3):
                 │   └── Strahler_Analysis.bsh
                 ├── Segmentation
                 │   ├── Apply_Threshold_To_ROI.ijm
-                │   ├── Clear_Thresholded_Pixels.ijm
+                │   ├── Clear_Thresholded_Pixels.bsh
                 │   ├── Remove_Isolated_Pixels.ijm
                 │   ├── Threshold_From_Background.ijm
                 │   └── Wipe_Background.ijm
                 └── Snippets
                     ├── Median_Filter.py
-                    └── Process_Folder.ijm
+                    ├── NN_Distances.py
+                    ├── Process_Folder.ijm
+                    └── Search_Snippets.bsh
 
 
 ###Notes

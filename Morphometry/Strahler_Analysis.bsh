@@ -2,19 +2,15 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
- * terminal branches of topographic 2D/3D skeletons
- * Tiago Ferreira, v1.3.2 2014.11.18
+ * terminal branches of topographic 2D/3D skeletons (http://fiji.sc/Strahler)
+ * Tiago Ferreira, v1.4.0 2014.12.18
  *
  * Requirements:
- * Ignacio Arganda-Carreras Skeletonize (http://fiji.sc/Skeletonize3D) and AnalyzeSkeleton
- * (http://fiji.sc/AnalyzeSkeleton) plugins, both bundled with Fiji (http://fiji.sc/)
- *
- * Installation:
- * Save this file in the plugins/ folder using the 'Plugins>Install...' command.
- *
- * Resources:
- * http://jenkins.imagej.net/job/Fiji-javadoc/javadoc/Skeletonize3D_/Skeletonize3D_.html
- * http://jenkins.imagej.net/job/Fiji-javadoc/javadoc/skeleton_analysis/package-summary.html
+ * Up-to-date versions of Ignacio Arganda-Carreras Skeletonize[1] and AnalyzeSkeleton[2]
+ * plugins. Both are bundled with Fiji (http://fiji.sc/) but can be otherwise downloaded
+ * from http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/
+ * [1] http://fiji.sc/Skeletonize3D
+ * [2] http://fiji.sc/AnalyzeSkeleton
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software Foundation

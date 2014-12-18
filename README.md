@@ -32,7 +32,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
   1. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
   2. (ijm) [Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
   3. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
-  4. (ijm) [Remove Isolated Pixels](./Segmentation/README.md#remove-isolated-pixels)
+  4. (bsh) [Remove Isolated Pixels](./Segmentation/README.md#remove-isolated-pixels)
   5. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   6. (ijm) [Threshold From Background](./Segmentation/README.md#threshold-from-background)
   7. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)

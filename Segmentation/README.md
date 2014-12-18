@@ -4,12 +4,24 @@
 
 ## Edge Detection Routines
 ###[Shen-Castan Edge Detector](../BAR/README.md#bar-plugins)
-   Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54 (2) 112-133 [[ref](../README.md#references)]. Effective alternative to Canny-Deriche filtering.
+   Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54
+   (2) 112-133 [[ref](../README.md#references)]. Effective alternative to Canny-Deriche filtering.
    ([Source code](../BAR/src/main/java/bar/ShenCastan.java))
 
-It is a re-write of the [initial plugin](http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html) (that no longer works with IJ) written in 2004 by Maxime Pinchon under the supervision of Noël Bonnet at the UMRS-INSERM 514.
+It is a re-write of the [initial plugin]
+(http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html)
+(that no longer works with IJ) written in 2004 by Maxime Pinchon under the supervision of Noël
+Bonnet at the UMRS-INSERM 514.
 
-Currently, it does not support RGB images directly: they need to be first  converted to _RGB-Stacks_: 1) Open RGB image; 2) Run _Image>Type>RGB-Stacks_; 3) Run the plugin, processing all three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initial data type.
+Currently, it does not support RGB images directly: they need to be first  converted to
+_RGB-Stacks_: 1) Open RGB image; 2) Run _Image>Type>RGB-Stacks_; 3) Run the plugin, processing all
+three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initial data type.
+
+## Morphological Operations
+###[Remove Isolated Pixels](./Remove_Isolated_Pixels.bsh)
+   Clears (erodes) isolated pixels in binary images. Operation is applied to the entire image or
+   stack rather than the active ROI.
+   ([Download .bsh](./Remove_Isolated_Pixels.bsh?raw=true))
 
 
 ## Threshold-based Routines
@@ -20,10 +32,6 @@ Currently, it does not support RGB images directly: they need to be first  conve
 ###[Clear Thresholded Pixels](./Clear_Thresholded_Pixels.ijm)
    Clears thresholded voxels within the active ROI.
    ([Download .ijm](./Clear_Thresholded_Pixels.ijm?raw=true))
-
-###[Remove Isolated Pixels](./Remove_Isolated_Pixels.ijm)
-   Clears isolated pixels/voxels in thresholded/binary images. Operation is applied to the entire image/stack rather than the active ROI.
-   ([Download .ijm](./Remove_Isolated_Pixels.ijm?raw=true))
 
 ###[Threshold From Background](./Threshold_From_Background.ijm)
    Sets a threshold based on a background ROI.
