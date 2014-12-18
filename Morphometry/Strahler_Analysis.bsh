@@ -270,7 +270,7 @@ if (validRootRoi) {
 	Rectangle r = roi.getBounds();
 	for (int i=0; i<rootEndpointsList.size(); i++) {
 		Point p = rootEndpointsList.get(i);
-		if (p.x==r.x+1 || p.y==r.y+1 || p.x==r.x+r.getWidth()-2 || p.y==r.y+r.getHeight()-2)
+		if (p.x==r.x || p.y==r.y || p.x==r.x+r.getWidth()-1 || p.y==r.y+r.getHeight()-1)
 			rootEndpointsList.remove(i);
 	}
 
