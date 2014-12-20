@@ -315,6 +315,7 @@ do {
 
 	IJ.showStatus("Retrieving measurements for order "+ order +"...");
 	IJ.showProgress(order, maxPruning);
+	rt.incrementCounter();
 
 	// (Re)skeletonize image
 	if (order>1) skeletonizeWithoutHermits(imp);
@@ -352,7 +353,6 @@ do {
 	}
 
 	// Report counts
-	rt.incrementCounter();
 	rt.addLabel("Image", title);
 	rt.addValue("Strahler order", Integer.toString(order));
 	rt.addValue("# End-points", nEndpoints);
@@ -403,7 +403,7 @@ if (validRootRoi) {
 rt.show(STRAHLER_TABLE);
 
 // Create results image(s)
-if (outIS || outCM) {
+if (iterationStack.getSize()>1 && (outIS || outCM)) {
 	ImagePlus imp2 = new ImagePlus("StrahlerAnimation_"+ title, iterationStack);
 	Calibration cal = srcImp.getCalibration();
 	if (outIS) {
