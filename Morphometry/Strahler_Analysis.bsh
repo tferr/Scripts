@@ -106,10 +106,9 @@ boolean validImage(ImagePlus imp) {
  * pre-existing skeletons, offering the option to resolve loops with intensity based
  * methods remains useful specially when analyzing non-thinned grayscale images.
  */
-ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
+ImagePlus getOriginalImp(String grayscaleImgChoice) {
 
-	ImagePlus origImg = currentImp;
-	gd = new GenericDialog("Strahler Analysis of "+ currentTitle);
+	gd = new GenericDialog("Strahler Analysis");
 	headerFont = new Font("SansSerif", Font.BOLD, 12);
 
 	// Part 1. Main Options
@@ -128,21 +127,11 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 	gd.addMessage("Elimination of Skeleton Loops:", headerFont);
 	gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
 					AnalyzeSkeleton_.pruneCyclesModes[super.pruneChoice]);
-
 	int[] ids = WindowManager.getIDList();
 	String[] imgTitles = new String[ids.length];
 	for (int i=0; i<ids.length; ++i )
-		imgTitles[i] = (WindowManager.getImage(ids[i])).getTitle();
-	gd.addChoice("Unsegmented image:", imgTitles, null);
-
-	boolean singleImage = (ids==null || ids.length<2);
-	if (singleImage) {
-		Choice methods = (Choice)gd.getChoices().elementAt(0);
-		Choice images = (Choice)gd.getChoices().elementAt(1);
-		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_VOXEL]);
-		methods.remove(AnalyzeSkeleton_.pruneCyclesModes[AnalyzeSkeleton_.LOWEST_INTENSITY_BRANCH]);
-		images.setEnabled(false);
-	}
+		imgTitles[i] = WindowManager.getImage(ids[i]).getTitle();
+	gd.addChoice("Unsegmented image:", imgTitles, grayscaleImgChoice);
 
 	// Part 3: Output
 	gd.setInsets(25, 0, 0);
@@ -164,7 +153,7 @@ ImagePlus getOriginalImp(ImagePlus currentImp, String currentTitle) {
 	super.outCM = gd.getNextBoolean();
 	super.verbose = gd.getNextBoolean();
 
-	return (singleImage) ? currentImp : WindowManager.getImage(ids[imgChoice]);
+	return WindowManager.getImage(ids[imgChoice]);
 }
 
 /* Returns the table of the specified window title */
@@ -229,6 +218,7 @@ void skeletonizeWithoutHermits(ImagePlus imp) {
 // Retrieve analysis image and its ROI
 ImagePlus srcImp = WindowManager.getCurrentImage();
 if (!validImage(srcImp)) return;
+String title = srcImp.getTitle();
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 
@@ -242,7 +232,7 @@ if (srcImp.getNSlices()>1) {
 }
 
 // Retrieve grayscale image for intensity-based pruning of skel. loops
-ImagePlus origImp = getOriginalImp(srcImp, title = srcImp.getTitle() );
+ImagePlus origImp = getOriginalImp(title);
 if (origImp==null) return;
 
 // Work on a skeletonized copy, since will be modifing the image
