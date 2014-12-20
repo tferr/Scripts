@@ -222,12 +222,12 @@ String title = srcImp.getTitle();
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
 
-// 3D Roots are special. We need to assess first if:
-// 1) ROI is associated with all slices or just one
-// 2) We need to ignore counts above/below the ROI if needed
-// 3) All ip operations need to be extended to the stack
-if (srcImp.getNSlices()>1) {
-	IJ.error("'Root-ROI' works for 2D but not yet for 3D images.");
+// TODO: 3D Roots are special. We need to:
+// 1) Check if ROI is associated with all slices or just one
+// 2) Ignore counts above/below the ROI, as needed
+// 3) Extend ip operations to stack
+if (validRootRoi && srcImp.getNSlices()>1) {
+	IJ.error("Strahler Analysis warning", "'Root-ROI' works for 2D but not yet for 3D images.");
 	validRootRoi = false;
 }
 
