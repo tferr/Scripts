@@ -17,6 +17,7 @@ import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.WindowManager;
 import ij.gui.Plot;
 import ij.gui.ProfilePlot;
 import ij.gui.Roi;
@@ -76,9 +77,9 @@ boolean invalidRoi(roi) {
 /* Checks if all requirements are met */
 boolean invalidRequirements() {
 	errorMsg = "";
-	if (!imp.isComposite())
+	if (imp==null || imp!=null && !imp.isComposite())
 		errorMsg += "\nError: Multichannel image required.";
-	if (invalidRoi(imp.getRoi()))
+	if (imp==null || imp!=null && invalidRoi(imp.getRoi()))
 		errorMsg += "\nError: Line or rectangular ROI required.";
 	invalid = !errorMsg.equals("");
 	if (invalid) IJ.error("Multichannel Profiler", errorMsg);
@@ -103,7 +104,7 @@ ImagePlus getSourceImage() {
 }
 
 
-imp = IJ.getImage();
+imp = WindowManager.getCurrentImage();
 if (invalidRequirements()) return;
 ci = (CompositeImage)imp;
 cal = getSpatialCalibration();
