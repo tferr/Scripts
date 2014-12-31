@@ -235,7 +235,7 @@ if (validRootRoi && srcImp.getNSlices()>1) {
 ImagePlus origImp = getOriginalImp(title);
 if (origImp==null) return;
 
-// Work on a skeletonized copy, since will be modifing the image
+// Work on a skeletonized copy since we'll be modifing the image
 if (roi!=null) srcImp.killRoi();
 ImagePlus imp = srcImp.duplicate();
 if (roi!=null) srcImp.setRoi(roi);
@@ -371,7 +371,7 @@ if (validRootRoi) {
 
 	// Check if ROI contains unexpected structures
 	int junctions = sum(rootResult.getJunctions());
-	String msg = (junctions > 0) ? "Error: ROI contains ramified root(s)"
+	String msg = (junctions > 0) ? "Warning: ROI contains ramified root(s)"
 				: "Root-branches inferred from ROI";
 
 	// Append root properties to table and display results
