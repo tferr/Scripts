@@ -39,6 +39,7 @@ import skeleton_analysis.SkeletonResult;
 import Skeletonize3D_.Skeletonize3D_;
 
 import java.awt.Rectangle;
+import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 
 
@@ -414,10 +415,14 @@ if (iterationStack.getSize()>1 && (outIS || outCM)) {
 		zp.doProjection();
 		ImageProcessor ip3 = zp.getProjection().getProcessor();
 		ip3.multiply(1/255.0);
-		ip3.resetThreshold();
 		ip3.setMinAndMax(0, order-1);
 		ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
-		IJ.run(imp3, "Fire", "");
+		try {
+			Class.forName("Sholl_Utils");
+			ip3.setColorModel(Sholl_Utils.matlabJetColorMap(0));
+		} catch (ClassNotFoundException) {
+			IJ.run(imp3, "Fire", "");
+		}
 		IJ.run(imp3, "Calibration Bar...", " overlay");
 		if (validRootRoi) imp3.setRoi(roi);
 		imp3.show();
