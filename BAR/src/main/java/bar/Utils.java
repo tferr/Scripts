@@ -265,8 +265,9 @@ public class Utils implements PlugIn {
 		gd.addMessage("Tiago Ferreira", plainf);
 		gd.addMessage("Contributors", boldf);
 		gd.setInsets(0, 20, 0);
-		gd.addMessage("Johannes Schindelin, Kota Miura, Wayne Rasband, Maxime Pinchon", plainf);
 		gd.enableYesNoCancel("Browse Documentation", "Browse Repository");
+		gd.addMessage("Johannes Schindelin, Kota Miura, Wayne Rasband, Maxime Pinchon,\n"
+				+"Jérôme Mutterer", plainf);
 		gd.hideCancelButton();
 		gd.showDialog();
 		if (gd.wasCanceled())
