@@ -37,8 +37,10 @@ public class Utils implements PlugIn {
 	private static final String VERSION = "1.0.4";
 	private static final String DOC_URL = "http://fiji.sc/BAR";
 	private static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
-	private static final String SNIPPETS_DIR = IJ.getDirectory("plugins") + "Scripts"
-				+ File.separator + "BAR" + File.separator + "Snippets" + File.separator;
+	private static final String BAR_DIR = IJ.getDirectory("plugins")
+			+ "Scripts" + File.separator + "BAR";
+	private static final String SNIPPETS_DIR = BAR_DIR + File.separator
+			+ "Snippets" + File.separator;
 
 	@Override
 	public void run(final String arg) {
@@ -154,7 +156,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Prints the contents of a directory to a dedicated table. */
-	public static void listDirectory(final String dir) {
+	public void listDirectory(final String dir) {
 		final File f = new File(dir);
 		if (!fileExists(f) || !f.isDirectory()) return;
 
@@ -172,7 +174,7 @@ public class Utils implements PlugIn {
 
 		if (list.size()==0) {
 			if (IJ.showMessageWithCancel("Empty Directory", dir +"\nis empty. Open it?"))
-				revealFile(dir);
+				this.revealFile(dir);
 			return;
 		}
 
@@ -226,7 +228,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Reveals a file in the operating system default file explorer */
-	public static void revealFile(final String filePath) {
+	public void revealFile(final String filePath) {
 		final File file = new File(filePath);
 		if (!fileExists(file)) return;
 		Desktop desktop = null;
@@ -257,25 +259,27 @@ public class Utils implements PlugIn {
 		final GenericDialog gd = new GenericDialog("About BAR...");
 		gd.addMessage("BAR v" + VERSION, boldf);
 		gd.setInsets(0, 20, 0);
-		gd.addMessage("A curated collection of Broadly Applicable Routines",
+		gd.addMessage("A curated collection of Broadly Applicable Routines for ImageJ1",
 				plainf);
 		gd.setInsets(10, 20, 0);
-		gd.addMessage("Author and Maintainer", boldf);
+		gd.addMessage("Author/Maintainer", boldf);
 		gd.setInsets(0, 20, 0);
 		gd.addMessage("Tiago Ferreira", plainf);
 		gd.addMessage("Contributors", boldf);
 		gd.setInsets(0, 20, 0);
-		gd.enableYesNoCancel("Browse Documentation", "Browse Repository");
 		gd.addMessage("Johannes Schindelin, Kota Miura, Wayne Rasband, Maxime Pinchon,\n"
 				+"Jérôme Mutterer", plainf);
+		gd.enableYesNoCancel("Browse Repository", "Open BAR");
 		gd.hideCancelButton();
+		gd.addHelp(DOC_URL);
+		gd.setHelpLabel("Browse Documentation");
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return;
 		else if (gd.wasOKed())
-			this.openURL(DOC_URL);
-		else
 			this.openURL(SRC_URL);
+		else
+			this.revealFile(BAR_DIR);
 	}
 
 }
