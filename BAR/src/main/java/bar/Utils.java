@@ -34,7 +34,7 @@ import java.util.Iterator;
 /** Simple commands related to the BAR update site */
 public class Utils implements PlugIn {
 
-	private static final String VERSION = "1.0.4";
+	private static final String VERSION = "1.0.5";
 	private static final String DOC_URL = "http://fiji.sc/BAR";
 	private static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
 	private static final String BAR_DIR = IJ.getDirectory("plugins")
