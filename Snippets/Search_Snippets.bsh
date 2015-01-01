@@ -2,7 +2,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * BeanShell script that instructs the built-in 'Search...' command (Plugins>Utilies>Search...) to
- * search inside plugins/BAR/Snippets/ for clipboard contents.
+ * search inside plugins/BAR/ for clipboard contents.
  * Caveats: The search string cannot contain quotes. Also, if it contains space(s) it cannot contain
  * square brackets. This is because ImageJ uses these characters to delimit macro values passed as
  * part of the run() function's second argument.

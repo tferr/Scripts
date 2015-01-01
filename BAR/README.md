@@ -1,10 +1,14 @@
 # BAR plugins
 
-While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre-compiled java plugins bundled in a single JAR file. This directory contains the source code (a [Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins. The project also includes [plugins.config](./src/main/resources/plugins.config) that organizes the BAR menu [hierarchy](#bar-menu).
+While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre-compiled
+java plugins bundled in a single JAR file. This directory contains the source code (a
+[Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins.
+The project also includes [plugins.config](./src/main/resources/plugins.config) that
+organizes the BAR menu [hierarchy](#bar-menu).
 
 
 ### BAR-menu
-The top-level _BAR_ Menu is organized in the following manner (version 1.0.4):
+The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
 
     BAR
     ├── Annotation
@@ -13,9 +17,11 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.4):
     │   └── ROI Color Coder
     ├── Data Analysis
     │   ├── Move Menu (Context<>Main)
+    │   ├── Clipboard to Results
     │   ├── Distribution Plotter
     │   ├── Find Peaks
     │   ├── Fit Polynomial
+    │   ├── Multichannel Plot Profile
     │   └── Plot Results
     ├── Morphometry
     │   ├── Move Menu (Context<>Main)
@@ -42,7 +48,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.4):
 
 
 
-The relevant files get stored in the following locations (version 1.0.4):
+The relevant files get stored in the following locations (version 1.0.5):
 
     Fiji.app
     ├── macros
@@ -55,23 +61,25 @@ The relevant files get stored in the following locations (version 1.0.4):
     │       ├── ROI Manager Tools.ijm
     │       └── Toolset Creator.ijm
     └── plugins
-        ├── BAR_-1.0.3-SNAPSHOT.jar
+        ├── BAR_-1.0.5.jar
         └── Scripts
             └── BAR
                 ├── Annotation
                 │   ├── Combine_Orthogonal_Views.ijm
                 │   └── ROI_Color_Coder.ijm
                 ├── Data_Analysis
+                │   ├── Clipboard_to_Results.py
                 │   ├── Distribution_Plotter.ijm
                 │   ├── Find_Peaks.bsh
                 │   ├── Fit_Polynomial.bsh
+                │   ├── Multichannel_Plot_Profile.bsh
                 │   └── Plot_Results.bsh
                 ├── Morphometry
                 │   └── Strahler_Analysis.bsh
                 ├── Segmentation
                 │   ├── Apply_Threshold_To_ROI.ijm
-                │   ├── Clear_Thresholded_Pixels.bsh
-                │   ├── Remove_Isolated_Pixels.ijm
+                │   ├── Clear_Thresholded_Pixels.ijm
+                │   ├── Remove_Isolated_Pixels.bsh
                 │   ├── Threshold_From_Background.ijm
                 │   └── Wipe_Background.ijm
                 └── Snippets
@@ -82,9 +90,17 @@ The relevant files get stored in the following locations (version 1.0.4):
 
 
 ###Notes
-   - You can place _BAR>_ submenus in the image's context menu (the menu that pops up when right-clicking on the image canvas) by using the _Move Menu (Context<>Main)_. This facilitates accessibility of commonly-used commands. The transfer is bi-directional: once in the context menu, chossing _Move Menu_ will replace the submenu in the main Menu bar.
-   - While all files could be bundled in a single jar file (arguably a tidier approach), spreading files across folders has the main advantage of being compatible with the [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu hierarchy
-   - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh) (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
+   - You can place _BAR>_ submenus in the image's context menu (the menu that pops up when
+   right-clicking on the image canvas) by using the _Move Menu (Context<>Main)_. This
+   facilitates accessibility of commonly-used commands. The transfer is bi-directional:
+   once in the context menu, choosing _Move Menu_ will replace the submenu in the main
+   Menu bar.
+   - While all files could be bundled in a single jar file (arguably a tidier approach),
+   spreading files across folders has the main advantage of being compatible with the
+   [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu
+   hierarchy
+   - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh)
+   (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
    - The recursive lists above were created with [tree](http://mama.indstate.edu/users/ice/tree/)
 
 

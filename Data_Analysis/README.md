@@ -3,8 +3,9 @@
 [BARs][Home] related to data analysis.
 
 ###[Clipboard to Results](./Clipboard_to_Results.py)
-   Imports numeric values copied to the clipboard into the _Results_ table. Useful, since BARs that
-   analyze tabular data can only read values from the main IJ _Results_ table.
+   Imports numeric values (delimiter-separated values), copied to the clipboard into the
+   _Results_ table. Useful, since BARs that analyze tabular data can only read values from
+   the main IJ _Results_ table.
    ([Download .py](./Clipboard_to_Results.py?raw=true))
 
    See also [Plot Results](#plot-results)
@@ -69,7 +70,7 @@
      To change the color of the plotted curves, turn on _Live mode_, activate the image, and apply a
      new LUT using the drop-down menu of the "Channels" widget.
    * By default, the X-axis will use spatially calibrated distances. To use pixel distances instead
-     set the flag [`pixelUnits`](./Multichannel_Plot_Profile.bsh#L27) to `true`.
+     set the flag [`pixelUnits`](./Multichannel_Plot_Profile.bsh#L27-L29) to `true`.
 
 
 ###[Plot Results](./Plot_Results.bsh)
