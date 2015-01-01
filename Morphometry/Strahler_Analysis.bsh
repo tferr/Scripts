@@ -3,7 +3,7 @@
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons (http://fiji.sc/Strahler)
- * Tiago Ferreira, v1.4.0 2014.12.18
+ * Tiago Ferreira, 2013-2015
  *
  * Requirements:
  * Up-to-date versions of Ignacio Arganda-Carreras Skeletonize[1] and AnalyzeSkeleton[2]
@@ -61,11 +61,14 @@ boolean outCM = true;
 /* Default option for verbose mode */
 boolean verbose = true;
 
+/* Remove isolated pixels from thinned images? */
+boolean erodeIsolatedPixels = true;
+
 /* Title of results window */
 String STRAHLER_TABLE = "Strahler_Table";
 
-/* Remove isolated pixels from thinned images? */
-boolean erodeIsolatedPixels = true;
+/* Version of this script */
+String VERSION = "1.4.0 2015.01.01";
 
 /* Flag for 'root-protective' ROI */
 private static boolean validRootRoi;
@@ -109,7 +112,7 @@ boolean validImage(ImagePlus imp) {
  */
 ImagePlus getOriginalImp(String grayscaleImgChoice) {
 
-	gd = new GenericDialog("Strahler Analysis");
+	gd = new GenericDialog("Strahler Analysis v"+ super.VERSION);
 	headerFont = new Font("SansSerif", Font.BOLD, 12);
 
 	// Part 1. Main Options
