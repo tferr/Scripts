@@ -119,7 +119,7 @@ public class Utils implements PlugIn {
 			barMenu.add(popMenu.getItem(popmenuPos));
 			removeLastSeparator(popMenu);
 			if (!IJ.macroRunning())
-				IJ.showMessage("BAR v"+ VERSION, "BAR>"+ subMenu +"> transferred to main menu.");
+				IJ.showStatus("BAR>"+ subMenu +"> transferred to main menu.");
 
 		}
 	}
