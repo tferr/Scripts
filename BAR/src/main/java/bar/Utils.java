@@ -156,7 +156,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Prints the contents of a directory to a dedicated table. */
-	public void listDirectory(final String dir) {
+	public static void listDirectory(final String dir) { // static so it can be called from ijm
 		final File f = new File(dir);
 		if (!fileExists(f) || !f.isDirectory()) return;
 
@@ -174,7 +174,7 @@ public class Utils implements PlugIn {
 
 		if (list.size()==0) {
 			if (IJ.showMessageWithCancel("Empty Directory", dir +"\nis empty. Open it?"))
-				this.revealFile(dir);
+				Utils.revealFile(dir);
 			return;
 		}
 
@@ -228,7 +228,7 @@ public class Utils implements PlugIn {
 	}
 
 	/** Reveals a file in the operating system default file explorer */
-	public void revealFile(final String filePath) {
+	public static void revealFile(final String filePath) { // static so it can be called from ijm
 		final File file = new File(filePath);
 		if (!fileExists(file)) return;
 		Desktop desktop = null;
@@ -279,7 +279,7 @@ public class Utils implements PlugIn {
 		else if (gd.wasOKed())
 			this.openURL(SRC_URL);
 		else
-			this.revealFile(BAR_DIR);
+			Utils.revealFile(BAR_DIR);
 	}
 
 }
