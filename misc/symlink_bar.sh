@@ -31,7 +31,7 @@
 ## 5. Symlink Snippets/ files
     DIR="$BAR_DIR/Snippets"
     mkdir -p $DIR
-    ln -fs $SRC_DIR/Segmentation/* $DIR
+    ln -fs $SRC_DIR/Snippets/* $DIR
 
 ## 6. Symlink macro tools
     DIR="$FIJI_HOME/macros/tools"
