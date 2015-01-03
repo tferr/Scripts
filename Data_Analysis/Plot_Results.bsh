@@ -3,6 +3,7 @@
  * Creates an ImageJ XY plot from imported spreadsheet data. TF, 2014.06
  */
 
+import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.gui.Plot;
 import ij.io.Opener;
