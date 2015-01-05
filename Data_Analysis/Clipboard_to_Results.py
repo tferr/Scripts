@@ -27,21 +27,15 @@ def getClipboard():
     else:
         return ""
 
-def error():
-    IJ.error("Could not place clipboard into Results table.")
-
 
 s = getClipboard()
-if s!="":
-    try:
-        path = IJ.getDirectory("temp") +"IJclipboardTable.csv"
-        rtFile = open(path, "w")
-        rtFile.write(s)
-        rtFile.close()
-        if os.path.isfile(path) and Analyzer.resetCounter():
-            rt = RT.open(path)
-            rt.show("Results")
-    except:
-        error()
-else:
-    error()
+try:
+    path = IJ.getDirectory("temp") +"IJclipboardTable.csv"
+    rtFile = open(path, "w")
+    rtFile.write(s)
+    rtFile.close()
+    rt = RT.open(path) #IOException if getClipboard()==""
+    if Analyzer.resetCounter():
+        rt.show("Results")
+except:
+    IJ.error("Could not place clipboard into Results table.")
