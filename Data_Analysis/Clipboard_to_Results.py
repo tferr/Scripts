@@ -9,7 +9,7 @@
 # copied to the clipboard
 
 
-import os
+import os, tempfile
 from ij import IJ
 from ij.plugin.filter import Analyzer
 import ij.measure.ResultsTable as RT
@@ -28,14 +28,14 @@ def getClipboard():
         return ""
 
 
-s = getClipboard()
+fd, path = tempfile.mkstemp()
 try:
-    path = IJ.getDirectory("temp") +"IJclipboardTable.csv"
-    rtFile = open(path, "w")
-    rtFile.write(s)
-    rtFile.close()
+    os.write(fd, getClipboard())
+    os.close(fd)
     rt = RT.open(path) #IOException if getClipboard()==""
     if Analyzer.resetCounter():
         rt.show("Results")
 except:
     IJ.error("Could not place clipboard into Results table.")
+finally:
+    os.remove(path)
