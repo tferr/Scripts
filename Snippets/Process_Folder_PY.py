@@ -64,11 +64,14 @@ if files:
 
     # Create a CSV table documenting processed files
     csvPath = outDir + "_ProcessedFileList.csv"
-    csvFile = open(csvPath, 'w')
+    csvExists = os.path.exists(csvPath)
+    csvFile = open(csvPath, 'a')
     csvWriter = csv.writer(csvFile)
 
-    headers = ['Original path','Processed path']
-    csvWriter.writerow(headers)
+    # Specify column headings
+    if not csvExists:
+        headers = ['Original path','Processed path']
+        csvWriter.writerow(headers)
 
     # Process list of images
     for (counter, f) in enumerate(files):
