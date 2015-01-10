@@ -1,4 +1,4 @@
-/* Process_Folder.ijm
+/* Process_Folder_IJM.ijm
  * IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
  *
  * This macro[1] snippet implements a generic, reusable macro to be used as a
