@@ -31,10 +31,12 @@ from ij.measure import ResultsTable
 # path. The list is recursive (includes subdirectories) and will only
 # include files matching the specified extensions.
 def getFileList(directory):
+    extensions = (".tif", ".stk", ".oib", "png")
     files = []
-    for dirpath, dirnames, filenames in os.walk(directory):
+    for (dirpath, dirnames, filenames) in os.walk(directory):
+        if 'Processed' in dirnames: dirnames.remove('Processed')
         for f in filenames:
-            if f.endswith((".tif", ".TIF", ".stk", ".STK")):
+            if f.endswith(extensions):
                 files.append(os.path.join(dirpath, f))
     return files
 
