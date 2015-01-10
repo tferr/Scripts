@@ -45,7 +45,6 @@ def getFileList(directory):
 def processImage(image):
     import uuid
     image.setTitle( str(uuid.uuid4()) )
-    image.show()
 
 
 
@@ -71,6 +70,9 @@ if files:
 
     # Process list of images
     for (counter, f) in enumerate(files):
+
+        # Display progress
+        IJ.showStatus("Processing file "+ str(counter+1) +"/"+ str(len(files)) )
 
         # Open each image and process it
         imp = IJ.openImage(f)
