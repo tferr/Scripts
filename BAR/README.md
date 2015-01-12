@@ -36,7 +36,8 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
     │   └── Wipe Background
     ├── Snippets
     │   ├── List Snippets
-    │   └── Reveal Snippets
+    │   ├── Reveal Snippets
+    │   └── [...]
     ├── Tool Installers
     │   ├── Install Calibration Menu
     │   ├── Install List Folder Menu
@@ -85,7 +86,8 @@ The relevant files get stored in the following locations (version 1.0.5):
                 └── Snippets
                     ├── Median_Filter.py
                     ├── NN_Distances.py
-                    ├── Process_Folder.ijm
+                    ├── Process_Folder_IJM.ijm
+                    ├── Process_Folder_PY.py
                     └── Search_Snippets.bsh
 
 

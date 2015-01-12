@@ -1,24 +1,46 @@
 #Snippets
 
-[BAR][Home] Snippets. This directory is a depository of generic and reusable scripts to be recycled by BAR users.
-They are installed under `BAR>Snippets>`, a menu containing two other commands:
+[BAR][Home] Snippets. This directory is a depository of generic and reusable scripts to be recycled
+by BAR users. They are installed under `BAR>Snippets>`, a menu containing two other commands:
 
- - `List Snippets`: Prints the contents of this directory to a dedicated window. Files can then be open in the Script Editor by double-click. This may be preferable to [Shift-clicking](http://fiji.sc/BAR#OpeningBAR) the Menu bar
+ - `List Snippets`: Prints the contents of this directory to a dedicated window. Files can then be
+   opened in the Script Editor by double-click. This may be preferable to
+   [Shift-clicking](http://fiji.sc/BAR#OpeningBAR) the Menu bar
  - `Reveal Snippets`: Opens this directory in the file browser of the operating system
 
 
 ##List of Snippets
 ####[Median Filter](./Median_Filter.py)
-   A [Python](#python) script that exemplifies how to perform a filtering operation.
-   ([Download .py](./Median_Filter.py?raw=true))
+A [Python](#python) script that exemplifies how to perform a filtering operation.
+([Download .py](./Median_Filter.py?raw=true))
 
 ####[NN Distances](./NN_Distances.py)
-   A [Python](#python) script that calculates nearest neighbor distances from a 2D/3D list of centroid coordinates.
-     ([Download .py](./NN_Distances.py?raw=true))
+A [Python](#python) script that calculates nearest neighbor distances from a 2D/3D list of centroid
+coordinates.
+([Download .py](./NN_Distances.py?raw=true))
 
-####[Process Folder](./Process_Folder.ijm)
-   A [macro](#imagej-macro-language) tailored for batch processing of images. A more customizable alternative to the _Process>Batch>Macro_ command.
-   ([Download .ijm](./Process_Folder.ijm?raw=true))
+####Batch Processing
+These are scripts written in different languages that batch process images in a more customizable
+way than the _Process>Batch>Macro_ built-in command. They:
+
+ 1. Take an input folder specified by the user
+ 2. Apply a series of operations to individual files of matched extension(s)
+ 3. Save processed files to a dedicated directory, so that no files are overwritten
+
+The scripts are modular in design, so that routines to be applied to individual files are
+contained in a single function.
+In the current examples, both the [Python](#python) and [IJM](#imagej-macro-language) implementation
+perform the task of obfuscating filenames: They copy images from one folder to another, upon
+randomizing their names and while logging changes to a CSV table. This approach is useful for
+unbiased/blind analyses that are sensitive to user interpretation.
+
+ - [Process Folder IJM](./Process_Folder_IJM.ijm): A batch processor written in the
+   [IJ macro language](#imagej-macro-language) (IJM).
+   ([Download .ijm](./Process_Folder_IJM.ijm?raw=true))
+
+ - [Process Folder PY](./Process_Folder_PY.py): A batch processor written in [Python](#python).
+   ([Download .py](./Process_Folder_PY.py?raw=true))
+
 
 ####[Search Snippets](./Search_Snippets.bsh)
    A BeanShell script that searches for content in this directory.
@@ -33,8 +55,9 @@ They are installed under `BAR>Snippets>`, a menu containing two other commands:
  - [IJ1 macro repository](http://imagej.nih.gov/ij/macros/)
 
 ####Python
- - Fiji examples in `Fiji.app/plugins/Examples/`
  - [Fiji documentation](http://fiji.sc/Jython_Scripting)
+ - [Image Processing and Analysis @EMBL](http://cmci.embl.de/documents/120206pyip_cooking/python_imagej_cookbook)
+ - Fiji examples in `Fiji.app/plugins/Examples/`
  - [IJ1 examples](http://imagej.nih.gov/ij/macros/python/)
  - [Python documentation](https://www.python.org/doc/)
  - [Jython documentation](http://www.jython.org/docs/)
