@@ -83,8 +83,8 @@ if files:
         imp = IJ.openImage(f)
         processImage(imp)
 
-        # Save processed image in outDir
-        newpath= outDir + imp.getTitle() +".tif"
+        # Save processed image in out_dir (enforcing .tif extension)
+        newpath = os.path.splitext(out_dir + imp.getTitle())[0] +".tif"
         IJ.saveAsTiff(imp, newpath)
 
         # Log paths of processed files
