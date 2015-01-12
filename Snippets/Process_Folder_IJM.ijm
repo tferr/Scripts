@@ -62,7 +62,6 @@ function getOutputDirectory(input_dir) {
 	}
 
 	// Ensure the string defining input_dir does not end in '/' or '\'
-	Returns the file name separator character
 	if (endsWith(input_dir, File.separator)) {
 		separatorPosition = lengthOf(input_dir);
 		input_dir = substring(input_dir, 0, separatorPosition-1);
@@ -127,10 +126,16 @@ function processFiles(input_dir, output_dir) {
 			myRoutines();
 
 			// Save processed image in outDir (enforcing .tif extension)
-			image_title = substring(getTitle(), 0, lastIndexOf(getTitle(), "."));
+			image_title = getTitle();
+			dot_position = lastIndexOf(image_title, ".");
+			if (dot_position!=-1)
+				image_title = substring(image_title, 0, dot_position);
 			saveAs("tiff", output_dir + image_title + ".tif");
 			close();
 
+		// Process subdirectories of input_dir
+		} else if (endsWith(file_path, "/")) {
+			processFiles(""+input_dir+file_path, output_dir);
 
 		// Report unsolicited files
 		} else {
