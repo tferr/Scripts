@@ -40,13 +40,40 @@ showMessage("All done!");
 
 
 
-/* This function defines all the image manipulation routines. */
+/*
+ * This function defines the image manipulation routines. In this example, it
+ * renames the active image using a random string. Note that we do not need to
+ * worry about opening, closing and saving the image as .tif without overriding
+ * the original file. Those operations are already performed by <processFiles()>.
+ */
 function myRoutines() {
 
-	// <Your code here>
+	// We'll first define a new function that generates a random
+	// string. See http://fiji.sc/BAR#Snippets for details
+	function randomString(length, spacers) {
+		template = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		nChars = lengthOf(template);
+		string = "";
+		for (i=0; i<length; i++) {
+			idx = maxOf(0, round(random()*nChars-1));
+			string += substring(template, idx, idx+1);
+			if (spacers && i%5==0) string += "_";
+		}
+		return string;
+	}
 
+	// Since we'll be logging filename changes to the Results table, we
+	// need to keep track of the table's measurement counter. We'll assume
+	// that the Results table was closed when myroutines() was first called
+	availableRow = maxOf(0, nResults);
+
+	// Log original filename before changing it
+	setResult("Original filename", availableRow, getTitle());
+
+	// Rename image and log changes
+	rename(randomString(20, true));
+	setResult("Randomized filename", availableRow, getTitle());
 }
-
 
 /*
  * This function retrieves the full path to a '_Processed' folder placed at the

@@ -8,8 +8,8 @@
 # It is composed of two functions:
 #   1. getFileList(<directory>):
 #      Retrieves the recursive list of files in <directory>, excluding all files
-#      that do not have the desired extension
-#   2. processImage(<image>):
+#      that do not have specified extension(s)
+#   2. myRoutines(<image>):
 #      Container function that holds the image processing routines to be applied
 #      to individual files
 #
@@ -31,10 +31,10 @@ from ij.measure import ResultsTable
 # path. The list is recursive (includes subdirectories) and will only
 # include files matching the specified extensions.
 def getFileList(directory):
-    extensions = (".tif", ".stk", ".oib", "png")
+    extensions = (".jpg", ".stk", ".oib")
     files = []
     for (dirpath, dirnames, filenames) in os.walk(directory):
-        if 'Processed' in dirnames: dirnames.remove('Processed')
+        if OUT_SUBDIR in dirnames: dirnames.remove(OUT_SUBDIR)
         for f in filenames:
             if f.endswith(extensions):
                 files.append(os.path.join(dirpath, f))
@@ -44,26 +44,27 @@ def getFileList(directory):
 # This function processes individual files (the argument <image>
 # being an ImagePlus object). In this example, image is renamed using
 # a random string. More details at http://stackoverflow.com/a/10501355
-def processImage(image):
+def myRoutines(image):
     import uuid
     image.setTitle( str(uuid.uuid4()) )
 
-
+# Define the name of the output subdirectory
+OUT_SUBDIR = "_Processed"
 
 # Retrieve input directory
-srcDir = DirectoryChooser("Choose input directory").getDirectory()
+src_dir = DirectoryChooser("Choose input directory").getDirectory()
 
 # Retrieve list of filtered files
-files = getFileList(str(srcDir));
+files = getFileList(str(src_dir));
 
 if files:
 
     # Define output directory and create it if needed
-    outDir = srcDir +"Processed"+ os.sep
-    if not os.path.exists(outDir): os.makedirs(outDir)
+    out_dir = src_dir + OUT_SUBDIR + os.sep
+    if not os.path.exists(out_dir): os.makedirs(out_dir)
 
     # Create a CSV table documenting processed files
-    csvPath = outDir + "_ProcessedFileList.csv"
+    csvPath = out_dir + "_ProcessedFileList.csv"
     csvExists = os.path.exists(csvPath)
     csvFile = open(csvPath, 'a')
     csvWriter = csv.writer(csvFile)
@@ -77,11 +78,11 @@ if files:
     for (counter, f) in enumerate(files):
 
         # Display progress
-        IJ.showStatus("Processing file "+ str(counter+1) +"/"+ str(len(files)) )
+        IJ.showStatus("Processing file "+ str(counter+1) +"/"+ str(len(files)))
 
         # Open each image and process it
         imp = IJ.openImage(f)
-        processImage(imp)
+        myRoutines(imp)
 
         # Save processed image in out_dir (enforcing .tif extension)
         newpath = os.path.splitext(out_dir + imp.getTitle())[0] +".tif"
@@ -97,4 +98,4 @@ if files:
 
 else:
     # Inform no filtered files were found
-    IJ.error("No files to process.")
+    IJ.error("No matches for the selected extension(s).")
