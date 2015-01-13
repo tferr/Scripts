@@ -63,9 +63,10 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 
   1. (py) [Median Filter](./Snippets/README.md#median-filter)
   2. (py) [NN Distances](./Snippets/README.md#nn-distances)
-  3. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
-  4. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
-  5. (bsh) [Search Snippets](./Snippets/README.md#search-snippets)
+  3. [Batch Processors](./Snippets/README.md#batch-processors)
+    1. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
+    2. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
+  4. (bsh) [Search Snippets](./Snippets/README.md#search-snippets)
 
 
 ## Help?
