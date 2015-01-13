@@ -13,12 +13,12 @@
 #      Container function that holds the image processing routines to be applied
 #      to individual files
 #
-# Processed images are saved as .tif in a "Processed" sub-directory of the chosen
-# input directory.
+# Processed images are saved as .tif in a sub-directory of the chosen input
+# directory named after <OUT_SUBDIR>.
 #
 # See also:
 # https://github.com/tferr/Scripts/tree/master/Snippets#python
-# https://github.com/tferr/Scripts/blob/master/Snippets/Process_Folder_IJM.ijm
+# https://github.com/tferr/Scripts/tree/master/Snippets#batch-processors
 
 
 import csv, os
@@ -87,6 +87,7 @@ if files:
         # Save processed image in out_dir (enforcing .tif extension)
         newpath = os.path.splitext(out_dir + imp.getTitle())[0] +".tif"
         IJ.saveAsTiff(imp, newpath)
+        imp.close()
 
         # Log paths of processed files
         csvWriter.writerow([f, newpath])
