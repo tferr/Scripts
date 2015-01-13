@@ -241,6 +241,16 @@ public class Utils implements PlugIn {
 		}
 	}
 
+	/** Returns BAR_DIR */
+	public static String getDir() {
+		return BAR_DIR;
+	}
+
+	/** Returns SNIPPETS_DIR */
+	public static String getSnippetsDir() {
+		return SNIPPETS_DIR;
+	}
+
 	/** Opens an URL in the default browser */
 	void openURL(final String URL) {
 		try {
