@@ -26,6 +26,7 @@ import csv, os
 from ij import IJ, ImagePlus
 from ij.io import DirectoryChooser
 from ij.measure import ResultsTable
+from bar import Utils
 
 
 # Returns a list containing the file paths in the specified directory
@@ -97,6 +98,10 @@ if files:
     csvFile.close()
     rt = ResultsTable.open(csvPath)
     rt.show("_ProcessedFileList.csv")
+
+    # Proudly inform that processing terminated
+    if IJ.showMessageWithCancel("All done","Reveal output directory?"):
+        Utils.revealFile(out_dir);
 
 else:
     # Inform no filtered files were found

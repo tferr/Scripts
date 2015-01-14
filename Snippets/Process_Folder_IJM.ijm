@@ -36,8 +36,9 @@ outputDir = getOutputDirectory(inputDir);
 // extensions) and save a copy of processed images in outputDir
 processFiles(inputDir, outputDir);
 
-showMessage("All done!");
-
+// Proudly inform that all the processing is done
+if (getBoolean("All done! Reveal output directory?"))
+    call("bar.Utils.revealFile", outputDir);
 
 
 /*
