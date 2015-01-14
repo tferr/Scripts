@@ -1,9 +1,9 @@
 # Process_Folder_PY.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
-# This python snippet implements a generic, reusable script that batch processes
-# a folder of images of a certain type. (Python alternative to the IJ1 built-in
-# command Process>Batch>Macro.
+# This python script implements a reusable batch processor[1] that processes a
+# folder of files of a certain type (Jython alternative to the IJ1 built-in
+# command Process>Batch>Macro).
 #
 # It is composed of two functions:
 #   1. getFileList(<directory>):
@@ -16,9 +16,10 @@
 # Processed images are saved as .tif in a sub-directory of the chosen input
 # directory named after <OUT_SUBDIR>.
 #
-# See also:
-# https://github.com/tferr/Scripts/tree/master/Snippets#python
+# Resources:
+# [1] http://fiji.sc/BAR#Batch_Processors
 # https://github.com/tferr/Scripts/tree/master/Snippets#batch-processors
+# https://github.com/tferr/Scripts/tree/master/Snippets#python
 
 
 import csv, os
@@ -31,7 +32,7 @@ from ij.measure import ResultsTable
 # path. The list is recursive (includes subdirectories) and will only
 # include files matching the specified extensions.
 def getFileList(directory):
-    extensions = (".jpg", ".stk", ".oib")
+    extensions = (".tif", ".stk", ".oib")
     files = []
     for (dirpath, dirnames, filenames) in os.walk(directory):
         if OUT_SUBDIR in dirnames: dirnames.remove(OUT_SUBDIR)
@@ -43,7 +44,7 @@ def getFileList(directory):
 
 # This function processes individual files (the argument <image>
 # being an ImagePlus object). In this example, image is renamed using
-# a random string. More details at http://stackoverflow.com/a/10501355
+# a random string. See http://fiji.sc/BAR#Python for details
 def myRoutines(image):
     import uuid
     image.setTitle( str(uuid.uuid4()) )

@@ -19,21 +19,21 @@ A [Python](#python) script that calculates nearest neighbor distances from a 2D/
 coordinates.
 ([Download .py](./NN_Distances.py?raw=true))
 
-####Batch Processors
+####[Batch Processors](http://fiji.sc/BAR#Batch_Processors)
 These are scripts written in different languages that batch process images in a more customizable
 way than the _Process>Batch>Macro_ built-in command. The scripts are modular in design, so that
 routines to be applied to individual files are contained in a single function. Each _Batch Processor_
-performs the following operations ([documentation page](http://fiji.sc/BAR#Batch_Processors):
+performs the following operations ([documentation page](http://fiji.sc/BAR#Batch_Processors)):
 
  1. Take an input folder specified by the user
  2. Apply a series of operations to individual files of matched extension(s)
  3. Save processed files to a dedicated directory, so that no files are overwritten
 
-In the current examples, both the [Python](#python) and[IJM](#imagej-macro-language) implementation
-perform the task of obfuscating filenames: 1) They copy images from one folder to another, 2) Rename
-their filenames using a random string and 3) Log changes to a CSV table (so that id of randomized
-filename can be traced back to the original file). This approach is useful for unbiased/blind
-analyses that are sensitive to user interpretation.
+In the current examples, both the Python (Jython) and ImageJ macro (IJM) implementation perform the
+task of obfuscating filenames: 1) They copy images from one folder to another, 2) Rename their
+filenames using a random string and 3) Log changes to a CSV table (so that id of randomized filename
+can be traced back to the original file). This approach is useful for unbiased/blind analyses that
+are sensitive to user interpretation.
 
 #####[Process Folder IJM](./Process_Folder_IJM.ijm)
 A batch processor written in the [IJ macro language](#imagej-macro-language).
@@ -57,7 +57,7 @@ A batch processor written in [Python](#python).
  - [Built-in macro functions](http://imagej.nih.gov/ij/developer/macro/functions.html)
  - [IJ1 developer resources](http://imagej.nih.gov/ij/developer/index.html)
  - [IJ1 macro repository](http://imagej.nih.gov/ij/macros/)
- - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Template_ menu
+ - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Templates_ menu
 
 ####Python
  - [Fiji documentation](http://fiji.sc/Jython_Scripting)
@@ -67,7 +67,7 @@ A batch processor written in [Python](#python).
  - [Jython documentation](http://www.jython.org/docs/)
  - [Python Central](http://www.pythoncentral.io)
  - [The Hitchhiker’s Guide to Python](http://docs.python-guide.org/en/latest/)
- - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Template_ menu
+ - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Templates_ menu
 
 
 
