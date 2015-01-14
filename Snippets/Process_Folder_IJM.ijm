@@ -142,7 +142,7 @@ function processFiles(input_dir, output_dir) {
 		showProgress(i, files.length);
 
 		// Process files of the desired extension
-		file_path = files[i];
+		file_path = input_dir + files[i];
 		if (validExtension(file_path)) {
 
 			// Open file. Note that some files may not be handled by
@@ -162,7 +162,7 @@ function processFiles(input_dir, output_dir) {
 
 		// Process subdirectories of input_dir
 		} else if (endsWith(file_path, "/")) {
-			processFiles(""+input_dir+file_path, output_dir);
+			processFiles(file_path, output_dir);
 
 		// Report unsolicited files
 		} else {
