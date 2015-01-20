@@ -31,16 +31,15 @@ import java.util.Collections;
 import java.util.Iterator;
 
 
-/** Simple commands related to the BAR update site */
+/** A collection of miscellaneous utilities for BAR */
 public class Utils implements PlugIn {
 
-	private static final String VERSION = "1.0.6-DEV";
-	private static final String DOC_URL = "http://fiji.sc/BAR";
-	private static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
-	private static final String BAR_DIR = IJ.getDirectory("plugins")
-			+ "Scripts" + File.separator + "BAR";
-	private static final String SNIPPETS_DIR = BAR_DIR + File.separator
-			+ "Snippets" + File.separator;
+	static final String VERSION = "1.0.6a-DEV";
+	static final String DOC_URL = "http://fiji.sc/BAR";
+	static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
+	static final String BAR_DIR = IJ.getDirectory("plugins")
+			+ "Scripts" + File.separator + "BAR" + File.separator;
+	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
 
 	@Override
 	public void run(final String arg) {
@@ -80,8 +79,11 @@ public class Utils implements PlugIn {
 
 	}
 
-	/** Displays a warning on Shift-Click being disabled */
-	static void shiftClickWarning() {
+	/**
+	 * Displays a status-bar warning on "open by Shift-click" being disabled for
+	 * pre-compiled plugins
+	 */
+	public static void shiftClickWarning() {
 		if (IJ.shiftKeyDown()) {
 			IJ.beep();
 			IJ.showStatus("Compiled plugin. Use 'About BAR...' to access source code repository.");
@@ -89,9 +91,10 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Transfers the specified BAR submenu between the main IJ's menu bar and the
-	 * image's context menu (vice-versa if the submenu is already in the context
-	 * menu). An acknowledgement message is displayed if !IJ.macroRunning().
+	 * Transfers the specified BAR submenu between the main IJ's menu bar and
+	 * the image's context menu (vice-versa if the submenu is already in the
+	 * context menu). An acknowledgement message is displayed if
+	 * !IJ.macroRunning().
 	 */
 	private void moveSubmenu(final String subMenu) {
 		shiftClickWarning();
@@ -241,14 +244,60 @@ public class Utils implements PlugIn {
 		}
 	}
 
-	/** Returns BAR_DIR */
-	public static String getDir() {
+
+	/** Returns the path to BAR/Analysis/ */
+	public static String getAnalysisDir() {
+		return BAR_DIR + "Analysis" + File.separator;
+	}
+
+	/** Returns the path to BAR/Annotation/ */
+	public static String getAnnotationDir() {
+		return BAR_DIR + "Annotation" + File.separator;
+	}
+
+	/** Returns the path to BAR/Data_Analysis/ */
+	public static String getDataAnalysisDir() {
+		return BAR_DIR + "Data_Analysis" + File.separator;
+	}
+
+	/** Returns the path to BAR/lib/ */
+	public static String getLibDir() {
+		return LIB_DIR;
+	}
+
+	/** Returns the path to BAR/Morphometry */
+	public static String getMorphometryDir() {
+		return BAR_DIR + "Morphometry" + File.separator;
+	}
+
+	/** Returns the path to the root directory of BAR */
+	public static String getBARDir() {
 		return BAR_DIR;
 	}
 
-	/** Returns SNIPPETS_DIR */
+	/** Returns the path to BAR/Segmentation/ */
+	public static String getSegmentationDir() {
+		return BAR_DIR + "Segmentation" + File.separator;
+	}
+
+	/** Returns the path to Bar/Snippets/ */
 	public static String getSnippetsDir() {
 		return SNIPPETS_DIR;
+	}
+
+	/** Returns BAR version */
+	public static String getVersion() {
+		return VERSION;
+	}
+
+	/** Returns URL of BAR's documentation page */
+	public static String getDocURL() {
+		return DOC_URL;
+	}
+
+	/** Returns URL of BAR's Git repository */
+	public static String getSourceURL() {
+		return SRC_URL;
 	}
 
 	/** Opens an URL in the default browser */
