@@ -1,0 +1,5 @@
+/* Open_IJM_lib.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ */
+import bar;
+bar.Utils.openLib("BARlib.ijm");

@@ -75,7 +75,11 @@ public class Utils implements PlugIn {
 			final String[] args = arg.split("/");
 			if (args.length==1) return;
 			final String dir = IJ.getDirectory("macros") + args[0] + File.separator;
-			if (IJ.shiftKeyDown()) {
+
+			if (args[1].equalsIgnoreCase(".ijm")) {
+				shiftClickWarning();
+				revealFile(dir);
+			} else if (IJ.shiftKeyDown()) {
 				openScript(dir, args[1]);
 			} else {
 				installMacroFile(dir, args[1]);
