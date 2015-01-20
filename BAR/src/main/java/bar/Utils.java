@@ -165,8 +165,14 @@ public class Utils implements PlugIn {
 		return position;
 	}
 
-	/** Prints the contents of a directory to a dedicated table. */
-	public static void listDirectory(final String dir) { // static so it can be called from ijm
+	/**
+	 * Prints the contents of a directory to a dedicated IJ1 table. An error is
+	 * message is displayed in a dialog box if directory could not be found.
+	 * Some system files (dot files, Thumbs.db, ...) are excluded from the list.
+	 */
+	public static void listDirectory(final String dir) {
+		// Method must be static so it can be called from ijm
+
 		final File f = new File(dir);
 		if (!fileExists(f) || !f.isDirectory()) return;
 
@@ -204,7 +210,10 @@ public class Utils implements PlugIn {
 	}
 
 
-	/** Installs a macro file */
+	/**
+	 * Installs a macro file. An error message is displayed in a dialog box if
+	 * filepath is invalid.
+	 */
 	void installMacroFile(final String directory, final String filename) {
 		if (directory==null || filename==null) return;
 		final String path = directory + File.separator + filename;
@@ -215,8 +224,9 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Opens the specified file in the Fiji/ImageJ2 Script Editor or in the IJ1
-	 * built-in Editor, if the former cannot be found (vanilla IJ1)
+	 * Opens the specified file in the IJ2 Script Editor or in the IJ1 built-in
+	 * Editor, if the former cannot be found (vanilla IJ1). No tests assessing
+	 * the existence of file or directory are performed.
 	 */
 	public static void openScript(final String dir, final String filename) {
 		try {
@@ -227,13 +237,19 @@ public class Utils implements PlugIn {
 		}
 	}
 
-	/** Opens the specified file in the ImageJ1 built-in Editor */
+	/**
+	 * Opens the specified file in the ImageJ1 built-in editor. No tests
+	 * assessing the existence of file or directory are performed.
+	 */
 	public static void openIJ1Script(final String dir, final String filename) {
 		final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
 		if (ed!=null) ed.open(dir, filename);
 	}
 
-	/** Opens the specified file in the ImageJ2 Script Editor */
+	/**
+	 * Opens the specified file in the ImageJ2 Script Editor. No tests assessing
+	 * whether file exists are performed.
+	 */
 	public static void openIJ2Script(final File file){
 		// retrieve the ImageJ application context
 		// https://github.com/imagej/imagej-tutorials/tree/master/call-modern-from-legacy
@@ -244,10 +260,26 @@ public class Utils implements PlugIn {
 		tab.setVisible(true);
 	}
 
-
+	/**
+	 * Opens the specified file in the "Snippets" directory of BAR. No tests
+	 * validating filename path are performed.
+	 */
+	public static void openSnippet(final String filename) {
+		openScript(SNIPPETS_DIR , filename);
 	}
 
-	/** Checks for a valid file path, warning users if it cannot be found */
+	/**
+	 * Opens the specified file in the "lib" directory of BAR. No tests
+	 * validating filename path are performed.
+	 */
+	public static void openLib(final String filename) {
+		openScript(LIB_DIR, filename);
+	}
+
+	/**
+	 * Tests whether a file or directory exists. An error message is displayed
+	 * in a dialog box if file path is invalid
+	 */
 	private static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
 		if (!valid) {
@@ -259,10 +291,26 @@ public class Utils implements PlugIn {
 		return valid;
 	}
 
-	/** Reveals a file in the operating system default file explorer */
-	public static void revealFile(final String filePath) { // static so it can be called from ijm
+	/**
+	 * Reveals the specified filepath in the default file explorer of the
+	 * operating system. An error message is displayed in a dialog box if file
+	 * path is invalid.
+	 */
+	public static void revealFile(final String filePath) {
+		// Method must be static so it can be called from ijm
 		final File file = new File(filePath);
-		if (!fileExists(file)) return;
+		revealFile(file);
+	
+	}
+
+	/**
+	 * Reveals the specified filepath in the default file explorer of the
+	 * operating system. An error message is displayed in a dialog box if file
+	 * path is invalid.
+	 */
+	public static void revealFile(final File file) {
+		if (!fileExists(file))
+			return;
 		Desktop desktop = null;
 		if (Desktop.isDesktopSupported())
 			desktop = Desktop.getDesktop();
@@ -319,12 +367,12 @@ public class Utils implements PlugIn {
 		return VERSION;
 	}
 
-	/** Returns URL of BAR's documentation page */
+	/** Returns the URL of BAR's documentation page */
 	public static String getDocURL() {
 		return DOC_URL;
 	}
 
-	/** Returns URL of BAR's Git repository */
+	/** Returns the URL of BAR's Git repository */
 	public static String getSourceURL() {
 		return SRC_URL;
 	}
