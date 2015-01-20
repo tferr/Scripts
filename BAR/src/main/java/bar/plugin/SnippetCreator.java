@@ -32,10 +32,7 @@ import java.util.regex.Pattern;
 
 import bar.Utils;
 
-/**
- * @author tiago
- *
- */
+/** Generates templates for new IJ scripts */
 public class SnippetCreator implements PlugIn, DialogListener {
 
 	/* Definitions */
@@ -61,11 +58,13 @@ public class SnippetCreator implements PlugIn, DialogListener {
 	private static int sType = 0;
 
 
+	/** Prompts user for a new snippet that will be saved in BAR/Snippets/ */
 	public void run(final String arg) {
 		if (showDialog())
 			saveAndOpenSnippet();
 	}
 
+	/* Returns a header common to all file types */
 	private static StringBuilder commonHeader(final int type) {
 		final Date date = new Date();
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
@@ -156,6 +155,7 @@ public class SnippetCreator implements PlugIn, DialogListener {
 		return matcher.find();
 	}
 
+	/* Displays prompt */
 	private boolean showDialog() {
 		final GenericDialog gd = new NonBlockingGenericDialog("New Snippet");
 		gd.setInsets(5, 10, 0);
@@ -163,7 +163,7 @@ public class SnippetCreator implements PlugIn, DialogListener {
 		gd.addStringField("Filename:", sFilename, 18);
 		gd.addChoice("Language:", S_TYPES, S_TYPES[sType]);
 		gd.setInsets(-85, 255, 0);
-		gd.addMessage("Copy and paste\n "); // placeholder for info messages
+		gd.addMessage(" \n "); // placeholder for info messages
 		gd.addHelp(Utils.getDocURL());
 		gd.setHelpLabel("Online Help");
 		gd.setOKLabel("  Create and Open  ");
@@ -174,6 +174,7 @@ public class SnippetCreator implements PlugIn, DialogListener {
 		return !gd.wasCanceled();
 	}
 
+	/* Retrieves parameters from prompt in an interactive way */
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		final Object source = (e == null) ? null : e.getSource();
 		final Vector<?> choices = gd.getChoices();

@@ -62,7 +62,7 @@ public class Utils implements PlugIn {
 				shiftClickWarning();
 				revealFile(SNIPPETS_DIR);
 			} else //TODO implement a "reload snippets" command
-				openFile(SNIPPETS_DIR, arg);
+				openSnippet(arg);
 
 		} else if (arg.startsWith("moveMenu:")) {
 
@@ -190,7 +190,7 @@ public class Utils implements PlugIn {
 
 		if (list.size()==0) {
 			if (IJ.showMessageWithCancel("Empty Directory", dir +"\nis empty. Open it?"))
-				Utils.revealFile(dir);
+				revealFile(dir);
 			return;
 		}
 
@@ -413,9 +413,9 @@ public class Utils implements PlugIn {
 		if (gd.wasCanceled())
 			return;
 		else if (gd.wasOKed())
-			this.openURL(SRC_URL);
+			openURL(SRC_URL);
 		else
-			Utils.revealFile(BAR_DIR);
+			revealFile(BAR_DIR);
 	}
 
 }
