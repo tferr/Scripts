@@ -16,7 +16,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.BrowserLauncher;
 import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
-//import ij.plugin.frame.Editor;
+import ij.plugin.frame.Editor;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
 
@@ -29,6 +29,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+
+import net.imagej.ui.swing.script.TextEditor;
+import net.imagej.ui.swing.script.TextEditor.Tab;
+
+import org.scijava.Context;
 
 
 /** A collection of miscellaneous utilities for BAR */
@@ -71,7 +76,7 @@ public class Utils implements PlugIn {
 			if (args.length==1) return;
 			final String dir = IJ.getDirectory("macros") + args[0] + File.separator;
 			if (IJ.shiftKeyDown()) {
-				openFile(dir, args[1]);
+				openScript(dir, args[1]);
 			} else {
 				installMacroFile(dir, args[1]);
 			}
@@ -209,15 +214,37 @@ public class Utils implements PlugIn {
 		mi.installFile(path);
 	}
 
-	/** Opens a file in the Script Editor. */
-	void openFile(final String dir, final String filename) {
-		final File f = new File(dir+filename);
-		if (!fileExists(f)) return;
-		//final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
-		//if (ed!=null) ed.open(filedir, filename);
+	/**
+	 * Opens the specified file in the Fiji/ImageJ2 Script Editor or in the IJ1
+	 * built-in Editor, if the former cannot be found (vanilla IJ1)
+	 */
+	public static void openScript(final String dir, final String filename) {
+		try {
+			Class.forName("net.imagej.ui.swing.script.TextEditor");
+			openIJ2Script(new File(dir+filename));
+		} catch (final ClassNotFoundException e) {
+			openIJ1Script(dir, filename);
+		}
+	}
 
-		// The following works with both the built-in editor and Fiji's Script Editor
-		IJ.run("Edit...", "open=["+ dir + filename +"]");
+	/** Opens the specified file in the ImageJ1 built-in Editor */
+	public static void openIJ1Script(final String dir, final String filename) {
+		final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
+		if (ed!=null) ed.open(dir, filename);
+	}
+
+	/** Opens the specified file in the ImageJ2 Script Editor */
+	public static void openIJ2Script(final File file){
+		// retrieve the ImageJ application context
+		// https://github.com/imagej/imagej-tutorials/tree/master/call-modern-from-legacy
+		final Context context = (Context)IJ.runPlugIn("org.scijava.Context", "");
+		final TextEditor editor = new TextEditor(context);
+		final Tab tab = editor.open(file);
+		editor.setVisible(true);
+		tab.setVisible(true);
+	}
+
+
 	}
 
 	/** Checks for a valid file path, warning users if it cannot be found */
