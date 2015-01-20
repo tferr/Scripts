@@ -40,6 +40,8 @@ public class Utils implements PlugIn {
 	static final String BAR_DIR = IJ.getDirectory("plugins")
 			+ "Scripts" + File.separator + "BAR" + File.separator;
 	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
+	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
+
 
 	@Override
 	public void run(final String arg) {
