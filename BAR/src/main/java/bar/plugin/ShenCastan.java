@@ -9,7 +9,7 @@
  * General Public License for more details.
  */
 
-package bar;
+package bar.plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -18,8 +18,11 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.ExtendedPlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.process.ImageProcessor;
+
 import java.awt.AWTEvent;
 import java.awt.Rectangle;
+
+import bar.Utils;
 
 /**
  * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
@@ -49,7 +52,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	/** Returns types of supported images */
 	public int setup(final String arg, final ImagePlus imp) {
-		bar.Utils.shiftClickWarning();
+		Utils.shiftClickWarning();
 		this.imp = imp;
 		return flags;
 	}

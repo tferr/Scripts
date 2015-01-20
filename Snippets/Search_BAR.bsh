@@ -73,7 +73,7 @@ if (f.exists() && f.isDirectory()) {
 
     // Pass the options string to Plugins>Utilies>Search...
     IJ.run("Search...", options);
-    
+
 } else {
 
     // Acknowledge that directory could not be found
