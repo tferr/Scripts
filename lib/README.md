@@ -1,7 +1,7 @@
 #lib
 
 Centralized repository of user-defined libraries that can be shared across files. These libraries
-serve as scripting additions to [Snippets] and other routines. The _BAR> Snippets> New Snippet..._
+serve as scripting additions to [Snippets] and other routines. The `BAR> Snippets> New Snippet...`
 command exemplifies how to use them.
 
 
@@ -48,7 +48,7 @@ lib.confirmLoading()
 ##Notes
 * Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. You will
   notice that, `BAR>lib>` lists some "Opening" commands instead. These are just one line-scrips that
-  call [BAR.Utils](../BAR/src/main/java/bar/Utils.java) to open unregister files.
+  call [bar.Utils](../BAR/src/main/java/bar/Utils.java) to open unregistered files.
   This approach is intentional: If the calls were included directly in the library file, they would
   be executed every time the library is loaded.
 

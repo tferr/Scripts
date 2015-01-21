@@ -9,7 +9,7 @@
  * but it could be easily extended to other dimensions. It could be greatly simplified if
  * the goal was to deal exclusively with 2D/3D images
  *
- * Know issues:
+ * Known issues:
  * - 5D stacks escape batch mode
  *
  * TF, 2014.10

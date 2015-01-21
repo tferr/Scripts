@@ -187,7 +187,7 @@ void makeLegend(Plot plot) {
 }
 
 /* Prompts user for settings. Returns false if dialog is dismissed */
-boolean geUserInput() {
+boolean getUserInput() {
 	GenericDialog gd = new GenericDialog("Fit Polynomial to Curve...");
 	gd.addSlider("Polynomial degree:", 1, maxDegree, defDegree);
 	gd.addCheckbox("Guess \"best fit\" (ignores specified degree)", guess);
@@ -228,7 +228,7 @@ if (win!=null && (win instanceof PlotWindow)) {
 	return;
 }
 
-if (!geUserInput()) return;
+if (!getUserInput()) return;
 long startTime = System.currentTimeMillis();
 nPoints = getNumPoints();
 if (nPoints==0)
