@@ -284,15 +284,23 @@ public class Utils implements PlugIn {
 	 * Tests whether a file or directory exists. An error message is displayed
 	 * in a dialog box if file path is invalid
 	 */
-	private static boolean fileExists(final File file) {
+	public static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
 		if (!valid) {
 			IJ.showMessage("Invalid path or filename", "<html>Path not found:"
-				+ "<p style='width:300px;'><i>"+ file +"</i></p> <p><p>"
+				+ "<p style='width:300px;'><i>"+ file.toString() +"</i></p> <p><p>"
 				+ "If the file has been deleted and is part of your Fiji installation<p>"
 				+ "you can use the updater to re-install it.");
 		}
 		return valid;
+	}
+
+	/**
+	 * Tests whether a file or directory exists at the specified path. An error
+	 * message is displayed in a dialog box if file path is invalid
+	 */
+	public static boolean fileExists(final String filepath) {
+		return fileExists(new File(filepath));
 	}
 
 	/**
