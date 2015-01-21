@@ -1,9 +1,53 @@
-# lib
+#lib
 
-User-defined libraries serving as scripting additions to [Snippets].
+Centralized repository of user-defined libraries that can be shared across files. These libraries
+serve as scripting additions to [Snippets] and other routines. The _BAR> Snippets> New Snippet..._
+command exemplifies how to use them.
 
 
-See also: [Snippets]
+##[BSH lib](./BARlib.bsh)
+Loading instructions:
+
+```java
+import bar.Utils;
+
+/* Add BAR/lib to classpath. Load BARlib.bsh */
+addClassPath(bar.Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+lib = new BARlib();
+
+// Confirm availability of BARlib
+lib.confirmLoading();
+```
+
+##[IJM lib](./BARlib.ijm)
+Loading instructions:
+
+```java
+libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
+libFunctions = File.openAsString(libPath);
+call('ij.macro.Interpreter.setAdditionalFunctions', libFunctions);
+
+// Confirm availability of new additions
+confirmLoading();
+```
+
+##[PY lib](./BARlib.py)
+Loading instructions:
+
+```python
+import sys, bar
+sys.path.append(bar.Utils.getLibDir())
+import BARlib as lib
+
+# Confirm availability of BARlib.py
+lib.confirmLoading()
+```
+
+##See Also
+
+* [Snippets]
 
 
 
