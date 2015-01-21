@@ -6,7 +6,7 @@ command exemplifies how to use them.
 
 
 ##[BSH lib](./BARlib.bsh)
-Loading instructions:
+Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
 
 ```java
 import bar.Utils;
@@ -22,7 +22,7 @@ lib.confirmLoading();
 ```
 
 ##[IJM lib](./BARlib.ijm)
-Loading instructions:
+Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
 
 ```java
 libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
@@ -34,7 +34,7 @@ confirmLoading();
 ```
 
 ##[PY lib](./BARlib.py)
-Loading instructions:
+Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
 
 ```python
 import sys, bar

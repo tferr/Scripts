@@ -56,6 +56,9 @@ A batch processor written in [Python](#python).
 
 ##Useful Resources
 
+####Scripting additions
+ - [lib]
+
 ####ImageJ Macro Language
  - [Introduction into Macro Programming](http://fiji.sc/Introduction_into_Macro_Programming)
  - [Built-in macro functions](http://imagej.nih.gov/ij/developer/macro/functions.html)
