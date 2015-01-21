@@ -44,16 +44,17 @@ Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu wh
 
 
 
-| [Home] | [Analysis] | [Annotation] | [Segmentation] | [Morphometry] | [Plugins] | [Snippets] | [Fiji][Fiji documentation] |
-|:------:|:----------:|:------------:|:--------------:|:-------------:|:---------:|:----------:|:--------------------------:|
-
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [Fiji] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:------:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
-[Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#analysis
+[Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
 [Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
+[lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[Fiji documentation]: http://fiji.sc/BAR
+[Fiji]: http://fiji.sc/BAR
