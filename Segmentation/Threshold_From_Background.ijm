@@ -4,9 +4,8 @@
  * Sets the threshold as the ROI average plus a factor of its standard deviation. To call it from
  * other scripts (see http://fiji.sc/BAR for details):
  *
- *   tfb = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
- *         +"Segmentation"+ File.separator +"Threshold_From_Background.ijm";
- *   runMacro(tfb, factor);
+ *   tfbpath = call("bar.Utils.getSegmentationDir")+"Threshold_From_Background.ijm";
+ *   runMacro(tfbpath, 3);
  *
  * TF 2014.06
  */

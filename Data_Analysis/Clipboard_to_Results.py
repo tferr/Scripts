@@ -9,28 +9,21 @@
 # copied to the clipboard
 
 
-import os, tempfile
+import os, sys, tempfile, bar
 from ij import IJ
 from ij.plugin.filter import Analyzer
 import ij.measure.ResultsTable as RT
 
 
-def getClipboard():
-    """Tries to extract text from the system clipboard"""
-    from java.awt.datatransfer import DataFlavor
-    from java.awt import Toolkit
+# Extend the search path to /BAR/lib/
+sys.path.append(bar.Utils.getLibDir())
 
-    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
-    contents = clipboard.getContents(None)
-    if (contents!=None) and contents.isDataFlavorSupported(DataFlavor.stringFlavor):
-        return contents.getTransferData(DataFlavor.stringFlavor)
-    else:
-        return ""
-
+# Import common functions in /BAR/lib/BARlib.py
+import BARlib as lib
 
 fd, path = tempfile.mkstemp()
 try:
-    os.write(fd, getClipboard())
+    os.write(fd, lib.getCliboardText())
     os.close(fd)
     rt = RT.open(path) #IOException if getClipboard()==""
     if Analyzer.resetCounter():

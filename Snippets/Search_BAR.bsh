@@ -16,47 +16,30 @@
 
 import ij.IJ;
 import ij.gui.GenericDialog;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.io.File;
+import bar.Utils;
 
 
 /* Options */
 boolean searchContents = true;
 boolean caseInsensitive = true;
-String PATH = IJ.getDirectory("plugins") +"Scripts/BAR/";
-String URL = "https://github.com/tferr/Scripts/tree/master/Snippets#snippets";
 
+// Load BAR/lib/BARlib.bsh
+addClassPath(Utils.getBARDir());
+importCommands("lib/");
+BARlib();
 
-/* Returns text from the system clipboard or an empty string if no text was found */
-String getClipboardContents() {
-    Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Clipboard clipboard = toolkit.getSystemClipboard();
-    String s = null;
-    try {
-        s = (String)clipboard.getData(DataFlavor.stringFlavor);
-    } catch (Exception e) {
-        s = "";
-    }
-    return s;
-}
-
-
-File f = new File(PATH); // Any slash will be converted into platform-specific File.separator
-if (f.exists() && f.isDirectory()) {
+PATH = Utils.getBARDir();
+if (Utils.fileExists(PATH)) {
 
     // Get string from clipboard
-    String searchString = getClipboardContents();
+    String searchString = new BARlib().getCliboardText();
 
     // Build prompt
     GenericDialog gd = new GenericDialog("Search BAR Directory");
     gd.addStringField("_", searchString, 25);
     gd.addCheckbox("Search contents", searchContents);
     gd.addCheckbox("Ignore case", caseInsensitive);
-    gd.addHelp(URL);
+    gd.addHelp(Utils.getDocURL());
     gd.setHelpLabel("BAR");
     gd.showDialog();
 
@@ -73,11 +56,5 @@ if (f.exists() && f.isDirectory()) {
 
     // Pass the options string to Plugins>Utilies>Search...
     IJ.run("Search...", options);
-
-} else {
-
-    // Acknowledge that directory could not be found
-    IJ.error("Search not performed", "Not a valid directory:\n"+ f);
-    return;
 
 }

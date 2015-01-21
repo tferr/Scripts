@@ -9,8 +9,7 @@
  * to the Z-dimension. Examples on how to call it from other scripts (see http://fiji.sc/BAR for
  * details):
  *
- *   ctp = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
- *         +"Segmentation"+ File.separator +"Clear_Thresholded_Pixels.ijm";
+ *   ctp = call("bar.Utils.getSegmentationDir")+"Clear_Thresholded_Pixels.ijm";
  *   IJ.runMacroFile(ctp, "");          // show dialog prompt
  *   IJ.runMacroFile(ctp, "current")    // only active slice is considered
  *   IJ.runMacroFile(ctp, "preceding")  // clear pixels until active slice

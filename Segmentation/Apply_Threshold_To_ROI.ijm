@@ -11,8 +11,7 @@
  * 16/32-bit images to the maximum of active ROI.
  * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
  *
- *   attr = getDirectory("plugins") +"Scripts"+ File.separator +"BAR"+ File.separator
- *          +"Segmentation"+ File.separator +"Apply_Threshold_To_ROI.ijm";
+ *   attr = call("bar.Utils.getSegmentationDir")+"Apply_Threshold_To_ROI.ijm";
  *   IJ.runMacroFile(attr, "");          // show dialog prompt
  *   IJ.runMacroFile(attr, "current")    // only active slice is considered
  *   IJ.runMacroFile(attr, "preceding")  // apply threshold up to active slice
