@@ -24,6 +24,9 @@ import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Menu;
 import java.awt.PopupMenu;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -167,6 +170,22 @@ public class Utils implements PlugIn {
 			}
 		}
 		return position;
+	}
+
+	/**
+	 * Returns text from the system clipboard or null if no text could be
+	 * retrieved
+	 */
+	public static String getClipboardText() {
+		String text = null;
+		try {
+			final Toolkit toolkit = Toolkit.getDefaultToolkit();
+			final Clipboard clipboard = toolkit.getSystemClipboard();
+			text = (String)clipboard.getData(DataFlavor.stringFlavor);
+		} catch (final Exception e) {
+			//if (IJ.debugMode) IJ.handleException(e);
+		}
+		return text;
 	}
 
 	/**
