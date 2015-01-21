@@ -1,12 +1,16 @@
 #Snippets
 
-[BAR][Home] Snippets. This directory is a depository of generic and reusable scripts to be recycled
-by BAR users. They are installed under `BAR>Snippets>`, a menu containing two other commands:
+[BAR][Home] Snippets. This directory is a depository of generic and reusable templates to be recycled
+by BAR users. They are installed under `BAR>Snippets>`, a menu containing several other commands:
 
  - `List Snippets`: Prints the contents of this directory to a dedicated window. Files can then be
    opened in the Script Editor by double-click. This may be preferable to
    [Shift-clicking](http://fiji.sc/BAR#OpeningBAR) the Menu bar
  - `Reveal Snippets`: Opens this directory in the file browser of the operating system
+ - [`New Snippet...`](../BAR/README.md#bar-plugins): A Java plugin implementing a convenient way to
+   generate new scripts. The prompt features a drop-down menu containing source code that pre-loads
+   scripting additions stored in the [lib](../lib/README.md#lib) directory.
+   ([Source code](../BAR/src/main/java/bar/plugin/SnippetCreator.java))
 
 
 ##List of Snippets
@@ -46,9 +50,9 @@ A batch processor written in [Python](#python).
 ([Download .py](./Process_Folder_PY.py?raw=true))
 
 
-####[Search Snippets](./Search_Snippets.bsh)
+####[Search BAR](./Search_BAR.bsh)
    A BeanShell script that searches for content in this directory.
-   ([Download .bsh](./Search_Snippets.bsh?raw=true))
+   ([Download .bsh](./Search_BAR.bsh?raw=true))
 
 ##Useful Resources
 

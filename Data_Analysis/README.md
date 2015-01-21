@@ -1,6 +1,6 @@
-# Analysis
+# Data Analysis
 
-[BARs][Home] related to data analysis.
+[BARs][Home] related to analysis of non-image numerical data.
 
 ###[Clipboard to Results](./Clipboard_to_Results.py)
    Imports numeric values (delimiter-separated values), copied to the clipboard into the
@@ -48,37 +48,17 @@
    [![][Poly image]](http://fiji.sc/Sholl_Analysis#Complementary_Tools)
 
 
-###[Multichannel Plot Profile](./Multichannel_Plot_Profile.bsh)
-   Extends the _Analyze> Plot Profile_ to multichannel (composite) images. It features a _Live
-   mode_, guesses displayed lookup tables and ignores disabled channels, i.e., those deselected
-   in the "Channels" widget (which can be called by pressing `Z`, the shortcut for _Image> Color>
-   Channels Tool_).
-   ([Download .bsh](./Multichannel_Plot_Profile.bsh?raw=true))
-
-   Tips:
-
-   * _Live mode_ will stop as soon as a valid ROI is no longer present. It will resume as soon as a
-     new one is reinstated.
-   * By default, rectangular areas and lines wider than 1 pixel are plotted using column averages.
-     To use row averages instead hold down `Alt`. This works in _Live mode_ and mimmics the behavior
-     of the  built-in _Analyze> Plot Profile_ command. To use column averages at all times, activate
-     the _Vertical Profile_ checkbox in _Edit>Options>Profile Plot Options..._
-   * Y-axis upper limit is set by the active channel. If a profile from a brighter channel appears
-     truncated, turn on _Live mode_, and activate the brighter channel using the _C slider_ of the
-     image.
-   * If one of the channels uses and unconvential LUT the script will plot its profile using black.
-     To change the color of the plotted curves, turn on _Live mode_, activate the image, and apply a
-     new LUT using the drop-down menu of the "Channels" widget.
-   * By default, the X-axis will use spatially calibrated distances. To use pixel distances instead
-     set the flag [`pixelUnits`](./Multichannel_Plot_Profile.bsh#L27-L29) to `true`.
-
-
 ###[Plot Results](./Plot_Results.bsh)
    Routine that creates an XY plot from data in the Results table. Useful for plotting
    data from imported spreadsheets.
    ([Download .bsh](./Plot_Results.bsh?raw=true))
 
    See also [Clipboard to Results](#clipboard-to-results)
+
+
+##See Also
+
+* [Analysis], BARs that complement built-in commands in the ImageJ `Analyze>` menu.
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png

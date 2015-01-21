@@ -45,6 +45,13 @@ import BARlib as lib
 lib.confirmLoading()
 ```
 
+##Notes
+* Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. You will
+  notice that, `BAR>lib>` lists some "Opening" commands instead. These are just one line-scrips that
+  call [BAR.Utils](../BAR/src/main/java/bar/Utils.java) to open unregister files.
+  This approach is intentional: If the calls were included directly in the library file, they would
+  be executed every time the library is loaded.
+
 ##See Also
 
 * [Snippets]

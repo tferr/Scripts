@@ -6,7 +6,7 @@
 ###[Shen-Castan Edge Detector](../BAR/README.md#bar-plugins)
    Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP, 1992, 54
    (2) 112-133 [[ref](../README.md#references)]. Effective alternative to Canny-Deriche filtering.
-   ([Source code](../BAR/src/main/java/bar/ShenCastan.java))
+   ([Source code](../BAR/src/main/java/bar/plugin/ShenCastan.java))
 
 It is a re-write of the [initial plugin]
 (http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html)

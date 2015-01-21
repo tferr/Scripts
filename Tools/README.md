@@ -1,15 +1,21 @@
 # Tools and Toolsets
-[BARs][Home] that are installed in the ImageJ Toolbar and can be installed using the _BAR>Tool Installers_ menu (see [BAR Menu organization](../BAR/README.md#bar-menu)). 
+[BARs][Home] that are installed in the ImageJ Toolbar and can be installed using the
+_BAR>Tool Installers_ menu (see [BAR Menu organization](../BAR/README.md#bar-menu)).
 
 ## Tools
-Single Tools are appended to the IJ toolbar and are typically saved in the `ImageJ/macro/tools/` directory. Note, however, that Tools placed in `ImageJ/plugins/Tools/` are automatically listed in the ">>" drop-menu in the main ImageJ window, which may be convenient when installing individual files manually.
+Single Tools are appended to the IJ toolbar and are typically saved in the `ImageJ/macro/tools/`
+directory. Note, however, that Tools placed in `ImageJ/plugins/Tools/` are automatically listed in
+the ">>" drop-menu in the main ImageJ window, which may be convenient when installing individual
+files manually.
 
 ###[Calibration Menu](./Calibration_Menu.ijm)
    Provides shortcuts for spatial calibration of images lacking metadata.
    ([Download .ijm](./Calibration_Menu.ijm?raw=true))
 
 ###[List Folder Menu](./List_Folder_Menu.ijm)
-   Provides a drop-down-list of the contents of a specified directory that is remembered across restarts. Offers commands to reveal directories in the native file browser and commands to list directory contents to dedicated windows.
+   Provides a drop-down-list of the contents of a specified directory that is remembered across
+   restarts. Offers commands to reveal directories in the native file browser and commands to list
+   directory contents to dedicated windows.
    ([Download .ijm](./List_Folder_Menu.ijm?raw=true))
 
 ###[Segment Profile](./Segment_Profile.ijm)<a name="segment-profile-tool"></a>
@@ -25,7 +31,8 @@ Single Tools are appended to the IJ toolbar and are typically saved in the `Imag
 
 
 ## Toolsets
-Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu when saved in the `ImageJ/macros/toolsets` directory.
+Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu when saved in the
+`ImageJ/macros/toolsets` directory.
 
 ###[ROI Manager Tools](./Toolsets/ROI%20Manager%20Tools.ijm)
    Renames selections stored in the ROI Manager.

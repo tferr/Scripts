@@ -3,21 +3,29 @@
 [![Issues](https://img.shields.io/github/issues/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/issues)
 [![GPL License](http://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0)
 
-Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for [ImageJ][ij1]/[Fiji][fiji], the de facto standard in scientific image processing in the life sciences.
+Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for
+[ImageJ][ij1]/[Fiji][fiji], the de facto standard in scientific image processing in the life sciences.
 
-The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the [BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection using the sections below, and download individual routines as needed.
-For more details refer to the [BAR documentation page][Fiji documentation].
+The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the
+[BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection
+using the sections below, and download individual routines as needed.
+For more details refer to the [BAR documentation page][Fiji].
 
 
-## [Data Analysis][Analysis]
+## [Analysis]
+  Routines that complement built-in commands in the ImageJ `Analyze>` menu.
+
+  1. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
+
+
+## [Data Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
   1. (py) [Clipboard to Results](./Data_Analysis/README.md#clipboard-to-results)
   2. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
   3. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
   4. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
-  5. (bsh) [Multichannel Plot Profile](./Data_Analysis/README.md#multichannel-plot-profile)
-  6. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
+  5. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
 
 
 ## [Image Annotation][Annotation]
@@ -25,6 +33,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 
   1. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
   2. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
+
 
 ## [Image Segmentation][Segmentation]
   Routines for partitioning images into analyzable parts.
@@ -56,25 +65,43 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 
 
 ## [BAR plugins][Plugins]
-  Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
+  Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The
+  files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
 
-## [Snippets][Snippets]
-  A depository of generic and reusable scripts to be used as scripting templates, including:
+  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
+
+
+## [Snippets]
+  Example scripts (in several languages) to be used as scripting templates, including:
 
   1. (py) [Median Filter](./Snippets/README.md#median-filter)
   2. (py) [NN Distances](./Snippets/README.md#nn-distances)
   3. [Batch Processors](./Snippets/README.md#batch-processors)
     1. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
     2. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
-  4. (bsh) [Search Snippets](./Snippets/README.md#search-snippets)
+  4. (bsh) [Search BAR](./Snippets/README.md#search-bar)
+
+
+## [lib]
+  User-defined libraries scripting additions in a centralized repository. These are methods
+  (BeanShell) and functions (Python, IJM) that can be shared across files.
+
+  1. [BeanShell library](./lib/README.md#bsh-lib)
+  2. [IJ Macro library](./lib/README.md#ijm-lib)
+  3. [Python library](./lib/README.md#py-lib)
 
 
 ## Help?
  * Want to Contribute to BAR?
-    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/) and [here](https://help.github.com/articles/fork-a-repo) for details on how to [fork](https://github.com/tferr/Scripts/fork) BAR or [here](https://help.github.com/articles/using-pull-requests) on how to initiate a [pull request](https://github.com/tferr/Scripts/pulls)
-    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Fiji documentation]
+    * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/)
+    and [here](https://help.github.com/articles/fork-a-repo) for details on how to
+    [fork](https://github.com/tferr/Scripts/fork) BAR or
+    [here](https://help.github.com/articles/using-pull-requests) on how to initiate a
+    [pull request](https://github.com/tferr/Scripts/pulls)
+    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Fiji]
  * Having problems? Found a bug? Need to ask a question?
-    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ), Fiji [FAQs](http://fiji.sc/Frequently_Asked_Questions) and [Bug reporting best practices](http://fiji.sc/Bug_reporting_best_practices). Then, you can either:
+    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ), Fiji [FAQs](http://fiji.sc/Frequently_Asked_Questions)
+    and [Bug reporting best practices](http://fiji.sc/Bug_reporting_best_practices). Then, you can either:
       * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
       * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
 
@@ -82,7 +109,7 @@ For more details refer to the [BAR documentation page][Fiji documentation].
 ## Citations
 BAR scripts have contributed to the following publications:
 
-  1. Ferreira et al. Neuronal morphometry directly from bitmap images.Nature Methods (2014), 11(10):982–984. [PMID 25264773](http://www.ncbi.nlm.nih.gov/pubmed/25264773)
+  1. Ferreira et al. Neuronal morphometry directly from bitmap images. Nature Methods (2014), 11(10):982–984. [PMID 25264773](http://www.ncbi.nlm.nih.gov/pubmed/25264773)
   1. Pope and Voigt. Peripheral glia have a pivotal role in the initial response to axon degeneration of peripheral sensory neurons in zebrafish. PLoS ONE (2014), 9(7):e103283. [PMID 25058656](http://www.ncbi.nlm.nih.gov/pubmed/25058656)
   1. Medda et al. Investigation of early cell-surface interactions of human mesenchymal stem cells on nanopatterned β-type titanium-niobium alloy surfaces. Interface Focus (2014), 4(1):20130046. [PMID 24501674](http://www.ncbi.nlm.nih.gov/pubmed/24501674)
   1. Ferreira et al. Dendrite architecture is organized by transcriptional control of F-actin nucleation. Development (2014), 141(3):650–60. [PMID 24449841](http://www.ncbi.nlm.nih.gov/pubmed/24449841)
@@ -99,12 +126,18 @@ BAR scripts have contributed to the following publications:
 
 License
 -------
-These scripts are free software: you can redistribute them and/or modify them under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+These scripts are free software: you can redistribute them and/or modify them under the terms of the
+[GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.
 
 
 Contributors
 ------------
-BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com) with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho), [Wayne Rasband][ij1], [Jerome Mutterer](https://github.com/mutterer) and [Kota Miura](https://github.com/cmci). This project would not have been possible without the support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
+with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho),
+[Wayne Rasband][ij1], [Jerome Mutterer](https://github.com/mutterer) and
+[Kota Miura](https://github.com/cmci). This project would not have been possible without the support
+of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
 
 
 [ij1]: http://imagej.nih.gov/ij/

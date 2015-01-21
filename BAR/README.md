@@ -6,6 +6,11 @@ java plugins bundled in a single JAR file. This directory contains the source co
 The project also includes [plugins.config](./src/main/resources/plugins.config) that
 organizes the BAR menu [hierarchy](#bar-menu).
 
+### List of Java plugins
+  1. [BAR Utils](./src/main/java/bar/Utils.java)
+  1. [Shen-Castan Edge Detector](./src/main/java/bar/plugin/ShenCastan.java)
+  1. [Snippet Creator](./src/main/java/bar/plugin/SnippetCreator.java)
+
 
 ### BAR-menu
 The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
