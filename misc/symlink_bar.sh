@@ -8,37 +8,47 @@
     FIJI_HOME="/Applications/Fiji/Fiji.app"
     BAR_DIR="$FIJI_HOME/plugins/Scripts/BAR"
 
-## 1. Symlink Annotation/ files
+## Symlink lib/ files
+    DIR="$BAR_DIR/lib"
+    mkdir -p $DIR
+    ln -fs $SRC_DIR/lib/* $DIR
+
+## Symlink Analysis/ files
+    DIR="$BAR_DIR/Analysis"
+    mkdir -p $DIR
+    ln -fs $SRC_DIR/Analysis/* $DIR
+
+## Symlink Annotation/ files
     DIR="$BAR_DIR/Annotation"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Annotation/* $DIR
 
-## 2. Symlink Data_Analysis/ files
+## Symlink Data_Analysis/ files
     DIR="$BAR_DIR/Data_Analysis"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Data_Analysis/* $DIR
 
-## 3. Symlink Morphometry/ files
+## Symlink Morphometry/ files
     DIR="$BAR_DIR/Morphometry"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Morphometry/* $DIR
 
-## 4. Symlink Segmentation/ files
+## Symlink Segmentation/ files
     DIR="$BAR_DIR/Segmentation"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Segmentation/* $DIR
 
-## 5. Symlink Snippets/ files
+## Symlink Snippets/ files
     DIR="$BAR_DIR/Snippets"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Snippets/* $DIR
 
-## 6. Symlink macro tools
+## Symlink macro tools
     DIR="$FIJI_HOME/macros/tools"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Tools/*.ijm $DIR
 
-## 7. Symlink macro toolsets
+## Symlink macro toolsets
     DIR="$FIJI_HOME/macros/toolsets"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Tools/Toolsets/*.ijm $DIR
