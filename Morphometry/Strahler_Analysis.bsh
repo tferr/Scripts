@@ -326,12 +326,11 @@ do {
 	}
 
 	// Is it worth proceeding?
-	if (nEndpoints==0) {
-		rt.addValue("Notes", "Iteration aborted: No end-poins detected!");
-		break;
-	}
-	if (nJunctions2==nJunctions) {
-		rt.addValue("Notes", "Iteration aborted: Unsolved loop(s) detected!");
+	if (nEndpoints==0 || nJunctions2==nJunctions) {
+		rt.addLabel("Image", "Error: Iteration aborted");
+		String msg = (nEndpoints==0) ? "No end-poins found"
+				: "Unsolved loop(s) detected";
+		rt.addValue("Notes", msg);
 		break;
 	}
 
@@ -348,10 +347,10 @@ do {
 
 	// Report counts
 	rt.addLabel("Image", title);
+	rt.addValue("Notes", "");
 	rt.addValue("Strahler order", Integer.toString(order));
 	rt.addValue("# End-points", nEndpoints);
 	rt.addValue("Ramification ratios", nEndpoints2/nEndpoints);
-	rt.addValue("Notes", "");
 	if (verbose) {
 		rt.addValue("Average branch length", sum(sr.getAverageBranchLength()));
 		rt.addValue("# Trees", sr.getNumOfTrees());
@@ -381,10 +380,10 @@ if (validRootRoi) {
 	// Append root properties to table and display results
 	rt.incrementCounter();
 	rt.addLabel("Image", title);
+	rt.addValue("Notes", msg);
 	rt.addValue("Strahler order", Integer.toString(order)+" (Root)");
 	rt.addValue("# End-points", rootEndpointsList.size());
 	rt.addValue("Ramification ratios", nEndpoints2/rootEndpointsList.size());
-	rt.addValue("Notes", msg);
 	if (verbose) {
 		rt.addValue("Average branch length", sum(rootResult.getAverageBranchLength()));
 		rt.addValue("# Trees", rootResult.getNumOfTrees());
