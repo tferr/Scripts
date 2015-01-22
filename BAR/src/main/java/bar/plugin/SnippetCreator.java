@@ -21,8 +21,12 @@ import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +37,7 @@ import java.util.regex.Pattern;
 import bar.Utils;
 
 /** Generates templates for new IJ scripts */
-public class SnippetCreator implements PlugIn, DialogListener {
+public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Definitions */
 	private static final String[] S_TYPES = { "[Select from list]",
@@ -56,6 +60,10 @@ public class SnippetCreator implements PlugIn, DialogListener {
 	private static String sContents = "";
 	private static String sFilename = "My_Snippet";
 	private static int sType = 0;
+
+	private static Button paste, load, list;
+	private static GenericDialog gd;
+	private static MultiLineLabel infoMsg;
 
 
 	/** Prompts user for a new snippet that will be saved in BAR/Snippets/ */
@@ -157,7 +165,8 @@ public class SnippetCreator implements PlugIn, DialogListener {
 
 	/* Displays prompt */
 	private boolean showDialog() {
-		final GenericDialog gd = new NonBlockingGenericDialog("New Snippet");
+		gd = new NonBlockingGenericDialog("New Snippet");
+		addButtons(gd);
 		gd.setInsets(5, 10, 0);
 		gd.addTextAreas(sContents, null, 12, 50);
 		gd.addStringField("Filename:", sFilename, 18);
@@ -186,6 +195,7 @@ public class SnippetCreator implements PlugIn, DialogListener {
 
 		sFilename = gd.getNextString();
 		sType = gd.getNextChoiceIndex();
+		infoMsg = (MultiLineLabel) gd.getMessage();
 
 		// Populate text area
 		if (source == fChoice) {
@@ -216,12 +226,9 @@ public class SnippetCreator implements PlugIn, DialogListener {
 				header = nnHeader();
 				break;
 			}
-			if (header != "") {
-				final TextArea ta = gd.getTextArea1();
-				ta.insert(header, ta.getCaretPosition());
-				if (IJ.isMacOSX())
-					ta.requestFocus();
 			}
+			if (header != "")
+				appendToTextArea(header);
 
 			// Ensure adequate filename extension
 			if (!sFilename.endsWith(S_EXTS[sType])) {
@@ -238,11 +245,9 @@ public class SnippetCreator implements PlugIn, DialogListener {
 		final File f = new File(Utils.getSnippetsDir() + sFilename);
 		final boolean invalidName = invalidFilename(sFilename);
 		okButton.setLabel(f.exists() ? "Overwrite and Open" : "  Create and Open  ");
-		fField.setForeground((f.exists() || invalidName) ? Color.RED
-				: Color.BLACK);
+		fField.setForeground((f.exists()||invalidName) ? Color.RED : Color.BLACK);
 
 		// Adjust messages
-		final MultiLineLabel label = (MultiLineLabel) gd.getMessage();
 		final StringBuilder sb = new StringBuilder();
 		if (invalidName) {
 			sb.append("\nInvalid Filename");
@@ -254,9 +259,71 @@ public class SnippetCreator implements PlugIn, DialogListener {
 		} else {
 			sb.append("\nFile will be listed in the BAR Menu.");
 		}
-		label.setText(sb.toString());
+		infoMsg.setText(sb.toString());
+		infoMsg.setForeground(Color.DARK_GRAY);
 
 		return !invalidName;
 	}
+
+	/* Adds custom buttons to prompt */
+	private void addButtons(final GenericDialog gd) {
+		final Panel p = new Panel();
+		p.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 0));
+		paste = new Button("Append clipboard text");
+		paste.addActionListener(this);
+		p.add(paste);
+		load = new Button("Append file contents...");
+		load.addActionListener(this);
+		p.add(load);
+		list = new Button("List snippets");
+		list.addActionListener(this);
+		p.add(list);
+		gd.addPanel(p);
+	}
+
+
+	@Override
+	/* Defines actions for custom buttons */
+	public void actionPerformed(final ActionEvent e) {
+		final Object source = e.getSource();
+		if (source==list) {
+
+			Utils.listDirectory(Utils.getSnippetsDir());
+			//gd.toFront();
+
+		} else if (source==paste) {
+
+			final String clipboard = Utils.getClipboardText();
+			if (clipboard!=null)
+				appendToTextArea(clipboard);
+			else
+				infoMsg.setText("\nNo valid text in clipboard.");
+
+		} else if (source==load) {
+
+			final String file = IJ.openAsString("");
+			if (file==null) return;
+			if (file.startsWith("Error: "))
+				IJ.error("Snippet Creator", file.substring(7));
+			else {
+				if (file.length()>30000)
+					IJ.error("Snippet Creator", "File is too large");
+				else
+					appendToTextArea(file);
+			}
+
+		}
+	}
+
+	/* Inserts text at the active position of the TextArea of the main dialog */
+	private void appendToTextArea(String string) {
+		final TextArea ta = gd.getTextArea1();
+		final int startPos = ta.getCaretPosition();
+		if (!string.endsWith("\n")) string +="\n";
+		ta.insert(string, startPos);
+		ta.select(startPos, ta.getCaretPosition());
+		if (IJ.isMacOSX()) ta.requestFocus();
+	}
+
 
 }
