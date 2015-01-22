@@ -68,8 +68,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/** Prompts user for a new snippet that will be saved in BAR/Snippets/ */
 	public void run(final String arg) {
-		if (showDialog())
-			saveAndOpenSnippet();
+		if (showDialog()) {
+			if (sContents.length()>0)
+				saveAndOpenSnippet();
+			else
+				IJ.showStatus(sFilename +" was empty. No file was saved...");
+		}
+
 	}
 
 	/* Returns a header common to all file types */
@@ -151,8 +156,15 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Saves and opens the snippet created by the prompt */
 	private void saveAndOpenSnippet() {
-		IJ.saveString(sContents, Utils.getSnippetsDir() + sFilename);
-		Utils.openScript(Utils.getSnippetsDir(), sFilename);
+		final String result = IJ.saveString(sContents, Utils.getSnippetsDir()
+				+ sFilename);
+		if (result == null) {
+			Utils.openScript(Utils.getSnippetsDir(), sFilename);
+		} else if (IJ.showMessageWithCancel("Snippet Creator",
+				"An error has occurred while saving the file.\n"
+						+ "Display snippet in the Log window?")) {
+			IJ.log("\n*** " + sFilename + " contents ***\n" + sContents);
+		}
 	}
 
 	/* Matches leading dot, ":", slashes, etc. in filename */
@@ -222,10 +234,6 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 			case RB:
 				header = rbHeader();
 				break;
-			default:
-				header = nnHeader();
-				break;
-			}
 			}
 			if (header != "")
 				appendToTextArea(header);
