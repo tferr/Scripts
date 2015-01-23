@@ -18,17 +18,10 @@ def confirmLoading():
     from ij import IJ
     IJ.showMessage("BAR lib successfully loaded!")
 
-def getCliboardText():
-    """Tries to extract text from the system clipboard"""
-    from java.awt.datatransfer import DataFlavor
-    from java.awt import Toolkit
-
-    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
-    contents = clipboard.getContents(None)
-    if (contents!=None) and contents.isDataFlavorSupported(DataFlavor.stringFlavor):
-        return contents.getTransferData(DataFlavor.stringFlavor)
-    else:
-        return ""
+def getClipboardText():
+    """Returns text from the system clipboard or an empty string if no text was found"""
+    import bar
+    return bar.Utils.getClipboardText();
 
 def randomString():
     """Returns a random uuid"""
