@@ -305,11 +305,13 @@ public class Utils implements PlugIn {
 	 */
 	public static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
+		int WIDTH = 400;
 		if (!valid) {
-			IJ.showMessage("Invalid path or filename", "<html>Path not found:"
-				+ "<p style='width:300px;'><i>"+ file.toString() +"</i></p> <p><p>"
-				+ "If the file has been deleted and is part of your Fiji installation<p>"
-				+ "you can use the updater to re-install it.");
+			IJ.showMessage("Invalid path or filename", "<html><div WIDTH="+ WIDTH +">"
+					+"Path not found:<br><i>"+ file.toString() +"</i><br><br>"
+					+"If the file has been deleted and is part of your Fiji "
+					+"installation, you can use the updater to re-install it."
+					+"</div><html>");
 		}
 		return valid;
 	}

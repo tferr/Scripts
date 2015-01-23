@@ -22,6 +22,9 @@ import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
@@ -61,9 +64,10 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private static String sFilename = "My_Snippet";
 	private static int sType = 0;
 
-	private static Button paste, load, list;
 	private static GenericDialog gd;
+	private static Button paste, load, list;
 	private static MultiLineLabel infoMsg;
+	private static TextArea ta;
 
 
 	/** Prompts user for a new snippet that will be saved in BAR/Snippets/ */
@@ -179,11 +183,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private boolean showDialog() {
 		gd = new NonBlockingGenericDialog("New Snippet");
 		addButtons(gd);
-		gd.setInsets(5, 10, 0);
-		gd.addTextAreas(sContents, null, 12, 50);
+		gd.setInsets(0, 0, 0);
+		gd.addTextAreas(sContents, null, 12, 72);
+		ta = gd.getTextArea1();
+		ta.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		gd.addStringField("Filename:", sFilename, 18);
 		gd.addChoice("Language:", S_TYPES, S_TYPES[sType]);
-		gd.setInsets(-85, 255, 0);
+		gd.setInsets(-85, 260, 0);
 		gd.addMessage(" \n "); // placeholder for info messages
 		gd.addHelp(Utils.getDocURL());
 		gd.setHelpLabel("Online Help");
@@ -286,9 +292,8 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		list = new Button("List snippets");
 		list.addActionListener(this);
 		p.add(list);
-		gd.addPanel(p);
+		gd.addPanel(p, GridBagConstraints.CENTER, new Insets(0, 0, 0, 0));
 	}
-
 
 	@Override
 	/* Defines actions for custom buttons */
@@ -325,7 +330,6 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Inserts text at the active position of the TextArea of the main dialog */
 	private void appendToTextArea(String string) {
-		final TextArea ta = gd.getTextArea1();
 		final int startPos = ta.getCaretPosition();
 		if (!string.endsWith("\n")) string +="\n";
 		ta.insert(string, startPos);
