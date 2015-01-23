@@ -3,9 +3,9 @@
  *
  * BeanShell script that instructs the built-in 'Search...' command (Plugins>Utilies>Search...) to
  * search inside plugins/BAR/ for clipboard contents.
- * Caveats: The search string cannot contain quotes. Also, if it contains space(s) it cannot contain
- * square brackets. This is because ImageJ uses these characters to delimit macro values passed as
- * part of the run() function's second argument.
+ *
+ * Requirements: Requires BAR_-XX.jar to be installed in the plugins folder of IJ
+ *
  * NB: The 'Search' command is actually a macro[1]. This script would actually be simpler if itself
  * would have been written using the same ImageJ macro language. Writing it in BeanShell exemplifies
  * how different scripting languages can cooperate in ImageJ.
@@ -22,17 +22,13 @@ import bar.Utils;
 /* Options */
 boolean searchContents = true;
 boolean caseInsensitive = true;
+String PATH = Utils.getBARDir();
 
-// Load BAR/lib/BARlib.bsh
-addClassPath(Utils.getBARDir());
-importCommands("lib/");
-BARlib();
-
-PATH = Utils.getBARDir();
+// Abort if BAR directory cannot be found
 if (Utils.fileExists(PATH)) {
 
     // Get string from clipboard
-    String searchString = new BARlib().getCliboardText();
+    String searchString = Utils.getClipboardText();
 
     // Build prompt
     GenericDialog gd = new GenericDialog("Search BAR Directory");
@@ -40,8 +36,8 @@ if (Utils.fileExists(PATH)) {
     gd.addCheckbox("Search contents", searchContents);
     gd.addCheckbox("Ignore case", caseInsensitive);
     gd.addHelp(Utils.getDocURL());
-    gd.setHelpLabel("BAR");
     gd.showDialog();
+	if (gd.wasCanceled()) return;
 
     // Retrieve options from prompt
     searchString = gd.getNextString();
