@@ -173,11 +173,11 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns text from the system clipboard or null if no text could be
-	 * retrieved
+	 * Returns text from the system clipboard or an empty string if no text
+	 * could be retrieved.
 	 */
 	public static String getClipboardText() {
-		String text = null;
+		String text = "";
 		try {
 			final Toolkit toolkit = Toolkit.getDefaultToolkit();
 			final Clipboard clipboard = toolkit.getSystemClipboard();
