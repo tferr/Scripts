@@ -1,0 +1,96 @@
+/* Smoothed_Plot_Profile.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ */
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.Plot;
+import ij.gui.ProfilePlot;
+import ij.gui.Roi;
+import ij.measure.Calibration;
+
+
+pixelUnits = false; // Set to true to ignore the image's spatial calibration
+
+
+/* Returns the ProfilePlot for the active slice */
+ProfilePlot getProfilePlot() {
+	roi = imp.getRoi();
+	if (roi==null || invalidRoi(roi)) return null;
+	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
+	return new ProfilePlot(imp, averageHorizontally);
+}
+
+/* Returns the Plot for the active image/slice */
+Plot getPlot() {
+	p = getProfilePlot();
+	if (p==null) return null;
+
+	rawYvalues = getProfilePlot().getProfile();
+	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, (int)super.window);
+	xvalues = assignXvalues(rawYvalues.length);
+
+	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
+	plot.setLimits(xvalues[0], xvalues[xvalues.length-1], p.getMin(), p.getMax());	
+	plot.setColor(Color.BLUE);
+	plot.addPoints(xvalues, rawYvalues, Plot.LINE);
+	plot.setColor(Color.RED);
+	plot.addPoints(xvalues, avgYvalues, Plot.LINE);
+	plot.addLabel(0, 0, "Moving avg. window = "+super.window);
+	return plot;
+}
+
+/* Returns X positions in calibrated increments */
+double[] assignXvalues(size) {
+	xvalues = new double[size];
+	for (i=0; i<size; i++)
+		xvalues[i] = i * (cal.pixelWidth + cal.pixelHeight)/2;
+	return xvalues;
+}
+
+/* Checks if active roi is of the right type */
+boolean invalidRoi(roi) {
+	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
+}
+
+/* Returns the spatial calibration of the image */
+public Calibration getSpatialCalibration() {
+	if (pixelUnits) {
+		cal = new Calibration();
+		cal.pixelWidth = 1.0;
+		cal.pixelHeight = 1.0;
+		cal.setUnit("pixel");
+	} else
+		cal = imp.getCalibration();
+	return cal;
+}
+
+/* PlotMaker interface */
+ImagePlus getSourceImage() {
+	return imp;
+}
+
+
+imp = IJ.getImage();
+if (invalidRoi(imp.getRoi())) {
+	IJ.error("Smoothed Profiler", "Line or rectangular ROI required.");
+	return;
+}
+
+window = IJ.getNumber("Moving average window:", 4.0);
+if (window==IJ.CANCELED)
+	return;
+
+// Load BAR/lib/BARlib.bsh
+addClassPath(bar.Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+lib = new BARlib();
+
+cal = getSpatialCalibration();
+plot = getPlot();
+if (plot==null) return;
+plot.setPlotMaker(this);
+plot.show();
