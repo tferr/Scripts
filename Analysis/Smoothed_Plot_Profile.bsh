@@ -11,8 +11,20 @@ import ij.gui.ProfilePlot;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 
+import java.awt.event.KeyEvent;
 
-pixelUnits = false; // Set to true to ignore the image's spatial calibration
+
+ImagePlus imp;
+Calibration cal;
+Roi roi;
+Plot plot;
+boolean firstRun;
+
+/* Ignore the image's spatial calibration? */
+boolean pixelUnits = false;
+
+/* Default size for moving average (MA) window */
+int window = 4;
 
 
 /* Returns the ProfilePlot for the active slice */
@@ -28,17 +40,29 @@ Plot getPlot() {
 	p = getProfilePlot();
 	if (p==null) return null;
 
+	//Define sampled data
 	rawYvalues = getProfilePlot().getProfile();
-	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, (int)super.window);
 	xvalues = assignXvalues(rawYvalues.length);
 
+	// Get new window and generate smoothed data
+	if (!firstRun && IJ.controlKeyDown()) {
+		IJ.setKeyUp(KeyEvent.VK_CONTROL);
+		newWindow = getWindow();
+		if (newWindow!=IJ.CANCELED) window = newWindow;
+	}
+	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, window);
+
+	// Prepare plot
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
-	plot.setLimits(xvalues[0], xvalues[xvalues.length-1], p.getMin(), p.getMax());	
+	plot.setLimits(xvalues[0], xvalues[xvalues.length-1], p.getMin(), p.getMax());
+	plot.addLabel(0, 0, "In live mode, press 'Ctrl' to adjust moving avg. window:  "+ window);
+
+	// Plot data
 	plot.setColor(Color.BLUE);
 	plot.addPoints(xvalues, rawYvalues, Plot.LINE);
 	plot.setColor(Color.RED);
 	plot.addPoints(xvalues, avgYvalues, Plot.LINE);
-	plot.addLabel(0, 0, "Moving avg. window = "+super.window);
+
 	return plot;
 }
 
@@ -50,13 +74,18 @@ double[] assignXvalues(size) {
 	return xvalues;
 }
 
+/* Returns the moving average window */
+int getWindow() {
+	return (int)IJ.getNumber("Moving average window:", window);
+}
+
 /* Checks if active roi is of the right type */
 boolean invalidRoi(roi) {
 	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
 }
 
 /* Returns the spatial calibration of the image */
-public Calibration getSpatialCalibration() {
+Calibration getSpatialCalibration() {
 	if (pixelUnits) {
 		cal = new Calibration();
 		cal.pixelWidth = 1.0;
@@ -73,15 +102,18 @@ ImagePlus getSourceImage() {
 }
 
 
+// Get image to be profiled
 imp = IJ.getImage();
+
+// Do not proceed it active ROI cannot be profiled
 if (invalidRoi(imp.getRoi())) {
 	IJ.error("Smoothed Profiler", "Line or rectangular ROI required.");
 	return;
 }
 
-window = IJ.getNumber("Moving average window:", 4.0);
-if (window==IJ.CANCELED)
-	return;
+// Ask user for moving avg. window
+window = getWindow();
+if (window==IJ.CANCELED) return;
 
 // Load BAR/lib/BARlib.bsh
 addClassPath(bar.Utils.getBARDir());
@@ -89,8 +121,10 @@ importCommands("lib/");
 BARlib();
 lib = new BARlib();
 
+firstRun = true;
 cal = getSpatialCalibration();
 plot = getPlot();
 if (plot==null) return;
 plot.setPlotMaker(this);
 plot.show();
+firstRun = false;
