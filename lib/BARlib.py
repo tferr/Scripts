@@ -30,6 +30,17 @@ def randomString():
 
 
 ##### CALCULATIONS #####
+def getSimpleMovingAverage(values, window):
+    """Smooths 1D data according to the specified window"""
+    if (window<1): return values
+    svalues = []
+    for i in range(len(values)):
+        svalues.append(0); n = 0
+        for j in xrange(max(0, i-window), min(len(values), i+window)):
+            svalues[i] += values[j]; n += 1
+        svalues[i] /= n
+    return svalues
+
 def gcd(a,b):
     """Returns the greatest common divisor between 2 numbers"""
     while(b): a,b = b,a%b

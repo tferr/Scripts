@@ -39,6 +39,20 @@ function randomString(length, spacers) {
 
 
 ///////////  CALCULATIONS  ///////////
+/** Smooths 1D data according to the specified window */
+function getSimpleMovingAverage(values, window) {
+	if (window<1) return values;
+	svalues = newArray(values.length);
+	for (i=0; i<values.length; i++) {
+		svalues[i] = 0; n = 0;
+		for (j=maxOf(0, i-window); j<minOf(values.length, i+window); j++) {
+			svalues[i] += values[j]; n++;
+		}
+		svalues[i] /= n;
+	}
+	return svalues;
+}
+
 /** Returns the greatest common divisor between 2 numbers */
 function gcd(a, b) {
 	if (b==0) return a;
