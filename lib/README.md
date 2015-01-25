@@ -1,5 +1,4 @@
 #lib
-
 Centralized repository of user-defined libraries that can be shared across files. These libraries
 serve as scripting additions to [Snippets] and other routines. The `BAR> Snippets> New Snippet...`
 command exemplifies how to use them.
@@ -45,6 +44,11 @@ import BARlib as lib
 lib.confirmLoading()
 ```
 
+
+##Tips
+* Type in `BARlib` in _BAR> Snippets> Search BAR_ to get the list of all the files that are using
+  scripting additions.
+
 ##Notes
 * Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. You will
   notice that, `BAR>lib>` lists some "Opening" commands instead. These are just one line-scrips that
@@ -53,7 +57,6 @@ lib.confirmLoading()
   be executed every time the library is loaded.
 
 ##See Also
-
 * [Snippets]
 
 

@@ -16,6 +16,7 @@ For more details refer to the [BAR documentation page][Fiji].
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
   1. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
+  2. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]

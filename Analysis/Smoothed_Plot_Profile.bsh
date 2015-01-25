@@ -1,6 +1,15 @@
-/* Smoothed_Plot_Profile.bsh
+/*
+ * Smoothed_Plot_Profile.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
+ * BeanShell script that extends the Analyze>Plot Profile by plotting a simple moving average of
+ * profiled data. It also exemplifies how to use BAR libs[1]: The simple moving average calculation
+ * is performed by getSimpleMovingAverage(), loaded from BARlib.bsh.
+ *
+ * NB: In 'Live' mode and with profiled image as the frontmost window, press 'Control' to readjust
+ * the number of data points to be used in the moving average calculation.
+ *
+ * [1] https://github.com/tferr/Scripts/tree/master/lib#lib
  */
 
 import ij.IJ;
