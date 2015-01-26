@@ -337,23 +337,68 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Reveals the specified filepath in the default file explorer of the
-	 * operating system. An error message is displayed in a dialog box if file
-	 * path is invalid.
+	 * "Reveals" the specified file path in the operating system. If file is a
+	 * directory, opens it in the file manager of the operating system,
+	 * otherwise the application associated with the file type will be launched.
+	 * An error message is displayed in a dialog box if file path is invalid, or
+	 * if the operating system could not be detected.
+	 *
+	 * @see {@link #revealFile(String) revealFile(filePath)}
+	 * @see {@link #fileExists(String)}
 	 */
 	public static void revealFile(final File file) {
 		if (!fileExists(file))
 			return;
-		Desktop desktop = null;
-		if (Desktop.isDesktopSupported())
-			desktop = Desktop.getDesktop();
-		try {
-			desktop.open(file);
-		} catch (final IOException e) {
-			IJ.log(">>>> An error occured when opening\n"+ file +"\n"+ e);
+
+		boolean supportedOS = false;
+
+		if (Desktop.isDesktopSupported()) {
+			try {
+				final Desktop desktop = Desktop.getDesktop();
+				if (desktop.isSupported(Desktop.Action.OPEN)) {
+					desktop.open(file);
+					supportedOS = true;
+				}
+			} catch (final IOException e) {
+				IJ.log(">>>> An error occured when opening file.\n" + e);
+			}
+		}
+
+		if (!supportedOS) {
+
+			String cmd;
+			if (IJ.isLinux())
+				cmd = "xdg-open "; //gnome-open should also be tried?
+			else if (IJ.isMacOSX())
+				cmd = "open ";
+			else if (IJ.isWindows())
+				cmd = "cmd /c start ";
+			else {
+				IJ.error("This command does not support your OS. Please report this bug at\n"
+						+ SRC_URL);
+				return;
+			}
+
+			// URIs seem to be the most cross-platform effective way of dealing with
+			// spaces in file paths. However, triple slashes seem to be required for
+			// proper handling of local files (at least in ubuntu 14.10). This does
+			// not seem to be the case with MW (wine) or Mac OS that seem to accept
+			// 'file:/' just fine.
+			String path = file.getPath();
+			if (path.contains(" ")) {
+				path = file.toURI().normalize().toString();
+				if (path.indexOf("file:///")==-1)
+					path = path.replace("file:/", "file:///");
+			}
+
+			try {
+				Runtime.getRuntime().exec(cmd + path);
+			} catch (final Exception e) {
+				IJ.log(">>>> An error occured when opening file.\n" + e);
+			}
+
 		}
 	}
-
 
 	/** Returns the path to BAR/Analysis/ */
 	public static String getAnalysisDir() {
