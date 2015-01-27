@@ -44,7 +44,7 @@ public class Utils implements PlugIn {
 
 	static final String VERSION = "1.0.6a-DEV";
 	static final String DOC_URL = "http://fiji.sc/BAR";
-	static final String SRC_URL = "https://github.com/tferr/Scripts#ij-bar";
+	static final String SRC_URL = "https://github.com/tferr/Scripts";
 	static final String BAR_DIR = IJ.getDirectory("plugins")
 			+ "Scripts" + File.separator + "BAR" + File.separator;
 	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
@@ -302,10 +302,11 @@ public class Utils implements PlugIn {
 	/**
 	 * Tests whether a file or directory exists. An error message is displayed
 	 * in a dialog box if file path is invalid
+	 * @see {@link #revealFile(File) revealFile(file)}
 	 */
 	public static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
-		int WIDTH = 400;
+		final int WIDTH = 400;
 		if (!valid) {
 			IJ.showMessage("Invalid path or filename", "<html><div WIDTH="+ WIDTH +">"
 					+"Path not found:<br><i>"+ file.toString() +"</i><br><br>"
@@ -319,21 +320,19 @@ public class Utils implements PlugIn {
 	/**
 	 * Tests whether a file or directory exists at the specified path. An error
 	 * message is displayed in a dialog box if file path is invalid
+	 * @see {@link #revealFile(File) revealFile(file)}
 	 */
 	public static boolean fileExists(final String filepath) {
 		return fileExists(new File(filepath));
 	}
 
 	/**
-	 * Reveals the specified filepath in the default file explorer of the
-	 * operating system. An error message is displayed in a dialog box if file
-	 * path is invalid.
+	 * "Reveals" the specified file path in the operating system. Described in
+	 * {@link #revealFile(File) revealFile(file)}
 	 */
 	public static void revealFile(final String filePath) {
-		// Method must be static so it can be called from ijm
 		final File file = new File(filePath);
 		revealFile(file);
-	
 	}
 
 	/**
@@ -383,7 +382,9 @@ public class Utils implements PlugIn {
 			// spaces in file paths. However, triple slashes seem to be required for
 			// proper handling of local files (at least in ubuntu 14.10). This does
 			// not seem to be the case with MW (wine) or Mac OS that seem to accept
-			// 'file:/' just fine.
+			// 'file:/' just fine. Since we are dealing with URIs we could use
+			// ij.plugin.BrowserLauncher.openURL(uri). Unfortunately that does not
+			// seem to work with linux, at least in Ubuntu 14.10 (fresh install)
 			String path = file.getPath();
 			if (path.contains(" ")) {
 				path = file.toURI().normalize().toString();
