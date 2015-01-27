@@ -358,8 +358,9 @@ public class Utils implements PlugIn {
 					desktop.open(file);
 					supportedOS = true;
 				}
-			} catch (final IOException e) {
+			} catch (final Exception e) {
 				IJ.handleException(e);
+				supportedOS = false;
 			}
 		}
 
