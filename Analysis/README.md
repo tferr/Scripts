@@ -31,7 +31,7 @@ See also: [Data Analysis]
 
 
 ###[Smoothed Plot Profile](./Smoothed_Plot_Profile.bsh)
-   Extends the built-in command _Analyze> Plot Profile_ by plotting a simple
+   A BeanShell script that extends the built-in command _Analyze> Plot Profile_ by plotting a simple
    [moving average](http://en.wikipedia.org/wiki/Moving_average) of profiled data. It inherits most
    features of [Multichannel Plot Profile](#multichannel-plot-profile).
    ([Download .bsh](./Smoothed_Plot_Profile.bsh?raw=true))
@@ -40,6 +40,9 @@ See also: [Data Analysis]
 
    * In _Live mode_, and with profiled image as the frontmost window, press press `Control` to
      readjust the number of data points to be used in the moving average calculation.
+   * The script also exemplifies how to call methods defined by a [BAR lib](../lib/README.md#lib):
+     The simple moving average calculation is performed by `getSimpleMovingAverage()`, loaded from
+     [BARlib.bsh](../lib/BARlib.bsh).
 
 
 
