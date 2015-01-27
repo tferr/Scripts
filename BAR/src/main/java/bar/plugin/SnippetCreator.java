@@ -184,12 +184,12 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		gd = new NonBlockingGenericDialog("New Snippet");
 		addButtons(gd);
 		gd.setInsets(0, 0, 0);
-		gd.addTextAreas(sContents, null, 12, 72);
+		gd.addTextAreas(sContents, null, 12, 67);
 		ta = gd.getTextArea1();
 		ta.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		gd.addStringField("Filename:", sFilename, 18);
+		gd.addStringField("Filename:", sFilename, 16);
 		gd.addChoice("Language:", S_TYPES, S_TYPES[sType]);
-		gd.setInsets(-85, 260, 0);
+		gd.setInsets(-85, 245, 0);
 		gd.addMessage(" \n "); // placeholder for info messages
 		gd.addHelp(Utils.getDocURL());
 		gd.setHelpLabel("Online Help");
@@ -258,7 +258,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		// Adjust labels and fields
 		final File f = new File(Utils.getSnippetsDir() + sFilename);
 		final boolean invalidName = invalidFilename(sFilename);
-		okButton.setLabel(f.exists() ? "Overwrite and Open" : "  Create and Open  ");
+		okButton.setLabel(f.exists() ? "Replace and Open" : " Create and Open ");
 		fField.setForeground((f.exists()||invalidName) ? Color.RED : Color.BLACK);
 
 		// Adjust messages
@@ -282,7 +282,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/* Adds custom buttons to prompt */
 	private void addButtons(final GenericDialog gd) {
 		final Panel p = new Panel();
-		p.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 0));
+		p.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		paste = new Button("Append clipboard text");
 		paste.addActionListener(this);
 		p.add(paste);
