@@ -92,6 +92,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb;
 	}
 
+	/* Returns a file header for a language not featured in BAR */
+	private static StringBuilder unsupportedHeader(StringBuilder sb, final int type) {
+		sb.append(C_CHARS[type]).append(" NB: BAR does not yet feature a ")
+				.append(S_TYPES[type]).append(" lib\n\n");
+		return sb;
+	}
+
 	/** Returns header for a BSH snippet (BeanShell) */
 	public static String bshHeader() {
 		final StringBuilder sb = commonHeader(BSH);
@@ -109,13 +116,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a CLJ snippet (Clojure) */
 	public static String cljHeader() {
 		final StringBuilder sb = commonHeader(CLJ);
-		return sb.toString();
+		return unsupportedHeader(sb, CLJ).toString();
 	}
 
 	/** Returns header for a GRV snippet (Groovy) */
 	public static String grvHeader() {
 		final StringBuilder sb = commonHeader(GRV);
-		return sb.toString();
+		return unsupportedHeader(sb, GRV).toString();
 	}
 
 	/** Returns header for a IJM snippet (IJ1 macro) */
@@ -132,7 +139,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a JS snippet (JavaScript) */
 	public static String jsHeader() {
 		final StringBuilder sb = commonHeader(JS);
-		return sb.toString();
+		return unsupportedHeader(sb, JS).toString();
 	}
 
 	/** Returns header for a PY snippet (Python) */
@@ -149,7 +156,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a RB snippet (Ruby) */
 	public static String rbHeader() {
 		final StringBuilder sb = commonHeader(RB);
-		return sb.toString();
+		return unsupportedHeader(sb, RB).toString();
 	}
 
 	/** Returns header for a NN snippet (No language) */
