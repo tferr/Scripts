@@ -360,7 +360,7 @@ public class Utils implements PlugIn {
 					supportedOS = true;
 				}
 			} catch (final IOException e) {
-				IJ.log(">>>> An error occured when opening file.\n" + e);
+				IJ.handleException(e);
 			}
 		}
 
@@ -394,7 +394,7 @@ public class Utils implements PlugIn {
 			try {
 				Runtime.getRuntime().exec(cmd + path);
 			} catch (final Exception e) {
-				IJ.log(">>>> An error occured when opening file.\n" + e);
+				IJ.handleException(e);
 			}
 
 		}
@@ -460,7 +460,7 @@ public class Utils implements PlugIn {
 		try {
 			BrowserLauncher.openURL(URL);
 		} catch (final IOException e) {
-			IJ.log(">>>> An error occurred when opening\n"+ URL +":\n"+ e);
+			IJ.handleException(e);
 		}
 	}
 
