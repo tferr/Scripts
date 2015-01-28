@@ -54,43 +54,52 @@ public class Utils implements PlugIn {
 	@Override
 	public void run(final String arg) {
 
-		if (arg.startsWith("snippet:")) {
-
-			final String[] args = arg.split(":");
-			if (args.length==1) return;
-			if (args[1].equalsIgnoreCase("list")) {
-				shiftClickWarning();
-				listDirectory(SNIPPETS_DIR);
-			} else if (args[1].equalsIgnoreCase("reveal")) {
-				shiftClickWarning();
-				revealFile(SNIPPETS_DIR);
-			} else //TODO implement a "reload snippets" command
-				openSnippet(arg);
-
-		} else if (arg.startsWith("moveMenu:")) {
-
-			final String[] args = arg.split(":");
-			if (args.length==1) return;
-			moveSubmenu(args[1]);
-
-		} else if (arg.endsWith(".ijm")) {
-
-			final String[] args = arg.split("/");
-			if (args.length==1) return;
-			final String dir = IJ.getDirectory("macros") + args[0] + File.separator;
-
-			if (args[1].equalsIgnoreCase(".ijm")) {
-				shiftClickWarning();
-				revealFile(dir);
-			} else if (IJ.shiftKeyDown()) {
-				openScript(dir, args[1]);
-			} else {
-				installMacroFile(dir, args[1]);
-			}
-
-		} else if (arg.equalsIgnoreCase("about"))
+		shiftClickWarning();
+		if (arg.equalsIgnoreCase("about")) {
 			aboutBox();
+		} else {
 
+			final String[] args = arg.split(":");
+			if (args.length==1) return;
+
+			// Instructions related to snippets
+			if (args[0].equalsIgnoreCase("snippet")) {
+
+				if (args[1].equalsIgnoreCase("list")) {
+					listDirectory(SNIPPETS_DIR);
+				} else if (args[1].equalsIgnoreCase("reveal")) {
+					revealFile(SNIPPETS_DIR);
+				} else //TODO implement a "reload snippets" command
+					openSnippet(arg);
+
+			// Instructions related to Menu transfers
+			} else if (args[0].equalsIgnoreCase("moveMenu")) {
+
+				moveSubmenu(args[1]);
+
+			// Instructions related to tools and toolsets
+			} else if (args[0].startsWith("tools")) {
+
+				final String dir = IJ.getDirectory("macros") + args[0]
+						+ File.separator;
+				if (args[1].equalsIgnoreCase("reveal")) {
+					revealFile(dir);
+				} else if (IJ.shiftKeyDown()) {
+					IJ.showStatus("Opening file...");
+					openScript(dir, args[1]);
+				} else {
+					installMacroFile(dir, args[1]);
+				}
+
+			// Instructions related to lib files
+			} else if (arg.startsWith("lib:")) {
+
+				if (args[1].equalsIgnoreCase("reveal")) {
+					revealFile(LIB_DIR);
+				}
+
+			}
+		}
 	}
 
 	/**
