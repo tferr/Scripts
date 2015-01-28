@@ -1,5 +1,0 @@
-/* Reveal_Libraries.bsh
- * IJ BAR: https://github.com/tferr/Scripts#scripts
- */
-import bar;
-bar.Utils.revealFile(bar.Utils.getLibDir());

@@ -13,7 +13,6 @@ package bar;
 import ij.IJ;
 import ij.Menus;
 import ij.gui.GenericDialog;
-import ij.plugin.BrowserLauncher;
 import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.Editor;
@@ -28,7 +27,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -466,15 +464,6 @@ public class Utils implements PlugIn {
 		return SRC_URL;
 	}
 
-	/** Opens an URL in the default browser */
-	void openURL(final String URL) {
-		try {
-			BrowserLauncher.openURL(URL);
-		} catch (final IOException e) {
-			IJ.handleException(e);
-		}
-	}
-
 	/** Implements the About BAR... command */
 	void aboutBox() {
 		shiftClickWarning();
@@ -484,7 +473,7 @@ public class Utils implements PlugIn {
 		final GenericDialog gd = new GenericDialog("About BAR...");
 		gd.addMessage("BAR v" + VERSION, boldf);
 		gd.setInsets(0, 20, 0);
-		gd.addMessage("A curated collection of Broadly Applicable Routines for ImageJ1",
+		gd.addMessage("A curated collection of Broadly Applicable Routines for ImageJ",
 				plainf);
 		gd.setInsets(10, 20, 0);
 		gd.addMessage("Author/Maintainer", boldf);
@@ -502,7 +491,7 @@ public class Utils implements PlugIn {
 		if (gd.wasCanceled())
 			return;
 		else if (gd.wasOKed())
-			openURL(SRC_URL);
+			IJ.runPlugIn("ij.plugin.BrowserLauncher", SRC_URL);
 		else
 			revealFile(BAR_DIR);
 	}

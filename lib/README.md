@@ -1,7 +1,12 @@
 #lib
-Centralized repository of user-defined libraries that can be shared across files. These libraries
-serve as scripting additions to [Snippets] and other routines. The `BAR> Snippets> New Snippet...`
-command exemplifies how to use them.
+The lib directory is a centralized repository of user-defined libraries that can be shared across
+files. These libraries serve as scripting additions to [Snippets] and other routines. The
+`BAR> Snippets> New Snippet...` command exemplifies how to use them.
+
+**Tip:** Type in `BARlib` in _BAR> Snippets> Search BAR_ to get the list of all the files using
+scripting additions.
+
+**See Also:** [Snippets], [BAR documentation page](http://fiji.sc/BAR#lib)
 
 
 ##[BSH lib](./BARlib.bsh)
@@ -45,19 +50,12 @@ lib.confirmLoading()
 ```
 
 
-##Tips
-* Type in `BARlib` in _BAR> Snippets> Search BAR_ to get the list of all the files that are using
-  scripting additions.
-
 ##Notes
 * Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. You will
   notice that, `BAR>lib>` lists some "Opening" commands instead. These are just one line-scrips that
   call [bar.Utils](../BAR/src/main/java/bar/Utils.java) to open unregistered files.
   This approach is intentional: If the calls were included directly in the library file, they would
   be executed every time the library is loaded.
-
-##See Also
-* [Snippets]
 
 
 
