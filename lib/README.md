@@ -29,9 +29,12 @@ lib.confirmLoading();
 Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
 
 ```java
+// Load BARlib.ijm. NB: functions may only be available once
+// a new instance of the macro interpreter is initiated. See
+// http://fiji.sc/BAR#FAQ for details
 libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
-libFunctions = File.openAsString(libPath);
-call('ij.macro.Interpreter.setAdditionalFunctions', libFunctions);
+libContents = File.openAsString(libPath);
+call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
 
 // Confirm availability of new additions
 confirmLoading();

@@ -3,12 +3,15 @@
  *
  * Common BAR library to be placed in BAR/lib. This file hosts functions to
  * be used across all your macros. To add these scripting additions, run the
- * following before running your macro files:
+ * following _before_ running your macro files:
  *
  *     libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
- *     libFunctions = File.openAsString(libPath);
- *     call('ij.macro.Interpreter.setAdditionalFunctions', libFunctions);
- *     // confirm availability of new additions
+ *     libContents = File.openAsString(libPath);
+ *     call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
+ *
+ * Once a new instance of the macro interpreter is initiated, you can confirm
+ * the availability of new additions by running:
+ *
  *     confirmLoading();
  */
 

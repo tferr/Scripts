@@ -21,6 +21,7 @@ import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -128,9 +129,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a IJM snippet (IJ1 macro) */
 	public static String ijmHeader() {
 		final StringBuilder sb = commonHeader(IJM);
+		sb.append("// Load BARlib.ijm. NB: functions may only be available once\n");
+		sb.append("// a new instance of the macro interpreter is initiated. See\n");
+		sb.append("// http://fiji.sc/BAR#FAQ for details\n");
 		sb.append("libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';\n");
-		sb.append("libFunctions = File.openAsString(libPath);\n");
-		sb.append("call('ij.macro.Interpreter.setAdditionalFunctions', libFunctions);\n");
+		sb.append("libContents = File.openAsString(libPath);\n");
+		sb.append("call('ij.macro.Interpreter.setAdditionalFunctions', libContents);\n");
+		sb.append("\n");
 		sb.append("// Confirm availability of new additions\n");
 		sb.append("confirmLoading();");
 		return sb.toString();
