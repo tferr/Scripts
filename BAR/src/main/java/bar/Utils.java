@@ -40,7 +40,7 @@ import org.scijava.Context;
 /** A collection of miscellaneous utilities for BAR */
 public class Utils implements PlugIn {
 
-	static final String VERSION = "1.1.0";
+	static final String VERSION = "1.1.1-TESTING";
 	static final String DOC_URL = "http://fiji.sc/BAR";
 	static final String SRC_URL = "https://github.com/tferr/Scripts";
 	static final String BAR_DIR = IJ.getDirectory("plugins")
