@@ -84,8 +84,8 @@ For more details refer to the [BAR documentation page][Fiji].
 
 
 ## [lib]
-  User-defined libraries scripting additions in a centralized repository. These are methods
-  (BeanShell) and functions (Python, IJM) that can be shared across files.
+  User-defined libraries (scripting additions) in a centralized repository. These are methods and
+  functions that can be conveniently shared across files.
 
   1. [BeanShell library](./lib/README.md#bsh-lib)
   2. [IJ Macro library](./lib/README.md#ijm-lib)

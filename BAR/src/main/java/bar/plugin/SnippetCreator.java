@@ -21,7 +21,6 @@ import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -94,7 +93,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	}
 
 	/* Returns a file header for a language not featured in BAR */
-	private static StringBuilder unsupportedHeader(StringBuilder sb, final int type) {
+	private static StringBuilder unsupportedHeader(final StringBuilder sb, final int type) {
 		sb.append(C_CHARS[type]).append(" NB: BAR does not yet feature a ")
 				.append(S_TYPES[type]).append(" lib\n\n");
 		return sb;
