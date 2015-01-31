@@ -127,7 +127,15 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a GRV snippet (Groovy) */
 	public static String grvHeader() {
 		final StringBuilder sb = commonHeader(GRV);
-		return unsupportedHeader(sb, GRV).toString();
+		sb.append("// Parse and load BARlib.groovy\n");
+		sb.append("import bar.Utils\n");
+		sb.append("file = new File(Utils.getLibDir() + \"BARlib.groovy\")\n");
+		sb.append("BARlib = new GroovyClassLoader(getClass().getClassLoader()).parseClass(file)\n");
+		sb.append("\n");
+		sb.append("// Initiate BARlib and confirm its availability\n");
+		sb.append("lib = BARlib.newInstance()\n");
+		sb.append("lib.confirmLoading()\n");
+		return sb.toString();
 	}
 
 	/** Returns header for a IJM snippet (IJ1 macro) */
