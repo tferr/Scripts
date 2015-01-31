@@ -143,7 +143,14 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a JS snippet (JavaScript) */
 	public static String jsHeader() {
 		final StringBuilder sb = commonHeader(JS);
-		return unsupportedHeader(sb, JS).toString();
+		sb.append("// Load BARlib.js\n");
+		sb.append("importClass(Packages.bar.Utils);\n");
+		sb.append("load(Utils.getLibDir() +\"BARlib.js\");\n");
+		sb.append("\n");
+		sb.append("// Initiate BARlib and confirm its availability\n");
+		sb.append("lib = new BARlib();\n");
+		sb.append("lib.confirmLoading();\n");
+		return sb.toString();
 	}
 
 	/** Returns header for a PY snippet (Python) */
