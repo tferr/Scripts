@@ -60,11 +60,15 @@ function getSimpleMovingAverage(values, window) {
 function gcd(a, b) {
 	if (b==0) return a;
 	return gcd(b, a%b);
+
+/** Returns the greatest common divisor between 2 numbers using Commons Math */
+function gcdCommons(a, b) {
+	return call("org.apache.commons.math3.util.ArithmeticUtils.gcd", a, b);
 }
 
 /** Returns surface area and volume of a sphere of radius r */
 function sphereCalc(r) {
-	sph_area = 4.0 * PI() * (r*r);
-	sph_vol = 4.0/3.0 * PI() * (r*r*r);
-	return newArray{sph_area, sph_vol};
+	sph_area = 4.0 * PI * (r*r);
+	sph_vol = 4.0/3.0 * PI * (r*r*r);
+	return newArray(sph_area, sph_vol);
 }
