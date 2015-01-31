@@ -107,13 +107,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a BSH snippet (BeanShell) */
 	public static String bshHeader() {
 		final StringBuilder sb = commonHeader(BSH);
-		sb.append("/* Add BAR/lib to classpath. Load BARlib.bsh */\n");
+		sb.append("// Add BAR/lib to classpath and load BARlib.bsh\n");
 		sb.append("addClassPath(bar.Utils.getBARDir());\n");
 		sb.append("importCommands(\"lib/\");\n");
 		sb.append("BARlib();\n");
 		sb.append("\n");
+		sb.append("// Initiate BARlib and confirm its availability\n");
 		sb.append("lib = new BARlib();\n");
-		sb.append("// Confirm availability of BARlib\n");
 		sb.append("lib.confirmLoading();\n");
 		return sb.toString();
 	}
@@ -169,9 +169,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a PY snippet (Python) */
 	public static String pyHeader() {
 		final StringBuilder sb = commonHeader(PY);
+		sb.append("# Load BARlib.py\n");
 		sb.append("import sys, bar\n");
 		sb.append("sys.path.append(bar.Utils.getLibDir())\n");
 		sb.append("import BARlib as lib\n");
+		sb.append("\n");
 		sb.append("# Confirm availability of BARlib\n");
 		sb.append("lib.confirmLoading()\n");
 		return sb.toString();

@@ -1,16 +1,16 @@
 /* BARlib.ijm
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Common BAR library to be placed in BAR/lib. This file hosts functions to
- * be used across all your macros. To add these scripting additions, run the
- * following _before_ running your macro files:
+ * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
+ * placed in BAR/lib. This file hosts functions to be used across all your macros.
+ * To load these scripting additions, append the following to your macro files:
  *
  *     libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
  *     libContents = File.openAsString(libPath);
  *     call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
  *
- * Once a new instance of the macro interpreter is initiated, you can confirm
- * the availability of new additions by running:
+ * Once a new instance of the macro interpreter is initiated (http://fiji.sc/BAR#FAQ),
+ * you can confirm the availability of new additions by running:
  *
  *     confirmLoading();
  */
@@ -24,7 +24,7 @@ function confirmLoading() {
 
 /** Returns text from the system clipboard or an empty string if no text was found */
 function getCliboardText() {
-	return String.paste; //IJM already has a built-in function for this
+	return String.paste; //IJM already has a built-in function for this task
 }
 
 /** Returns a random uuid */
@@ -45,21 +45,24 @@ function randomString(length, spacers) {
 /** Smooths 1D data according to the specified window */
 function getSimpleMovingAverage(values, window) {
 	if (window<1) return values;
-	svalues = newArray(values.length);
-	for (i=0; i<values.length; i++) {
-		svalues[i] = 0; n = 0;
-		for (j=maxOf(0, i-window); j<minOf(values.length, i+window); j++) {
-			svalues[i] += values[j]; n++;
+	n = values.length;
+	svalues = newArray(n); // all items in array are initialized to zero
+	for (i=0; i<n; i++) {
+		for (nw=0, j=maxOf(0, i-window); j<minOf(n, i+window); j++) {
+			svalues[i] += values[j]; nw++;
 		}
-		svalues[i] /= n;
+		svalues[i] /= nw;
 	}
 	return svalues;
 }
 
 /** Returns the greatest common divisor between 2 numbers */
 function gcd(a, b) {
-	if (b==0) return a;
-	return gcd(b, a%b);
+	if (b==0)
+		return a;
+	else
+		return gcd(b, a%b);
+}
 
 /** Returns the greatest common divisor between 2 numbers using Commons Math */
 function gcdCommons(a, b) {

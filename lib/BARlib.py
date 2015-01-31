@@ -1,12 +1,14 @@
 # BARlib.py
 # IJ BAR: https://github.com/tferr/Scripts#scripts
 #
-# Common BAR library to be placed in BAR/lib. This file hosts methods to
-# be used across all your scripts. To add these scripting additions, append
-# the following to your Jython scripts:
+# Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
+# placed in BAR/lib. This file hosts functions to be used across all your scripts.
+# To load these scripting additions, append the following to your Jython files:
+#
 #    import bar, sys
 #    sys.path.append(bar.Utils.getLibDir())
 #    import BARlib as lib
+#
 # Then, call functions as usual:
 #    lib.confirmLoading()
 #
@@ -45,6 +47,11 @@ def gcd(a,b):
     """Returns the greatest common divisor between 2 numbers"""
     while(b): a,b = b,a%b
     return a
+
+def gcdCommons(a, b):
+    """Returns the greatest common divisor between 2 numbers using Commons Math"""
+    from org.apache.commons.math3.util import ArithmeticUtils
+    return ArithmeticUtils.gcd(a,b)
 
 def sphereCalc(r):
     """Returns surface area and volume of a sphere of radius r"""

@@ -1,17 +1,18 @@
 /* BARlib.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Common BAR library to be placed in BAR/lib. This file hosts methods to
- * be used across all your scripts. To add this scripted classe, append the
- * following to your files:
+ * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
+ * placed in BAR/lib. This file hosts functions to be used across all your scripts.
+ * To load these scripting additions, append the following to your BeanShell files:
+ *
  *     addClassPath(bar.Utils.getBARDir());
  *     importCommands("lib/");
  *     BARlib();
- * Then, initiate it using:
+ *
+ * Then, initiate the BARlib class, calling methods as usual:
  *     lib = new BARlib();
  *     lib.confirmLoading();
  */
-
 
 BARlib() {
 public class BARlib {
@@ -35,7 +36,10 @@ public class BARlib {
 
 
 	///////////  CALCULATIONS  ///////////
-	/** Smooths 1D data according to the specified window */
+	/**
+	 * Smooths 1D data according to the specified window. Returns the original
+	 * data if window is not a positive integrer.
+	 */
 	double[] getSimpleMovingAverage(double[] values, int window) {
 		if (window<1) return values;
 		svalues = new double[values.length];
@@ -51,11 +55,10 @@ public class BARlib {
 
 	/** Returns the greatest common divisor between 2 numbers */
 	int gcd(a, b) {
-		if (b==0) return a;
-		return gcd(b, a%b);
+		return (b==0) ? a : gcd(b, a%b)
 	}
 
-	/** Returns the greatest common divisor between 2 numbers */
+	/** Returns the greatest common divisor between 2 numbers using Commons Math */
 	int gcdCommons(a, b) {
 		import org.apache.commons.math3.util.ArithmeticUtils;
 		return ArithmeticUtils.gcd(a,b);
