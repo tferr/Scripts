@@ -82,14 +82,19 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	}
 
 	/* Returns a header common to all file types */
-	private static StringBuilder commonHeader(final int type) {
+	private static StringBuilder commonHeader(final StringBuilder sb, final int type) {
 		final Date date = new Date();
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-		final StringBuilder sb = new StringBuilder();
 		sb.append(C_CHARS[type]).append(" File created on ")
-				.append(sdf.format(date)).append(", IJ1 ")
+				.append(sdf.format(date)).append(", IJ ")
 				.append(IJ.getFullVersion()).append("\n\n");
 		return sb;
+	}
+
+	/* Returns a header common to all file types */
+	private static StringBuilder commonHeader(final int type) {
+		final StringBuilder sb = new StringBuilder();
+		return commonHeader(sb, type);
 	}
 
 	/* Returns a file header for a language not featured in BAR */
@@ -166,8 +171,19 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/** Returns header for a RB snippet (Ruby) */
 	public static String rbHeader() {
-		final StringBuilder sb = commonHeader(RB);
-		return unsupportedHeader(sb, RB).toString();
+		StringBuilder sb = new StringBuilder();
+		//sb.append("# @AppService appService\n");
+		//sb.append("require_relative \"#{$appService.getApp.getBaseDirectory}/plugins/JRuby/imagej.rb\"\n");
+		//sb.append("\n");
+		sb = commonHeader(sb, RB);
+		sb.append("# Load BARlib.rb\n");
+		sb.append("java_import \"bar.Utils\"\n");
+		sb.append("require \"#{Utils.getLibDir}\" + \"BARlib.rb\"\n");
+		sb.append("\n");
+		sb.append("# Initiate BARlib and confirm its availability\n");
+		sb.append("lib = BARlib.new()\n");
+		sb.append("lib.confirmLoading\n");
+		return sb.toString();
 	}
 
 	/** Returns header for a NN snippet (No language) */
