@@ -24,6 +24,18 @@ lib = new BARlib();
 lib.confirmLoading();
 ```
 
+##[CLJ lib](./BARlib.clj)
+Clojure library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+
+```clojure
+;; Load BARlib.clj
+(load-file (str (bar.Utils/getLibDir) "BARlib.clj"))
+
+;; Confirm BARlib availability
+(confirmLoading)
+```
+
 ##[GVY lib](./BARlib.groovy)
 Groovy library.
 Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
