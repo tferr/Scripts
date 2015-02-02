@@ -17,7 +17,7 @@
   "Acknowledges accessibility to this file"
   (ij.IJ/showMessage "BAR lib successfully loaded!"))
 
-(defn getCliboardText []
+(defn getClipboardText []
   "Returns text from the system clipboard or an empty string if no text was found"
   (bar.Utils/getClipboardText))
 

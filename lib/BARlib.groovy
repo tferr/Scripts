@@ -23,7 +23,7 @@ class BARlib {
 	}
 
 	/** Returns text from the system clipboard or an empty string if no text was found */
-	def getCliboardText() {
+	def getClipboardText() {
 		bar.Utils.getClipboardText()
 	}
 

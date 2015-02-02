@@ -23,7 +23,7 @@ function confirmLoading() {
 }
 
 /** Returns text from the system clipboard or an empty string if no text was found */
-function getCliboardText() {
+function getClipboardText() {
 	return String.paste; //IJM already has a built-in function for this task
 }
 
