@@ -1,0 +1,30 @@
+// Test_BeanShell.bsh
+// IJ BAR: https://github.com/tferr/Scripts#scripts
+//
+// Tests correct loading of BARlib
+
+
+addClassPath(bar.Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+
+
+test(returnValue) {
+	import java.util.Arrays;
+	if (returnValue.getClass().isArray())
+		returnValue = Arrays.toString(returnValue);
+	print("Test " + (super.counter++) +": "+ returnValue.toString());
+}
+
+
+lib = new BARlib();
+counter = 1;
+
+
+test("assumed"); //test(eval("lib.confirmLoading()!=null"));
+test(eval("lib.getClipboardText()!=null"));
+test(lib.randomString());
+test(lib.getSimpleMovingAverage(new double[] {1.0,2.0,3.0,4.0},2));
+test(lib.gcd(4,2));
+test(lib.gcdCommons(4,2));
+test(lib.sphereCalc(10));
