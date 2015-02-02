@@ -130,7 +130,12 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	/** Returns header for a CLJ snippet (Clojure) */
 	public static String cljHeader() {
 		final StringBuilder sb = commonHeader(CLJ);
-		return unsupportedHeader(sb, CLJ).toString();
+		sb.append(";; Load BARlib.clj\n");
+		sb.append("(load-file (str (bar.Utils/getLibDir) \"BARlib.clj\"))\n");
+		sb.append("\n");
+		sb.append(";; Confirm BARlib availability\n");
+		sb.append("(confirmLoading)\n");
+		return sb.toString();
 	}
 
 	/** Returns header for a GRV snippet (Groovy) */

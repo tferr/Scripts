@@ -1,0 +1,4 @@
+/* Open_CLJ_lib.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ */
+bar.Utils.openLib("BARlib.clj");
