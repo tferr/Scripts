@@ -60,7 +60,7 @@ class BARlib
 	# Returns surface area and volume of a sphere of radius r
 	def sphereCalc(r)
 		sph_area = 4 * Math::PI * r**2
-		sph_vol = 4/3 * Math::PI * r**3
+		sph_vol = 4/3.0 * Math::PI * r**3
 		[sph_area, sph_vol]
 	end
 end

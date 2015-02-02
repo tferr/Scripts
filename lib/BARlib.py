@@ -56,6 +56,6 @@ def gcdCommons(a, b):
 def sphereCalc(r):
     """Returns surface area and volume of a sphere of radius r"""
     import math
-    sph_area = 4*math.pi*(r**2)
-    sph_vol = 4/3*math.pi*(r**3)
+    sph_area = 4 * math.pi * r**2
+    sph_vol = 4/3.0 * math.pi * r**3
     return (sph_area, sph_vol)

@@ -68,7 +68,7 @@ public class BARlib {
 	double[] sphereCalc(r) {
 		import java.Math;
 		sph_area = 4 * Math.PI * (r*r);
-		sph_vol = 4/3 * Math.PI * (r*r*r);
+		sph_vol = 4/3.0 * Math.PI * (r*r*r);
 		return new double[]{sph_area, sph_vol};
 	}
 
