@@ -36,14 +36,20 @@ class BARlib
 
 	##### CALCULATIONS #####
 	# Smooths 1D data according to the specified window. Returns the original data
-	# if window is not a positive integrer. http://stackoverflow.com/a/27895529
-	# explains the rationale for this implementation
+	# if window is not a positive integer
 	def getSimpleMovingAverage(values, window)
-		if (window>0) && (window.kind_of? Integer)
-			values.each_cons(window).map { |v| (v.reduce(&:+).to_f/window) }
-		else
-			values
+		if (window<1) || (!window.is_a? Integer)
+			return values
 		end
+		svalues = Array.new(values.length)
+		for i in 0..values.length-1
+			svalues[i] = 0; n = 0
+			for j in [0, i-window].max..[values.length, i+window].min-1
+				svalues[i] += values[j]; n += 1
+			end
+			svalues[i] /= n
+		end
+		return svalues
 	end
 
 	# Returns the greatest common divisor between 2 numbers

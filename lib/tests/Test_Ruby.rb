@@ -8,7 +8,7 @@ java_import "bar.Utils"
 require "#{Utils.getLibDir}" + "BARlib.rb"
 
 def test(function)
-    print("Test #{$counter} #{function}\n")
+    print("Test #{$counter}: #{function}\n")
     $counter += 1
 end
 
