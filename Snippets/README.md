@@ -12,6 +12,8 @@ by BAR users. They are installed under `BAR>Snippets>`, a menu containing severa
    scripting additions stored in the [lib](../lib/README.md#lib) directory.
    ([Source code](../BAR/src/main/java/bar/plugin/SnippetCreator.java))
 
+   [![SnippetCreator](http://fiji.sc/_images/d/de/SnippetCreator.png)](http://fiji.sc/BAR#Snippets)
+
 
 ##List of Snippets
 ####[Median Filter](./Median_Filter.py)

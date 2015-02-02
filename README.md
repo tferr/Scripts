@@ -88,8 +88,12 @@ For more details refer to the [BAR documentation page][Fiji].
   functions that can be conveniently shared across files.
 
   1. [BeanShell library](./lib/README.md#bsh-lib)
-  2. [IJ Macro library](./lib/README.md#ijm-lib)
-  3. [Python library](./lib/README.md#py-lib)
+  2. [Groovy library](./lib/README.md#gvy-lib)
+  3. [IJ Macro library](./lib/README.md#ijm-lib)
+  4. [JavaScript library](./lib/README.md#js-lib)
+  5. [Python library](./lib/README.md#py-lib)
+  6. [Ruby library](./lib/README.md#rb-lib)
+
 
 
 ## Help?

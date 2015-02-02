@@ -87,7 +87,16 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		sb.append(C_CHARS[type]).append(" File created on ")
 				.append(sdf.format(date)).append(", IJ ")
-				.append(IJ.getFullVersion()).append("\n\n");
+				.append(IJ.getFullVersion()).append("\n");
+		switch (type) {
+		case NN:
+		case IJM:
+			break;
+		default:
+			sb.append(C_CHARS[type])
+				.append(" See http://javadoc.imagej.net for IJ documentation \n\n");
+			break;
+		}
 		return sb;
 	}
 

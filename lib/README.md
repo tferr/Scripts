@@ -10,23 +10,38 @@ scripting additions.
 
 
 ##[BSH lib](./BARlib.bsh)
-Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
+BeanShell library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
 
 ```java
-import bar.Utils;
-
-/* Add BAR/lib to classpath. Load BARlib.bsh */
+// Add BAR/lib to classpath and load BARlib.bsh
 addClassPath(bar.Utils.getBARDir());
 importCommands("lib/");
 BARlib();
-lib = new BARlib();
 
-// Confirm availability of BARlib
+// Initiate BARlib and confirm its availability
+lib = new BARlib();
 lib.confirmLoading();
 ```
 
+##[GVY lib](./BARlib.groovy)
+Groovy library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+
+```groovy
+// Parse and load BARlib.groovy
+import bar.Utils
+file = new File(Utils.getLibDir() + "BARlib.groovy")
+BARlib = new GroovyClassLoader(getClass().getClassLoader()).parseClass(file)
+
+// Initiate BARlib and confirm its availability
+lib = BARlib.newInstance()
+lib.confirmLoading()
+```
+
 ##[IJM lib](./BARlib.ijm)
-Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
+ImageJ Macro library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
 
 ```java
 // Load BARlib.ijm. NB: functions may only be available once
@@ -40,16 +55,46 @@ call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
 confirmLoading();
 ```
 
+##[JS lib](./BARlib.js)
+JavaScript library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+
+```javascript
+// Load BARlib.js
+importClass(Packages.bar.Utils);
+load(Utils.getLibDir() +"BARlib.js");
+
+// Initiate BARlib and confirm its availability
+lib = new BARlib();
+lib.confirmLoading();
+```
+
 ##[PY lib](./BARlib.py)
-Loading instructions, taken from [`Snippets> New Snippet...`](../Snippets/README.md#snippets):
+Python (Jython) library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
 
 ```python
+# Load BARlib.py
 import sys, bar
 sys.path.append(bar.Utils.getLibDir())
 import BARlib as lib
 
-# Confirm availability of BARlib.py
+# Confirm availability of BARlib
 lib.confirmLoading()
+```
+
+##[RB lib](./BARlib.rb)
+Ruby (JRuby) library.
+Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+
+```ruby
+# Load BARlib.rb
+java_import "bar.Utils"
+require "#{Utils.getLibDir}" + "BARlib.rb"
+
+# Initiate BARlib and confirm its availability
+lib = BARlib.new()
+lib.confirmLoading
 ```
 
 
