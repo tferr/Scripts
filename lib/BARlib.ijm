@@ -2,7 +2,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
- * placed in BAR/lib. This file hosts functions to be used across all your macros.
+ * placed in BAR/lib. This file can host functions to be used across your macros.
  * To load these scripting additions, append the following to your macro files:
  *
  *     libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
