@@ -88,7 +88,7 @@ For more details refer to the [BAR documentation page][Fiji].
   functions that can be conveniently shared across files.
 
   1. [BeanShell library](./lib/README.md#bsh-lib)
-  2. [Clojure library](./lib/README.md#gvy-lib)
+  2. [Clojure library](./lib/README.md#clj-lib)
   3. [Groovy library](./lib/README.md#gvy-lib)
   4. [IJ Macro library](./lib/README.md#ijm-lib)
   5. [JavaScript library](./lib/README.md#js-lib)

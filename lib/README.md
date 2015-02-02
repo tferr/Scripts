@@ -111,6 +111,7 @@ lib.confirmLoading
 
 
 ##Notes
+* [lib Tests](./tests/) can be used to debug libraries
 * Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. You will
   notice that, `BAR>lib>` lists some "Opening" commands instead. These are just one line-scrips that
   call [bar.Utils](../BAR/src/main/java/bar/Utils.java) to open unregistered files.
