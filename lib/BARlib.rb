@@ -22,7 +22,7 @@ class BARlib
 	end
 
 	# Returns text from the system clipboard or an empty string if no text was found
-	def self.getClipboardText
+	def getClipboardText
 		java_import "bar.Utils"
 		Utils.getClipboardText
 	end
@@ -59,8 +59,8 @@ class BARlib
 
 	# Returns surface area and volume of a sphere of radius r
 	def sphereCalc(r)
-		sph_area = 4.0 * Math::PI * (r*r);
-		sph_vol = 4.0/3.0 * Math::PI * (r*r*r);
+		sph_area = 4 * Math::PI * r**2
+		sph_vol = 4/3 * Math::PI * r**3
 		[sph_area, sph_vol]
 	end
 end

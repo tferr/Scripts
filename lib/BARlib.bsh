@@ -24,7 +24,7 @@ public class BARlib {
 	}
 
 	/** Returns text from the system clipboard or an empty string if no text was found */
-	String getCliboardText() {
+	String getClipboardText() {
 		return bar.Utils.getClipboardText();
 	}
 
@@ -67,8 +67,8 @@ public class BARlib {
 	/** Returns surface area and volume of a sphere of radius r */
 	double[] sphereCalc(r) {
 		import java.Math;
-		sph_area = 4.0 * Math.PI * (r*r);
-		sph_vol = 4.0/3.0 * Math.PI * (r*r*r);
+		sph_area = 4 * Math.PI * (r*r);
+		sph_vol = 4/3 * Math.PI * (r*r*r);
 		return new double[]{sph_area, sph_vol};
 	}
 
