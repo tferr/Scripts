@@ -238,7 +238,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			setPath(newDir);
 			matchingString = "";
 			prompt.setText("");
-			updateStatus(path);
 			updateList();
 			list.setSelectedIndex(0);
 			list.requestFocus();
@@ -383,6 +382,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		final Thread t1 = new Thread(new Runnable() {
 			public void run() {
 				setList();
+				updateStatus(path);
 				list.setListData(filenames);
 			}
 		});
