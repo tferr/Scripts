@@ -269,7 +269,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			selectSubDirectory(filename);
 			return;
 		} else if (isOpenable(filename)) {
-			if (scriptFile(filename)) {
+			if (isScript(filename)) {
 				if (ijmLegacy && filename.toLowerCase().endsWith("ijm"))
 					Utils.openIJ1Script(path, filename);
 				else
@@ -292,7 +292,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 	*/
 
-	boolean scriptFile(final String file) {
+	boolean isScript(final String file) {
 		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm",
 				".js", ".py", ".rb", ".java" };
 		for (final String ext : EXTS)
