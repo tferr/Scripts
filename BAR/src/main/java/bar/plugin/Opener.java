@@ -34,6 +34,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -59,8 +60,9 @@ import bar.Utils;
  * [3] https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java
  *
  */
-public class Opener implements PlugIn, ActionListener, DocumentListener,
-KeyListener, ListSelectionListener, MouseListener, WindowListener {
+public class Opener implements PlugIn, FileFilter, ActionListener,
+		DocumentListener, KeyListener, ListSelectionListener, MouseListener,
+		WindowListener {
 
 	/* Defaults for "Reset" option */
 	private static final String DEF_PATH = Utils.getBARDir();
@@ -312,20 +314,18 @@ KeyListener, ListSelectionListener, MouseListener, WindowListener {
 		filenames.removeAllElements();
 		final File dir = new File(path);
 		final int rootIdx = path.length();
-		for (final File f : dir.listFiles()) {
+		for (final File f : dir.listFiles(this)) {
 			if (filenames.size() >= maxSize) {
 				truncatedList = true;
 				break;
 			}
-			if (!f.isHidden()) {
-				String name = f.getAbsolutePath().substring(rootIdx);
-				if (f.isDirectory())
-					name += File.separator;
-				if (name.length() == 0)
-					continue;
-				else if (name.toLowerCase().indexOf(matchingString) >= 0)
-					filenames.add(name);
-			}
+			String name = f.getAbsolutePath().substring(rootIdx);
+			if (f.isDirectory())
+				name += File.separator;
+			if (name.length() == 0)
+				continue;
+			else if (name.toLowerCase().indexOf(matchingString) >= 0)
+				filenames.add(name);
 		}
 		// Collections.sort(filenames);
 		filenames.add("..");
@@ -388,6 +388,14 @@ KeyListener, ListSelectionListener, MouseListener, WindowListener {
 			status.setText(msg);
 			status.setToolTipText("Double-click to change directory");
 		}
+	}
+
+	/* FileFilter Methods */
+	@Override
+	public boolean accept(final File file) {
+		return !file.isHidden()
+				&& (file.getAbsolutePath().toLowerCase()
+						.indexOf(matchingString) >= 0);
 	}
 
 
