@@ -467,14 +467,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		final int key = ke.getKeyCode();
 		final Object source = ke.getSource();
 
-		if (ke.isMetaDown() && key == KeyEvent.VK_W)
+		if ((ke.isMetaDown() && key == KeyEvent.VK_W)
+				|| key == KeyEvent.VK_ESCAPE) {
 			dialog.dispose();
 
-		if (source == prompt) {
-			if (key == KeyEvent.VK_ESCAPE) {
-				matchingString = "";
-				prompt.setText("");
-			} else if (key == KeyEvent.VK_DOWN
+		} else if (source == prompt) {
+
+			if (key == KeyEvent.VK_DOWN
 					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
 				list.setSelectedIndex(0);
 				list.requestFocus();
@@ -482,34 +481,45 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				list.setSelectedIndex(0);
 				openItem(selectedItem);
 			}
-		}
 
-		if (source == list) {
-			//if (key == KeyEvent.VK_ESCAPE) { dialog.dispose(); }
+		} else if (source == list) {
+
 			if (key == KeyEvent.VK_LEFT) {
+
 				selectParentDirectory(path);
+
 			} else if (key == KeyEvent.VK_RIGHT) {
-				if (isFolder(selectedItem)) {
+
+				if (isFolder(selectedItem))
 					selectSubDirectory(selectedItem);
-				}
+
 			} else if (key == KeyEvent.VK_ENTER) {
+
 				openItem(selectedItem);
+
 			} else if (key == KeyEvent.VK_BACK_SPACE
 					|| (key == KeyEvent.VK_TAB) && ke.isAltDown()) {
+
 				prompt.requestFocus();
+
 			} else if (key == KeyEvent.VK_UP) {
+
 				if (ke.isAltDown())
 					prompt.requestFocus();
 				else if (list.getSelectedIndex() == 0) {
 					list.setSelectedIndex(filenames.size() - 1);
 					list.requestFocus();
 				}
+
 			} else if (key == KeyEvent.VK_DOWN) {
+
 				if (list.getSelectedIndex() == filenames.size() - 1) {
 					list.setSelectedIndex(0);
 					list.requestFocus();
 				}
+
 			}
+
 		}
 
 	}
