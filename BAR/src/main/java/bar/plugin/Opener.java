@@ -172,9 +172,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		// Display dialog
 		dialog.pack();
 		dialog.setResizable(false);
-		//dialog.setAlwaysOnTop(true);
 		dialog.setVisible(true);
-		dialog.toFront();
 		prompt.requestFocus();
 
 	}
