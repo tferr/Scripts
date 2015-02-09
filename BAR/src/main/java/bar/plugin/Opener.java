@@ -18,6 +18,7 @@ import ij.plugin.PlugIn;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Menu;
@@ -338,13 +339,19 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void showOptionsDialog() {
-		final GenericDialog gd = new GenericDialog("Settings");
-		gd.addNumericField("Maximum number of items in list", maxSize, 0);
+		final GenericDialog gd = new GenericDialog("Opener Settings");
+		final Font boldf = new Font("SansSerif", Font.BOLD, 12);
+		gd.setInsets(0, 0, 0);
+		gd.addMessage("Options:", boldf);
+		gd.setInsets(0,20,0);
 		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
 		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
+		gd.addNumericField("Maximum number of items in list", maxSize, 0);
+		gd.setInsets(20, 0, 0);
+		gd.addMessage("Resets:", boldf);
 		gd.addCheckbox("Reset path to BAR directory", false);
-		gd.addCheckbox("Reset bookmarks", false);
-		gd.enableYesNoCancel("OK", "Restore Defaults");
+		gd.addCheckbox("Clear bookmarks", false);
+		gd.enableYesNoCancel("OK", "Restore Default Options");
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return;
@@ -352,10 +359,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			maxSize = (int) Math.max(1, gd.getNextNumber());
 			ijmLegacy = gd.getNextBoolean();
 			closeOnOpen = gd.getNextBoolean();
-			if (gd.getNextBoolean()) {
-				path = DEF_PATH;
-				updateList();
-			}
+			if (gd.getNextBoolean()) path = DEF_PATH;
 			if (gd.getNextBoolean()) clearBookmarks();
 
 		} else {
@@ -364,6 +368,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			closeOnOpen = DEF_CLOSE_ON_OPEN;
 			showOptionsDialog();
 		}
+		updateList();
 	}
 
 	void updateList() {
