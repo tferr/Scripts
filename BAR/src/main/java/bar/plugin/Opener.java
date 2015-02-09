@@ -92,6 +92,14 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 
 	public void run(final String arg) {
+		new Thread() {
+			public void run() {
+				runInteractively();
+			}
+		}.start();
+	}
+
+	public void runInteractively() {
 
 		// Populate file list and initialize bookmarks
 		filenames = new Vector<String>();
@@ -258,6 +266,15 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return path != null && path.endsWith(File.separator);
 	}
 
+	void openItemInNewThread(final String filename) {
+		new Thread() {
+			public void run() {
+				openItem(filename);
+			}
+		}.start();
+		IJ.showStatus(IJ.freeMemory());
+	}
+
 	void openItem(final String filename) {
 		if (filename.equals("..")) {
 			selectParentDirectory(path);
@@ -421,7 +438,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			final Rectangle r = optionsButton.getBounds();
 			optionsMenu.show(optionsButton, r.x, r.y);
 		} else if (b == openButton) {
-			openItem(selectedItem);
+			openItemInNewThread(selectedItem);
 		} else if (b == closeButton) {
 			dialog.dispose();
 		} else { // An item from optionsMenu has been selected
@@ -485,7 +502,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				list.requestFocus();
 			} else if (key == KeyEvent.VK_ENTER && filenames.size() <= 2) {
 				list.setSelectedIndex(0);
-				openItem(selectedItem);
+				openItemInNewThread(selectedItem);
 			}
 
 		} else if (source == list) {
@@ -542,7 +559,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	public void mouseClicked(final MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			if (e.getSource() == list)
-				openItem(selectedItem);
+				openItemInNewThread(selectedItem);
 			else if (e.getSource() == status) {
 				if (truncatedList)
 					showOptionsDialog();
