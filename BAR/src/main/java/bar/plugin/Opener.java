@@ -194,6 +194,36 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	void cdToDirectory(final String defaultpath) {
+		try {
+			Class.forName("fiji.util.gui.GenericDialogPlus");
+			final GenericDialogPlus gd = new GenericDialogPlus("Change directory");
+			gd.addDirectoryField("cd to..", defaultpath, 50);
+			gd.setOKLabel("    Set Path    ");
+			gd.addDialogListener(new DialogListener() {
+				@Override
+				public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
+					final TextField tf = (TextField) gd.getStringFields().elementAt(0);
+					final Button[] buttons = gd.getButtons();
+					if (new File(gd.getNextString()).exists()) {
+						tf.setForeground(Color.BLACK);
+						buttons[0].setLabel("    Set Path    ");
+						return true;
+					} else {
+						tf.setForeground(Color.RED);
+						buttons[0].setLabel("Invalid Path");
+						return false;
+					}
+				}
+			});
+			gd.showDialog();
+			if (!gd.wasCanceled())
+				setPath(gd.getNextString());
+		} catch (final ClassNotFoundException e) {
+			IJ.error("Dependencies Missing", "Error: This command requires fiji-lib.");
+		}
+	}
+
 	void clearBookmarks() {
 		optionsMenu.remove(optionsMenu.getItemCount() - 1);
 		bookmarks.clear();
