@@ -609,22 +609,23 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		gd.addCheckbox("Clear bookmarks", false);
 		gd.enableYesNoCancel("OK", "Restore Default Options");
 		gd.showDialog();
-		if (gd.wasCanceled())
+		if (gd.wasCanceled()) {
+			dialog.toFront();
 			return;
-		else if (gd.wasOKed()) {
+		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
 			ijmLegacy = gd.getNextBoolean();
 			closeOnOpen = gd.getNextBoolean();
 			if (gd.getNextBoolean()) path = DEF_PATH;
 			if (gd.getNextBoolean()) clearBookmarks();
-
+			dialog.toFront();
+			resetFileList();
 		} else {
 			maxSize = DEF_MAX_SIZE;
 			ijmLegacy = DEF_IJM_LEGACY;
 			closeOnOpen = DEF_CLOSE_ON_OPEN;
 			showOptionsDialog();
 		}
-		updateList();
 	}
 
 	void updateList() {
