@@ -80,6 +80,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private boolean ijmLegacy = DEF_IJM_LEGACY;
 	private String matchingString = "";
 	private boolean truncatedList = false;
+	private boolean updatingList = false;
 
 	private Dialog dialog;
 	private JTextField prompt;
@@ -773,13 +774,11 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	/* ListSelectionListener Methods */
 	@Override
 	public void valueChanged(final ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting()) {
-			final int selectedIdx = list.getSelectedIndex();
-			selectedItem = filenames.elementAt(selectedIdx);
-			openButton.setEnabled(isOpenable(selectedItem));
-		}
+		if (e.getValueIsAdjusting() || updatingList)
+			return;
+		setSelectedItem(list.getSelectedIndex());
+		openButton.setEnabled(isOpenable(selectedItem));
 	}
-
 
 	/* KeyListener Methods */
 	public void keyPressed(final KeyEvent ke) {
