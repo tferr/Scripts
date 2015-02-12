@@ -11,6 +11,7 @@
 
 package bar.plugin;
 
+import fiji.Debug;
 import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
@@ -89,6 +90,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private Vector<String> filenames;
 	private String selectedItem;
 	ArrayList<String> bookmarks;
+
+
+	public static void main(final String[] args) { Debug.run("BAR Opener",""); }
 
 
 	public void run(final String arg) {
