@@ -254,17 +254,22 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		mi = new MenuItem("Reveal Path");
 		mi.addActionListener(this);
 		popup.add(mi);
-		mi = new MenuItem("Print List");
-		mi.addActionListener(this);
-		popup.add(mi);
-		popup.addSeparator();
-
 		mi = new MenuItem("Go To...");
 		mi.addActionListener(this);
 		popup.add(mi);
 		popup.addSeparator();
+		mi = new MenuItem("Refresh File List");
+		mi.addActionListener(this);
+		popup.add(mi);
+		mi = new MenuItem("Print Current List");
+		mi.addActionListener(this);
+		popup.add(mi);
+		popup.addSeparator();
 
-		mi = new MenuItem("Settings...");
+		mi = new MenuItem("Enter Console Mode");
+		mi.addActionListener(this);
+		popup.add(mi);
+		mi = new MenuItem("Options...");
 		mi.addActionListener(this);
 		popup.add(mi);
 		popup.addSeparator();
