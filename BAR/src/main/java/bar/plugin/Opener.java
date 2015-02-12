@@ -71,6 +71,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private static final int DEF_MAX_SIZE = 200;
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
+	private static final String PROMPT_PLACEHOLDER = "Search or press <!> for console";
 
 	/* Parameters */
 	private String path = DEF_PATH;
@@ -120,14 +121,17 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		c.gridy = c.gridx = 0;
 
 		// Add prompt
-		prompt = new JTextField("", 20);
-		prompt.setToolTipText("<html>Search Field Shortcuts:<br>"
-				+ "&nbsp;&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&nbsp;&emsp;&darr;&emsp; Move to list<br>"
-				+ "&emsp;Esc&nbsp; Clear search field</html>");
+		prompt = new JTextField(PROMPT_PLACEHOLDER, 20);
+		prompt.selectAll();
+		prompt.setToolTipText("<html>Search shortcuts:<br>"
+				+ "&emsp;! &emsp; Console mode<br>"
+				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
+				+ "&emsp;&darr;&emsp; Move to list</html>");
+		prompt.setFont(prompt.getFont().deriveFont(
+				prompt.getFont().getSize() + 2f));
+		prompt.getDocument().addDocumentListener(this);
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
-		prompt.getDocument().addDocumentListener(this);
 		c.gridy++; c.gridx = 0;
 		dialog.add(prompt, c);
 
