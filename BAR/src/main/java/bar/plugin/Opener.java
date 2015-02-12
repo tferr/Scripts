@@ -98,7 +98,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	public void run(final String arg) {
 		new Thread() {
 			public void run() {
-				runInteractively();
+				if (Utils.fileExists(path))
+					runInteractively();
 			}
 		}.start();
 	}
