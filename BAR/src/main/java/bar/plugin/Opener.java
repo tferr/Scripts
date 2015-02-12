@@ -579,12 +579,19 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 		// Collections.sort(filenames);
 		filenames.add("..");
+
+	void setMatchingString(final String newMatchingString) {
+		this.matchingString = newMatchingString.toLowerCase(Locale.US);
 	}
 
 	void setPath(String newPath) {
 		if (!newPath.endsWith(File.separator))
 			newPath += File.separator;
 		path = newPath;
+	}
+
+	void setSelectedItem(int index) {
+		selectedItem = filenames.elementAt(Math.max(0, index));
 	}
 
 	void showOptionsDialog() {
