@@ -289,7 +289,112 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		status.setText(" "+ msg);
 	}
 
+	void interpretCommand(final String cmd) {
+		if (cmd.isEmpty()) // just a spacer in command list
+			return;
+
+		final String result = execCommand(cmd);
+
+		if (result == null) { // The path encoded by cmd was not found
+			if (cmd.startsWith("image")) {
+				error("Image directory unknown");
+				IJ.error("Unknown path", "Could not determine path of active image.");
+			} else if (cmd.startsWith("current")) {
+				error("Working directory unknown");
+				IJ.error("Unknown path", "Working directory is set upon a valid I/O operation.");
+			} else if (!cmd.startsWith("new")) {
+				error("Directory not found");
+				IJ.error("Error", "The requested directory could not be found.");
+			}
+			resetCommandList();
+			return;
 		}
+
+		if (result.equals(String.valueOf(0))) { // Successful execution of a void command
+			resetFileList();
+			return;
+		}
+
+		if (result.isEmpty()) {  // Directory was already changed by a cmd-encoded path
+			return;
+		}
+
+		changeDirectory(result);
+
+	}
+
+	String execCommand(final String cmd) {
+
+		// Commands that do not change directories
+		String exitStatus = String.valueOf(0);
+		if (cmd.equals("options")) {
+			showOptionsDialog();
+			return exitStatus;
+		} else if (cmd.startsWith("ls")) {
+			printList();
+			return exitStatus;
+		} else if (cmd.startsWith("refresh")) {
+			resetFileList();
+			return exitStatus;
+		} else if (cmd.startsWith("reveal")) {
+			Utils.revealFile(path);
+			return exitStatus;
+		} else if (cmd.startsWith("close")) {
+			dialog.dispose();
+			return exitStatus;
+		} else if (cmd.equals("help") || cmd.equals("?")) {
+			showHelp();
+			return exitStatus;
+		}
+
+		// Commands that change directories directly
+		exitStatus = "";
+		if (cmd.equals("..")) {
+			selectParentDirectory(path);
+			return exitStatus;
+		} else if (cmd.equals("cd")) {
+			cdToDirectory(path);
+			return exitStatus;
+		}
+
+		// Commands that retrieve paths
+		exitStatus = null;
+		if (cmd.equals("new")) {
+			exitStatus = IJ.getDirectory("Choose new directory");
+		} else if (cmd.startsWith("home")) {
+			exitStatus = IJ.getDirectory("home");
+		} else if (cmd.startsWith("image")) {
+			exitStatus = IJ.getDirectory("image");
+		} else if (cmd.equals("luts")) {
+			exitStatus = IJ.getDirectory(cmd);
+		} else if (cmd.equals("macros")) {
+			exitStatus = IJ.getDirectory(cmd);
+		} else if (cmd.equals("plugins")) {
+			exitStatus = IJ.getDirectory(cmd);
+		} else if (cmd.startsWith("current")) {
+			exitStatus = OpenDialog.getDefaultDirectory();
+		} else if (cmd.equals("ij")) {
+			exitStatus = IJ.getDirectory("imagej");
+		} else if (cmd.startsWith("temp")) {
+			exitStatus = IJ.getDirectory("temp");
+		} else if (cmd.equals("snip")) {
+			exitStatus = Utils.getSnippetsDir();
+		} else if (cmd.equals("lib")) {
+			exitStatus = Utils.getLibDir();
+		} else if (cmd.equals("bar")) {
+			exitStatus = Utils.getBARDir();
+		} else if (cmd.equals("samples")) {
+			exitStatus = IJ.getDirectory("imagej") + cmd;
+		} else if (cmd.equals("scripts")) {
+			exitStatus = IJ.getDirectory("imagej") + cmd;
+		} else if (cmd.equals("tools/")) {
+			exitStatus = IJ.getDirectory("macros") + "tools";
+		} else if (cmd.equals("toolsets")) {
+			exitStatus = IJ.getDirectory("macros") + cmd;
+		}
+		return exitStatus;
+
+	}
 
 	void resetCommandList() {
 		setMatchingString("!");
