@@ -157,7 +157,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		list = new JList(filenames);
 		list.setVisibleRowCount(16);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setToolTipText("<html>File List Shortcuts:<br>"
+		list.setToolTipText("<html>Navigation shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
 				+ "&emsp;&crarr;&emsp; Open item<br>"
 				+ "&emsp;&larr;&emsp; Parent directory<br>"
@@ -173,7 +173,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		// Add status label
 		status = new JLabel();
 		status.addMouseListener(this);
-		status.setForeground(Color.DARK_GRAY);
 		updateStatus(path);
 		c.gridy++; c.gridx = 0;
 		dialog.add(status, c);
@@ -370,7 +369,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		} else if (cmd.startsWith("close")) {
 			dialog.dispose();
 			return exitStatus;
-		} else if (cmd.equals("help") || cmd.equals("?")) {
+		} else if (cmd.startsWith("help")) {
 			showHelp();
 			return exitStatus;
 		}
@@ -618,7 +617,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		path = newPath;
 	}
 
-	void setSelectedItem(int index) {
+	void setSelectedItem(final int index) {
 		selectedItem = filenames.elementAt(Math.max(0, index));
 	}
 
@@ -721,7 +720,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 					|| label.equals("Refresh File List")) {
 				item.setEnabled(!consoleMode());
 			} else if (label.contains("Console")) {
-				String cLabel = (consoleMode()) ? "Exit Console Mode"
+				final String cLabel = (consoleMode()) ? "Exit Console Mode"
 						: "Enter Console Mode";
 				item.setLabel(cLabel);
 			}
