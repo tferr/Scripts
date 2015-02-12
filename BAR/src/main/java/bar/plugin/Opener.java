@@ -609,14 +609,14 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void updateList() {
-		final Thread t1 = new Thread(new Runnable() {
-			public void run() {
-				setList();
-				updateStatus(path);
-				list.setListData(filenames);
-			}
-		});
-		t1.start();
+		if (consoleMode())
+			setCommandList();
+		else
+			setFileList();
+		updatingList = true;
+		list.setListData(filenames);
+		updatingList = false;
+		updateStatus(path);
 	}
 
 	void updateStatus(String msg) {
