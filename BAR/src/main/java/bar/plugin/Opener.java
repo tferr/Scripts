@@ -339,6 +339,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 		if (result.equals(String.valueOf(0))) { // Successful execution of a void command
 			resetFileList();
+			prompt.requestFocus();
 			return;
 		}
 
@@ -347,6 +348,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 
 		changeDirectory(result);
+		prompt.requestFocus();
 
 	}
 
