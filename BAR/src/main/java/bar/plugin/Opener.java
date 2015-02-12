@@ -241,6 +241,10 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		bookmarks.clear();
 	}
 
+	boolean consoleMode() {
+		return matchingString.startsWith("!");
+	}
+
 	PopupMenu createOptionsMenu() {
 		final PopupMenu popup = new PopupMenu();
 
