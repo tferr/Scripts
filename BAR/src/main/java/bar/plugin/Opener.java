@@ -278,6 +278,19 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			list.setSelectedIndex(0);
 			list.requestFocus();
 		}
+
+	void resetCommandList() {
+		setMatchingString("!");
+		prompt.setText("!");
+		prompt.selectAll();
+		updateList();
+	}
+
+	void resetFileList() {
+		setMatchingString("");
+		prompt.setText("");
+		updateList();
+		list.setSelectedIndex(0);
 	}
 
 	boolean isOpenable(String path) {
