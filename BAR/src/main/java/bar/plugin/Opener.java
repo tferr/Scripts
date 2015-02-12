@@ -623,6 +623,11 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		selectedItem = filenames.elementAt(Math.max(0, index));
 	}
 
+	private void showHelp() {
+		// TODO Auto-generated method stub
+		IJ.error("Not yet implemented");
+	}
+
 	void showOptionsDialog() {
 		final GenericDialog gd = new GenericDialog("Opener Settings");
 		final Font boldf = new Font("SansSerif", Font.BOLD, 12);
