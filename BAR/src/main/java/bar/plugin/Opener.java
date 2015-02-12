@@ -279,6 +279,16 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return menu;
 	}
 
+	void error(final String msg) {
+		status.setForeground(Color.RED);
+		status.setText(" "+ msg);
+	}
+
+	void info(final String msg) {
+		status.setForeground(Color.BLACK);
+		status.setText(" "+ msg);
+	}
+
 		}
 
 	void resetCommandList() {
