@@ -467,15 +467,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
-	/*
-	private void maintainPanelWidth(final JScrollPane pane) {
-		final int panelWidth = pane.getWidth();
-		final int panelPreferredHeight = (int) pane.getPreferredSize().getHeight();
-		final int panelMaximumHeight = (int) pane.getMaximumSize().getHeight();
-		pane.setPreferredSize(new Dimension(panelWidth, panelPreferredHeight));
-		pane.setMaximumSize(new Dimension(panelWidth, panelMaximumHeight));
-	}
-	*/
 
 	boolean isScript(final String file) {
 		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm",
