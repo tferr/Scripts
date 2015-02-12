@@ -690,11 +690,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	/* FileFilter Methods */
 	@Override
 	public boolean accept(final File file) {
-		return !file.isHidden()
-				&& (file.getAbsolutePath().toLowerCase()
-						.indexOf(matchingString) >= 0);
+		if (file.isHidden())
+			return false;
+		String name = file.getName().toLowerCase();
+		if (file.isDirectory())
+			name += File.separator;
+		return (name.indexOf(matchingString) >= 0);
 	}
-
 
 	/* ActionEvent Methods */
 	@Override
