@@ -422,11 +422,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	boolean isOpenable(String path) {
 		if (path == null)
 			return false;
-		final String[] compiledExtensions = { ".jar", ".class", ".pyc" };
-		path = path.toLowerCase();
-		for (final String ext : compiledExtensions) {
-			if (path.endsWith(ext))
-				return false;
+		if (!consoleMode()) {
+			final String[] compiledExtensions = { ".jar", ".class", ".pyc" };
+			path = path.toLowerCase();
+			for (final String ext : compiledExtensions) {
+				if (path.endsWith(ext))
+					return false;
+			}
 		}
 		return true;
 	}
