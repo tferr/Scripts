@@ -103,7 +103,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 		// Populate file list and initialize bookmarks
 		filenames = new Vector<String>();
-		setList();
+		setFileList();
 		bookmarks = new ArrayList<String>();
 
 		// Build dialog
@@ -362,7 +362,53 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		list.requestFocus();
 	}
 
-	void setList() {
+	void setCommandList() {
+		final String spacer = "<html><span style='color:white;'><b>!</b></span></html>";
+		final String cmds[] = {
+				"!..@Parent directory of current path",
+				"!cd@Change directory to...",
+				"!current, !pwd@ImageJ <i>working</i> directory",
+				"!image, !imp@Folder of active image",
+				"!home, !~@"+ System.getProperty("user.name") +"'s home directory",
+				"!new@Choose new path in file manager",
+				"!temp, !tmp@Temporary directory",
+				spacer,
+				"!ij@<i>ImageJ</i> directory",
+				"!luts@<i>Lookup Tables</i> directory",
+				"!macros@<i>Macros</i> directory",
+				"!plugins@<i>Plugins</i> directory",
+				"!samples@Cached File&gt;Open Samples&gt;",
+				"!scripts@<i>Scripts</i> directory",
+				"!tools/@Macro <i>tools</i> directory", // slash makes command unique
+				"!toolsets@Macro <i>toolsets</i> directory",
+				spacer,
+				"!bar@BAR root directory",
+				"lib@Path to <i>BAR/lib</i>",
+				"!snip@Path to <i>BAR/Snippets</i>",
+				spacer,
+				"!close !quit@Dismiss this window",
+				"!ls !print@List contents of current path",
+				"!help@Display built-in help",
+				"!options@Prompt for settings",
+				"!refresh@Refresh (reload) list"
+			};
+
+		truncatedList = false;
+		filenames.removeAllElements();
+		for (String cmd : cmds) {
+			if (cmd.indexOf(matchingString) >= 0) {
+				if (!cmd.equals(spacer)) {
+					final String[] items = cmd.split("@");
+					cmd = "<html><span style='color:blue;'>"
+							+ "<b>" + items[0] + "</b>"
+							+ "</span>&ensp;" + items[1] + "</html>";
+				}
+				filenames.add(cmd);
+			}
+		}
+	}
+
+	void setFileList() {
 		truncatedList = false;
 		filenames.removeAllElements();
 		final File dir = new File(path);
