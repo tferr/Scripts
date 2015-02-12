@@ -224,6 +224,18 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	void changeDirectory(String newDir) {
+		if (newDir.isEmpty())
+			newDir = IJ.getDirectory("Choose new Directory");
+		if (newDir == null)
+			return;
+		if (Utils.fileExists(newDir))
+			setPath(newDir);
+		else
+			error("Path unavailable. Refreshing...");
+		resetFileList();
+	}
+
 	void clearBookmarks() {
 		optionsMenu.remove(optionsMenu.getItemCount() - 1);
 		bookmarks.clear();
