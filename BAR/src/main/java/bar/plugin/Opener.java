@@ -222,8 +222,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				}
 			});
 			gd.showDialog();
-			if (!gd.wasCanceled())
-				setPath(gd.getNextString());
+			final String newPath = gd.getNextString();
+			if (!gd.wasCanceled() && !newPath.isEmpty())
+				changeDirectory(newPath);
 		} catch (final ClassNotFoundException e) {
 			IJ.error("Dependencies Missing", "Error: This command requires fiji-lib.");
 		}
