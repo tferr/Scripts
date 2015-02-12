@@ -625,17 +625,49 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		updateStatus(path);
 	}
 
-	void updateStatus(String msg) {
-		if (truncatedList) {
-			status.setText("Displaying only " + maxSize + " items...");
-			status.setToolTipText("Double-click to change list size");
-		} else {
-			final int length = msg.length();
-			final int MAX_LENGTH = (IJ.isMacOSX()) ? 30 : 25;
-			if (length > MAX_LENGTH)
-				msg = " ..." + msg.substring(length - MAX_LENGTH);
-			status.setText(msg);
-			status.setToolTipText("Double-click to change directory");
+	void updateStatus(final String dir) {
+		String tip, msg;
+		if (!dialog.isShowing()) { // First time prompt is displayed
+			msg = " Waiting for input...";
+			tip = "<html>Double-click to change directory or type <tt>!new</tt>."
+					+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
+		} else { // Interactive mode
+
+			final int hits = filenames.size();
+
+			if (hits == 0) {
+				prompt.setForeground(Color.RED);
+				status.setForeground(Color.RED);
+				msg = "No match found...";
+				tip = "<html>Reset search or type <tt>!refresh</tt>."
+						+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
+			} else { // No search (unfiltered list) or search with hits
+				if (consoleMode()) { // Default console status
+					prompt.setForeground(Color.BLUE);
+					status.setForeground(Color.BLUE);
+					msg = " Console mode enabled...";
+					tip = "<html>Double-click to exit console mode.<br>Current path:<br><pre>"
+							+ dir + "</pre></html>";
+				} else { // Default file list status
+					prompt.setForeground(Color.BLACK);
+					status.setForeground(Color.DARK_GRAY);
+					if (truncatedList) { // Some files may not be displayed
+						msg = String.valueOf(maxSize) + " items limit reached...";
+						tip = "<html>Double-click to change list size or type <tt>!options</tt>."
+								+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
+					} else {  // All files are being filtered
+						final String label = (hits == 1) ? String.valueOf(hits)
+								+ " item, " : String.valueOf(hits) + " items, ";
+						msg = label + dir;
+						tip = "<html>Double-click to change directory or type <tt>!new</tt>."
+								+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
+					}
+				}
+			}
+		}
+		status.setText(msg);
+		status.setToolTipText(tip);
+	}
 		}
 	}
 
