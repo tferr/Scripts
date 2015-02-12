@@ -668,8 +668,24 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		status.setText(msg);
 		status.setToolTipText(tip);
 	}
+
+	void validateOptionsMenu() {
+		// Toggle "Bookmark", "Reveal Path", "Print Current List", etc.
+		for (int i = 0; i < optionsMenu.getItemCount(); i++) {
+			final MenuItem item = optionsMenu.getItem(i);
+			final String label = item.getLabel();
+			if (label.equals("Bookmark") || label.equals("Reveal Path")
+					|| label.equals("Print Current List")
+					|| label.equals("Refresh File List")) {
+				item.setEnabled(!consoleMode());
+			} else if (label.contains("Console")) {
+				String cLabel = (consoleMode()) ? "Exit Console Mode"
+						: "Enter Console Mode";
+				item.setLabel(cLabel);
+			}
 		}
 	}
+
 
 	/* FileFilter Methods */
 	@Override
@@ -824,14 +840,18 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 	@Override
 	public void mousePressed(final MouseEvent e) {
-		if (e.getSource() != list && e.isPopupTrigger())
+		if (e.getSource() != list && e.isPopupTrigger()) {
+			validateOptionsMenu();
 			optionsMenu.show(optionsButton, e.getX(), e.getY());
+		}
 	}
 
 	@Override
 	public void mouseReleased(final MouseEvent e) {
-		if (e.getSource() != list && e.isPopupTrigger())
+		if (e.getSource() != list && e.isPopupTrigger()){
+			validateOptionsMenu();
 			optionsMenu.show(optionsButton, e.getX(), e.getY());
+		}
 	}
 
 	public void mouseEntered(final MouseEvent e) {
