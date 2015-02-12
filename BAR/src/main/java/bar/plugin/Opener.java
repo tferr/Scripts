@@ -509,21 +509,37 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return false;
 	}
 
-	void search() {
-		matchingString = prompt.getText().toLowerCase();
-		updateList();
+	void printList() {
+		if (consoleMode()) {
+			Utils.listDirectory(path);
+			return;
+		}
+		if (filenames.size() < 2) {
+			error("No files in current list");
+			return;
+		}
+		final TextWindow tw = new TextWindow(
+				path + " [" + matchingString + "]", "", 550, 200);
+		final TextPanel tp = tw.getTextPanel();
+		tp.setColumnHeadings("Double-click on a filename to open it");
+		int counter = 1;
+		final int padLngth = (int) (Math.log10(filenames.size()) + 1);
+		for (final String f : filenames)
+			tw.append("" + IJ.pad(counter++, padLngth) + ": " + path + f);
+		tp.updateDisplay();
+		info("" + (counter - 1) + " items listed");
 	}
 
 	void selectParentDirectory(final String currentDir) {
-		changeDirectory(new File(currentDir).getParentFile().getAbsolutePath());
-		list.setSelectedIndex(0);
-		list.requestFocus();
+		final File parent = new File(currentDir).getParentFile();
+		if (parent == null)
+			error("Parent directory unavailable");
+		else
+			changeDirectory(parent.getAbsolutePath());
 	}
 
 	void selectSubDirectory(final String subdir) {
 		changeDirectory(path + subdir);
-		list.setSelectedIndex(0);
-		list.requestFocus();
 	}
 
 	void setCommandList() {
@@ -583,15 +599,14 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				break;
 			}
 			String name = f.getAbsolutePath().substring(rootIdx);
-			if (f.isDirectory())
-				name += File.separator;
 			if (name.length() == 0)
 				continue;
-			else if (name.toLowerCase().indexOf(matchingString) >= 0)
-				filenames.add(name);
+			if (f.isDirectory())
+				name += File.separator;
+			filenames.add(name);
 		}
 		// Collections.sort(filenames);
-		filenames.add("..");
+	}
 
 	void setMatchingString(final String newMatchingString) {
 		this.matchingString = newMatchingString.toLowerCase(Locale.US);
@@ -729,14 +744,18 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		final Object b = e.getSource();
-
 		if (b == prompt) {
-			matchingString = prompt.getText().toLowerCase();
+			//setMatchingString(prompt.getText());
+			if (filenames.size() == 1) {
+				setSelectedItem(0);
+				openItem(selectedItem);
+			}
 		} else if (b == optionsButton) {
+			validateOptionsMenu();
 			final Rectangle r = optionsButton.getBounds();
 			optionsMenu.show(optionsButton, r.x, r.y);
 		} else if (b == openButton) {
-			openItemInNewThread(selectedItem);
+			openItem(selectedItem);
 		} else if (b == closeButton) {
 			dialog.dispose();
 		} else { // An entry in the optionsMenu has been selected
@@ -768,15 +787,21 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	/* DocumentListener Methods */
 	@Override
 	public void insertUpdate(final DocumentEvent ev) {
-		search();
+		setMatchingString(prompt.getText());
+		updateList();
 	}
 
 	@Override
 	public void removeUpdate(final DocumentEvent ev) {
-		search();
+		setMatchingString(prompt.getText());
+		updateList();
 	}
 
+	// Plain text should not trigger this event
+	@Override
 	public void changedUpdate(final DocumentEvent ev) {
+		setMatchingString(prompt.getText());
+		updateList();
 	}
 
 	/* ListSelectionListener Methods */
@@ -803,9 +828,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
 				list.setSelectedIndex(0);
 				list.requestFocus();
-			} else if (key == KeyEvent.VK_ENTER && filenames.size() <= 2) {
-				list.setSelectedIndex(0);
-				openItemInNewThread(selectedItem);
 			}
 
 		} else if (source == list) {
@@ -813,14 +835,17 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			if (key == KeyEvent.VK_LEFT) {
 
 				selectParentDirectory(path);
+				setSelectedItem(list.getSelectedIndex());
 
 			} else if (key == KeyEvent.VK_RIGHT) {
 
+				setSelectedItem(list.getSelectedIndex());
 				if (isFolder(selectedItem))
 					selectSubDirectory(selectedItem);
 
 			} else if (key == KeyEvent.VK_ENTER) {
 
+				setSelectedItem(list.getSelectedIndex());
 				openItem(selectedItem);
 
 			} else if (key == KeyEvent.VK_BACK_SPACE
@@ -832,17 +857,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 				if (ke.isAltDown())
 					prompt.requestFocus();
-				else if (list.getSelectedIndex() == 0) {
-					list.setSelectedIndex(filenames.size() - 1);
-					list.requestFocus();
-				}
+				else if (list.getSelectedIndex() == 0)
+					list.setSelectedIndex(list.getModel().getSize() - 1);
 
 			} else if (key == KeyEvent.VK_DOWN) {
 
-				if (list.getSelectedIndex() == filenames.size() - 1) {
+				if (list.getSelectedIndex() == list.getModel().getSize() - 1)
 					list.setSelectedIndex(0);
-					list.requestFocus();
-				}
 
 			}
 
@@ -861,10 +882,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	@Override
 	public void mouseClicked(final MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			if (e.getSource() == list)
-				openItemInNewThread(selectedItem);
-			else if (e.getSource() == status) {
-				if (truncatedList)
+			if (e.getSource() == list) {
+				setSelectedItem(list.getSelectedIndex());
+				openItem(selectedItem);
+			} else if (e.getSource() == status) {
+				if (consoleMode())
+					resetFileList();
+				else if (truncatedList)
 					showOptionsDialog();
 				else
 					changeDirectory("");
