@@ -726,16 +726,23 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			openItemInNewThread(selectedItem);
 		} else if (b == closeButton) {
 			dialog.dispose();
-		} else { // An item from optionsMenu has been selected
+		} else { // An entry in the optionsMenu has been selected
 			final String command = e.getActionCommand();
-			if (command.equals("Settings...")) {
+			if (command.equals("Options...")) {
 				showOptionsDialog();
 			} else if (command.equals("Go To...")) {
 				changeDirectory("");
 			} else if (command.equals("Bookmark")) {
 				addBookmark();
-			} else if (command.equals("Print List")) {
-				Utils.listDirectory(path);
+			} else if (command.equals("Print Current List")) {
+				printList();
+			} else if (command.equals("Refresh File List")) {
+				resetFileList();
+			} else if (command.contains("Console")) {
+				if (consoleMode())
+					resetFileList();
+				else
+					resetCommandList();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
 			} else { // A bookmark was selected
