@@ -437,36 +437,49 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return path != null && path.endsWith(File.separator);
 	}
 
-	void openItemInNewThread(final String filename) {
-		new Thread() {
-			public void run() {
-				openItem(filename);
-			}
-		}.start();
-		IJ.showStatus(IJ.freeMemory());
-	}
-
 	void openItem(final String filename) {
-		if (filename.equals("..")) {
-			selectParentDirectory(path);
+
+		if (!isOpenable(filename))
 			return;
-		} else if (isFolder(filename)) {
+
+		if (consoleMode()) {
+			try {
+				final int idx1 = filename.indexOf("<b>") + 4;
+				final int idx2 = filename.indexOf("</b>");
+				selectedItem = filename.substring(idx1, idx2);
+				interpretCommand(selectedItem);
+			} catch (final Exception e) {
+				error("Error: malformed command");
+			}
+			return;
+		}
+
+		if (isFolder(filename)) {
 			selectSubDirectory(filename);
 			return;
-		} else if (isOpenable(filename)) {
-			if (isScript(filename)) {
-				if (ijmLegacy && filename.toLowerCase().endsWith("ijm"))
-					Utils.openIJ1Script(path, filename);
-				else
-					Utils.openScript(path, filename);
-			} else {
-				IJ.open(path + filename);
-			}
-			if (closeOnOpen)
-				dialog.dispose();
 		}
-	}
 
+		new Thread() {
+			public void run() {
+				if (!Utils.fileExists(path + filename)) {
+					error(filename + " unavailable...");
+					return;
+				}
+				if (isScript(filename)) {
+					if (ijmLegacy && filename.toLowerCase().endsWith("ijm"))
+						Utils.openIJ1Script(path, filename);
+					else
+						Utils.openScript(path, filename);
+				} else {
+					IJ.open(path + filename);
+				}
+			}
+		}.start();
+
+		if (closeOnOpen)
+			dialog.dispose();
+
+	}
 
 	boolean isScript(final String file) {
 		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm",
