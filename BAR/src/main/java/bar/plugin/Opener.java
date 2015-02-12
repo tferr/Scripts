@@ -279,16 +279,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return menu;
 	}
 
-	void changeDirectory(String newDir) {
-		if (newDir == null || newDir.isEmpty())
-			newDir = IJ.getDirectory("Choose new directory");
-		if (newDir != null) {
-			setPath(newDir);
-			matchingString = "";
-			prompt.setText("");
-			updateList();
-			list.setSelectedIndex(0);
-			list.requestFocus();
 		}
 
 	void resetCommandList() {
