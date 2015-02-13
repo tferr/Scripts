@@ -174,9 +174,10 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		// Add status label
 		status = new JLabel();
 		status.addMouseListener(this);
-		updateStatus(path);
 		c.gridy++; c.gridx = 0;
 		dialog.add(status, c);
+		updateStatus();
+		setTooltips();
 
 		// Add buttons
 		final Panel buttonPanel = new Panel();
@@ -724,48 +725,60 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		updateStatus(path);
 	}
 
-	void updateStatus(final String dir) {
-		String tip, msg;
-		if (!dialog.isShowing()) { // First time prompt is displayed
-			msg = " Waiting for input...";
-			tip = "<html>Double-click to change directory or type <tt>!new</tt>."
-					+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
-		} else { // Interactive mode
+	void setTooltips() {
+		String tip;
+		if (isConsoleMode()) {
+			tip = "Double-click to exit console mode.";
+		} else {
+			if (filenames.size() == 0) {
+				tip = "Reset search or type <tt>!refresh</tt>.";
+			} else if (truncatedList) {
+				tip = "Double-click to change list size or type <tt>!options</tt>.";
+			} else {
+				tip = "Double-click to change directory or type <tt>!new</tt>.";
+			}
+		}
+		status.setToolTipText("<html>" + tip + "<br>Current path:<br><pre>"
+				+ path + "</pre></html>");
+	}
 
+	void updateStatus() {
+		String msg;
+		if (!dialog.isShowing()) { // Startup message
+			msg = "Waiting for input...";
+
+		} else { // Interactive mode
 			final int hits = filenames.size();
 
-			if (hits == 0) {
-				prompt.setForeground(Color.RED);
-				status.setForeground(Color.RED);
-				msg = "No match found...";
-				tip = "<html>Reset search or type <tt>!refresh</tt>."
-						+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
-			} else { // No search (unfiltered list) or search with hits
-				if (consoleMode()) { // Default console status
-					prompt.setForeground(Color.BLUE);
-					status.setForeground(Color.BLUE);
-					msg = " Console mode enabled...";
-					tip = "<html>Double-click to exit console mode.<br>Current path:<br><pre>"
-							+ dir + "</pre></html>";
-				} else { // Default file list status
-					prompt.setForeground(Color.BLACK);
-					status.setForeground(Color.DARK_GRAY);
-					if (truncatedList) { // Some files may not be displayed
-						msg = String.valueOf(maxSize) + " items limit reached...";
-						tip = "<html>Double-click to change list size or type <tt>!options</tt>."
-								+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
-					} else {  // All files are being filtered
-						final String label = (hits == 1) ? String.valueOf(hits)
-								+ " item, " : String.valueOf(hits) + " items, ";
-						msg = label + dir;
-						tip = "<html>Double-click to change directory or type <tt>!new</tt>."
-								+ "<br>Current path:<br><pre>" + dir + "</pre></html>";
+			if (isConsoleMode()) { // Default look for console
+				prompt.setForeground(Color.BLUE);
+				status.setForeground(Color.BLUE);
+				msg = "Console enabled...";
+
+			} else { // Default look for file list
+				prompt.setForeground(Color.BLACK);
+				status.setForeground(Color.DARK_GRAY);
+
+				if (hits == 0) { // Empty folder or no matches?
+					if (matchingString.isEmpty()) {
+						msg = "No items in folder...";
+					} else {
+						prompt.setForeground(Color.RED);
+						status.setForeground(Color.RED);
+						msg = "No matches found...";
 					}
+
+				} else if (truncatedList) { // Some files may not be displayed
+					msg = String.valueOf(maxSize) + " items limit reached...";
+
+				} else { // All files are being filtered
+					final String label = (hits == 1) ? String.valueOf(hits)
+							+ " item, " : String.valueOf(hits) + " items, ";
+					msg = label + path;
 				}
 			}
 		}
 		status.setText(msg);
-		status.setToolTipText(tip);
 	}
 
 	void validateOptionsMenu() {
