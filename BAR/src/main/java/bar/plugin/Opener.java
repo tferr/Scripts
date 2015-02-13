@@ -324,7 +324,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 		final String result = execCommand(cmd);
 
-		if (result == null) { // The path encoded by cmd was not found
+		// Case null: cmd encoded a path and encoded directory was not found
+		if (result == null) {
 			if (cmd.startsWith("image")) {
 				error("Image directory unknown");
 				IJ.error("Unknown path", "Could not determine path of active image.");
@@ -339,16 +340,22 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			return;
 		}
 
-		if (result.equals(String.valueOf(0))) { // Successful execution of a void command
+		// Case 0: cmd encoded a non-verbose self-contained instruction
+		if (result.equals(String.valueOf(0))) {
 			resetFileList();
 			prompt.requestFocus();
 			return;
 		}
 
-		if (result.isEmpty()) {  // Directory was already changed by a cmd-encoded path
+		// Case 1: cmd encoded a self-contained instruction that output a status message
+		if (result.equals(String.valueOf(1))) {
+			setConsoleMode(false);
+			resetFileListWithoutStatusChange();
+			prompt.requestFocus();
 			return;
 		}
 
+		// Remaining cases: cmd encodes a new path
 		changeDirectory(result);
 		prompt.requestFocus();
 
@@ -356,42 +363,46 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 	String execCommand(final String cmd) {
 
-		// Commands that do not change directories
+		// Case "0": Self-contained commands that need no follow-up
 		String exitStatus = String.valueOf(0);
-		if (cmd.equals("options")) {
-			showOptionsDialog();
-			return exitStatus;
-		} else if (cmd.startsWith("ls")) {
-			printList();
-			return exitStatus;
-		} else if (cmd.startsWith("refresh")) {
-			resetFileList();
-			return exitStatus;
-		} else if (cmd.startsWith("reveal")) {
-			Utils.revealFile(path);
-			return exitStatus;
-		} else if (cmd.startsWith("close")) {
+		if (cmd.startsWith("close")) {
 			dialog.dispose();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
 			showHelp();
+			return exitStatus;
+		} else if (cmd.startsWith("ls")) {
+			printList();
+			return exitStatus;
+		} else if (cmd.equals("options")) {
+			showOptionsDialog();
+			return exitStatus;
+		} else if (cmd.startsWith("refresh")) {
+			//resetFileList();
+			return exitStatus;
+		} else if (cmd.startsWith("reveal")) {
+			Utils.revealFile(path);
+			return exitStatus;
+		}
+
+		// Case "1": Self-contained commands that produce a status
+		// bar message and expect it to persist after execution
+		exitStatus = String.valueOf(1);
+		if (cmd.equals("..")) {
+			selectParentDirectory(path);
+			return exitStatus;
+		} else if (cmd.equals("bookmark")) {
+			addBookmark();
+			return exitStatus;
+		} else if (cmd.equals("cd")) {
+			cdToDirectory(path);
 			return exitStatus;
 		} else if (cmd.startsWith("info")) {
 			showInfo();
 			return exitStatus;
 		}
 
-		// Commands that change directories directly
-		exitStatus = "";
-		if (cmd.equals("..")) {
-			selectParentDirectory(path);
-			return exitStatus;
-		} else if (cmd.equals("cd")) {
-			cdToDirectory(path);
-			return exitStatus;
-		}
-
-		// Commands that retrieve paths
+		// Remaining cases: Commands that only retrieve paths
 		exitStatus = null;
 		if (cmd.equals("new")) {
 			exitStatus = IJ.getDirectory("Choose new directory");
