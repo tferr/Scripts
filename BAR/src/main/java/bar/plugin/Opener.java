@@ -45,6 +45,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -374,6 +375,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		} else if (cmd.startsWith("help")) {
 			showHelp();
 			return exitStatus;
+		} else if (cmd.startsWith("info")) {
+			showInfo();
+			return exitStatus;
 		}
 
 		// Commands that change directories directly
@@ -423,6 +427,52 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 		return exitStatus;
 
+	}
+
+	private void showInfo() {
+		try {
+			resetFileList();
+			final File f = new File(path);
+			final String writable = (f.canWrite()) ? "writable"
+					: "non writable";
+			final String bookmarked = (bookmarks.contains(path)) ? "bookmarked"
+					: "not bookmarked";
+			int subfolders = 0;
+			for (final String item : filenames)
+				if (item.endsWith(File.separator))
+					subfolders++;
+			final int files = filenames.size() - subfolders;
+
+			final StringBuffer sb = new StringBuffer();
+			sb.append("<html>");
+			sb.append("<dl>");
+			sb.append("<dt>Path (").append(writable).append("):</dt>");
+			sb.append("<dd>");
+			sb.append(f.getAbsolutePath()).append(File.separator);
+			sb.append("</dd>");
+			sb.append("<dt>Last modified:</dt>");
+			sb.append("<dd>");
+			sb.append(new Date(f.lastModified()));
+			sb.append("</dd>");
+			sb.append("<dt>Listed contents:</dt>");
+			sb.append("<dd>");
+			sb.append(subfolders).append(" subfolder(s), ").append(files)
+					.append(" file(s)");
+			sb.append("</dd>");
+			sb.append("<dt>Maximum list size:</dt>");
+			sb.append("<dd>");
+			sb.append("Currently set to ").append(maxSize).append(" items");
+			sb.append("</dd>");
+			sb.append("<dt>Favorite?</dt>");
+			sb.append("<dd>");
+			sb.append("Folder is ").append(bookmarked);
+			sb.append("</dd>");
+			sb.append("</dl>");
+			sb.append("</html>");
+			IJ.showMessage(f.getName(), sb.toString());
+		} catch (final Exception e) {
+			IJ.error("Could not retrieve information from current path");
+		}
 	}
 
 	void resetCommandList() {
@@ -568,6 +618,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				"!snip@Path to <i>BAR/Snippets</i>",
 				spacer,
 				"!close !quit@Dismiss this window",
+				"!info@Details on current path",
 				"!ls !print@List contents of current path",
 				"!help@Display built-in help",
 				"!options@Prompt for settings",
