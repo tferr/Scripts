@@ -181,8 +181,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		status.addMouseListener(this);
 		c.gridy++; c.gridx = 0;
 		dialog.add(status, c);
-		updateStatus();
-		setTooltips();
+		updateBrowserStatus();
 
 		// Add buttons
 		final Panel buttonPanel = new Panel();
@@ -766,47 +765,37 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	void updateList() {
 		if (isConsoleMode()) {
 			setCommandList();
-		else
+			if (!freezeStatusBar)
+				updateConsoleStatus();
+			setStatusTooltip("Double-click to reload console commands.");
+		} else {
 			setFileList();
-		updatingList = true;
+			if (filenames.size()==0 && matchingString.isEmpty()) {
+				filenames.addElement("..Folder is empty");
+			}
+			if (!freezeStatusBar)
+				updateBrowserStatus();
+			setStatusTooltip("Double-click to refresh list or type <tt>!refresh</tt>.");
+		}
+		
 		list.setListData(filenames);
-		updatingList = false;
-		updateStatus(path);
 	}
 
-	void setTooltips() {
-		String tip;
+	void executeStatusBarActions() {
+		freezeStatusBar = false;
 		if (isConsoleMode()) {
-			tip = "Double-click to exit console mode.";
+			resetCommandList();
 		} else {
-			if (filenames.size() == 0) {
-				tip = "Reset search or type <tt>!refresh</tt>.";
-			} else if (truncatedList) {
-				tip = "Double-click to change list size or type <tt>!options</tt>.";
+			if (truncatedList) {
+				showOptionsDialog();
 			} else {
-				tip = "Double-click to change directory or type <tt>!new</tt>.";
+				updateList();
 			}
 		}
-		status.setToolTipText("<html>" + tip + "<br>Current path:<br><pre>"
-				+ path + "</pre></html>");
+		System.gc();
+		IJ.showStatus("BAR " + Utils.getVersion() + "; " + IJ.freeMemory());
 	}
 
-	void updateStatus() {
-		String msg;
-		if (!dialog.isShowing()) { // Startup message
-			msg = "Waiting for input...";
-
-		} else { // Interactive mode
-			final int hits = filenames.size();
-
-			if (isConsoleMode()) { // Default look for console
-				prompt.setForeground(Color.BLUE);
-				status.setForeground(Color.BLUE);
-				msg = "Console enabled...";
-
-			} else { // Default look for file list
-				prompt.setForeground(Color.BLACK);
-				status.setForeground(Color.DARK_GRAY);
 	void setStatusTooltip(final String text) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<html>");
@@ -817,26 +806,47 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		status.setToolTipText(sb.toString());
 	}
 
-				if (hits == 0) { // Empty folder or no matches?
-					if (matchingString.isEmpty()) {
-						msg = "No items in folder...";
-					} else {
-						prompt.setForeground(Color.RED);
-						status.setForeground(Color.RED);
-						msg = "No matches found...";
-					}
+	void updateConsoleStatus() {
+		prompt.setForeground(Color.BLUE);
+		status.setForeground(Color.BLUE);
 
-				} else if (truncatedList) { // Some files may not be displayed
-					msg = String.valueOf(maxSize) + " items limit reached...";
-
-				} else { // All files are being filtered
-					final String label = (hits == 1) ? String.valueOf(hits)
-							+ " item, " : String.valueOf(hits) + " items, ";
-					msg = label + path;
-				}
-			}
+		if (matchingString.equals("!")) {
+			log("Console enabled...");
+			return;
 		}
-		status.setText(msg);
+		final int hits = filenames.size();
+		if (hits == 0) {
+			log("No matching commands...");
+		} else if (hits == 1) {
+			log("<html>Press &crarr; to execute</html>");
+		} else {
+			log(String.valueOf(hits) + " mathing commands");
+		}
+	}
+
+	void updateBrowserStatus() {
+		prompt.setForeground(Color.BLACK);
+		status.setForeground(Color.DARK_GRAY);
+
+		final int hits = filenames.size();
+		if (hits == 0) {
+			error("No matches found...");
+		} else if (hits == 1) {
+			setSelectedItem(0);
+			if (selectedItem.startsWith(".."))
+				log("<html>Press &crarr; to return to parent</html>");
+			else if (isFolder(selectedItem))
+				log("<html>Press &crarr; to expand</html>");
+			else if (isOpenable(selectedItem))
+				log("<html>Press &crarr; to open</html>");
+			else
+				log("File cannot be opened...");
+		} else {
+			if (truncatedList)
+				error(String.valueOf(maxSize) + " items limit reached...");
+			else
+				log(String.valueOf(hits) + " items");
+		}
 	}
 
 	void validateOptionsMenu() {
@@ -1018,12 +1028,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				setSelectedItem(list.getSelectedIndex());
 				openItem(selectedItem);
 			} else if (e.getSource() == status) {
-				if (consoleMode())
-					resetFileList();
-				else if (truncatedList)
-					showOptionsDialog();
-				else
-					changeDirectory("");
+				executeStatusBarActions();
 			}
 		}
 	}
