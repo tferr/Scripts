@@ -276,7 +276,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	PopupMenu createOptionsMenu() {
 		final PopupMenu popup = new PopupMenu();
 
-		MenuItem mi = new MenuItem("Bookmark");
+		MenuItem mi = new MenuItem("Add to Favorites");
 		mi.addActionListener(this);
 		popup.add(mi);
 		mi = new MenuItem("Reveal Path");
@@ -306,7 +306,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	Menu createBookmarkMenu() {
-		final Menu menu = new Menu("Bookmarks");
+		final Menu menu = new Menu("Favorites");
 		MenuItem mi;
 		for (final String bookmark : bookmarks) {
 			mi = new MenuItem(bookmark);
@@ -667,6 +667,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				"lib@Path to <i>BAR/lib</i>",
 				"!snip@Path to <i>BAR/Snippets</i>",
 				spacer,
+				"!bookmark@Add path to <i>Favorites</i>",
 				"!close !quit@Dismiss this window",
 				"!info@Details on current path",
 				"!ls !print@List contents of current path",
@@ -830,16 +831,16 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void validateOptionsMenu() {
-		// Toggle "Bookmark", "Reveal Path", "Print Current List", etc.
+		// Toggle "Add to Favorites", "Reveal Path", "Print Current List", etc.
 		for (int i = 0; i < optionsMenu.getItemCount(); i++) {
 			final MenuItem item = optionsMenu.getItem(i);
 			final String label = item.getLabel();
-			if (label.equals("Bookmark") || label.equals("Reveal Path")
+			if (label.equals("Add to Favorites") || label.equals("Reveal Path")
 					|| label.equals("Print Current List")
 					|| label.equals("Refresh File List")) {
-				item.setEnabled(!consoleMode());
+				item.setEnabled(!isConsoleMode());
 			} else if (label.contains("Console")) {
-				final String cLabel = (consoleMode()) ? "Exit Console Mode"
+				final String cLabel = (isConsoleMode()) ? "Exit Console Mode"
 						: "Enter Console Mode";
 				item.setLabel(cLabel);
 			}
@@ -886,14 +887,14 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				showOptionsDialog();
 			} else if (command.equals("Go To...")) {
 				changeDirectory("");
-			} else if (command.equals("Bookmark")) {
+			} else if (command.equals("Add to Favorites")) {
 				addBookmark();
 			} else if (command.equals("Print Current List")) {
 				printList();
 			} else if (command.equals("Refresh File List")) {
 				resetFileList();
 			} else if (command.contains("Console")) {
-				if (consoleMode())
+				if (isConsoleMode())
 					resetFileList();
 				else
 					resetCommandList();
