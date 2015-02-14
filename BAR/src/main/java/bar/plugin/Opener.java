@@ -507,7 +507,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			sb.append("</html>");
 			IJ.showMessage(f.getName(), sb.toString());
 		} catch (final Exception e) {
-			IJ.error("Could not retrieve information from current path");
+			error("Error while retrieving details...");
 		}
 	}
 
@@ -685,6 +685,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		for (final File f : dir.listFiles(this)) {
 			if (filenames.size() >= maxSize) {
 				truncatedList = true;
+				setStatusTooltip("Double-click to change list size or type <tt>!options</tt>.");
 				break;
 			}
 			String name = f.getAbsolutePath().substring(rootIdx);
