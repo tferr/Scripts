@@ -273,10 +273,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		bookmarks.clear();
 	}
 
-	boolean consoleMode() {
-		return matchingString.startsWith("!");
-	}
-
 	PopupMenu createOptionsMenu() {
 		final PopupMenu popup = new PopupMenu();
 
@@ -546,7 +542,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	boolean isOpenable(String path) {
 		if (path == null)
 			return false;
-		if (!consoleMode()) {
+		if (!isConsoleMode()) {
 			final String[] compiledExtensions = { ".jar", ".class", ".pyc" };
 			path = path.toLowerCase();
 			for (final String ext : compiledExtensions) {
@@ -566,7 +562,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		if (!isOpenable(filename))
 			return;
 
-		if (consoleMode()) {
+		if (isConsoleMode()) {
 			try {
 				final int idx1 = filename.indexOf("<b>") + 4;
 				final int idx2 = filename.indexOf("</b>");
@@ -615,7 +611,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void printList() {
-		if (consoleMode()) {
+		if (isConsoleMode()) {
 			Utils.listDirectory(path);
 			return;
 		}
@@ -767,7 +763,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void updateList() {
-		if (consoleMode())
+		if (isConsoleMode()) {
 			setCommandList();
 		else
 			setFileList();
@@ -850,6 +846,10 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+
+	boolean isConsoleMode() {
+		return matchingString.startsWith("!");
+	}
 
 	/* FileFilter Methods */
 	@Override
