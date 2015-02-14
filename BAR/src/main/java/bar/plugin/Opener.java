@@ -99,7 +99,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private JTextField prompt;
 	private JScrollPane listPane;
 	private JList list;
-	private JLabel status;
+	private JLabel status, pathBar;
 	private Button optionsButton, openButton, closeButton;
 	private PopupMenu optionsMenu;
 	private Vector<String> filenames;
@@ -121,9 +121,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 	public void runInteractively() {
 
-		// Populate file list and initialize bookmarks
+		// Initialize file list and favorites list
 		filenames = new Vector<String>();
-		setFileList();
 		bookmarks = new ArrayList<String>();
 
 		// Build dialog
@@ -134,10 +133,10 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = c.gridx = 0;
 
-		// Add prompt
+		// Add search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER, 20);
 		prompt.selectAll();
-		prompt.setToolTipText("<html>Search shortcuts:<br>"
+		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;! &emsp; Console mode<br>"
 				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
 				+ "&emsp;&darr;&emsp; Move to list</html>");
@@ -149,17 +148,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(prompt, c);
 
-		// By default, lowLevel keyEvents are captured by FocusTraversalKeys
-		// To capture  KeyEvents such as VK_TAB, we'd need to remove the
-		// default FocusTraversalKeys from the JTextField. Alternatively, we
-		// could use java.awt.TextField instead
-		//		prompt.setFocusTraversalKeys(
-		//				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
-		//				Collections.<AWTKeyStroke> emptySet());
-
-		// Add list
+		// Add file list
 		listPane = new JScrollPane();
-		list = new JList(filenames);
+		list = new JList();
 		list.setVisibleRowCount(16);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setToolTipText("<html>Navigation shortcuts:<br>"
@@ -175,7 +166,17 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(listPane, c);
 
-		// Add status label
+		// Add path bar
+		pathBar = new JLabel();
+		pathBar.setFont(pathBar.getFont().deriveFont(
+				pathBar.getFont().getSize() - 1f));
+		pathBar.setForeground(Color.DARK_GRAY);
+		setPath(path);
+		c.gridy++;
+		c.gridx = 0;
+		dialog.add(pathBar, c);
+
+		// Add status bar
 		status = new JLabel();
 		status.addMouseListener(this);
 		c.gridy++; c.gridx = 0;
@@ -200,7 +201,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(buttonPanel, c);
 
-		// Display dialog
+		// Populate file list and display dialog
+		updateList();
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setVisible(true);
@@ -720,6 +722,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		if (!newPath.endsWith(File.separator))
 			newPath += File.separator;
 		path = newPath;
+		pathBar.setText(path);
 	}
 
 	void setSelectedItem(final int index) {
