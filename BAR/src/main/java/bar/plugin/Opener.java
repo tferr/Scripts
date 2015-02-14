@@ -384,14 +384,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			return;
 		}
 
-		// Case 1: cmd encoded a self-contained instruction that output a status message
-		if (result.equals(String.valueOf(1))) {
-			setConsoleMode(false);
-			resetFileListWithoutStatusChange();
-			prompt.requestFocus();
-			return;
-		}
-
 		// Remaining cases: cmd encodes a new path
 		changeDirectory(result);
 		prompt.requestFocus();
@@ -420,12 +412,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		} else if (cmd.startsWith("reveal")) {
 			Utils.revealFile(path);
 			return exitStatus;
-		}
-
-		// Case "1": Self-contained commands that produce a status
-		// bar message and expect it to persist after execution
-		exitStatus = String.valueOf(1);
-		if (cmd.equals("..")) {
+		} else if (cmd.startsWith("..")) {
 			selectParentDirectory(path);
 			return exitStatus;
 		} else if (cmd.equals("bookmark")) {
