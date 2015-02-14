@@ -565,6 +565,11 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			return;
 		}
 
+		if (filename.startsWith("..")) {
+			selectParentDirectory(path);
+			return;
+		}
+
 		new Thread() {
 			public void run() {
 				if (!Utils.fileExists(path + filename)) {
