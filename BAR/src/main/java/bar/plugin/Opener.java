@@ -76,8 +76,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		DocumentListener, KeyListener, ListSelectionListener, MouseListener,
 		WindowListener {
 
-	/* Defaults for "Reset" option */
-	private static final String DEF_PATH = Utils.getBARDir();
+	/** Defaults for "Reset" option */
+	private static final String DEF_PATH = System.getProperty("user.home");
 	private static final int DEF_MAX_SIZE = 200;
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
@@ -113,7 +113,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	public void run(final String arg) {
 		new Thread() {
 			public void run() {
-				if (Utils.fileExists(path))
+				if (!Utils.fileExists(path))
+					path = IJ.getDirectory("Choose new Directory");
+				if (path != null)
 					runInteractively();
 			}
 		}.start();
