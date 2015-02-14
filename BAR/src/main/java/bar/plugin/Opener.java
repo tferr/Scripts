@@ -512,15 +512,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	}
 
 	void resetCommandList() {
-		setMatchingString("!");
-		prompt.setText("!");
+		prompt.setText("!");  // Resets matchingString
 		prompt.selectAll();
 		updateList();
 	}
 
 	void resetFileList() {
-		setMatchingString("");
-		prompt.setText("");
+		prompt.setText(""); // Resets matchingString
 		updateList();
 		list.setSelectedIndex(0);
 	}
@@ -786,7 +784,6 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			}
 		}
 		System.gc();
-		IJ.showStatus("BAR " + Utils.getVersion() + "; " + IJ.freeMemory());
 	}
 
 	void setStatusTooltip(final String text) {
