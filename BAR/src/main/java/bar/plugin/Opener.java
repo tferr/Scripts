@@ -807,6 +807,15 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			} else { // Default look for file list
 				prompt.setForeground(Color.BLACK);
 				status.setForeground(Color.DARK_GRAY);
+	void setStatusTooltip(final String text) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("<html>");
+		sb.append(text).append("<br>");
+		sb.append("Current path:<br>");
+		sb.append("&emsp;").append(path);
+		sb.append("</html>");
+		status.setToolTipText(sb.toString());
+	}
 
 				if (hits == 0) { // Empty folder or no matches?
 					if (matchingString.isEmpty()) {
