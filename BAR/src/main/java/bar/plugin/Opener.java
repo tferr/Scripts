@@ -1027,7 +1027,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			if (e.getSource() == list) {
 				setSelectedItem(list.getSelectedIndex());
 				openItem(selectedItem);
-			} else if (e.getSource() == status) {
+			} else if (e.getSource() == status || e.getSource() == pathBar) {
 				executeStatusBarActions();
 			}
 		}
