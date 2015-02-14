@@ -46,6 +46,8 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -87,8 +89,11 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
 	private boolean ijmLegacy = DEF_IJM_LEGACY;
 	private String matchingString = "";
+
+	/** Flag that monitors if file list reached maximum size */
 	private boolean truncatedList = false;
-	private boolean updatingList = false;
+	/** Flag that toggles changes to status bar messages */
+	private boolean freezeStatusBar = false;
 
 	private Dialog dialog;
 	private JTextField prompt;
@@ -209,7 +214,9 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				optionsMenu.remove(optionsMenu.getItemCount() - 1);
 			bookmarks.add(path);
 			optionsMenu.add(createBookmarkMenu());
-		}
+			log("New bookmark: "+ path);
+		} else
+			error("Already bookmarked "+ path);
 	}
 
 	void cdToDirectory(final String defaultpath) {
@@ -236,9 +243,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			});
 			gd.showDialog();
 			final String newPath = gd.getNextString();
-			if (!gd.wasCanceled() && !newPath.isEmpty())
+			if (!gd.wasCanceled() && !newPath.isEmpty()) {
 				changeDirectory(newPath);
+			} else {
+				error("cd to... not executed");
+			}
 		} catch (final ClassNotFoundException e) {
+			error("cd to... not executed");
 			IJ.error("Dependencies Missing", "Error: This command requires fiji-lib.");
 		}
 	}
@@ -251,7 +262,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		if (Utils.fileExists(newDir))
 			setPath(newDir);
 		else
-			error("Path unavailable. Refreshing...");
+			error("Path unavailable: "+ newDir);
 		resetFileList();
 	}
 
@@ -307,14 +318,44 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return menu;
 	}
 
-	void error(final String msg) {
+	/**
+	 * Displays an error message. When triggered in console mode the message is
+	 * displayed during 5s. This is achieved through a timerTask that keeps the
+	 * freezeStatusBar flag set to true during five seconds.
+	 * 
+	 * @see log
+	 */
+	void error(final String errorMsg) {
 		status.setForeground(Color.RED);
-		status.setText(" "+ msg);
+		status.setText(errorMsg);
+		if (isConsoleMode()) {
+			freezeStatusBar = true;
+			final Timer timer = new Timer();
+			final TimerTask task = new TimerTask() {
+				@Override
+				public void run() {
+					freezeStatusBar = false;
+					timer.cancel();
+				}
+			};
+			try {
+				timer.schedule(task, 5 * 1000);
+			} catch (final Exception e) {
+				timer.cancel();
+			}
+		}
 	}
 
-	void info(final String msg) {
-		status.setForeground(Color.BLACK);
-		status.setText(" "+ msg);
+	/**
+	 * Displays an informational message if status bar is not "frozen"
+	 * (freezeStatusBar is false). Does nothing if freezeStatusBar is true
+	 * (an error is being displayed).
+	 * 
+	 * @see error
+	 */
+	void log(final String msg) {
+		if (!freezeStatusBar)
+			status.setText(msg);
 	}
 
 	void interpretCommand(final String cmd) {
@@ -377,7 +418,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			showOptionsDialog();
 			return exitStatus;
 		} else if (cmd.startsWith("refresh")) {
-			//resetFileList();
+			freezeStatusBar = false;
 			return exitStatus;
 		} else if (cmd.startsWith("reveal")) {
 			Utils.revealFile(path);
@@ -589,7 +630,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		for (final String f : filenames)
 			tw.append("" + IJ.pad(counter++, padLngth) + ": " + path + f);
 		tp.updateDisplay();
-		info("" + (counter - 1) + " items listed");
+		log("" + (counter - 1) + " items listed");
 	}
 
 	void selectParentDirectory(final String currentDir) {
@@ -885,7 +926,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	/* ListSelectionListener Methods */
 	@Override
 	public void valueChanged(final ListSelectionEvent e) {
-		if (e.getValueIsAdjusting() || updatingList)
+		if (e.getValueIsAdjusting())
 			return;
 		setSelectedItem(list.getSelectedIndex());
 		openButton.setEnabled(isOpenable(selectedItem));
