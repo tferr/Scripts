@@ -606,7 +606,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			Utils.listDirectory(path);
 			return;
 		}
-		if (filenames.size() < 2) {
+		if (filenames.size() < 1) {
 			error("No files in current list");
 			return;
 		}
@@ -665,7 +665,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 				"!help@Display built-in help",
 				"!options@Prompt for settings",
 				"!refresh@Refresh (reload) list"
-			};
+		};
 
 		truncatedList = false;
 		filenames.removeAllElements();
