@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -74,15 +75,15 @@ import bar.Utils;
  *
  * @author tiago
  */
-public class Commander implements PlugIn, FileFilter, ActionListener,
-		DocumentListener, KeyListener, ListSelectionListener, MouseListener,
-		WindowListener {
+public class Commander implements PlugIn, ActionListener, DocumentListener,
+		KeyListener, ListSelectionListener, MouseListener, WindowListener {
 
 	/** Defaults for "Reset" option */
 	private static final String DEF_PATH = System.getProperty("user.home");
 	private static final int DEF_MAX_SIZE = 200;
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
+	private static final boolean DEF_REGEX = false;
 	private static final String PROMPT_PLACEHOLDER = "Search or press <!> for console";
 
 	/** Flag that monitors if file list reached maximum size */
@@ -95,6 +96,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 	private int maxSize = DEF_MAX_SIZE;
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
 	private boolean ijmLegacy = DEF_IJM_LEGACY;
+	private boolean regex = false;
 	private String matchingString = "";
 
 	private Dialog dialog;
@@ -716,12 +718,27 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	/** Sets filenames matching current search */
 	void setFileList() {
+
+		final FileFilter filter = new FileFilter() {
+			@Override
+			public boolean accept(final File file) {
+				if (file.isHidden())
+					return false;
+				final String name = file.getName();
+				if (regex && !matchingString.isEmpty())
+					return Pattern.compile(matchingString).matcher(name).matches();
+				else
+					return name.toLowerCase().indexOf(matchingString) >= 0;
+			}
+		};
+
 		truncatedList = false;
 		filenames.removeAllElements();
 		final File dir = new File(path);
 		final int rootIdx = path.length();
-		for (final File f : dir.listFiles(this)) {
+		for (final File f : dir.listFiles(filter)) {
 			if (filenames.size() >= maxSize) {
 				truncatedList = true;
 				setStatusTooltip("Double-click to change list size or type <tt>!options</tt>.");
@@ -763,6 +780,8 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		gd.addNumericField("Maximum number of items in list", maxSize, 0);
 		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
 		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
+		gd.addCheckbox("Search files using regex (experimental)", regex);
+		gd.addMessage("");//spacer
 		gd.addCheckbox("Clear Favorites list", false);
 		gd.enableYesNoCancel("OK", "Reset All Settings");
 		gd.showDialog();
@@ -773,6 +792,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 			maxSize = (int) Math.max(1, gd.getNextNumber());
 			closeOnOpen = gd.getNextBoolean();
 			ijmLegacy = gd.getNextBoolean();
+			regex = gd.getNextBoolean();
 			if (gd.getNextBoolean()) clearBookmarks();
 			dialog.toFront();
 		} else {
@@ -780,6 +800,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 			maxSize = DEF_MAX_SIZE;
 			ijmLegacy = DEF_IJM_LEGACY;
 			closeOnOpen = DEF_CLOSE_ON_OPEN;
+			regex = DEF_REGEX;
 			path = DEF_PATH;
 			showOptionsDialog();
 		}
@@ -899,16 +920,6 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		return matchingString.startsWith("!");
 	}
 
-	/* FileFilter Methods */
-	@Override
-	public boolean accept(final File file) {
-		if (file.isHidden())
-			return false;
-		String name = file.getName().toLowerCase();
-		if (file.isDirectory())
-			name += File.separator;
-		return (name.indexOf(matchingString) >= 0);
-	}
 
 	/* ActionEvent Methods */
 	@Override
