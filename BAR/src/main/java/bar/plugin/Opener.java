@@ -63,14 +63,16 @@ import javax.swing.event.ListSelectionListener;
 import bar.Utils;
 
 /**
- * This class implements a file browser modeled after CommandFinder[1] by Mark
- * Longair and FunctionFinder[2] by Jerome Mutterer. It is also influenced by
- * Johannes Schindelin's Recent_Commands plugin[3].
+ * This class implements a file browser modeled after CommandFinder <a href=
+ * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java"
+ * >(URL)</a> by Mark Longair and FunctionFinder <a href=
+ * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/macro/FunctionFinder.java"
+ * >(URL)</a> by Jerome Mutterer. It is also influenced by Johannes Schindelin's
+ * Recent_Commands plugin <a href=
+ * "https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java"
+ * >(URL)</a> and a bit of DOS nostalgia.
  *
- * [1] https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java
- * [2] https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/macro/FunctionFinder.java
- * [3] https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java
- *
+ * @author tiago
  */
 public class Opener implements PlugIn, FileFilter, ActionListener,
 		DocumentListener, KeyListener, ListSelectionListener, MouseListener,
@@ -83,17 +85,17 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private static final boolean DEF_IJM_LEGACY = false;
 	private static final String PROMPT_PLACEHOLDER = "Search or press <!> for console";
 
-	/* Parameters */
+	/** Flag that monitors if file list reached maximum size */
+	private boolean truncatedList = false;
+	/** Flag that toggles changes to status bar messages */
+	private boolean freezeStatusBar = false;
+
+	/** Parameters **/
 	private String path = DEF_PATH;
 	private int maxSize = DEF_MAX_SIZE;
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
 	private boolean ijmLegacy = DEF_IJM_LEGACY;
 	private String matchingString = "";
-
-	/** Flag that monitors if file list reached maximum size */
-	private boolean truncatedList = false;
-	/** Flag that toggles changes to status bar messages */
-	private boolean freezeStatusBar = false;
 
 	private Dialog dialog;
 	private JTextField prompt;
@@ -104,8 +106,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private PopupMenu optionsMenu;
 	private Vector<String> filenames;
 	private String selectedItem;
-	ArrayList<String> bookmarks;
-
+	private ArrayList<String> bookmarks;
 
 	public static void main(final String[] args) { Debug.run("BAR Opener",""); }
 
@@ -222,6 +223,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			error("Already bookmarked "+ path);
 	}
 
+	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
 		try {
 			Class.forName("fiji.util.gui.GenericDialogPlus");
@@ -257,6 +259,11 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	/**
+	 * Changes path to the specified directory path (if valid). Displays and IJ
+	 * error if directory does not exist. If specified directory is empty, user
+	 * is prompted to choose a new directory.
+	 */
 	void changeDirectory(String newDir) {
 		if (newDir.isEmpty())
 			newDir = IJ.getDirectory("Choose new Directory");
@@ -269,11 +276,13 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		resetFileList();
 	}
 
+	/** Clears all bookmarks in "Favorites" (optionsMenu) */
 	void clearBookmarks() {
 		optionsMenu.remove(optionsMenu.getItemCount() - 1);
 		bookmarks.clear();
 	}
 
+	/** Creates optionsMenu */
 	PopupMenu createOptionsMenu() {
 		final PopupMenu popup = new PopupMenu();
 
@@ -306,6 +315,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		return popup;
 	}
 
+	/** Creates "Favorites" (bookmarks) menu */
 	Menu createBookmarkMenu() {
 		final Menu menu = new Menu("Favorites");
 		MenuItem mi;
@@ -357,6 +367,12 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 			status.setText(msg);
 	}
 
+	/**
+	 * Interprets console commands upon receiving the exit status from
+	 * execCommand
+	 *
+	 * @see execCommand
+	 */
 	void interpretCommand(final String cmd) {
 		if (cmd.isEmpty()) // just a spacer in command list
 			return;
@@ -392,6 +408,16 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 	}
 
+
+	/**
+	 * Executes console commands. Outputs one of the following exit status:
+	 * <p>
+	 * "0": Executed a a self-contained command that need no follow-up.
+	 * null: Failed to retrieve a path.
+	 * non-null string: A successfully retrieved path
+	 *
+	 * @see interpretCommand
+	 */
 	String execCommand(final String cmd) {
 
 		// Case "0": Self-contained commands that need no follow-up
@@ -467,6 +493,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 
 	}
 
+	/** Display an IJ message with details on the current path */
 	private void showInfo() {
 		try {
 			resetFileList();
@@ -513,18 +540,25 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	/** Reloads Console commands */
 	void resetCommandList() {
 		prompt.setText("!");  // Resets matchingString
 		prompt.selectAll();
 		updateList();
 	}
 
+	/** Reloads an un-filtered listed of current path */
 	void resetFileList() {
 		prompt.setText(""); // Resets matchingString
 		updateList();
 		list.setSelectedIndex(0);
 	}
 
+	/**
+	 * Checks if the specified file belongs to a problematic list of extensions
+	 * known to trigger undesirable IJ commands. (mainly compiled files that
+	 * activate the "Plugins>Install command)
+	 */
 	boolean isOpenable(String path) {
 		if (path == null)
 			return false;
@@ -774,6 +808,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		list.setListData(filenames);
 	}
 
+	/** Defines the actions triggered by double-clicking on the status/path bar */
 	void executeStatusBarActions() {
 		freezeStatusBar = false;
 		if (isConsoleMode()) {
@@ -841,8 +876,8 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		}
 	}
 
+	/** Toggles "Add to Favorites", "Reveal Path", "Print Current List", etc. */
 	void validateOptionsMenu() {
-		// Toggle "Add to Favorites", "Reveal Path", "Print Current List", etc.
 		for (int i = 0; i < optionsMenu.getItemCount(); i++) {
 			final MenuItem item = optionsMenu.getItem(i);
 			final String label = item.getLabel();
