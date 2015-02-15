@@ -174,9 +174,9 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		pathBar.setFont(pathBar.getFont().deriveFont(
 				pathBar.getFont().getSize() - 1f));
 		pathBar.setForeground(Color.DARK_GRAY);
-		setPath(path);
-		c.gridy++;
-		c.gridx = 0;
+		pathBar.addMouseListener(this);
+		setPath(path); // update contents
+		c.gridy++; c.gridx = 0;
 		dialog.add(pathBar, c);
 
 		// Add status bar
@@ -831,6 +831,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		sb.append("&emsp;").append(path);
 		sb.append("</html>");
 		status.setToolTipText(sb.toString());
+		pathBar.setToolTipText(sb.toString());
 	}
 
 	void updateConsoleStatus() {
