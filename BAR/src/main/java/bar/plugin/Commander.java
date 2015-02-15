@@ -254,10 +254,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				changeDirectory(newPath);
 			} else {
 				error("cd to... not executed");
+				return;
 			}
 		} catch (final ClassNotFoundException e) {
 			error("cd to... not executed");
-			IJ.error("Dependencies Missing", "Error: This command requires fiji-lib.");
+			error("Dependencies Missing", "Error: This command requires fiji-lib.");
 		}
 	}
 
@@ -357,6 +358,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/** Displays an ImageJ error message ensuring focus of main window */
+	void error(final String title, final String msg) {
+		IJ.error(title, msg);
+		dialog.toFront();
+	}
+
 	/**
 	 * Displays an informational message if status bar is not "frozen"
 	 * (freezeStatusBar is false). Does nothing if freezeStatusBar is true
@@ -385,13 +392,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		if (result == null) {
 			if (cmd.startsWith("image")) {
 				error("Image directory unknown");
-				IJ.error("Unknown path", "Could not determine path of active image.");
+				error("Unknown path", "Could not determine path of active image.");
 			} else if (cmd.startsWith("current")) {
 				error("Working directory unknown");
-				IJ.error("Unknown path", "Working directory is set upon a valid I/O operation.");
+				error("Unknown path", "Working directory is set upon a valid I/O operation.");
 			} else if (!cmd.startsWith("new")) {
 				error("Directory not found");
-				IJ.error("Error", "The requested directory could not be found.");
+				error("Error", "The requested directory could not be found.");
 			}
 			resetCommandList();
 			return;
@@ -772,7 +779,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	private void showHelp() {
 		// TODO Auto-generated method stub
-		IJ.error("Not yet implemented");
+		error("Not yet implemented");
 	}
 
 	void showOptionsDialog() {
