@@ -74,7 +74,7 @@ import bar.Utils;
  *
  * @author tiago
  */
-public class Opener implements PlugIn, FileFilter, ActionListener,
+public class Commander implements PlugIn, FileFilter, ActionListener,
 		DocumentListener, KeyListener, ListSelectionListener, MouseListener,
 		WindowListener {
 
@@ -108,7 +108,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 	private String selectedItem;
 	private ArrayList<String> bookmarks;
 
-	public static void main(final String[] args) { Debug.run("BAR Opener",""); }
+	public static void main(final String[] args) { Debug.run("BAR Commander",""); }
 
 
 	public void run(final String arg) {
@@ -129,7 +129,7 @@ public class Opener implements PlugIn, FileFilter, ActionListener,
 		bookmarks = new ArrayList<String>();
 
 		// Build dialog
-		dialog = new Dialog(IJ.getInstance(), "BAR Opener");
+		dialog = new Dialog(IJ.getInstance(), "BAR Commander");
 		dialog.addWindowListener(this);
 		dialog.setLayout(new GridBagLayout());
 		final GridBagConstraints c = new GridBagConstraints();
