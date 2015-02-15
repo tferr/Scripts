@@ -334,13 +334,27 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * Displays an error message. When triggered in console mode the message is
 	 * displayed during 5s. This is achieved through a timerTask that keeps the
 	 * freezeStatusBar flag set to true during five seconds.
-	 * 
+	 *
 	 * @see log
 	 */
 	void error(final String errorMsg) {
+		error(errorMsg, isConsoleMode());
+	}
+
+	/**
+	 * Displays an error message.
+	 *
+	 * @param persistent
+	 *            If true, the message is displayed during 5s. This is achieved
+	 *            through a timerTask that keeps the freezeStatusBar flag set to
+	 *            true during five seconds.
+	 *
+	 * @see log
+	 */
+	void error(final String errorMsg, final boolean persistent) {
 		statusBar.setForeground(Color.RED);
 		statusBar.setText(errorMsg);
-		if (isConsoleMode()) {
+		if (persistent) {
 			freezeStatusBar = true;
 			final Timer timer = new Timer();
 			final TimerTask task = new TimerTask() {
@@ -873,7 +887,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 		final int hits = filenames.size();
 		if (hits == 0) {
-			log("No matching commands...");
+			error("No matching commands...", false);
 		} else if (hits == 1) {
 			log("<html>Press &crarr; to execute</html>");
 		} else {
