@@ -101,7 +101,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 	private JTextField prompt;
 	private JScrollPane listPane;
 	private JList list;
-	private JLabel status, pathBar;
+	private JLabel statusBar, pathBar;
 	private Button optionsButton, openButton, closeButton;
 	private PopupMenu optionsMenu;
 	private Vector<String> filenames;
@@ -180,10 +180,10 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		dialog.add(pathBar, c);
 
 		// Add status bar
-		status = new JLabel();
-		status.addMouseListener(this);
+		statusBar = new JLabel();
+		statusBar.addMouseListener(this);
 		c.gridy++; c.gridx = 0;
-		dialog.add(status, c);
+		dialog.add(statusBar, c);
 		updateBrowserStatus();
 
 		// Add buttons
@@ -335,8 +335,8 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 	 * @see log
 	 */
 	void error(final String errorMsg) {
-		status.setForeground(Color.RED);
-		status.setText(errorMsg);
+		statusBar.setForeground(Color.RED);
+		statusBar.setText(errorMsg);
 		if (isConsoleMode()) {
 			freezeStatusBar = true;
 			final Timer timer = new Timer();
@@ -364,7 +364,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 	 */
 	void log(final String msg) {
 		if (!freezeStatusBar)
-			status.setText(msg);
+			statusBar.setText(msg);
 	}
 
 	/**
@@ -830,13 +830,13 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 		sb.append("Current path:<br>");
 		sb.append("&emsp;").append(path);
 		sb.append("</html>");
-		status.setToolTipText(sb.toString());
+		statusBar.setToolTipText(sb.toString());
 		pathBar.setToolTipText(sb.toString());
 	}
 
 	void updateConsoleStatus() {
 		prompt.setForeground(Color.BLUE);
-		status.setForeground(Color.BLUE);
+		statusBar.setForeground(Color.BLUE);
 
 		if (matchingString.equals("!")) {
 			log("Console enabled...");
@@ -854,7 +854,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 
 	void updateBrowserStatus() {
 		prompt.setForeground(Color.BLACK);
-		status.setForeground(Color.DARK_GRAY);
+		statusBar.setForeground(Color.DARK_GRAY);
 
 		final int hits = filenames.size();
 		if (hits == 0) {
@@ -1055,7 +1055,7 @@ public class Commander implements PlugIn, FileFilter, ActionListener,
 			if (e.getSource() == list) {
 				setSelectedItem(list.getSelectedIndex());
 				openItem(selectedItem);
-			} else if (e.getSource() == status || e.getSource() == pathBar) {
+			} else if (e.getSource() == statusBar || e.getSource() == pathBar) {
 				executeStatusBarActions();
 			}
 		}
