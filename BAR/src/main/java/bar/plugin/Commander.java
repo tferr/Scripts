@@ -705,8 +705,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		truncatedList = false;
 		filenames.removeAllElements();
+		final String matchingCmd = matchingString.substring(1);
 		for (String cmd : cmds) {
-			if (cmd.indexOf(matchingString) >= 0) {
+			if (cmd.toLowerCase().indexOf(matchingCmd) >= 0) {
 				if (!cmd.equals(spacer)) {
 					final String[] items = cmd.split("@");
 					cmd = "<html><span style='color:blue;'>"
