@@ -725,6 +725,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		filenames.removeAllElements();
 		final String matchingCmd = matchingString.substring(1);
 		for (String cmd : cmds) {
+			if (cmd.equals(spacer) && !matchingCmd.isEmpty())
+				continue;
 			if (cmd.toLowerCase().indexOf(matchingCmd) >= 0) {
 				if (!cmd.equals(spacer)) {
 					final String[] items = cmd.split("@");
