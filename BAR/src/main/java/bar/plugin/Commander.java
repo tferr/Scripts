@@ -404,10 +404,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Case null: cmd encoded a path and encoded directory was not found
 		if (result == null) {
-			if (cmd.startsWith("image")) {
+			if (cmd.startsWith("imp")) {
 				error("Image directory unknown");
 				error("Unknown path", "Could not determine path of active image.");
-			} else if (cmd.startsWith("current")) {
+			} else if (cmd.startsWith("pwd")) {
 				error("Working directory unknown");
 				error("Unknown path", "Working directory is set upon a valid I/O operation.");
 			} else if (!cmd.startsWith("new")) {
@@ -445,7 +445,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Case "0": Self-contained commands that need no follow-up
 		String exitStatus = String.valueOf(0);
-		if (cmd.startsWith("close")) {
+		if (cmd.startsWith("quit")) {
 			dialog.dispose();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
@@ -501,17 +501,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = Utils.getSnippetsDir();
 		} else if (cmd.equals("lib")) {
 			exitStatus = Utils.getLibDir();
-		} else if (cmd.equals("bar")) {
-			exitStatus = Utils.getBARDir();
+		//} else if (cmd.equals("bar")) {
+		//	exitStatus = Utils.getBARDir();
 		} else if (cmd.equals("samples")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
 		} else if (cmd.equals("scripts")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
-		} else if (cmd.equals("tools/")) {
-			exitStatus = IJ.getDirectory("macros") + "tools";
-		} else if (cmd.equals("toolsets")) {
-			exitStatus = IJ.getDirectory("macros") + cmd;
-		}
+		}// else if (cmd.equals("tools/")) {
+		 //	exitStatus = IJ.getDirectory("macros") + "tools";
+		 //} else if (cmd.equals("toolsets")) {
+		 //	exitStatus = IJ.getDirectory("macros") + cmd;
+		 //}
 		return exitStatus;
 
 	}
@@ -695,10 +695,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final String spacer = "<html><span style='color:white;'><b>!</b></span></html>";
 		final String cmds[] = {
 				"!..@Parent directory of current path",
-				"!cd@Change directory to...",
-				"!current, !pwd@ImageJ <i>working</i> directory",
-				"!image, !imp@Folder of active image",
-				"!home, !~@"+ System.getProperty("user.name") +"'s home directory",
+				"!cd@Change directory to specified path",
+				"!pwd@ImageJ <i>current</i> (working) directory",
+				"!imp@Directory of active image",
+				"!~@"+ System.getProperty("user.name") +"'s home directory",
 				"!new@Choose new path in file manager",
 				spacer,
 				"!ij@<i>ImageJ</i> directory",
@@ -707,21 +707,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				"!plugins@<i>Plugins</i> directory",
 				"!samples@Cached File&gt;Open Samples&gt;",
 				"!scripts@<i>Scripts</i> directory",
-				"!tools/@Macro <i>tools</i> directory", // slash makes command unique
-				"!toolsets@Macro <i>toolsets</i> directory",
 				spacer,
-				"!bar@Path to BAR's root directory",
-				"lib@Path to <i>BAR/lib</i>",
-				"!snip@Path to <i>BAR/Snippets</i>",
-				"!temp, !tmp@<i>Temporary</i> directory",
+				"lib@Path to <i>BAR/lib/</i>",
+				"!snip@Path to <i>BAR/Snippets/</i>",
+				"!tmp@<i>Temporary</i> directory",
 				spacer,
-				"!bookmark@Add path to <i>Favorites</i>",
-				"!close !quit@Dismiss this window",
-				"!info@Details on current path",
-				"!ls !print@List contents of current path",
+				"!bookmark@Add current path to Favorites",
+				"!info@Display info on current path",
+				"!ls@List (print) contents of current path",
 				"!help@Display built-in help",
 				"!options@Prompt for settings",
-				"!refresh@Refresh (reload) list"
+				"!refresh@Refresh (reload) list",
+				"!quit@Exit BAR Commander"
 		};
 
 		truncatedList = false;
