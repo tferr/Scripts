@@ -828,7 +828,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			ijmLegacy = DEF_IJM_LEGACY;
 			closeOnOpen = DEF_CLOSE_ON_OPEN;
 			regex = DEF_REGEX;
-			path = DEF_PATH;
+			setPath(DEF_PATH);
 			showOptionsDialog();
 		}
 		if (hardReset)
