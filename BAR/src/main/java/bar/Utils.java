@@ -315,11 +315,11 @@ public class Utils implements PlugIn {
 		final boolean valid = file.exists();
 		final int WIDTH = 400;
 		if (!valid) {
-			IJ.showMessage("Invalid path or filename", "<html><div WIDTH="+ WIDTH +">"
+			IJ.showMessage("Invalid file path", "<html><div WIDTH="+ WIDTH +">"
 					+"Path not found:<br><i>"+ file.toString() +"</i><br><br>"
-					+"If the file has been deleted and is part of your Fiji "
-					+"installation, you can use the updater to re-install it."
-					+"</div><html>");
+					+"The file may have been moved, renamed or deleted. If it has been "
+					+"deleted and is part of your ImageJ installation, you can use the "
+					+"updater to re-install it.</div><html>");
 		}
 		return valid;
 	}
