@@ -110,7 +110,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private String selectedItem;
 	private ArrayList<String> bookmarks;
 
-	public static void main(final String[] args) { Debug.run("BAR Commander",""); }
+	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
 
 	public void run(final String arg) {
