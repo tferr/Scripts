@@ -455,7 +455,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			quit();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
-			showHelp();
+			IJ.showMessage("Commander Help", helpMessage());
 			return exitStatus;
 		} else if (cmd.startsWith("ls")) {
 			printList();
@@ -796,21 +796,42 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		selectedItem = filenames.elementAt(Math.max(0, index));
 	}
 
-	private void showHelp() {
-		// TODO Auto-generated method stub
-		error("Not yet implemented");
+	String helpMessage() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("<html><div WIDTH=600>");
+		sb.append("BAR Commander is a file Browser providing instant access to all of your ImageJ files ");
+		sb.append("just by typing abbreviations of the searched item’s name. It is modeled after ImageJ's ");
+		sb.append("CommandLauncher in <i>Plugins>Utilities>Find Commands... [L]</i>. ");
+		sb.append("You can locate files by browsing the <i>List</i> panel using the navigation keys ");
+		sb.append("&larr;&uarr;&darr;&rarr; or by using <i>Console</i> commands. Examples:");
+		sb.append("<dl>");
+		sb.append("<dt>Opening <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></dt>");
+		sb.append("<dd>Type <tt>!lib</tt>&crarr;, then <tt>med</tt>&crarr;</dd>");
+		sb.append("<dt>Opening <i>").append(IJ.getDirectory("luts")).append("glasbey.lut:</i></dt>");
+		sb.append("<dd>Type <tt>!luts</tt>&crarr;, then <tt>glas</tt>&crarr;</dd>");
+		sb.append("<dt>Opening <i>").append(System.getProperty("user.home")).append(File.separator)
+				.append("Desktop").append(File.separator).append(":<i></dt>");
+		sb.append("<dd>Type <tt>!home</tt>&crarr;, then <tt>desk</tt>&crarr;</dd>");
+		sb.append("</dl>");
+		sb.append("Another useful function of the Commander is its ability to produce file lists. E.g.: ");
+		sb.append("To select all TIFF images in a directory, navigate to it, type &nbsp;<tt>tif&nbsp;</tt> ");
+		sb.append("in the  search field, then choose <i>Print File List</i> from the Options Menu. More advanced ");
+		sb.append("matches are also possible by enabling regular expressions in the <i>Options...</i> prompt.");
+		sb.append("</div></html>");
+		return sb.toString();
 	}
 
 	void showOptionsDialog() {
 		boolean hardReset = false;
-		final GenericDialog gd = new GenericDialog("Commander Settings");
+		final GenericDialog gd = new GenericDialog("Commander Options");
 		gd.addNumericField("Maximum number of items in list", maxSize, 0);
 		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
 		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
 		gd.addCheckbox("Search files using regex (experimental)", regex);
-		gd.addMessage("");//spacer
+		gd.addMessage(""); //spacer
 		gd.addCheckbox("Clear Favorites list", false);
-		gd.enableYesNoCancel("OK", "Reset All Settings");
+		gd.enableYesNoCancel("OK", "Reset All Options");
+		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			dialog.toFront();
@@ -820,7 +841,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			closeOnOpen = gd.getNextBoolean();
 			ijmLegacy = gd.getNextBoolean();
 			regex = gd.getNextBoolean();
-			if (gd.getNextBoolean()) clearBookmarks();
+			if (gd.getNextBoolean())
+				clearBookmarks();
 			dialog.toFront();
 		} else {
 			hardReset = true;
