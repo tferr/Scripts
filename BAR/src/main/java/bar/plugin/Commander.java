@@ -14,6 +14,7 @@ package bar.plugin;
 import fiji.Debug;
 import fiji.util.gui.GenericDialogPlus;
 import ij.IJ;
+import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.io.OpenDialog;
@@ -114,14 +115,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 
 	public void run(final String arg) {
-		new Thread() {
-			public void run() {
-				if (!Utils.fileExists(path))
-					path = IJ.getDirectory("Choose new Directory");
-				if (path != null)
-					runInteractively();
-			}
-		}.start();
+		if (WindowManager.getWindow("BAR Commander") == null) {
+			new Thread() {
+				public void run() {
+					if (!Utils.fileExists(path))
+						path = IJ.getDirectory("Choose new Directory");
+					if (path != null)
+						runInteractively();
+				}
+			}.start();
+		} else {
+			IJ.selectWindow("BAR Commander");
+		}
 	}
 
 	public void runInteractively() {
@@ -209,6 +214,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		updateList();
 		dialog.pack();
 		dialog.setResizable(false);
+		WindowManager.addWindow(dialog);
 		dialog.setVisible(true);
 		prompt.requestFocus();
 
@@ -446,7 +452,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Case "0": Self-contained commands that need no follow-up
 		String exitStatus = String.valueOf(0);
 		if (cmd.startsWith("quit")) {
-			dialog.dispose();
+			quit();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
 			showHelp();
@@ -645,7 +651,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}.start();
 
 		if (closeOnOpen)
-			dialog.dispose();
+			quit();
 
 	}
 
@@ -941,6 +947,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return matchingString.startsWith("!");
 	}
 
+	void quit() {
+		WindowManager.removeWindow(dialog);
+		dialog.dispose();
+	}
 
 	/* ActionEvent Methods */
 	@Override
@@ -959,7 +969,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else if (b == openButton) {
 			openItem(selectedItem);
 		} else if (b == closeButton) {
-			dialog.dispose();
+			quit();
 		} else { // An entry in the optionsMenu has been selected
 			final String command = e.getActionCommand();
 			if (command.equals("Options...")) {
@@ -1022,7 +1032,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		if ((ke.isMetaDown() && key == KeyEvent.VK_W)
 				|| key == KeyEvent.VK_ESCAPE) {
-			dialog.dispose();
+			quit();
 
 		} else if (source == prompt) {
 
@@ -1117,7 +1127,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/* WindowListener Methods */
 	public void windowClosing(final WindowEvent e) {
-		dialog.dispose();
+		quit();
 	}
 
 	public void windowActivated(final WindowEvent e) {
