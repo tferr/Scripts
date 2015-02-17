@@ -236,6 +236,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
+		log("Changing directory...");
 		try {
 			Class.forName("fiji.util.gui.GenericDialogPlus");
 			final GenericDialogPlus gd = new GenericDialogPlus("Change directory");
@@ -458,6 +459,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			quit();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
+			log("Displaying help...");
 			IJ.showMessage("Commander Help", helpMessage());
 			return exitStatus;
 		} else if (cmd.startsWith("ls")) {
@@ -529,6 +531,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private void showInfo() {
 		try {
 			resetFileList();
+			log("Dispaying info...");
 			final File f = new File(path);
 			final String writable = (f.canWrite()) ? "writable"
 					: "non writable";
@@ -685,7 +688,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		for (final String f : filenames)
 			tw.append("" + IJ.pad(counter++, padLngth) + ": " + path + f);
 		tp.updateDisplay();
-		log("" + (counter - 1) + " items listed");
 	}
 
 	void selectParentDirectory(final String currentDir) {
@@ -863,6 +865,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	void showOptionsDialog() {
+		log("Prompting for options...");
 		boolean hardReset = false;
 		final GenericDialog gd = new GenericDialog("Commander Options");
 		gd.addNumericField("Maximum number of items in list", maxSize, 0);
