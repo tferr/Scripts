@@ -247,7 +247,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 					final TextField tf = (TextField) gd.getStringFields().elementAt(0);
 					final Button[] buttons = gd.getButtons();
-					if (new File(gd.getNextString()).exists()) {
+					if (new File(gd.getNextString()).isDirectory()) {
 						tf.setForeground(Color.BLACK);
 						buttons[0].setLabel("    Set Path    ");
 						return true;
