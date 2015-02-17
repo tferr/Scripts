@@ -148,8 +148,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.selectAll();
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;! &emsp; Console mode<br>"
+				+ "&emsp;&darr;&emsp; Move to list<br>"
 				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&emsp;&darr;&emsp; Move to list</html>");
+				+ "&emsp;Ctrl+1&ensp; Open 1<sup>st</sup> hit<br>"
+				+ "&emsp;Ctrl+2&ensp; Open 2<sup>nd</sup> hit<br>"
+				+ "&emsp;Ctrl+3&ensp; Open 3<sup>rd</sup> hit</html>");
 		prompt.setFont(prompt.getFont().deriveFont(
 				prompt.getFont().getSize() + 2f));
 		prompt.getDocument().addDocumentListener(this);
@@ -233,6 +236,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
+		log("Changing directory...");
 		try {
 			Class.forName("fiji.util.gui.GenericDialogPlus");
 			final GenericDialogPlus gd = new GenericDialogPlus("Change directory");
@@ -243,7 +247,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 					final TextField tf = (TextField) gd.getStringFields().elementAt(0);
 					final Button[] buttons = gd.getButtons();
-					if (new File(gd.getNextString()).exists()) {
+					if (new File(gd.getNextString()).isDirectory()) {
 						tf.setForeground(Color.BLACK);
 						buttons[0].setLabel("    Set Path    ");
 						return true;
@@ -338,8 +342,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/**
 	 * Displays an error message. When triggered in console mode the message is
-	 * displayed during 5s. This is achieved through a timerTask that keeps the
-	 * freezeStatusBar flag set to true during five seconds.
+	 * displayed for at least 5s. This is achieved through a timerTask that
+	 * keeps the freezeStatusBar flag set to true for five seconds.
 	 *
 	 * @see log
 	 */
@@ -351,9 +355,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * Displays an error message.
 	 *
 	 * @param persistent
-	 *            If true, the message is displayed during 5s. This is achieved
-	 *            through a timerTask that keeps the freezeStatusBar flag set to
-	 *            true during five seconds.
+	 *            If true, the message is displayed for at least 5s. This is
+	 *            achieved through a timerTask that keeps the freezeStatusBar
+	 *            flag set to true for five seconds.
 	 *
 	 * @see log
 	 */
@@ -416,7 +420,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			} else if (cmd.startsWith("pwd")) {
 				error("Working directory unknown");
 				error("Unknown path", "Working directory is set upon a valid I/O operation.");
-			} else if (!cmd.startsWith("new")) {
+			} else if (!cmd.startsWith("goto")) {
 				error("Directory not found");
 				error("Error", "The requested directory could not be found.");
 			}
@@ -455,6 +459,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			quit();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
+			log("Displaying help...");
 			IJ.showMessage("Commander Help", helpMessage());
 			return exitStatus;
 		} else if (cmd.startsWith("ls")) {
@@ -485,9 +490,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Remaining cases: Commands that only retrieve paths
 		exitStatus = null;
-		if (cmd.equals("new")) {
+		if (cmd.startsWith("goto")) {
 			exitStatus = IJ.getDirectory("Choose new directory");
-		} else if (cmd.startsWith("home")) {
+		} else if (cmd.startsWith("~")) {
 			exitStatus = IJ.getDirectory("home");
 		} else if (cmd.startsWith("image")) {
 			exitStatus = IJ.getDirectory("image");
@@ -497,11 +502,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory(cmd);
 		} else if (cmd.equals("plugins")) {
 			exitStatus = IJ.getDirectory(cmd);
-		} else if (cmd.startsWith("current")) {
+		} else if (cmd.startsWith("pwd")) {
 			exitStatus = OpenDialog.getDefaultDirectory();
 		} else if (cmd.equals("ij")) {
 			exitStatus = IJ.getDirectory("imagej");
-		} else if (cmd.startsWith("temp")) {
+		} else if (cmd.startsWith("tmp")) {
 			exitStatus = IJ.getDirectory("temp");
 		} else if (cmd.equals("snip")) {
 			exitStatus = Utils.getSnippetsDir();
@@ -526,6 +531,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private void showInfo() {
 		try {
 			resetFileList();
+			log("Dispaying info...");
 			final File f = new File(path);
 			final String writable = (f.canWrite()) ? "writable"
 					: "non writable";
@@ -682,7 +688,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		for (final String f : filenames)
 			tw.append("" + IJ.pad(counter++, padLngth) + ": " + path + f);
 		tp.updateDisplay();
-		log("" + (counter - 1) + " items listed");
 	}
 
 	void selectParentDirectory(final String currentDir) {
@@ -705,7 +710,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				"!pwd@ImageJ <i>current</i> (working) directory",
 				"!imp@Directory of active image",
 				"!~@"+ System.getProperty("user.name") +"'s home directory",
-				"!new@Choose new path in file manager",
+				"!goto@Choose new path in file manager",
 				spacer,
 				"!ij@<i>ImageJ</i> directory",
 				"!luts@<i>Lookup Tables</i> directory",
@@ -724,7 +729,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				"!help@Display built-in help",
 				"!options@Prompt for settings",
 				"!refresh@Refresh (reload) list",
-				"!quit@Exit BAR Commander"
+				"!quit@Exit Commander"
 		};
 
 		truncatedList = false;
@@ -798,30 +803,69 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	String helpMessage() {
 		final StringBuffer sb = new StringBuffer();
-		sb.append("<html><div WIDTH=600>");
-		sb.append("BAR Commander is a file Browser providing instant access to all of your ImageJ files ");
-		sb.append("just by typing abbreviations of the searched item’s name. It is modeled after ImageJ's ");
-		sb.append("CommandLauncher in <i>Plugins>Utilities>Find Commands... [L]</i>. ");
-		sb.append("You can locate files by browsing the <i>List</i> panel using the navigation keys ");
-		sb.append("&larr;&uarr;&darr;&rarr; or by using <i>Console</i> commands. Examples:");
-		sb.append("<dl>");
-		sb.append("<dt>Opening <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></dt>");
-		sb.append("<dd>Type <tt>!lib</tt>&crarr;, then <tt>med</tt>&crarr;</dd>");
-		sb.append("<dt>Opening <i>").append(IJ.getDirectory("luts")).append("glasbey.lut:</i></dt>");
-		sb.append("<dd>Type <tt>!luts</tt>&crarr;, then <tt>glas</tt>&crarr;</dd>");
-		sb.append("<dt>Opening <i>").append(System.getProperty("user.home")).append(File.separator)
-				.append("Desktop").append(File.separator).append(":<i></dt>");
-		sb.append("<dd>Type <tt>!home</tt>&crarr;, then <tt>desk</tt>&crarr;</dd>");
-		sb.append("</dl>");
-		sb.append("Another useful function of the Commander is its ability to produce file lists. E.g.: ");
-		sb.append("To select all TIFF images in a directory, navigate to it, type &nbsp;<tt>tif&nbsp;</tt> ");
-		sb.append("in the  search field, then choose <i>Print File List</i> from the Options Menu. More advanced ");
-		sb.append("matches are also possible by enabling regular expressions in the <i>Options...</i> prompt.");
+		sb.append("<html>");
+		sb.append("<head>");
+		sb.append("  <style type='text/css'>");
+		sb.append("  .cnsl {color: blue; font-family: monospace;}");
+		sb.append("  .srch {color: black; font-family: monospace;}");
+		sb.append("  .key {background:#eeeeee;}");
+		sb.append("  </style>");
+		sb.append("<title> BAR Commander</title>");
+		sb.append("</head>");
+		sb.append("<body><div WIDTH=550>");
+		sb.append("  <h4>Description</h4>");
+		sb.append("  BAR Commander is a file browser providing instant access to your ImageJ");
+		sb.append("  files just by typing abbreviations of the searched item&rsquo;s name.");
+		sb.append("  It is modeled after ImageJ's CommandLauncher in");
+		sb.append("  <i>Plugins&gt;Utilities&gt;Find Commands... [L]</i>.");
+		sb.append("  <br /> <br />");
+		sb.append("  It serves two purposes: to expedite the opening of files and to produce");
+		sb.append("  filtered lists of directory contents.");
+		sb.append("  <br /> <br />");
+		sb.append("  <h4>Examples: Opening Files</h4>");
+		sb.append("  <ol type='I'>");
+		sb.append("    <li>Open <i>").append(IJ.getDirectory("luts")).append("glasbey.lut:</i></li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Type: <span class='cnsl'>!luts</span> &mdash; Enter &mdash; ")
+				.append("<span class='srch'>glas</span> &mdash; Enter.</li>");
+		sb.append("      </ol>");
+		sb.append("    <li>Open <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Type: <span class='cnsl'>!snip</span> &mdash; Enter &mdash; ")
+				.append("<span class='srch'>med</span> &mdash; Enter.</li>");
+		sb.append("      </ol>");
+		sb.append("    </li>");
+		sb.append("  </ol>");
+		sb.append("  <h4>Examples: Listing Files</h4>");
+		sb.append("  <ol type='I'>");
+		sb.append("    <li>List the contents of <i>").append(System.getProperty("user.home"))
+				.append(File.separator).append("Desktop").append(File.separator).append(":<i></li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Type: <span class='cnsl'>!home</span> &mdash; Enter &mdash; ")
+				.append("<span class='srch'>desk</span> &mdash; Enter.</li>");
+		sb.append("      </ol>");
+		sb.append("    <li>Extract the paths of all TIFF images in a directory:</li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Navigate to the desired folder. Use <i>Go To...</i> or the commands");
+		sb.append("        <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.");
+		sb.append("        Alternatively, browse the file list using the <span class='key'>&larr;</span>")
+				.append("&nbsp;<span class='key'>&larr;</span>&nbsp;<span class='key'>&uarr;</span>")
+				.append("<&nbsp;<span class='key'>&darr;</span><&nbsp;<span class='key'>&rarr;</span>");
+		sb.append("        navigation keys.</li>");
+		sb.append("        <li>Type: <span class='srch'>.tif</span> &mdash; Enter.</li>");
+		sb.append("        <li>Choose <i>Print Current List</i> from the Options Menu. Advanced");
+		sb.append("        sorting and filtering is also possible by enabling regular expressions");
+		sb.append("        in the <i>Options...</i> prompt.</li>");
+		sb.append("      </ol>");
+		sb.append("    </li>");
+		sb.append("  </ol>");
+		sb.append("</body>");
 		sb.append("</div></html>");
 		return sb.toString();
 	}
 
 	void showOptionsDialog() {
+		log("Prompting for options...");
 		boolean hardReset = false;
 		final GenericDialog gd = new GenericDialog("Commander Options");
 		gd.addNumericField("Maximum number of items in list", maxSize, 0);
@@ -1021,21 +1065,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* DocumentListener Methods */
 	@Override
 	public void insertUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception e) {
+		}
 	}
 
 	@Override
 	public void removeUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception ignored) {
+		}
 	}
 
 	// Plain text should not trigger this event
 	@Override
 	public void changedUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception ignored) {
+		}
 	}
 
 	/* ListSelectionListener Methods */
@@ -1062,6 +1115,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
 				list.setSelectedIndex(0);
 				list.requestFocus();
+			} else if (ke.isControlDown() && key == KeyEvent.VK_1) {
+				setSelectedItem(0);
+				openItem(selectedItem);
+			} else if (ke.isControlDown() && key == KeyEvent.VK_2) {
+				setSelectedItem(1);
+				openItem(selectedItem);
+			} else if (ke.isControlDown() && key == KeyEvent.VK_3) {
+				setSelectedItem(2);
+				openItem(selectedItem);
 			}
 
 		} else if (source == list) {
