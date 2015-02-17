@@ -1115,16 +1115,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
 				list.setSelectedIndex(0);
 				list.requestFocus();
-
-			} else if (ke.isControlDown()) {
-
-				if (key == KeyEvent.VK_1) {
-					setSelectedItem(1);
-				} else if (key == KeyEvent.VK_2) {
-					setSelectedItem(2);
-				} else if (key == KeyEvent.VK_3) {
-					setSelectedItem(3);
-				}
+			} else if (ke.isControlDown() && key == KeyEvent.VK_1) {
+				setSelectedItem(0);
+				openItem(selectedItem);
+			} else if (ke.isControlDown() && key == KeyEvent.VK_2) {
+				setSelectedItem(1);
+				openItem(selectedItem);
+			} else if (ke.isControlDown() && key == KeyEvent.VK_3) {
+				setSelectedItem(2);
 				openItem(selectedItem);
 			}
 
