@@ -1065,21 +1065,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* DocumentListener Methods */
 	@Override
 	public void insertUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception e) {
+		}
 	}
 
 	@Override
 	public void removeUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception ignored) {
+		}
 	}
 
 	// Plain text should not trigger this event
 	@Override
 	public void changedUpdate(final DocumentEvent ev) {
-		setMatchingString(prompt.getText());
-		updateList();
+		try {
+			setMatchingString(prompt.getText());
+			updateList();
+		} catch (final Exception ignored) {
+		}
 	}
 
 	/* ListSelectionListener Methods */
