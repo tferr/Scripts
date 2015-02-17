@@ -341,8 +341,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/**
 	 * Displays an error message. When triggered in console mode the message is
-	 * displayed during 5s. This is achieved through a timerTask that keeps the
-	 * freezeStatusBar flag set to true during five seconds.
+	 * displayed for at least 5s. This is achieved through a timerTask that
+	 * keeps the freezeStatusBar flag set to true for five seconds.
 	 *
 	 * @see log
 	 */
@@ -354,9 +354,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * Displays an error message.
 	 *
 	 * @param persistent
-	 *            If true, the message is displayed during 5s. This is achieved
-	 *            through a timerTask that keeps the freezeStatusBar flag set to
-	 *            true during five seconds.
+	 *            If true, the message is displayed for at least 5s. This is
+	 *            achieved through a timerTask that keeps the freezeStatusBar
+	 *            flag set to true for five seconds.
 	 *
 	 * @see log
 	 */
