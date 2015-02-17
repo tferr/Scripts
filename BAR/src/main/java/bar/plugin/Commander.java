@@ -416,7 +416,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			} else if (cmd.startsWith("pwd")) {
 				error("Working directory unknown");
 				error("Unknown path", "Working directory is set upon a valid I/O operation.");
-			} else if (!cmd.startsWith("new")) {
+			} else if (!cmd.startsWith("goto")) {
 				error("Directory not found");
 				error("Error", "The requested directory could not be found.");
 			}
@@ -485,9 +485,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Remaining cases: Commands that only retrieve paths
 		exitStatus = null;
-		if (cmd.equals("new")) {
+		if (cmd.startsWith("goto")) {
 			exitStatus = IJ.getDirectory("Choose new directory");
-		} else if (cmd.startsWith("home")) {
+		} else if (cmd.startsWith("~")) {
 			exitStatus = IJ.getDirectory("home");
 		} else if (cmd.startsWith("image")) {
 			exitStatus = IJ.getDirectory("image");
@@ -497,11 +497,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory(cmd);
 		} else if (cmd.equals("plugins")) {
 			exitStatus = IJ.getDirectory(cmd);
-		} else if (cmd.startsWith("current")) {
+		} else if (cmd.startsWith("pwd")) {
 			exitStatus = OpenDialog.getDefaultDirectory();
 		} else if (cmd.equals("ij")) {
 			exitStatus = IJ.getDirectory("imagej");
-		} else if (cmd.startsWith("temp")) {
+		} else if (cmd.startsWith("tmp")) {
 			exitStatus = IJ.getDirectory("temp");
 		} else if (cmd.equals("snip")) {
 			exitStatus = Utils.getSnippetsDir();
@@ -705,7 +705,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				"!pwd@ImageJ <i>current</i> (working) directory",
 				"!imp@Directory of active image",
 				"!~@"+ System.getProperty("user.name") +"'s home directory",
-				"!new@Choose new path in file manager",
+				"!goto@Choose new path in file manager",
 				spacer,
 				"!ij@<i>ImageJ</i> directory",
 				"!luts@<i>Lookup Tables</i> directory",
@@ -724,7 +724,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				"!help@Display built-in help",
 				"!options@Prompt for settings",
 				"!refresh@Refresh (reload) list",
-				"!quit@Exit BAR Commander"
+				"!quit@Exit Commander"
 		};
 
 		truncatedList = false;
