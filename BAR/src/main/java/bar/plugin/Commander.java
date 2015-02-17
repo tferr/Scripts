@@ -148,8 +148,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.selectAll();
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;! &emsp; Console mode<br>"
+				+ "&emsp;&darr;&emsp; Move to list<br>"
 				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&emsp;&darr;&emsp; Move to list</html>");
+				+ "&emsp;Ctrl+1&ensp; Open 1<sup>st</sup> hit<br>"
+				+ "&emsp;Ctrl+2&ensp; Open 2<sup>nd</sup> hit<br>"
+				+ "&emsp;Ctrl+3&ensp; Open 3<sup>rd</sup> hit</html>");
 		prompt.setFont(prompt.getFont().deriveFont(
 				prompt.getFont().getSize() + 2f));
 		prompt.getDocument().addDocumentListener(this);
@@ -1062,6 +1065,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
 				list.setSelectedIndex(0);
 				list.requestFocus();
+
+			} else if (ke.isControlDown()) {
+
+				if (key == KeyEvent.VK_1) {
+					setSelectedItem(1);
+				} else if (key == KeyEvent.VK_2) {
+					setSelectedItem(2);
+				} else if (key == KeyEvent.VK_3) {
+					setSelectedItem(3);
+				}
+				openItem(selectedItem);
 			}
 
 		} else if (source == list) {
