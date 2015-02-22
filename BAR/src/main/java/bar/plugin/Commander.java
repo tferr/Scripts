@@ -14,6 +14,7 @@ package bar.plugin;
 import fiji.Debug;
 import fiji.util.gui.GenericDialogPlus;
 import ij.IJ;
+import ij.Menus;
 import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
@@ -23,9 +24,11 @@ import ij.text.TextPanel;
 import ij.text.TextWindow;
 
 import java.awt.AWTEvent;
+import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Dialog;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,9 +53,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.regex.Pattern;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -155,6 +158,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
+
+	@SuppressWarnings("serial")
 	public void runInteractively() {
 
 		// Initialize file list and favorites list
