@@ -54,14 +54,17 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import bar.Utils;
 
@@ -78,7 +81,7 @@ import bar.Utils;
  * @author tiago
  */
 public class Commander implements PlugIn, ActionListener, DocumentListener,
-		KeyListener, ListSelectionListener, MouseListener, WindowListener {
+		KeyListener, MouseListener, WindowListener {
 
 	/** Defaults for "Reset" option */
 	private static final String DEF_PATH = System.getProperty("user.home");
@@ -106,13 +109,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private Dialog dialog;
 	private JTextField prompt;
 	private JScrollPane listPane;
-	private JList list;
-	private JLabel statusBar, pathBar;
+	private JLabel statusBar;
 	private Button optionsButton, openButton, closeButton;
 	private PopupMenu optionsMenu;
-	private Vector<String> filenames;
+	private ArrayList<String> filenames, bookmarks;
 	private String selectedItem;
-	private ArrayList<String> bookmarks;
+	private JTable table;
+	private TableModel tableModel;
+	private JTableHeader tableHeader;
 
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
@@ -135,7 +139,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	public void runInteractively() {
 
 		// Initialize file list and favorites list
-		filenames = new Vector<String>();
+		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
 
 		// Build dialog
@@ -164,33 +168,51 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(prompt, c);
 
-		// Add file list
-		listPane = new JScrollPane();
-		list = new JList();
-		list.setVisibleRowCount(16);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setToolTipText("<html>Navigation shortcuts:<br>"
+		// Prepare table holding file list. Format it so it mimics a JList
+		tableModel = new TableModel();
+		table = new JTable(tableModel) { // Use alternate row colors
+			public Component prepareRenderer(final TableCellRenderer renderer,
+					final int row, final int column) {
+				final Component c = super
+						.prepareRenderer(renderer, row, column);
+				if (!isRowSelected(row))
+					c.setBackground(row % 2 == 0 ? new Color(255, 255, 255)
+							: new Color(245, 245, 245));
+				return c;
+			}
+		};
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setRowSelectionAllowed(true);
+		table.setColumnSelectionAllowed(false);
+		//table.setAutoCreateRowSorter(true);
+		table.setFillsViewportHeight(true);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableModel.setColumnWidths(table.getColumnModel());
+		table.setShowGrid(false);
+		table.setShowHorizontalLines(false);
+		table.setShowVerticalLines(false);
+		table.setRowMargin(0);
+		table.setIntercellSpacing(new Dimension(0, 0));
+		table.setToolTipText("<html>Navigation shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
 				+ "&emsp;&crarr;&emsp; Open item<br>"
 				+ "&emsp;&larr;&emsp; Parent directory<br>"
 				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
-				+ "Alt &uarr;, &lArr;&ensp;Search prompt</html>");
-		list.addKeyListener(this);
-		list.addMouseListener(this);
-		list.addListSelectionListener(this);
-		listPane.getViewport().setView(list);
+				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
+		table.addKeyListener(this);
+		table.addMouseListener(this);
+
+		// Use Column header as a path bar
+		tableHeader = table.getTableHeader();
+		tableHeader.setLayout(new BorderLayout());
+		tableHeader.addMouseListener(this);
+
+		listPane = new JScrollPane();
+		listPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		listPane.getViewport().setView(table);
 		c.gridy++; c.gridx = 0;
 		dialog.add(listPane, c);
 
-		// Add path bar
-		pathBar = new JLabel();
-		pathBar.setFont(pathBar.getFont().deriveFont(
-				pathBar.getFont().getSize() - 1f));
-		pathBar.setForeground(Color.DARK_GRAY);
-		pathBar.addMouseListener(this);
-		setPath(path); // update contents
-		c.gridy++; c.gridx = 0;
-		dialog.add(pathBar, c);
 
 		// Add status bar
 		statusBar = new JLabel();
@@ -216,7 +238,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(buttonPanel, c);
 
-		// Populate file list and display dialog
+		// Populate file list, path bar and display dialog
+		setPath(path);
 		updateList();
 		dialog.pack();
 		dialog.setResizable(false);
@@ -597,7 +620,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void resetFileList() {
 		prompt.setText(""); // Resets matchingString
 		updateList();
-		list.setSelectedIndex(0);
+		table.setRowSelectionInterval(0, 0);
 	}
 
 	/**
@@ -744,7 +767,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		};
 
 		truncatedList = false;
-		filenames.removeAllElements();
+		filenames.clear();
 		final String matchingCmd = matchingString.substring(1);
 		for (String cmd : cmds) {
 			if (cmd.equals(spacer) && !matchingCmd.isEmpty())
@@ -778,7 +801,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		};
 
 		truncatedList = false;
-		filenames.removeAllElements();
+		filenames.clear();
 		final File dir = new File(path);
 		final int rootIdx = path.length();
 		for (final File f : dir.listFiles(filter)) {
@@ -801,15 +824,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		this.matchingString = newMatchingString.toLowerCase(Locale.US);
 	}
 
+	void repaintColumnHeader(final String newPath) {
+		final TableColumn tc = tableHeader.getColumnModel().getColumn(0);
+		tc.setHeaderValue(newPath);
+		tableHeader.repaint();
+		final StringBuilder sb = new StringBuilder();
+		sb.append("<html>");
+		sb.append("Current path:<br>");
+		sb.append("&emsp;").append(newPath).append("<br>");
+		sb.append("To change directory:<br>");
+		sb.append("&emsp;Double-click in path bar or drag &amp; drop ")
+			.append("a new folder from the file manager<br>");
+		sb.append("</p></html>");
+		tableHeader.setToolTipText(sb.toString());
+	}
+
 	void setPath(String newPath) {
 		if (!newPath.endsWith(File.separator))
 			newPath += File.separator;
 		path = newPath;
-		pathBar.setText(path);
+		repaintColumnHeader(newPath);
 	}
 
 	void setSelectedItem(final int index) {
-		selectedItem = filenames.elementAt(Math.max(0, index));
+		selectedItem = filenames.get(Math.max(0, index));
 	}
 
 	String helpMessage() {
@@ -923,14 +961,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else {
 			setFileList();
 			if (filenames.size()==0 && matchingString.isEmpty()) {
-				filenames.addElement("..Folder is empty");
+				filenames.add("..Folder is empty");
 			}
 			if (!freezeStatusBar)
 				updateBrowserStatus();
 			setStatusTooltip("Double-click to refresh list or type <tt>!refresh</tt>.");
 		}
-		
-		list.setListData(filenames);
+
+		tableModel.setData(filenames);
 	}
 
 	/** Defines the actions triggered by double-clicking on the status/path bar */
@@ -951,12 +989,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void setStatusTooltip(final String text) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<html>");
-		sb.append(text).append("<br>");
-		sb.append("Current path:<br>");
-		sb.append("&emsp;").append(path);
+		sb.append(text);
 		sb.append("</html>");
 		statusBar.setToolTipText(sb.toString());
-		pathBar.setToolTipText(sb.toString());
 	}
 
 	void updateConsoleStatus() {
@@ -1102,15 +1137,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/* ListSelectionListener Methods */
-	@Override
-	public void valueChanged(final ListSelectionEvent e) {
-		if (e.getValueIsAdjusting())
-			return;
-		setSelectedItem(list.getSelectedIndex());
-		openButton.setEnabled(isOpenable(selectedItem));
-	}
-
 	/* KeyListener Methods */
 	public void keyPressed(final KeyEvent ke) {
 		final int key = ke.getKeyCode();
@@ -1142,17 +1168,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			if (key == KeyEvent.VK_LEFT) {
 
 				selectParentDirectory(path);
-				setSelectedItem(list.getSelectedIndex());
+				setSelectedItem(table.getSelectedRow());
 
 			} else if (key == KeyEvent.VK_RIGHT) {
 
-				setSelectedItem(list.getSelectedIndex());
+				setSelectedItem(table.getSelectedRow());
 				if (isFolder(selectedItem))
 					selectSubDirectory(selectedItem);
 
 			} else if (key == KeyEvent.VK_ENTER) {
 
-				setSelectedItem(list.getSelectedIndex());
+				ke.consume();
+				setSelectedItem(table.getSelectedRow());
 				openItem(selectedItem);
 
 			} else if (key == KeyEvent.VK_BACK_SPACE
@@ -1242,5 +1269,52 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	public void windowOpened(final WindowEvent e) {
 	}
+
+	@SuppressWarnings("serial")
+	private class TableModel extends AbstractTableModel {
+		protected ArrayList<String> list;
+		public final static int COLUMNS = 1;
+
+		public TableModel() {
+			list = new ArrayList<String>();
+		}
+
+		public boolean isCellEditable(final int row, final int column) {
+			return false;
+		}
+
+		public void setData(final ArrayList<String> list) {
+			this.list = list;
+			fireTableDataChanged();
+		}
+
+		public int getColumnCount() {
+			return COLUMNS;
+		}
+
+		public String getColumnName(final int column) {
+			switch (column) {
+			case 0:
+				return path;
+			}
+			return null;
+		}
+
+		public int getRowCount() {
+			return list.size();
+		}
+
+		public Object getValueAt(final int row, final int column) {
+			if (row >= list.size())
+				return null;
+			return list.get(row);
+		}
+
+		public void setColumnWidths(final TableColumnModel columnModel) {
+			columnModel.getColumn(0).setPreferredWidth(FRAME_WIDTH+10);
+		}
+
+	}
+
 
 }
