@@ -26,6 +26,7 @@ import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Menu;
@@ -93,6 +94,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private boolean freezeStatusBar = false;
 
 	/** Parameters **/
+	private static final int FRAME_WIDTH = 260;
+	private static final int FRAME_HEIGHT = 360;
 	private String path = DEF_PATH;
 	private int maxSize = DEF_MAX_SIZE;
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
@@ -363,7 +366,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void error(final String errorMsg, final boolean persistent) {
 		statusBar.setForeground(Color.RED);
-		statusBar.setText(errorMsg);
+		statusBar.setText(trimStatusBarText(errorMsg));
 		if (persistent) {
 			freezeStatusBar = true;
 			final Timer timer = new Timer();
@@ -382,6 +385,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	String trimStatusBarText(String string) {
+		final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
+		final int maxLength = string.length() * FRAME_WIDTH / fm.stringWidth(string);
+		if (string.length() > maxLength)
+			return string.substring(0, maxLength - 3) + "...";
+		return string;
+	}
+
 	/** Displays an ImageJ error message ensuring focus of main window */
 	void error(final String title, final String msg) {
 		IJ.error(title, msg);
@@ -397,7 +408,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void log(final String msg) {
 		if (!freezeStatusBar)
-			statusBar.setText(msg);
+			statusBar.setText(trimStatusBarText(msg));
 	}
 
 	/**
