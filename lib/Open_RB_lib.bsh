@@ -1,4 +1,0 @@
-/* Open_RB_lib.bsh
- * IJ BAR: https://github.com/tferr/Scripts#scripts
- */
-bar.Utils.openLib("BARlib.rb");
