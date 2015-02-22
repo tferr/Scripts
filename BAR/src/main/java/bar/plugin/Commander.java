@@ -1230,7 +1230,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	@Override
 	public void mousePressed(final MouseEvent e) {
-		if (e.getSource() != list && e.isPopupTrigger()) {
+		if (e.getSource() == optionsButton && e.isPopupTrigger()) {
 			validateOptionsMenu();
 			optionsMenu.show(optionsButton, e.getX(), e.getY());
 		}
@@ -1238,7 +1238,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	@Override
 	public void mouseReleased(final MouseEvent e) {
-		if (e.getSource() != list && e.isPopupTrigger()){
+		if (e.getSource() != optionsButton && e.isPopupTrigger()){
 			validateOptionsMenu();
 			optionsMenu.show(optionsButton, e.getX(), e.getY());
 		}
