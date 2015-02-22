@@ -66,6 +66,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import bar.FileDrop;
 import bar.Utils;
 
 /**
@@ -213,6 +214,23 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		c.gridy++; c.gridx = 0;
 		dialog.add(listPane, c);
 
+		// Allow folders to be dropped in table. Consider only first item dropped
+		new FileDrop(listPane, new FileDrop.Listener() {
+			public void filesDropped(final java.io.File[] files) {
+				try {
+					final String dir = (files[0].isDirectory()) ? files[0]
+							.getCanonicalPath() : files[0].getParent();
+					if (dir == null) {
+						error("Drag and Drop failed...");
+						return;
+					}
+					setPath(dir);
+					resetFileList();
+				} catch (final java.io.IOException e) {
+					error("Drag and Drop failed...");
+				}
+			}
+		});
 
 		// Add status bar
 		statusBar = new JLabel();
