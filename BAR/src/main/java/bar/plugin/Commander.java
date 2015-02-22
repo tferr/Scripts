@@ -73,14 +73,14 @@ import bar.FileDrop;
 import bar.Utils;
 
 /**
- * This class implements a file browser modeled after CommandFinder <a href=
+ * This class implements a file browser modeled after <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java"
- * >(URL)</a> by Mark Longair and FunctionFinder <a href=
+ * >(CommandFinder)</a> by Mark Longair and <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/macro/FunctionFinder.java"
- * >(URL)</a> by Jerome Mutterer. It is also influenced by Johannes Schindelin's
- * Recent_Commands plugin <a href=
+ * >(FunctionFinder)</a> by Jerome Mutterer. It is also influenced by Johannes
+ * Schindelin's <a href=
  * "https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java"
- * >(URL)</a> and a bit of DOS nostalgia.
+ * >(Recent_Commands plugin)</a> and a bit of DOS nostalgia.
  *
  * @author tiago
  */
