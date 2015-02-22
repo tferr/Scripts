@@ -107,7 +107,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private boolean regex = false;
 	private String matchingString = "";
 
-	private Dialog dialog;
+	private JFrame frame;
 	private JTextField prompt;
 	private JScrollPane listPane;
 	private JLabel statusBar;
@@ -163,15 +163,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 
 		// Build dialog
-		dialog = new Dialog(IJ.getInstance(), "BAR Commander");
-		dialog.addWindowListener(this);
-		dialog.setLayout(new GridBagLayout());
+		frame = new JFrame("BAR Commander");
+		frame.addWindowListener(this);
+		frame.setLayout(new GridBagLayout());
 		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = c.gridx = 0;
 
 		// Add search prompt
-		prompt = new JTextField(PROMPT_PLACEHOLDER, 20);
+		prompt = new JTextField(PROMPT_PLACEHOLDER);
 		prompt.selectAll();
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
@@ -186,7 +186,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
 		c.gridy++; c.gridx = 0;
-		dialog.add(prompt, c);
+		frame.add(prompt, c);
 
 		// Prepare table holding file list. Format it so it mimics a JList
 		tableModel = new TableModel();
@@ -231,7 +231,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		listPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		listPane.getViewport().setView(table);
 		c.gridy++; c.gridx = 0;
-		dialog.add(listPane, c);
+		frame.add(listPane, c);
 
 		// Allow folders to be dropped in table. Consider only first item dropped
 		new FileDrop(listPane, new FileDrop.Listener() {
@@ -255,7 +255,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		statusBar = new JLabel();
 		statusBar.addMouseListener(this);
 		c.gridy++; c.gridx = 0;
-		dialog.add(statusBar, c);
+		frame.add(statusBar, c);
 		updateBrowserStatus();
 
 		// Add buttons
@@ -273,15 +273,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		openButton.addActionListener(this);
 		buttonPanel.add(openButton);
 		c.gridy++; c.gridx = 0;
-		dialog.add(buttonPanel, c);
+		frame.add(buttonPanel, c);
 
 		// Populate file list, path bar and display dialog
 		setPath(path);
 		updateList();
-		dialog.pack();
-		dialog.setResizable(false);
-		WindowManager.addWindow(dialog);
-		dialog.setVisible(true);
+		frame.pack();
+		frame.setResizable(false);
+		WindowManager.addWindow(frame);
+		frame.setVisible(true);
 		prompt.requestFocus();
 
 	}
@@ -456,7 +456,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Displays an ImageJ error message ensuring focus of main window */
 	void error(final String title, final String msg) {
 		IJ.error(title, msg);
-		dialog.toFront();
+		frame.toFront();
 	}
 
 	/**
@@ -965,7 +965,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
-			dialog.toFront();
+			frame.toFront();
 			return;
 		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
@@ -974,7 +974,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			regex = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
-			dialog.toFront();
+			frame.toFront();
 		} else {
 			hardReset = true;
 			maxSize = DEF_MAX_SIZE;
@@ -1098,8 +1098,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	void quit() {
-		WindowManager.removeWindow(dialog);
-		dialog.dispose();
+		WindowManager.removeWindow(frame);
+		frame.dispose();
 	}
 
 	/* ActionEvent Methods */
