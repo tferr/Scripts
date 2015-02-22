@@ -1139,66 +1139,67 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/* KeyListener Methods */
 	public void keyPressed(final KeyEvent ke) {
+
 		final int key = ke.getKeyCode();
 		final Object source = ke.getSource();
+		final boolean meta = (ke.isControlDown() || ke.isMetaDown());
 
-		if ((ke.isMetaDown() && key == KeyEvent.VK_W)
-				|| key == KeyEvent.VK_ESCAPE) {
+		// Close if Esc, Ctrl+W or Cmd+W
+		if (key == KeyEvent.VK_ESCAPE || (key == KeyEvent.VK_W && meta)) {
 			quit();
-
 		} else if (source == prompt) {
 
-			if (key == KeyEvent.VK_DOWN
-					|| (ke.isAltDown() && key == KeyEvent.VK_TAB)) {
-				list.setSelectedIndex(0);
-				list.requestFocus();
-			} else if (ke.isControlDown() && key == KeyEvent.VK_1) {
+			// Open top hits if their shortcuts are pressed from prompt
+			if (meta && key == KeyEvent.VK_1) {
 				setSelectedItem(0);
 				openItem(selectedItem);
-			} else if (ke.isControlDown() && key == KeyEvent.VK_2) {
+			} else if (meta && key == KeyEvent.VK_2) {
 				setSelectedItem(1);
 				openItem(selectedItem);
-			} else if (ke.isControlDown() && key == KeyEvent.VK_3) {
+			} else if (meta && key == KeyEvent.VK_3) {
 				setSelectedItem(2);
 				openItem(selectedItem);
+
+			// Up or down arrows pressed in prompt: Move the focus to list
+			} else if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
+
+				final int index = table.getSelectedRow();// list.getSelectedIndex();
+				if (index>0)
+					table.setRowSelectionInterval(index, index);
+				else
+					table.setRowSelectionInterval(0, 0);
+				table.requestFocus();
 			}
+		} else if (source == table) {
 
-		} else if (source == list) {
-
+			// Focus in list and left arrow key: move up in directory hierarchy
 			if (key == KeyEvent.VK_LEFT) {
-
 				selectParentDirectory(path);
 				setSelectedItem(table.getSelectedRow());
 
+			// Focus in list and right arrow key: List sub-directory
 			} else if (key == KeyEvent.VK_RIGHT) {
-
 				setSelectedItem(table.getSelectedRow());
 				if (isFolder(selectedItem))
 					selectSubDirectory(selectedItem);
 
+			// Focus in list and enter: Open selected item
 			} else if (key == KeyEvent.VK_ENTER) {
-
 				ke.consume();
 				setSelectedItem(table.getSelectedRow());
 				openItem(selectedItem);
 
-			} else if (key == KeyEvent.VK_BACK_SPACE
-					|| (key == KeyEvent.VK_TAB) && ke.isAltDown()) {
-
+			// Focus in list and backspace or meta + up arrow: Switch focus back to prompt
+			} else if (key == KeyEvent.VK_BACK_SPACE || (meta && key == KeyEvent.VK_UP)) {
 				prompt.requestFocus();
 
+				// Focus in list and up/down arrow key: Loop through list
 			} else if (key == KeyEvent.VK_UP) {
-
-				if (ke.isAltDown())
-					prompt.requestFocus();
-				else if (list.getSelectedIndex() == 0)
-					list.setSelectedIndex(list.getModel().getSize() - 1);
-
+				if (table.getSelectedRow() == 0)
+					table.setRowSelectionInterval(tableModel.getRowCount() - 1, tableModel.getRowCount() - 1);
 			} else if (key == KeyEvent.VK_DOWN) {
-
-				if (list.getSelectedIndex() == list.getModel().getSize() - 1)
-					list.setSelectedIndex(0);
-
+				if (table.getSelectedRow() == tableModel.getRowCount() - 1)
+					table.setRowSelectionInterval(0, 0);
 			}
 
 		}
@@ -1216,11 +1217,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	@Override
 	public void mouseClicked(final MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			if (e.getSource() == list) {
-				setSelectedItem(list.getSelectedIndex());
+			if (e.getSource() == table) {
+				setSelectedItem(table.getSelectedRow());
 				openItem(selectedItem);
-			} else if (e.getSource() == statusBar || e.getSource() == pathBar) {
+			} else if (e.getSource() == statusBar) {
 				executeStatusBarActions();
+			} else if (e.getSource() == tableHeader) {
+				changeDirectory("");
 			}
 		}
 	}
