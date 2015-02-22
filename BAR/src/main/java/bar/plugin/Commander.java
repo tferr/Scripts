@@ -142,6 +142,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list and favorites list
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
+		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 
 		// Build dialog
 		dialog = new Dialog(IJ.getInstance(), "BAR Commander");
@@ -155,12 +156,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt = new JTextField(PROMPT_PLACEHOLDER, 20);
 		prompt.selectAll();
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
+				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
 				+ "&emsp;! &emsp; Console mode<br>"
-				+ "&emsp;&darr;&emsp; Move to list<br>"
 				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&emsp;Ctrl+1&ensp; Open 1<sup>st</sup> hit<br>"
-				+ "&emsp;Ctrl+2&ensp; Open 2<sup>nd</sup> hit<br>"
-				+ "&emsp;Ctrl+3&ensp; Open 3<sup>rd</sup> hit</html>");
+				+ "&emsp;" + metaKey + "+1&ensp; Open 1<sup>st</sup> hit<br>"
+				+ "&emsp;" + metaKey + "+2&ensp; Open 2<sup>nd</sup> hit<br>"
+				+ "&emsp;" + metaKey + "+3&ensp; Open 3<sup>rd</sup> hit</html>");
 		prompt.setFont(prompt.getFont().deriveFont(
 				prompt.getFont().getSize() + 2f));
 		prompt.getDocument().addDocumentListener(this);
@@ -323,7 +324,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void changeDirectory(String newDir) {
 		if (newDir.isEmpty())
-			newDir = IJ.getDirectory("Choose new Directory");
+			newDir = IJ.getDirectory("Choose new directory");
 		if (newDir == null)
 			return;
 		if (Utils.fileExists(newDir))
@@ -426,7 +427,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	String trimStatusBarText(String string) {
+	String trimStatusBarText(final String string) {
 		final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
 		final int maxLength = string.length() * FRAME_WIDTH / fm.stringWidth(string);
 		if (string.length() > maxLength)
@@ -913,9 +914,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("      </ol>");
 		sb.append("    <li>Extract the paths of all TIFF images in a directory:</li>");
 		sb.append("      <ol>");
-		sb.append("        <li>Navigate to the desired folder. Use <i>Go To...</i> or the commands");
+		sb.append("        <li>Drag and drop the desired folder onto the Commander list. Alternatively ")
+				.append("  navigate to the desired folder using <i>Go To...</i> or the commands ");
 		sb.append("        <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.");
-		sb.append("        Alternatively, browse the file list using the <span class='key'>&larr;</span>")
+		sb.append("        You can also browse the file list using the <span class='key'>&larr;</span>")
 				.append("&nbsp;<span class='key'>&larr;</span>&nbsp;<span class='key'>&uarr;</span>")
 				.append("<&nbsp;<span class='key'>&darr;</span><&nbsp;<span class='key'>&rarr;</span>");
 		sb.append("        navigation keys.</li>");
@@ -983,7 +985,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 			if (!freezeStatusBar)
 				updateBrowserStatus();
-			setStatusTooltip("Double-click to refresh list or type <tt>!refresh</tt>.");
+			setStatusTooltip("Double-click to refresh contents or type <tt>!refresh</tt>.");
 		}
 
 		tableModel.setData(filenames);
