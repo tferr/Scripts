@@ -1294,6 +1294,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	public void windowActivated(final WindowEvent e) {
+		if (IJ.isMacintosh() && frame!=null) {
+			IJ.wait(10);
+			frame.setMenuBar(Menus.getMenuBar());
+		}
 	}
 
 	public void windowClosed(final WindowEvent e) {
