@@ -123,18 +123,36 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 
 	public void run(final String arg) {
-		if (WindowManager.getWindow("BAR Commander") == null) {
-			new Thread() {
-				public void run() {
-					if (!Utils.fileExists(path))
-						path = IJ.getDirectory("Choose new Directory");
-					if (path != null)
-						runInteractively();
-				}
-			}.start();
-		} else {
+
+		// Check if Commander is already running
+		if (WindowManager.getWindow("BAR Commander") != null) {
 			IJ.selectWindow("BAR Commander");
+			if (arg != null && !arg.isEmpty())
+				IJ.showStatus("In Commander, type <" + arg + "> to start browsing...");
+			return;
 		}
+
+		// Check if a path has been specified
+		if ("!lib".equals(arg))
+			path = Utils.getLibDir();
+		else if ("!snip".equals(arg))
+			path = Utils.getSnippetsDir();
+		// Try to retrieve a new directory if specified path is not valid
+		if (!Utils.fileExists(path)) {
+			path = IJ.getDirectory("Choose new directory");
+			// Exit if user canceled prompt
+			if (path == null) {
+				IJ.showStatus("Commander requires a valid directory at startup...");
+				return;
+			}
+		}
+		// Start Commander
+		new Thread() {
+			public void run() {
+				runInteractively();
+			}
+		}.start();
+
 	}
 
 	public void runInteractively() {
