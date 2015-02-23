@@ -40,6 +40,7 @@ import java.awt.Rectangle;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -121,7 +122,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private ArrayList<String> filenames, bookmarks;
 	private String selectedItem;
 	private JTable table;
-	private TableModel tableModel;
+	private static TableModel tableModel;
 	private JTableHeader tableHeader;
 
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
@@ -225,6 +226,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				+ "&emsp;&crarr;&emsp; Open item<br>"
 				+ "&emsp;&larr;&emsp; Parent directory<br>"
 				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
+				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
 				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
 		table.addKeyListener(this);
 		table.addMouseListener(this);
@@ -240,6 +242,27 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		listPane.getViewport().setView(table);
 		c.gridy++; c.gridx = 0;
 		frame.add(listPane, c);
+
+		// Auto-scroll table using keystrokes
+		table.addKeyListener(new KeyAdapter() {
+			public void keyTyped(final KeyEvent evt) {
+				final int nRows = tableModel.getRowCount();
+				final char ch = Character.toLowerCase(evt.getKeyChar());
+				if (!Character.isLetterOrDigit(ch)) {
+					return; // Ignore searches for non alpha-numeric characters
+				}
+				final int sRow = table.getSelectedRow();
+				for (int row = (sRow+1) % nRows; row != sRow; row = (row+1) % nRows) {
+					final String rowData = tableModel.getValueAt(row, 0).toString();
+					final char rowCh = Character.toLowerCase(rowData.charAt(0));
+					if (ch == rowCh) {
+						table.setRowSelectionInterval(row, row);
+						table.scrollRectToVisible(table.getCellRect(row, 0, true));
+						break;
+					}
+				}
+			}
+		});
 
 		// Allow folders to be dropped in table. Consider only first item dropped
 		new FileDrop(listPane, new FileDrop.Listener() {
