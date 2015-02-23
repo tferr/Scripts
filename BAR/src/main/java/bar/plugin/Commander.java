@@ -63,6 +63,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -85,7 +87,7 @@ import bar.Utils;
  * @author tiago
  */
 public class Commander implements PlugIn, ActionListener, DocumentListener,
-		KeyListener, MouseListener, WindowListener {
+		KeyListener, ListSelectionListener, MouseListener, WindowListener {
 
 	/** Defaults for "Reset" option */
 	private static final String DEF_PATH = System.getProperty("user.home");
@@ -226,6 +228,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
 		table.addKeyListener(this);
 		table.addMouseListener(this);
+		table.getSelectionModel().addListSelectionListener(this);
 
 		// Use Column header as a path bar
 		tableHeader = table.getTableHeader();
@@ -1178,6 +1181,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			updateList();
 		} catch (final Exception ignored) {
 		}
+	}
+
+
+	/* ListSelectionListener Methods */
+	@Override
+	public void valueChanged(final ListSelectionEvent e) {
+		if (e.getValueIsAdjusting())
+			return;
+		setSelectedItem(table.getSelectedRow());
+		openButton.setEnabled(isOpenable(selectedItem));
 	}
 
 	/* KeyListener Methods */
