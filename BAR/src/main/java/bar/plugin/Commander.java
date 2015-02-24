@@ -1096,11 +1096,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		freezeStatusBar = false;
 		if (isConsoleMode()) {
 			resetCommandList();
+			log("Commands reloaded...", 500);
 		} else {
 			if (truncatedList) {
 				showOptionsDialog();
 			} else {
 				updateList();
+				log("Contents reloaded...", 500);
 			}
 		}
 		System.gc();
