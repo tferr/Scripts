@@ -574,7 +574,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Case 0: cmd encoded a non-verbose self-contained instruction
 		if (result.equals(String.valueOf(0))) {
-			resetFileList();
+			resetFileList("!" + cmd + " executed...");
 			prompt.requestFocus();
 			return;
 		}
@@ -731,6 +731,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.setText(""); // Resets matchingString
 		updateList();
 		table.setRowSelectionInterval(0, 0);
+	}
+
+	/**
+	 * Reloads an un-filtered listed of current path displaying a 'blink
+	 * message' (visible only for ~half a second) in the status bar
+	 */
+	void resetFileList(final String blinkMsg) {
+		resetFileList();
+		log(blinkMsg, 500);
 	}
 
 	/**
@@ -1204,7 +1213,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			} else if (command.equals("Print Current List")) {
 				printList();
 			} else if (command.equals("Refresh File List")) {
-				resetFileList();
+				resetFileList("Contents reloaded...");
 			} else if (command.contains("Console")) {
 				if (isConsoleMode())
 					resetFileList();
