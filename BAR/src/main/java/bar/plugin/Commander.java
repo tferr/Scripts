@@ -1452,7 +1452,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 
 		public void setColumnWidths(final TableColumnModel columnModel) {
-			columnModel.getColumn(0).setPreferredWidth(FRAME_WIDTH+10);
+			// single column table
+			columnModel.getColumn(0).setPreferredWidth(FRAME_WIDTH);
 		}
 
 	}
