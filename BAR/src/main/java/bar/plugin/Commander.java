@@ -483,7 +483,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/**
 	 * Displays an error message. When triggered in console mode the message is
-	 * displayed for at least 5s. This is achieved through a timerTask that
+	 * displayed for at least 4s. This is achieved through a timerTask that
 	 * keeps the freezeStatusBar flag set to true for five seconds.
 	 *
 	 * @see log
@@ -497,7 +497,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * Displays an error message.
 	 *
 	 * @param persistent
-	 *            If true, the message is displayed for at least 5s. This is
+	 *            If true, the message is displayed for at least 4s. This is
 	 *            achieved through a timerTask that keeps the freezeStatusBar
 	 *            flag set to true for five seconds.
 	 *
@@ -506,7 +506,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void error(final String errorMsg, final boolean persistent) {
 		statusBar.setForeground(Color.RED);
-		showStatus(errorMsg, (persistent) ? 5000 : 0, false);
+		showStatus(errorMsg, (persistent) ? 4000 : 0, false);
 	}
 
 	/** Displays an ImageJ error message ensuring focus of main window */
