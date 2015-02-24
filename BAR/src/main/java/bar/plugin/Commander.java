@@ -435,11 +435,59 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/**
+	 * Displays a message in the status bar. Message (assumed in plain text, not
+	 * HTML-formated) is trimmed to the width of the status bar (a JLabel) to
+	 * ensure bar is never enlarged.
+	 *
+	 * @param msecs
+	 *            Duration (in milliseconds). Message will remain visible for at
+	 *            least the specified duration . This is achieved through a
+	 *            TimerTask that keeps the freezeStatusBar flag set to true for
+	 *            the specified time.
+	 * @param restore
+	 *            If true, the previous message displayed in the status bar is
+	 *            reinstated after the specified duration.
+	 * @see log
+	 * @see error
+	 */
+	void showStatus(String msg, final long msecs, final boolean restore) {
+
+		final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
+		final int maxLength = msg.length() * FRAME_WIDTH / fm.stringWidth(msg);
+		if (msg.length() > maxLength)
+			msg = msg.substring(0, maxLength - 3) + "...";
+
+		final String previousMsg = statusBar.getText();
+		statusBar.setText(msg);
+		if (msecs == 0)
+			return;
+
+		freezeStatusBar = true;
+		final Timer timer = new Timer();
+		final TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				freezeStatusBar = false;
+				if (restore)
+					statusBar.setText(previousMsg);
+				timer.cancel();
+			}
+		};
+		try {
+			timer.schedule(task, msecs);
+		} catch (final Exception e) {
+			timer.cancel();
+		}
+
+	}
+
+	/**
 	 * Displays an error message. When triggered in console mode the message is
 	 * displayed for at least 5s. This is achieved through a timerTask that
 	 * keeps the freezeStatusBar flag set to true for five seconds.
 	 *
 	 * @see log
+	 * @see showStatus
 	 */
 	void error(final String errorMsg) {
 		error(errorMsg, isConsoleMode());
@@ -454,34 +502,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 *            flag set to true for five seconds.
 	 *
 	 * @see log
+	 * @see showStatus
 	 */
 	void error(final String errorMsg, final boolean persistent) {
 		statusBar.setForeground(Color.RED);
-		statusBar.setText(trimStatusBarText(errorMsg));
-		if (persistent) {
-			freezeStatusBar = true;
-			final Timer timer = new Timer();
-			final TimerTask task = new TimerTask() {
-				@Override
-				public void run() {
-					freezeStatusBar = false;
-					timer.cancel();
-				}
-			};
-			try {
-				timer.schedule(task, 5 * 1000);
-			} catch (final Exception e) {
-				timer.cancel();
-			}
-		}
-	}
-
-	String trimStatusBarText(final String string) {
-		final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
-		final int maxLength = string.length() * FRAME_WIDTH / fm.stringWidth(string);
-		if (string.length() > maxLength)
-			return string.substring(0, maxLength - 3) + "...";
-		return string;
+		showStatus(errorMsg, (persistent) ? 5000 : 0, false);
 	}
 
 	/** Displays an ImageJ error message ensuring focus of main window */
@@ -496,10 +521,27 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * (an error is being displayed).
 	 * 
 	 * @see error
+	 * @see showStatus
 	 */
 	void log(final String msg) {
 		if (!freezeStatusBar)
-			statusBar.setText(trimStatusBarText(msg));
+			showStatus(msg, 0, false);
+	}
+
+	/**
+	 * Displays a temporary informational message (visible only for the
+	 * specified amount of time) if status bar is not "frozen" (freezeStatusBar
+	 * is false). Does nothing if freezeStatusBar is true (an error is being
+	 * displayed).
+	 * 
+	 * @param msecs
+	 *            Duration (in milliseconds).
+	 * @see error
+	 * @see showStatus
+	 */
+	void log(final String msg, final long msecs) {
+		if (!freezeStatusBar)
+			showStatus(msg, msecs, true);
 	}
 
 	/**
