@@ -911,7 +911,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			public boolean accept(final File file) {
 				if (file.isHidden())
 					return false;
-				final String name = file.getName();
+				String name = file.getName();
+				if (file.isDirectory())
+					name += File.separator;
 				if (regex && !matchingString.isEmpty())
 					return Pattern.compile(matchingString).matcher(name).matches();
 				else
