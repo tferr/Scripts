@@ -1049,6 +1049,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
+			log("Prompt dismissed...");
 			frame.toFront();
 			return;
 		} else if (gd.wasOKed()) {
@@ -1087,7 +1088,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 			if (!freezeStatusBar)
 				updateBrowserStatus();
-			setStatusTooltip("Double-click to refresh contents or type <tt>!refresh</tt>.");
+			if (truncatedList)
+				setStatusTooltip("Double-click to change list size or type <tt>!options</tt>.");
+			else
+				setStatusTooltip("Double-click to refresh contents or type <tt>!refresh</tt>.");
 		}
 
 		tableModel.setData(filenames);
