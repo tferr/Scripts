@@ -233,6 +233,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Use Column header as a path bar
 		tableHeader = table.getTableHeader();
 		tableHeader.addMouseListener(this);
+		((DefaultTableCellRenderer) tableHeader.getDefaultRenderer())
+				.setHorizontalAlignment(JLabel.LEFT);
 
 		// Allow folders to be dropped in file list. Consider only first item dropped
 		listPane = new JScrollPane(table);
