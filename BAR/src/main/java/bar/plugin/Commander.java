@@ -161,10 +161,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				return;
 			}
 		}
+
 		// Start Commander
 		new Thread() {
 			public void run() {
-				runInteractively();
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						runInteractively();
+					}
+				});
 			}
 		}.start();
 
