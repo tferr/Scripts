@@ -30,8 +30,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.Panel;
@@ -105,8 +103,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private boolean freezeStatusBar = false;
 
 	/** Parameters **/
-	private static final int FRAME_WIDTH = 260;
-	private static final int FRAME_HEIGHT = 360;
+	private static final int FRAME_WIDTH = 250;
+	private static final int FRAME_HEIGHT = 450;
 	private String path = DEF_PATH;
 	private int maxSize = DEF_MAX_SIZE;
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
@@ -170,15 +168,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
 
-		// Build dialog
-		frame = new JFrame("BAR Commander");
-		frame.addWindowListener(this);
-		frame.setLayout(new GridBagLayout());
-		final GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = c.gridx = 0;
-
-		// Add search prompt
+		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
 		prompt.selectAll();
 		prompt.setFont(prompt.getFont().deriveFont(
@@ -186,8 +176,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.getDocument().addDocumentListener(this);
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
-		c.gridy++; c.gridx = 0;
-		frame.add(prompt, c);
 
 		// Prepare table holding file list. Format it so it mimics a JList
 		tableModel = new TableModel();
@@ -226,9 +214,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		listPane = new JScrollPane();
 		listPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		listPane.getViewport().setView(table);
-		c.gridy++; c.gridx = 0;
-		frame.add(listPane, c);
-
 		// Auto-scroll table using keystrokes
 		table.addKeyListener(new KeyAdapter() {
 			public void keyTyped(final KeyEvent evt) {
@@ -271,8 +256,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Add status bar
 		statusBar = new JLabel();
 		statusBar.addMouseListener(this);
-		c.gridy++; c.gridx = 0;
-		frame.add(statusBar, c);
 		updateBrowserStatus();
 
 		// Add buttons
@@ -289,18 +272,31 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		openButton = new Button("Open");
 		openButton.addActionListener(this);
 		buttonPanel.add(openButton);
-		c.gridy++; c.gridx = 0;
-		frame.add(buttonPanel, c);
 
-		// Populate file list, path bar and display dialog
+		final JPanel contained = new JPanel(new BorderLayout());
+		final JPanel container = new JPanel(new BorderLayout());
+		container.setFocusable(true);
+		contained.add(statusBar, BorderLayout.CENTER);
+		contained.add(buttonPanel, BorderLayout.PAGE_END);
+		container.add(prompt, BorderLayout.PAGE_START);
+		container.add(listPane, BorderLayout.CENTER);
+		container.add(contained, BorderLayout.PAGE_END);
+
+		// Populate file list. Update status and path bar
 		setPath(path);
 		updateList();
-		frame.pack();
-		frame.setResizable(false);
-		WindowManager.addWindow(frame);
-		frame.setVisible(true);
-		prompt.requestFocus();
 
+		// Display commander
+		frame = new JFrame("BAR Commander");
+		setDefaultTooltips();
+		frame.add(container);
+		frame.addWindowListener(this);
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setVisible(true);
+		//openButton.getRootPane().setDefaultButton(openButton);
+		prompt.requestFocusInWindow();
+		WindowManager.addWindow(frame);
 	}
 
 	void addBookmark() {
