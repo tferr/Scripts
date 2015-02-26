@@ -62,6 +62,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.ToolTipManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -168,7 +169,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list and favorites list
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
-		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 
 		// Build dialog
 		frame = new JFrame("BAR Commander");
@@ -181,13 +181,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Add search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
 		prompt.selectAll();
-		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
-				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
-				+ "&emsp;! &emsp; Console mode<br>"
-				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&emsp;" + metaKey + "+1&ensp; Open 1<sup>st</sup> hit<br>"
-				+ "&emsp;" + metaKey + "+2&ensp; Open 2<sup>nd</sup> hit<br>"
-				+ "&emsp;" + metaKey + "+3&ensp; Open 3<sup>rd</sup> hit</html>");
 		prompt.setFont(prompt.getFont().deriveFont(
 				prompt.getFont().getSize() + 2f));
 		prompt.getDocument().addDocumentListener(this);
@@ -221,13 +214,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		table.setShowVerticalLines(false);
 		table.setRowMargin(0);
 		table.setIntercellSpacing(new Dimension(0, 0));
-		table.setToolTipText("<html>Navigation shortcuts:<br>"
-				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
-				+ "&emsp;&crarr;&emsp; Open item<br>"
-				+ "&emsp;&larr;&emsp; Parent directory<br>"
-				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
-				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
-				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
 		table.addKeyListener(this);
 		table.addMouseListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
@@ -1120,6 +1106,29 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append(text);
 		sb.append("</html>");
 		statusBar.setToolTipText(sb.toString());
+	}
+
+	/** Defines static tooltips for frame components */
+	void setDefaultTooltips() {
+		final ToolTipManager ttm = ToolTipManager.sharedInstance();
+		ttm.setInitialDelay(3 * ttm.getInitialDelay());
+		ttm.setReshowDelay(3 * ttm.getReshowDelay());
+		ttm.setDismissDelay(2 * ttm.getDismissDelay());
+		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
+		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
+				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
+				+ "&emsp;! &emsp; Console mode<br>"
+				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
+				+ "&emsp;" + metaKey + "+1&ensp; Open 1<sup>st</sup> hit<br>"
+				+ "&emsp;" + metaKey + "+2&ensp; Open 2<sup>nd</sup> hit<br>"
+				+ "&emsp;" + metaKey + "+3&ensp; Open 3<sup>rd</sup> hit</html>");
+		table.setToolTipText("<html>Navigation shortcuts:<br>"
+				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
+				+ "&emsp;&crarr;&emsp; Open item<br>"
+				+ "&emsp;&larr;&emsp; Parent directory<br>"
+				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
+				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
+				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
 	}
 
 	void updateConsoleStatus() {
