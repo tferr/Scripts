@@ -33,6 +33,8 @@ import java.awt.Dimension;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -59,13 +61,20 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -178,26 +187,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
 
-		// Prepare table holding file list. Format it so it mimics a JList
+		// Create table holding file list. Format it so it mimics a JList
 		tableModel = new TableModel();
-		table = new JTable(tableModel) { // Use alternate row colors
-			public Component prepareRenderer(final TableCellRenderer renderer,
-					final int row, final int column) {
-				final Component c = super
-						.prepareRenderer(renderer, row, column);
-				if (!isRowSelected(row))
-					c.setBackground(row % 2 == 0 ? new Color(255, 255, 255)
-							: new Color(245, 245, 245));
-				return c;
-			}
-		};
+		table = new ScrollableTable();
+		table.setModel(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setRowSelectionAllowed(true);
 		table.setColumnSelectionAllowed(false);
 		//table.setAutoCreateRowSorter(true);
-		table.setFillsViewportHeight(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tableModel.setColumnWidths(table.getColumnModel());
 		table.setShowGrid(false);
 		table.setShowHorizontalLines(false);
 		table.setShowVerticalLines(false);
@@ -207,14 +204,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		table.addMouseListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
 
-		// Use Column header as a path bar
-		tableHeader = table.getTableHeader();
-		tableHeader.setLayout(new BorderLayout());
-		tableHeader.addMouseListener(this);
-
-		listPane = new JScrollPane();
-		listPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-		listPane.getViewport().setView(table);
 		// Auto-scroll table using keystrokes
 		table.addKeyListener(new KeyAdapter() {
 			public void keyTyped(final KeyEvent evt) {
@@ -236,7 +225,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		});
 
-		// Allow folders to be dropped in table. Consider only first item dropped
+		// Use Column header as a path bar
+		tableHeader = table.getTableHeader();
+		tableHeader.addMouseListener(this);
+
+		// Allow folders to be dropped in file list. Consider only first item dropped
+		listPane = new JScrollPane(table);
 		new FileDrop(listPane, new FileDrop.Listener() {
 			public void filesDropped(final java.io.File[] files) {
 				try {
@@ -1451,12 +1445,149 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return list.get(row);
 		}
 
-		public void setColumnWidths(final TableColumnModel columnModel) {
-			// single column table
-			columnModel.getColumn(0).setPreferredWidth(FRAME_WIDTH);
-		}
-
 	}
 
+	/**
+	 * Implements all JTable customizations, including alternate row coloring
+	 * and ensuring that table auto-resizes while displaying horizontal
+	 * scroll-bar as necessary. The latter is mainly a hack to bypass some
+	 * historical limitation of JTable and may need to be removed.
+	 * 
+	 * Sources:
+	 * http://stackoverflow.com/a/15015445
+	 * http://www.camick.com/java/source/TableRowRenderingTip.java
+	 * http://www.camick.com/java/source/TableColumnAdjuster.java
+	 */
+	@SuppressWarnings("serial")
+	private class ScrollableTable extends JTable {
+
+		private boolean trackViewportWidth = false;
+		private boolean initiated = false;
+		private boolean ignoreUpdates = false;
+
+		@Override
+		public Component prepareRenderer(final TableCellRenderer renderer,
+				final int row, final int column) {
+			final Component c = super.prepareRenderer(renderer, row, column);
+
+			if (!isRowSelected(row)) {
+
+				// Alternate row colors
+				c.setBackground((row % 2 == 0) ? getBackground() : new Color(
+						245, 245, 245));
+
+				// Differentiate folders from files
+				// final int modelRow = convertRowIndexToModel(row);
+				// final String item = (String) getModel().getValueAt(modelRow,0);
+				// if (item.endsWith(File.separator))
+				// c.setFont(c.getFont().deriveFont(Font.BOLD));
+			}
+			return c;
+		}
+
+		@Override
+		protected void initializeLocalVars() {
+			super.initializeLocalVars();
+			initiated = true;
+			updateColumnWidth();
+		}
+
+		@Override
+		public void addNotify() {
+			super.addNotify();
+			updateColumnWidth();
+			getParent().addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentResized(final ComponentEvent e) {
+					invalidate();
+				}
+			});
+		}
+
+		@Override
+		public void doLayout() {
+			super.doLayout();
+			if (!ignoreUpdates) {
+				updateColumnWidth();
+			}
+			ignoreUpdates = false;
+		}
+
+		protected void updateColumnWidth() {
+			if (getParent() != null) {
+				int width = 0;
+				for (int col = 0; col < getColumnCount(); col++) {
+					int colWidth = 0;
+					for (int row = 0; row < getRowCount(); row++) {
+						final int prefWidth = getCellRenderer(row, col)
+								.getTableCellRendererComponent(this,
+										getValueAt(row, col), false, false,
+										row, col).getPreferredSize().width;
+						colWidth = Math.max(colWidth, prefWidth
+								+ getIntercellSpacing().width);
+					}
+
+					final TableColumn tc = getColumnModel().getColumn(
+							convertColumnIndexToModel(col));
+					tc.setPreferredWidth(colWidth);
+					width += colWidth;
+				}
+
+				Container parent = getParent();
+				if (parent instanceof JViewport) {
+					parent = parent.getParent();
+				}
+
+				trackViewportWidth = width < parent.getWidth();
+			}
+		}
+
+		@Override
+		public void tableChanged(final TableModelEvent e) {
+			super.tableChanged(e);
+			if (initiated) {
+				updateColumnWidth();
+			}
+		}
+
+		public boolean getScrollableTracksViewportWidth() {
+			return trackViewportWidth;
+		}
+
+		@Override
+		protected TableColumnModel createDefaultColumnModel() {
+			final TableColumnModel model = super.createDefaultColumnModel();
+			model.addColumnModelListener(new TableColumnModelListener() {
+				@Override
+				public void columnAdded(final TableColumnModelEvent e) {
+				}
+
+				@Override
+				public void columnRemoved(final TableColumnModelEvent e) {
+				}
+
+				@Override
+				public void columnMoved(final TableColumnModelEvent e) {
+					if (!ignoreUpdates) {
+						ignoreUpdates = true;
+						updateColumnWidth();
+					}
+				}
+
+				@Override
+				public void columnMarginChanged(final ChangeEvent e) {
+					if (!ignoreUpdates) {
+						ignoreUpdates = true;
+						updateColumnWidth();
+					}
+				}
+
+				@Override
+				public void columnSelectionChanged(final ListSelectionEvent e) {
+				}
+			});
+			return model;
+		}
+	}
 
 }
