@@ -417,9 +417,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/**
-	 * Displays a message in the status bar. Message (assumed in plain text, not
-	 * HTML-formated) is trimmed to the width of the status bar (a JLabel) to
-	 * ensure bar is never enlarged.
+	 * Displays a message in the status bar.
 	 *
 	 * @param msecs
 	 *            Duration (in milliseconds). Message will remain visible for at
@@ -432,12 +430,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * @see log
 	 * @see error
 	 */
-	void showStatus(String msg, final long msecs, final boolean restore) {
+	void showStatus(final String msg, final long msecs, final boolean restore) {
 
-		final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
-		final int maxLength = msg.length() * FRAME_WIDTH / fm.stringWidth(msg);
-		if (msg.length() > maxLength)
-			msg = msg.substring(0, maxLength - 3) + "...";
+		//final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
+		//final int maxLength = msg.length() * FRAME_WIDTH / fm.stringWidth(msg);
+		//if (msg.length() > maxLength)
+		//	msg = msg.substring(0, maxLength - 3) + "...";
 
 		final String previousMsg = statusBar.getText();
 		statusBar.setText(msg);
