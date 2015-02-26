@@ -28,13 +28,8 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.Panel;
-import java.awt.PopupMenu;
-import java.awt.Rectangle;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,8 +49,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -116,8 +116,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTextField prompt;
 	private JScrollPane listPane;
 	private JLabel statusBar;
-	private Button optionsButton, openButton, closeButton;
-	private PopupMenu optionsMenu;
+	private JButton optionsButton, openButton, closeButton;
+	private JPopupMenu optionsMenu;
+
 	private ArrayList<String> filenames, bookmarks;
 	private String selectedItem;
 	private JTable table;
@@ -253,23 +254,22 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		});
 
-		// Add status bar
+		// Create status bar
 		statusBar = new JLabel();
 		statusBar.addMouseListener(this);
 		updateBrowserStatus();
 
-		// Add buttons
-		final Panel buttonPanel = new Panel();
-		optionsButton = new Button(". . .");
+		// Create popup menu and buttons
 		optionsMenu = createOptionsMenu();
-		optionsButton.add(optionsMenu);
+		final JPanel buttonPanel = new JPanel();
+		closeButton = new JButton("Quit");
+		closeButton.addActionListener(this);
+		buttonPanel.add(closeButton);
+		optionsButton = new JButton(". . .");
 		optionsButton.addActionListener(this);
 		optionsButton.addMouseListener(this);
 		buttonPanel.add(optionsButton);
-		closeButton = new Button("Dismiss");
-		closeButton.addActionListener(this);
-		buttonPanel.add(closeButton);
-		openButton = new Button("Open");
+		openButton = new JButton("Open");
 		openButton.addActionListener(this);
 		buttonPanel.add(openButton);
 
@@ -302,7 +302,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void addBookmark() {
 		if (!bookmarks.contains(path)) {
 			if (bookmarks.size() > 0)
-				optionsMenu.remove(optionsMenu.getItemCount() - 1);
+				optionsMenu.remove(optionsMenu.getComponentCount() - 1);
 			bookmarks.add(path);
 			optionsMenu.add(createBookmarkMenu());
 			log("New bookmark: "+ path);
@@ -367,36 +367,36 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Clears all bookmarks in "Favorites" (optionsMenu) */
 	void clearBookmarks() {
-		optionsMenu.remove(optionsMenu.getItemCount() - 1);
+		optionsMenu.remove(optionsMenu.getComponentCount() - 1);
 		bookmarks.clear();
 	}
 
 	/** Creates optionsMenu */
-	PopupMenu createOptionsMenu() {
-		final PopupMenu popup = new PopupMenu();
+	JPopupMenu createOptionsMenu() {
+		final JPopupMenu popup = new JPopupMenu();
 
-		MenuItem mi = new MenuItem("Add to Favorites");
+		JMenuItem mi = new JMenuItem("Add to Favorites");
 		mi.addActionListener(this);
 		popup.add(mi);
-		mi = new MenuItem("Reveal Path");
+		mi = new JMenuItem("Reveal Path");
 		mi.addActionListener(this);
 		popup.add(mi);
-		mi = new MenuItem("Go To...");
+		mi = new JMenuItem("Go To...");
 		mi.addActionListener(this);
 		popup.add(mi);
 		popup.addSeparator();
-		mi = new MenuItem("Refresh File List");
+		mi = new JMenuItem("Refresh File List");
 		mi.addActionListener(this);
 		popup.add(mi);
-		mi = new MenuItem("Print Current List");
+		mi = new JMenuItem("Print Current List");
 		mi.addActionListener(this);
 		popup.add(mi);
 		popup.addSeparator();
 
-		mi = new MenuItem("Enter Console Mode");
+		mi = new JMenuItem("Enter Console Mode");
 		mi.addActionListener(this);
 		popup.add(mi);
-		mi = new MenuItem("Options...");
+		mi = new JMenuItem("Options...");
 		mi.addActionListener(this);
 		popup.add(mi);
 		popup.addSeparator();
@@ -405,11 +405,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/** Creates "Favorites" (bookmarks) menu */
-	Menu createBookmarkMenu() {
-		final Menu menu = new Menu("Favorites");
-		MenuItem mi;
+	JMenu createBookmarkMenu() {
+		final JMenu menu = new JMenu("Favorites");
+		JMenuItem mi;
 		for (final String bookmark : bookmarks) {
-			mi = new MenuItem(bookmark);
+			mi = new JMenuItem(bookmark);
 			mi.addActionListener(this);
 			menu.add(mi);
 		}
@@ -1172,17 +1172,19 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Toggles "Add to Favorites", "Reveal Path", "Print Current List", etc. */
 	void validateOptionsMenu() {
-		for (int i = 0; i < optionsMenu.getItemCount(); i++) {
-			final MenuItem item = optionsMenu.getItem(i);
-			final String label = item.getLabel();
-			if (label.equals("Add to Favorites") || label.equals("Reveal Path")
-					|| label.equals("Print Current List")
-					|| label.equals("Refresh File List")) {
-				item.setEnabled(!isConsoleMode());
-			} else if (label.contains("Console")) {
-				final String cLabel = (isConsoleMode()) ? "Exit Console Mode"
-						: "Enter Console Mode";
-				item.setLabel(cLabel);
+		for (final Component item : optionsMenu.getComponents()) {
+			if (item instanceof JMenuItem) {
+				final String label = ((JMenuItem) item).getText();
+				if (label.equals("Add to Favorites")
+						|| label.equals("Reveal Path")
+						|| label.equals("Print Current List")
+						|| label.equals("Refresh File List")) {
+					item.setEnabled(!isConsoleMode());
+				} else if (label.contains("Console")) {
+					final String cLabel = (isConsoleMode()) ? "Exit Console Mode"
+							: "Enter Console Mode";
+					((JMenuItem) item).setText(cLabel);
+				}
 			}
 		}
 	}
@@ -1209,8 +1211,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		} else if (b == optionsButton) {
 			validateOptionsMenu();
-			final Rectangle r = optionsButton.getBounds();
-			optionsMenu.show(optionsButton, r.x, r.y);
+			optionsMenu.show(optionsButton, optionsButton.getWidth()/2, 0);
 		} else if (b == openButton) {
 			openItem(selectedItem);
 		} else if (b == closeButton) {
@@ -1373,18 +1374,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	@Override
 	public void mousePressed(final MouseEvent e) {
-		if (e.getSource() == optionsButton && e.isPopupTrigger()) {
-			validateOptionsMenu();
-			optionsMenu.show(optionsButton, e.getX(), e.getY());
-		}
 	}
 
 	@Override
 	public void mouseReleased(final MouseEvent e) {
-		if (e.getSource() != optionsButton && e.isPopupTrigger()){
-			validateOptionsMenu();
-			optionsMenu.show(optionsButton, e.getX(), e.getY());
-		}
 	}
 
 	public void mouseEntered(final MouseEvent e) {
