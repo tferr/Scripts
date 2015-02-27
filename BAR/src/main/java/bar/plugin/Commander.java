@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -232,9 +233,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Use Column header as a path bar
 		tableHeader = table.getTableHeader();
+		tableHeader.setDefaultRenderer(new HeaderRenderer(table));
 		tableHeader.addMouseListener(this);
-		((DefaultTableCellRenderer) tableHeader.getDefaultRenderer())
-				.setHorizontalAlignment(JLabel.LEFT);
 
 		// Allow folders to be dropped in file list. Consider only first item dropped
 		listPane = new JScrollPane(table);
@@ -1594,6 +1594,28 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				}
 			});
 			return model;
+		}
+	}
+
+	/** Implements TableHeader ("path bar") customizations */
+	private static class HeaderRenderer implements TableCellRenderer {
+
+		final DefaultTableCellRenderer renderer;
+
+		public HeaderRenderer(final JTable table) {
+			renderer = (DefaultTableCellRenderer) table.getTableHeader()
+					.getDefaultRenderer();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(final JTable table,
+				final Object value, final boolean isSelected,
+				final boolean hasFocus, final int row, final int col) {
+			final JLabel lbl = (JLabel) renderer.getTableCellRendererComponent(
+					table, value, isSelected, hasFocus, row, col);
+			lbl.setHorizontalAlignment(JLabel.LEFT);
+			lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
+			return lbl;
 		}
 	}
 
