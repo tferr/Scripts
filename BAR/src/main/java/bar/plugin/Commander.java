@@ -31,11 +31,16 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -53,6 +58,7 @@ import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -124,6 +130,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	private JFrame frame;
 	private JTextField prompt;
+	private JCheckBox regexCheckBox, caseSensitiveCheckBox, wholeWordCheckBox;
 	private JScrollPane listPane;
 	private JLabel statusBar;
 	private JButton optionsButton, openButton, closeButton;
@@ -192,6 +199,62 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.getDocument().addDocumentListener(this);
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
+
+		// Created search options
+		caseSensitiveCheckBox = new JCheckBox("Aa", caseSensitive);
+		final Font cboxFont = caseSensitiveCheckBox.getFont();
+		final int cboxHeight = cboxFont.getSize();
+		caseSensitiveCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		caseSensitiveCheckBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(final ItemEvent ie) {
+				caseSensitive = caseSensitiveCheckBox.isSelected();
+				setMatchingString(prompt.getText());
+				updateList();
+			}
+		});
+
+		wholeWordCheckBox = new JCheckBox("Whole word", wholeWord);
+		wholeWordCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		wholeWordCheckBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(final ItemEvent ie) {
+				wholeWord = wholeWordCheckBox.isSelected();
+				setMatchingString(prompt.getText());
+				updateList();
+			}
+		});
+
+		regexCheckBox = new JCheckBox("Regex", regex);
+		regexCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		regexCheckBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(final ItemEvent ie) {
+				regex = regexCheckBox.isSelected();
+				wholeWordCheckBox.setEnabled(!regex);
+				caseSensitiveCheckBox.setEnabled(!regex);
+				setMatchingString(prompt.getText());
+				updateList();
+			}
+		});
+
+		// Create options panel
+		final JPanel cboxPanel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 0, cboxHeight / 2, 0);
+		c.gridx = 0; c.gridy = 0;
+		cboxPanel.add(caseSensitiveCheckBox, c);
+		c.gridx++;
+		cboxPanel.add(wholeWordCheckBox, c);
+		c.gridx++;
+		cboxPanel.add(regexCheckBox, c);
+
+		// Create search panel
+		final JPanel promptPanel = new JPanel(new BorderLayout());
+		promptPanel.add(prompt, BorderLayout.CENTER);
+		promptPanel.add(cboxPanel, BorderLayout.PAGE_END);
+		promptPanel.setFocusable(true);
 
 		// Create table holding file list. Format it so it mimics a JList
 		tableModel = new TableModel();
@@ -279,7 +342,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		container.setFocusable(true);
 		contained.add(statusBar, BorderLayout.CENTER);
 		contained.add(buttonPanel, BorderLayout.PAGE_END);
-		container.add(prompt, BorderLayout.PAGE_START);
+		container.add(promptPanel, BorderLayout.PAGE_START);
 		container.add(listPane, BorderLayout.CENTER);
 		container.add(contained, BorderLayout.PAGE_END);
 
