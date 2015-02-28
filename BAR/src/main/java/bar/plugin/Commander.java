@@ -1100,10 +1100,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		gd.addNumericField("Maximum number of items in list", maxSize, 0);
 		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
 		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
-		gd.addCheckbox("Search files using regex (experimental)", regex);
-		gd.addMessage(""); //spacer
 		gd.addCheckbox("Clear Favorites list", false);
-		gd.enableYesNoCancel("OK", "Reset All Options");
+		gd.enableYesNoCancel("OK", "Reset Options");
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
@@ -1114,7 +1112,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			maxSize = (int) Math.max(1, gd.getNextNumber());
 			closeOnOpen = gd.getNextBoolean();
 			ijmLegacy = gd.getNextBoolean();
-			regex = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
 			frame.toFront();
