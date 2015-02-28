@@ -119,7 +119,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private int maxSize = DEF_MAX_SIZE;
 	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
 	private boolean ijmLegacy = DEF_IJM_LEGACY;
-	private boolean regex = false;
+	private boolean caseSensitive, regex, wholeWord = false;
 	private String matchingString = "";
 
 	private JFrame frame;
@@ -887,12 +887,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Sets filenames matching current search */
 	void setFileList() {
 
+	/** Converts string to lower case according to current search criteria */
+	String getCaseSensitiveString(final String string) {
+		return (this.regex || this.caseSensitive) ? string : string.toLowerCase(Locale.US);
+	}
+
 		final FileFilter filter = new FileFilter() {
 			@Override
 			public boolean accept(final File file) {
 				if (file.isHidden())
 					return false;
-				String name = file.getName();
+				String name = getCaseSensitiveString(file.getName());
 				if (file.isDirectory())
 					name += File.separator;
 				if (regex && !matchingString.isEmpty())
@@ -923,7 +928,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	void setMatchingString(final String newMatchingString) {
-		this.matchingString = newMatchingString.toLowerCase(Locale.US);
+		this.matchingString = getCaseSensitiveString(newMatchingString);
 	}
 
 	void repaintColumnHeader(final String newPath) {
