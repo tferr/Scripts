@@ -715,7 +715,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/**
-	 * Reloads an un-filtered listed of current path displaying a 'blink
+	 * Reloads an un-filtered list of current path displaying a 'blink
 	 * message' (visible only for ~half a second) in the status bar
 	 */
 	void resetFileList(final String blinkMsg) {
@@ -884,14 +884,26 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/** Sets filenames matching current search */
-	void setFileList() {
+	/** Evaluates matches between string an pattern according to current search criteria */
+	boolean match(final String string, final String pattern) {
+		if (pattern.isEmpty() || pattern.equals(PROMPT_PLACEHOLDER)) {
+			return true;
+		} else if (regex) {
+			return Pattern.compile(pattern).matcher(string).matches();
+		} else if (wholeWord) {
+			return Pattern.compile(".*\\b" + pattern + "\\b.*").matcher(string).matches();
+		} else {
+			return string.indexOf(pattern) >= 0;
+		}
+	}
 
 	/** Converts string to lower case according to current search criteria */
 	String getCaseSensitiveString(final String string) {
 		return (this.regex || this.caseSensitive) ? string : string.toLowerCase(Locale.US);
 	}
 
+	/** Creates a list of filenames matching current search */
+	void setFileList() {
 		final FileFilter filter = new FileFilter() {
 			@Override
 			public boolean accept(final File file) {
@@ -900,10 +912,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				String name = getCaseSensitiveString(file.getName());
 				if (file.isDirectory())
 					name += File.separator;
-				if (regex && !matchingString.isEmpty())
-					return Pattern.compile(matchingString).matcher(name).matches();
-				else
-					return name.toLowerCase().indexOf(matchingString) >= 0;
+				return match(name, matchingString);
 			}
 		};
 
