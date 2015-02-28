@@ -872,7 +872,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		for (String cmd : cmds) {
 			if (cmd.equals(spacer) && !matchingCmd.isEmpty())
 				continue;
-			if (cmd.toLowerCase().indexOf(matchingCmd) >= 0) {
+			if (match(getCaseSensitiveString(cmd), matchingCmd)) {
 				if (!cmd.equals(spacer)) {
 					final String[] items = cmd.split("@");
 					cmd = "<html><span style='color:blue;'>"
