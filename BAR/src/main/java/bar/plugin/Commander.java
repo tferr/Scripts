@@ -149,9 +149,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Check if Commander is already running
 		if (WindowManager.getWindow("BAR Commander") != null) {
-			IJ.selectWindow("BAR Commander");
 			if (arg != null && !arg.isEmpty())
 				IJ.showStatus("In Commander, type <" + arg + "> to start browsing...");
+			IJ.selectWindow("BAR Commander");
 			return;
 		}
 
@@ -193,9 +193,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
+		prompt.setFont(prompt.getFont().deriveFont(15f));
 		prompt.selectAll();
-		prompt.setFont(prompt.getFont().deriveFont(
-				prompt.getFont().getSize() + 2f));
 		prompt.getDocument().addDocumentListener(this);
 		prompt.addActionListener(this);
 		prompt.addKeyListener(this);
@@ -1191,8 +1190,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Defines static tooltips for frame components */
 	void setDefaultTooltips() {
 		final ToolTipManager ttm = ToolTipManager.sharedInstance();
-		ttm.setInitialDelay(3 * ttm.getInitialDelay());
-		ttm.setReshowDelay(3 * ttm.getReshowDelay());
+		ttm.setInitialDelay(2 * ttm.getInitialDelay());
+		ttm.setReshowDelay(2 * ttm.getReshowDelay());
 		ttm.setDismissDelay(2 * ttm.getDismissDelay());
 		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
