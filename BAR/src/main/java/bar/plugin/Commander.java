@@ -1036,58 +1036,69 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("  <style type='text/css'>");
 		sb.append("  .cnsl {color: blue; font-family: monospace;}");
 		sb.append("  .srch {color: black; font-family: monospace;}");
-		sb.append("  .key {background:#eeeeee;}");
+		sb.append("   ol {margin-top: -10px; margin-left:20px;}");
+		sb.append("   dl {margin-top: -10px;");
 		sb.append("  </style>");
 		sb.append("<title> BAR Commander</title>");
 		sb.append("</head>");
-		sb.append("<body><div WIDTH=550>");
+		sb.append("<body><div WIDTH=500>");
 		sb.append("  <h4>Description</h4>");
-		sb.append("  BAR Commander is a file browser providing instant access to your ImageJ");
-		sb.append("  files just by typing abbreviations of the searched item&rsquo;s name.");
-		sb.append("  It is modeled after ImageJ's CommandLauncher in");
-		sb.append("  <i>Plugins&gt;Utilities&gt;Find Commands... [L]</i>.");
+		sb.append("  BAR Commander is a file browser providing instant access to files ");
+		sb.append("  just by typing abbreviations of filenames. ");
+		sb.append("  It serves two purposes: 1) to expedite the opening of files and 2) to ");
+		sb.append("  produce filtered lists of directory contents.");
 		sb.append("  <br /> <br />");
-		sb.append("  It serves two purposes: to expedite the opening of files and to produce");
-		sb.append("  filtered lists of directory contents.");
-		sb.append("  <br /> <br />");
-		sb.append("  <h4>Examples: Opening Files</h4>");
-		sb.append("  <ol type='I'>");
+		sb.append("  <h4>Examples:</h4>");
+		sb.append("  <ol type='A'>");
 		sb.append("    <li>Open <i>").append(IJ.getDirectory("luts")).append("glasbey.lut:</i></li>");
 		sb.append("      <ol>");
 		sb.append("        <li>Type: <span class='cnsl'>!luts</span> &mdash; Enter &mdash; ")
-				.append("<span class='srch'>glas</span> &mdash; Enter.</li>");
+				.append("<span class='srch'>glas</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
 		sb.append("    <li>Open <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></li>");
 		sb.append("      <ol>");
 		sb.append("        <li>Type: <span class='cnsl'>!snip</span> &mdash; Enter &mdash; ")
-				.append("<span class='srch'>med</span> &mdash; Enter.</li>");
+				.append("<span class='srch'>med</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
-		sb.append("    </li>");
-		sb.append("  </ol>");
-		sb.append("  <h4>Examples: Listing Files</h4>");
-		sb.append("  <ol type='I'>");
 		sb.append("    <li>List the contents of <i>").append(System.getProperty("user.home"))
 				.append(File.separator).append("Desktop").append(File.separator).append(":<i></li>");
 		sb.append("      <ol>");
 		sb.append("        <li>Type: <span class='cnsl'>!home</span> &mdash; Enter &mdash; ")
-				.append("<span class='srch'>desk</span> &mdash; Enter.</li>");
+				.append("<span class='srch'>desk</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
 		sb.append("    <li>Extract the paths of all TIFF images in a directory:</li>");
 		sb.append("      <ol>");
-		sb.append("        <li>Drag and drop the desired folder onto the Commander list. Alternatively ")
-				.append("  navigate to the desired folder using <i>Go To...</i> or the commands ");
-		sb.append("        <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.");
-		sb.append("        You can also browse the file list using the <span class='key'>&larr;</span>")
-				.append("&nbsp;<span class='key'>&larr;</span>&nbsp;<span class='key'>&uarr;</span>")
-				.append("<&nbsp;<span class='key'>&darr;</span><&nbsp;<span class='key'>&rarr;</span>");
-		sb.append("        navigation keys.</li>");
-		sb.append("        <li>Type: <span class='srch'>.tif</span> &mdash; Enter.</li>");
-		sb.append("        <li>Choose <i>Print Current List</i> from the Options Menu. Advanced");
-		sb.append("        sorting and filtering is also possible by enabling regular expressions");
-		sb.append("        in the <i>Options...</i> prompt.</li>");
+		sb.append("        <li>Drag and drop the desired folder into the Commander list</li>");
+		sb.append("        <li>Type: <span class='srch'>.tif</span> &mdash; Enter</li>");
+		sb.append("        <li>Choose <i>Print Current List</i> from the Options Menu</li>");
 		sb.append("      </ol>");
 		sb.append("    </li>");
+		sb.append("    <li>Retrieve both TIFF and JPEG files in a directory:</li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Enable <i>Regex</i>, then type: <span class='srch'>.*(tif|jpg)</span></li>");
+		sb.append("      </ol>");
+		sb.append("    </li>");
+		sb.append("    <li>Retrieve all PNG files that <u>contain</u> the (sub)string \"ImageJ\":</li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Enable <i>Regex</i>, then type: <span class='srch'>.*(ImageJ).*(png)</span></li>");
+		sb.append("      </ol>");
+		sb.append("    </li>");
+		sb.append("    <li>Retrieve all PNG files that do <u>not contain</u> the (sub)string \"ImageJ\":</li>");
+		sb.append("      <ol>");
+		sb.append("        <li>Enable <i>Regex</i>, then type: <span class='srch'>((?!ImageJ).)*(png)</span></li>");
+		sb.append("      </ol>");
 		sb.append("  </ol>");
+		sb.append("  <h4>Tips:</h4>");
+		sb.append("  <dl>");
+		sb.append("    <dt>Drag and drop alternatives:</dt>");
+		sb.append("    <dd><i>Go To...</i> or the console commands <span class='cnsl'>!goto</span> or ")
+				.append("<span class='cnsl'>!cd</span>.</dd>");
+		sb.append("    <dt>Keyboard navigation in file list:</dt>");
+		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
+				.append("filename to jump to the first file starting with that letter. Additional ")
+				.append("presses of the same letter will cycle through all the files starting with ")
+				.append("that initial.</dd>");
+		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
 		return sb.toString();
