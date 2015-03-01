@@ -93,14 +93,14 @@ import bar.Utils;
 /**
  * This class implements a file browser modeled after <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java"
- * >(CommandFinder)</a> by Mark Longair and <a href=
+ * >CommandFinder</a> by Mark Longair and <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/macro/FunctionFinder.java"
- * >(FunctionFinder)</a> by Jerome Mutterer. It is also influenced by Johannes
+ * >FunctionFinder</a> by Jerome Mutterer. It is also influenced by Johannes
  * Schindelin's <a href=
  * "https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java"
- * >(Recent_Commands plugin)</a> and a bit of DOS nostalgia.
- *
- * @author tiago
+ * >Recent_Commands plugin</a> and a bit of DOS nostalgia. Drag and drop support
+ * is implemented by <a
+ * href="http://www.iharder.net/current/java/filedrop/">FileDrop</a>.
  */
 public class Commander implements PlugIn, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
@@ -155,7 +155,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return;
 		}
 
-		// Check if a path has been specified
+		// Check if a path has been specified in plugins.config
 		if ("!lib".equals(arg))
 			path = Utils.getLibDir();
 		else if ("!snip".equals(arg))
@@ -183,9 +183,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-
-	@SuppressWarnings("serial")
-	public void runInteractively() {
+	/** Initializes lists, builds and displays prompt */
+	void runInteractively() {
 
 		// Initialize file list and favorites list
 		filenames = new ArrayList<String>();
@@ -362,6 +361,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		WindowManager.addWindow(frame);
 	}
 
+	/** Adds current path to "Favorites" menu */
 	void addBookmark() {
 		if (!bookmarks.contains(path)) {
 			if (bookmarks.size() > 0)
@@ -804,6 +804,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return true;
 	}
 
+	/** Check if the specified path has been tagged as directory */
 	boolean isFolder(final String path) {
 		return path != null && path.endsWith(File.separator);
 	}
@@ -857,6 +858,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
+	/** Checks if the specified filename contains a known script extension */
 	boolean isScript(final String file) {
 		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm",
 				".js", ".py", ".rb", ".java" };
@@ -866,6 +868,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return false;
 	}
 
+	/**
+	 * Prints current (filtered) list. An unfiltered list is printed when
+	 * running from console.
+	 */
 	void printList() {
 		if (isConsoleMode()) {
 			Utils.listDirectory(path);
@@ -898,6 +904,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		changeDirectory(path + subdir);
 	}
 
+	/** Replaces file list with console commands */
 	void setCommandList() {
 		final String spacer = "<html><span style='color:white;'><b>!</b></span></html>";
 		final String cmds[] = {
@@ -1002,6 +1009,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		this.matchingString = getCaseSensitiveString(newMatchingString);
 	}
 
+	/** Updates path bar (JTable header) */
 	void repaintColumnHeader(final String newPath) {
 		final TableColumn tc = tableHeader.getColumnModel().getColumn(0);
 		tc.setHeaderValue(newPath);
@@ -1028,6 +1036,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		selectedItem = filenames.get(Math.max(0, index));
 	}
 
+	/** Creates HTML text for built-in help */
 	String helpMessage() {
 		final StringBuffer sb = new StringBuffer();
 		sb.append("<html>");
@@ -1179,6 +1188,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		System.gc();
 	}
 
+	/** Defines tooltips for status bar */
 	void setStatusTooltip(final String text) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<html>");
@@ -1271,7 +1281,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}
 	}
-
 
 	boolean isConsoleMode() {
 		return matchingString.startsWith("!");
