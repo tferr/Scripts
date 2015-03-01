@@ -311,7 +311,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 						return;
 					}
 					setPath(dir);
-					resetFileList();
+					updateList();
 				} catch (final java.io.IOException e) {
 					error("Drag and Drop failed...");
 				}
