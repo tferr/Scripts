@@ -114,7 +114,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
 	private static final boolean DEF_REGEX = false;
-	private static final String PROMPT_PLACEHOLDER = "Search or press <!> for console";
+	private static final String PROMPT_PLACEHOLDER = "search or press ! for console";
 
 	/** Flag that monitors if file list reached maximum size */
 	private boolean truncatedList = false;
