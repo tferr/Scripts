@@ -1569,11 +1569,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 
 		public String getColumnName(final int column) {
-			switch (column) {
-			case 0:
-				return path;
-			}
-			return null;
+			return path; // single column table
 		}
 
 		public int getRowCount() {
