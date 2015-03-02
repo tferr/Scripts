@@ -7,6 +7,7 @@ The project also includes [plugins.config](./src/main/resources/plugins.config) 
 organizes the BAR menu [hierarchy](#bar-menu).
 
 ### List of Java plugins
+  1. [BAR Commander](./src/main/java/bar/plugin/Commander.java), a keyboard-based file browser
   1. [BAR Utils](./src/main/java/bar/Utils.java), class providing convenience methods to script BAR
   1. [Shen-Castan Edge Detector](./src/main/java/bar/plugin/ShenCastan.java), described in
      [Segmentation](../Segmentation/README.md#shen-castan-edge-detector)
