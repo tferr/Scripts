@@ -468,6 +468,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Clears all bookmarks in "Favorites" (optionsMenu) */
 	void clearBookmarks() {
+		if (bookmarks.size() == 0)
+			return;
 		optionsMenu.remove(optionsMenu.getComponentCount() - 1);
 		bookmarks.clear();
 	}
