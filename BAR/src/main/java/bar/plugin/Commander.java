@@ -57,6 +57,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -134,10 +135,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JCheckBox regexCheckBox, caseSensitiveCheckBox, wholeWordCheckBox;
 	private JScrollPane listPane;
 	private JLabel statusBar;
-	private JButton optionsButton, openButton, closeButton;
+	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
 
-	private ArrayList<String> filenames, bookmarks;
+	private ArrayList<String> filenames, bookmarks, prevSearches;
 	private String selectedItem;
 	private JTable table;
 	private static TableModel tableModel;
@@ -192,9 +193,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Initializes lists, builds and displays prompt */
 	void runInteractively() {
 
-		// Initialize file list and favorites list
+		// Initialize file list, favorites and history
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
+		prevSearches = new ArrayList<String>();
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
@@ -246,7 +248,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		});
 
-		// Create options panel
+		// Create the 'search options' panel
 		final JPanel cboxPanel = new JPanel(new GridBagLayout());
 		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -258,11 +260,26 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		c.gridx++;
 		cboxPanel.add(regexCheckBox, c);
 
-		// Create search panel
+		// Create the 'history' button and blend it with prompt
+		final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
+		historyButton = new JButton(" ", icon);
+		historyButton.setBackground(prompt.getBackground());
+		historyButton.setBorder(null);
+		historyButton.addActionListener(this);
+
+		// Create search panel: a unified component with looking like a JTextField
 		final JPanel promptPanel = new JPanel(new BorderLayout());
 		promptPanel.add(prompt, BorderLayout.CENTER);
-		promptPanel.add(cboxPanel, BorderLayout.PAGE_END);
-		promptPanel.setFocusable(true);
+		promptPanel.add(historyButton, BorderLayout.LINE_END);
+		promptPanel.setBackground(prompt.getBackground());
+		promptPanel.setBorder(prompt.getBorder() );
+		prompt.setBorder(null);
+
+		// Place everything into a final container
+		final JPanel searchPanel = new JPanel(new BorderLayout());
+		searchPanel.add(promptPanel, BorderLayout.CENTER);		
+		searchPanel.add(cboxPanel, BorderLayout.PAGE_END);
+		searchPanel.setFocusable(true);
 
 		// Create table holding file list. Format it so it mimics a JList
 		tableModel = new TableModel();
@@ -349,7 +366,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		container.setFocusable(true);
 		contained.add(statusBar, BorderLayout.CENTER);
 		contained.add(buttonPanel, BorderLayout.PAGE_END);
-		container.add(promptPanel, BorderLayout.PAGE_START);
+		container.add(searchPanel, BorderLayout.PAGE_START);
 		container.add(listPane, BorderLayout.CENTER);
 		container.add(contained, BorderLayout.PAGE_END);
 
@@ -1341,6 +1358,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				setSelectedItem(0);
 				openItem(selectedItem);
 			}
+		} else if (b == historyButton) {
+			showHistoryMenu();
 		} else if (b == optionsButton) {
 			validateOptionsMenu();
 			optionsMenu.show(optionsButton, optionsButton.getWidth()/2, 0);
