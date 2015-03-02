@@ -339,7 +339,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		buttonPanel.add(closeButton);
 		optionsButton = new JButton(". . .");
 		optionsButton.addActionListener(this);
-		optionsButton.addMouseListener(this);
 		buttonPanel.add(optionsButton);
 		openButton = new JButton("Open");
 		openButton.addActionListener(this);
