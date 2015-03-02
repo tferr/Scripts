@@ -74,6 +74,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -200,7 +201,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
-		prompt.setFont(prompt.getFont().deriveFont(15f));
 		prompt.selectAll();
 		prompt.getDocument().addDocumentListener(this);
 		prompt.addActionListener(this);
@@ -262,22 +262,26 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Create the 'history' button and blend it with prompt
 		final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
-		historyButton = new JButton(" ", icon);
+		historyButton = new JButton(icon);
 		historyButton.setBackground(prompt.getBackground());
-		historyButton.setBorder(null);
+		historyButton.setBorder(new EmptyBorder(0, 0, 0, 4));
 		historyButton.addActionListener(this);
 
-		// Create search panel: a unified component with looking like a JTextField
+		// Create search panel: a unified component looking like a JTextField
 		final JPanel promptPanel = new JPanel(new BorderLayout());
 		promptPanel.add(prompt, BorderLayout.CENTER);
 		promptPanel.add(historyButton, BorderLayout.LINE_END);
 		promptPanel.setBackground(prompt.getBackground());
 		promptPanel.setBorder(prompt.getBorder() );
-		prompt.setBorder(null);
 
-		// Place everything into a final container
+		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
+		prompt.setFont(prompt.getFont().deriveFont(15f));
+		historyButton.setContentAreaFilled(false);
+
+		// Place all search-related components into a final container
 		final JPanel searchPanel = new JPanel(new BorderLayout());
-		searchPanel.add(promptPanel, BorderLayout.CENTER);		
+		promptPanel.validate();
+		searchPanel.add(promptPanel, BorderLayout.CENTER);
 		searchPanel.add(cboxPanel, BorderLayout.PAGE_END);
 		searchPanel.setFocusable(true);
 
@@ -533,7 +537,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			mi.addActionListener(al);
 			popup.add(mi);
 		}
-		popup.show(historyButton, historyButton.getWidth() / 2, 0);
+		popup.show(historyButton, 0, 0);
 	}
 
 	/**
