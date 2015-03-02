@@ -497,6 +497,28 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return menu;
 	}
 
+	/** Displays History Menu */
+	void showHistoryMenu() {
+		final JPopupMenu popup = new JPopupMenu();
+		final HistoryActionListener al = new HistoryActionListener();
+		JMenuItem mi;
+		mi = new JMenuItem("Save search");
+		mi.addActionListener(al);
+		popup.add(mi);
+		if (prevSearches.size() > 0) {
+			mi = new JMenuItem("Clear searches");
+			mi.addActionListener(al);
+			popup.add(mi);
+			popup.addSeparator();
+		}
+		for (final String item : prevSearches) {
+			mi = new JMenuItem(item);
+			mi.addActionListener(al);
+			popup.add(mi);
+		}
+		popup.show(historyButton, historyButton.getWidth() / 2, 0);
+	}
+
 	/**
 	 * Displays a message in the status bar.
 	 *
@@ -973,7 +995,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Evaluates matches between string an pattern according to current search criteria */
 	boolean match(final String string, final String pattern) {
-		if (pattern.isEmpty() || pattern.equals(PROMPT_PLACEHOLDER)) {
+		if (!validQuery(pattern)) {
 			return true;
 		} else if (regex) {
 			return Pattern.compile(pattern).matcher(string).matches();
@@ -1541,6 +1563,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return list.get(row);
 		}
 
+	}
+
+	/** Validates the specified search term */
+	boolean validQuery(final String query) {
+		return !(query.isEmpty() || query.equals(PROMPT_PLACEHOLDER));
 	}
 
 
