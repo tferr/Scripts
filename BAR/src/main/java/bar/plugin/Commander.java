@@ -454,30 +454,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Creates optionsMenu */
 	JPopupMenu createOptionsMenu() {
 		final JPopupMenu popup = new JPopupMenu();
-
+		final OptionsActionListener al = new OptionsActionListener();
 		JMenuItem mi = new JMenuItem("Add to Favorites");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		mi = new JMenuItem("Reveal Path");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		mi = new JMenuItem("Go To...");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		popup.addSeparator();
 		mi = new JMenuItem("Refresh File List");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		mi = new JMenuItem("Print Current List");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		popup.addSeparator();
 
 		mi = new JMenuItem("Enter Console Mode");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		mi = new JMenuItem("Options...");
-		mi.addActionListener(this);
+		mi.addActionListener(al);
 		popup.add(mi);
 		popup.addSeparator();
 
@@ -486,11 +486,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Creates "Favorites" (bookmarks) menu */
 	JMenu createBookmarkMenu() {
+		final OptionsActionListener al = new OptionsActionListener();
 		final JMenu menu = new JMenu("Favorites");
 		JMenuItem mi;
 		for (final String bookmark : bookmarks) {
 			mi = new JMenuItem(bookmark);
-			mi.addActionListener(this);
+			mi.addActionListener(al);
 			menu.add(mi);
 		}
 		return menu;
@@ -1325,28 +1326,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			openItem(selectedItem);
 		} else if (b == closeButton) {
 			quit();
-		} else { // An entry in the optionsMenu has been selected
-			final String command = e.getActionCommand();
-			if (command.equals("Options...")) {
-				showOptionsDialog();
-			} else if (command.equals("Go To...")) {
-				changeDirectory("");
-			} else if (command.equals("Add to Favorites")) {
-				addBookmark();
-			} else if (command.equals("Print Current List")) {
-				printList();
-			} else if (command.equals("Refresh File List")) {
-				resetFileList("Contents reloaded...");
-			} else if (command.contains("Console")) {
-				if (isConsoleMode())
-					resetFileList();
-				else
-					resetCommandList();
-			} else if (command.equals("Reveal Path")) {
-				Utils.revealFile(path);
-			} else { // A bookmark was selected
-				changeDirectory(command);
-			}
 		}
 	}
 
@@ -1562,6 +1541,34 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return list.get(row);
 		}
 
+	}
+
+
+	/** Implements ActionListeners for the "options" dropdown menu */
+	private class OptionsActionListener implements ActionListener {
+		public void actionPerformed(final ActionEvent e) {
+			final String command = e.getActionCommand();
+			if (command.equals("Options...")) {
+				showOptionsDialog();
+			} else if (command.equals("Go To...")) {
+				changeDirectory("");
+			} else if (command.equals("Add to Favorites")) {
+				addBookmark();
+			} else if (command.equals("Print Current List")) {
+				printList();
+			} else if (command.equals("Refresh File List")) {
+				resetFileList("Contents reloaded...");
+			} else if (command.contains("Console")) {
+				if (isConsoleMode())
+					resetFileList();
+				else
+					resetCommandList();
+			} else if (command.equals("Reveal Path")) {
+				Utils.revealFile(path);
+			} else { // A bookmark was selected
+				changeDirectory(command);
+			}
+		}
 	}
 
 	/**
