@@ -72,6 +72,7 @@ import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -173,6 +174,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Start Commander
 		new Thread() {
 			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
+				} catch (final Exception ignored) {
+				}
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						runInteractively();
@@ -202,7 +208,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		caseSensitiveCheckBox = new JCheckBox("Aa", caseSensitive);
 		final Font cboxFont = caseSensitiveCheckBox.getFont();
 		final int cboxHeight = cboxFont.getSize();
+		final int cboxGap = caseSensitiveCheckBox.getIconTextGap();
 		caseSensitiveCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		caseSensitiveCheckBox.setIconTextGap(cboxGap-1);
 		caseSensitiveCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -214,6 +222,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		wholeWordCheckBox = new JCheckBox("Whole word", wholeWord);
 		wholeWordCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		wholeWordCheckBox.setIconTextGap(cboxGap-1);
 		wholeWordCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -225,6 +234,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		regexCheckBox = new JCheckBox("Regex", regex);
 		regexCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+		regexCheckBox.setIconTextGap(cboxGap-1);
 		regexCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -343,6 +353,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		container.add(promptPanel, BorderLayout.PAGE_START);
 		container.add(listPane, BorderLayout.CENTER);
 		container.add(contained, BorderLayout.PAGE_END);
+
+		// Set mnemonics
+		regexCheckBox.setMnemonic(KeyEvent.VK_R);
+		wholeWordCheckBox.setMnemonic(KeyEvent.VK_W);
+		caseSensitiveCheckBox.setMnemonic(KeyEvent.VK_A);
+		optionsButton.setMnemonic(KeyEvent.VK_PERIOD);
+		closeButton.setMnemonic(KeyEvent.VK_Q);
+		openButton.setMnemonic(KeyEvent.VK_O);
 
 		// Populate file list. Update status and path bar
 		setPath(path);
