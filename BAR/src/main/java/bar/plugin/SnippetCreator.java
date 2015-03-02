@@ -106,12 +106,12 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return commonHeader(sb, type);
 	}
 
-	/* Returns a file header for a language not featured in BAR */
-	private static StringBuilder unsupportedHeader(final StringBuilder sb, final int type) {
-		sb.append(C_CHARS[type]).append(" NB: BAR does not yet feature a ")
-				.append(S_TYPES[type]).append(" lib\n\n");
-		return sb;
-	}
+//	/* Returns a file header for a language not featured in BAR */
+//	private static StringBuilder unsupportedHeader(final StringBuilder sb, final int type) {
+//		sb.append(C_CHARS[type]).append(" NB: BAR does not yet feature a ")
+//				.append(S_TYPES[type]).append(" lib\n\n");
+//		return sb;
+//	}
 
 	/** Returns header for a BSH snippet (BeanShell) */
 	public static String bshHeader() {
