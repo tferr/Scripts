@@ -1,4 +1,0 @@
-/* Open_BSH_lib.bsh
- * IJ BAR: https://github.com/tferr/Scripts#scripts
- */
-bar.Utils.openLib("BARlib.bsh");
