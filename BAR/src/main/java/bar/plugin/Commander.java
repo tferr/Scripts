@@ -1593,13 +1593,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return !(query.isEmpty() || query.equals(PROMPT_PLACEHOLDER));
 	}
 
-	/** Implements ActionListeners for the "previous searches" dropdown menu */
+	/** Implements ActionListeners for the 'history' dropdown menu */
 	private class HistoryActionListener implements ActionListener {
 		public void actionPerformed(final ActionEvent e) {
 			final String cmd = e.getActionCommand();
 			if (cmd.equals("Save search")) {
 				final String newEntry = prompt.getText();
-				if (validQuery(newEntry) && !prevSearches.contains(newEntry))
+				if (!validQuery(newEntry))
+					log("Invalid search query...");
+				else if (prevSearches.contains(newEntry))
+					log("Query already saved...");
+				else
 					prevSearches.add(prompt.getText());
 			} else if (cmd.equals("Clear searches")) {
 				prevSearches.clear();
