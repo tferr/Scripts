@@ -1027,7 +1027,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Evaluates matches between string an pattern according to current search criteria */
 	boolean match(final String string, final String pattern) {
-		if (!validQuery(pattern)) {
+		if (emptyQuery(pattern)) {
 			return true;
 		} else if (regex) {
 			return Pattern.compile(pattern).matcher(string).matches();
@@ -1596,8 +1596,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/** Checks if the specified search term contains a real query */
-	boolean validQuery(final String query) {
-		return !(query.isEmpty() || query.equals(CONSOLE_TRIGGER)
+	boolean emptyQuery(final String query) {
+		return (query.isEmpty() || query.equals(CONSOLE_TRIGGER)
 				|| query.equals(PROMPT_PLACEHOLDER));
 	}
 
@@ -1623,7 +1623,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 			} else if (cmd.equals("Save search")) {
 				final String query = prompt.getText();
-				if (!validQuery(query)) {
+				if (emptyQuery(query)) {
 					log("Invalid search query...");
 				} else {
 					final SavedSearch existringEntry = getSavedSearch(query);
