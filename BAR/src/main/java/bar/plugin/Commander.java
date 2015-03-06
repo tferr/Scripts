@@ -108,18 +108,26 @@ import bar.Utils;
 public class Commander implements PlugIn, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
 
-	/** Defaults for "Reset" option */
+	/** Default path to be listed at startup */
 	private static final String DEF_PATH = System.getProperty("user.home");
+
+	/** Default query to be displayed at startup */
+	private static final String PROMPT_PLACEHOLDER = "search or press ! for console";
+
+	/** Character that triggers Console mode */
+	private static final String CONSOLE_TRIGGER = "!";
+
+	/** Flag that monitors if file list reached maximum size */
+	private boolean truncatedList = false;
+
+	/** Flag that toggles changes to status bar messages */
+	private boolean freezeStatusBar = false;
+
+	/** Defaults for "Reset" option */
 	private static final int DEF_MAX_SIZE = 200;
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
 	private static final boolean DEF_REGEX = false;
-	private static final String PROMPT_PLACEHOLDER = "search or press ! for console";
-
-	/** Flag that monitors if file list reached maximum size */
-	private boolean truncatedList = false;
-	/** Flag that toggles changes to status bar messages */
-	private boolean freezeStatusBar = false;
 
 	/** Parameters **/
 	private static final int FRAME_WIDTH = 250;
@@ -680,7 +688,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Case 0: cmd encoded a non-verbose self-contained instruction
 		if (result.equals(String.valueOf(0))) {
-			resetFileList("!" + cmd + " executed...");
+			resetFileList(CONSOLE_TRIGGER + cmd + " executed...");
 			prompt.requestFocus();
 			return;
 		}
@@ -827,7 +835,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Reloads Console commands */
 	void resetCommandList() {
-		prompt.setText("!");  // Resets matchingString
+		prompt.setText(CONSOLE_TRIGGER); // Resets matchingString
 		prompt.selectAll();
 		updateList();
 	}
@@ -1287,7 +1295,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.setForeground(Color.BLUE);
 		statusBar.setForeground(Color.BLUE);
 
-		if (matchingString.equals("!")) {
+		if (matchingString.equals(CONSOLE_TRIGGER)) {
 			log("Console enabled...");
 			return;
 		}
@@ -1346,7 +1354,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	boolean isConsoleMode() {
-		return matchingString.startsWith("!");
+		return matchingString.startsWith(CONSOLE_TRIGGER);
 	}
 
 	void quit() {
@@ -1586,9 +1594,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-	/** Validates the specified search term */
+	/** Checks if the specified search term contains a real query */
 	boolean validQuery(final String query) {
-		return !(query.isEmpty() || query.equals(PROMPT_PLACEHOLDER));
+		return !(query.isEmpty() || query.equals(CONSOLE_TRIGGER)
+				|| query.equals(PROMPT_PLACEHOLDER));
 	}
 
 	/** Implements ActionListeners for the 'history' dropdown menu */
@@ -1630,6 +1639,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					resetFileList();
 				else
 					resetCommandList();
+				prompt.requestFocusInWindow();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
 			} else { // A bookmark was selected
