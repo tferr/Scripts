@@ -147,7 +147,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
 
-	private ArrayList<String> filenames, bookmarks, prevSearches;
+	private ArrayList<String> filenames, bookmarks;
+	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
 	private JTable table;
 	private static TableModel tableModel;
@@ -205,7 +206,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list, favorites and history
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
-		prevSearches = new ArrayList<String>();
+		prevSearches = new ArrayList<SavedSearch>();
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
@@ -542,8 +543,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			popup.add(mi);
 			popup.addSeparator();
 		}
-		for (final String item : prevSearches) {
-			mi = new JMenuItem(item);
+		for (final SavedSearch search : prevSearches) {
+			mi = new JMenuItem(search.pattern);
 			mi.addActionListener(al);
 			popup.add(mi);
 		}
@@ -1600,24 +1601,55 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				|| query.equals(PROMPT_PLACEHOLDER));
 	}
 
+	/**
+	 * Returns a SavedSearch associated with the specified search term or null
+	 * if no SavedSearch Object is found
+	 */
+	SavedSearch getSavedSearch(final String pattern) {
+		for (final SavedSearch s : prevSearches) {
+			if (s.pattern.equals(pattern))
+				return s;
+		}
+		return null;
+	}
+
 	/** Implements ActionListeners for the 'history' dropdown menu */
 	private class HistoryActionListener implements ActionListener {
 		public void actionPerformed(final ActionEvent e) {
 			final String cmd = e.getActionCommand();
-			if (cmd.equals("Save search")) {
-				final String newEntry = prompt.getText();
-				if (!validQuery(newEntry))
-					log("Invalid search query...");
-				else if (prevSearches.contains(newEntry))
-					log("Query already saved...");
-				else
-					prevSearches.add(prompt.getText());
-			} else if (cmd.equals("Clear searches")) {
+
+			if (cmd.equals("Clear searches")) {
 				prevSearches.clear();
+
+			} else if (cmd.equals("Save search")) {
+				final String query = prompt.getText();
+				if (!validQuery(query)) {
+					log("Invalid search query...");
+				} else {
+					final SavedSearch existringEntry = getSavedSearch(query);
+					final SavedSearch newEntry = new SavedSearch(query,
+							caseSensitive, wholeWord, regex);
+					if (existringEntry == null) {
+						prevSearches.add(newEntry);
+						log("Saved query. "
+								+ String.valueOf(prevSearches.size())
+								+ " item(s) in history...");
+					} else {
+						prevSearches.set(prevSearches.indexOf(existringEntry),
+								newEntry);
+						log("Saved query updated...");
+					}
+				}
+
 			} else {
-				prompt.setText(cmd);
+				final SavedSearch search = getSavedSearch(cmd);
+				prompt.setText(search.pattern);
+				caseSensitiveCheckBox.setSelected(search.caseSensitive);
+				wholeWordCheckBox.setSelected(search.wholeWord);
+				regexCheckBox.setSelected(search.regex);
 			}
 		}
+
 	}
 
 	/** Implements ActionListeners for the "options" dropdown menu */
@@ -1811,6 +1843,24 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
 			return lbl;
 		}
+	}
+
+	/** This class represents a saved search */
+	private class SavedSearch {
+
+		public String pattern = "";
+		public boolean caseSensitive = false;
+		public boolean wholeWord = false;
+		public boolean regex = false;
+
+		public SavedSearch(final String path, final boolean caseSensitive,
+				final boolean wholeWord, final boolean regex) {
+			this.pattern = path;
+			this.caseSensitive = caseSensitive;
+			this.wholeWord = wholeWord;
+			this.regex = regex;
+		}
+
 	}
 
 }
