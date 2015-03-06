@@ -946,7 +946,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * running from console.
 	 */
 	void printList() {
-		if (isConsoleMode()) {
+		if (isConsoleMode() || emptyQuery(matchingString)) {
 			Utils.listDirectory(path);
 			return;
 		}
@@ -954,8 +954,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			error("No files in current list");
 			return;
 		}
-		final TextWindow tw = new TextWindow(
-				path + " [" + matchingString + "]", "", 550, 200);
+		final SavedSearch search = new SavedSearch(matchingString,
+				caseSensitive, wholeWord, regex);
+		final TextWindow tw = new TextWindow(path + " " + search.toString(),
+				"", 550, 200);
 		final TextPanel tp = tw.getTextPanel();
 		tp.setColumnHeadings("Double-click on a filename to open it");
 		int counter = 1;
@@ -1860,6 +1862,21 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			this.caseSensitive = caseSensitive;
 			this.wholeWord = wholeWord;
 			this.regex = regex;
+		}
+
+		/** Returns a string representation of a SavedSearch */
+		public String toString() {
+			final StringBuffer sb = new StringBuffer();
+			sb.append("[").append(this.pattern).append("]");
+			if (this.regex) {
+				sb.append(" [Regex]");
+			} else {
+				if (this.caseSensitive)
+					sb.append(" [Aa]");
+				if (this.wholeWord)
+					sb.append(" [\\b]");
+			}
+			return sb.toString();
 		}
 
 	}
