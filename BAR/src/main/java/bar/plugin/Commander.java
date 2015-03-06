@@ -339,6 +339,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Allow folders to be dropped in file list. Consider only first item dropped
 		listPane = new JScrollPane(table);
+		listPane.getViewport().setBackground(Color.WHITE); // http://stackoverflow.com/a/18362310
 		new FileDrop(listPane, new FileDrop.Listener() {
 			public void filesDropped(final java.io.File[] files) {
 				try {
