@@ -57,7 +57,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -270,10 +269,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		cboxPanel.add(regexCheckBox, c);
 
 		// Create the 'history' button and blend it with prompt
-		final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
-		historyButton = new JButton(icon);
+		//final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
+		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
+		prompt.setFont(prompt.getFont().deriveFont(15f));
+		historyButton = new JButton("<html>&hellip;</html>");
 		historyButton.setBackground(prompt.getBackground());
-		historyButton.setBorder(new EmptyBorder(0, 0, 0, 4));
+		historyButton.setFont(prompt.getFont());
+		historyButton.setBorder(new EmptyBorder(0, 0, 0, 2));
+		historyButton.setContentAreaFilled(false);
 		historyButton.addActionListener(this);
 
 		// Create search panel: a unified component looking like a JTextField
@@ -282,10 +285,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		promptPanel.add(historyButton, BorderLayout.LINE_END);
 		promptPanel.setBackground(prompt.getBackground());
 		promptPanel.setBorder(prompt.getBorder() );
-
-		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
-		prompt.setFont(prompt.getFont().deriveFont(15f));
-		historyButton.setContentAreaFilled(false);
 
 		// Place all search-related components into a final container
 		final JPanel searchPanel = new JPanel(new BorderLayout());
@@ -369,6 +368,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		closeButton.addActionListener(this);
 		buttonPanel.add(closeButton);
 		optionsButton = new JButton(". . .");
+		optionsButton.setFont(optionsButton.getFont().deriveFont(Font.BOLD));
 		optionsButton.addActionListener(this);
 		buttonPanel.add(optionsButton);
 		openButton = new JButton("Open");
