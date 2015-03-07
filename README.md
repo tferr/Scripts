@@ -126,10 +126,6 @@ BAR scripts have contributed to the following publications:
   1. Carnevalli et al. S6K1 plays a critical role in early adipocyte differentiation. Developmental Cell (2010), 18(5):763-74. [PMID 20493810](http://www.ncbi.nlm.nih.gov/pubmed/20493810)
 
 
-## References
-  - Shen and Castan. An optimal linear operator for step edge detection. CVGIP: Graphical Models and Image Processing (1992) vol. 54 (2) pp. 112-133 [DOI: 10.1016/1049-9652(92)90060-B](http://dx.doi.org/10.1016/1049-9652(92)90060-B)
-
-
 License
 -------
 These scripts are free software: you can redistribute them and/or modify them under the terms of the
