@@ -112,10 +112,9 @@ lib.confirmLoading
 
 ##Notes
 * [lib Tests](./tests/) can be used to debug libraries
-* Library filenames have no underscore and so are not registered in the `BAR>lib>` menu.
-  This approach is intentional: If the calls were included directly in the library file, they would
-  be executed every time the library is loaded. To open lib files from within ImageJ, use
-  [Commander](../BAR/src/main/java/bar/plugin/Commander.java) via _lib> Browse /lib_.
+* Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. To open lib
+  files from within ImageJ, use [Commander](../BAR/src/main/java/bar/plugin/Commander.java) via
+  _BAR> lib> Browse /lib_ (or type `!lib` in Commander's search prompt).
 
 
 
