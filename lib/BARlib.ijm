@@ -27,7 +27,10 @@ function getClipboardText() {
 	return String.paste; //IJM already has a built-in function for this task
 }
 
-/** Returns a random uuid */
+/** 
+ *  Returns a random string of the specified length. If the boolean flag spacers
+ *  is true, hyphens are used to improve readability of randomized sequence
+ */
 function randomString(length, spacers) {
 	template = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	nChars = lengthOf(template);
@@ -38,6 +41,11 @@ function randomString(length, spacers) {
 		if (spacers && i%5==0) string += "_";
 	}
 	return string;
+}
+
+/** Returns a random UUID using java.util.UUID */
+function randomUUID() {
+	return call("java.util.UUID.randomUUID");
 }
 
 
