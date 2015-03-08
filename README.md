@@ -4,12 +4,13 @@
 [![GPL License](http://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0)
 
 Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for
-[ImageJ][ij1]/[Fiji][fiji], the de facto standard in scientific image processing in the life sciences.
+[ImageJ](http://imagej.net/), the de facto standard in scientific image processing in the life
+sciences.
 
-The easiest way is to install these scripts is to use [Fiji][fiji] and subscribe to the
-[BAR update site](http://fiji.sc/BAR#Installation). Alternatively, you can navigate the collection
+The easiest way is to install these scripts is to use [ Fiji](http://fiji.sc/) and subscribe to the
+[BAR update site](http://fiji.sc/List_of_update_sites). Alternatively, you can navigate the collection
 using the sections below, and download individual routines as needed.
-For more details refer to the [BAR documentation page][Fiji].
+For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Installation).
 
 
 ## [Analysis]
@@ -65,13 +66,6 @@ For more details refer to the [BAR documentation page][Fiji].
   6. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
 
 
-## [BAR plugins][Plugins]
-  Maven project implementing the Java [plugins](./BAR/README.md#bar-plugins) bundled with BAR. The
-  files organizing the [BAR menu](./BAR/README.md#bar-menu) are also described in this section.
-
-  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
-
-
 ## [Snippets]
   Example scripts (in several languages) to be used as scripting templates, including:
 
@@ -95,6 +89,22 @@ For more details refer to the [BAR documentation page][Fiji].
   6. [Python library](./lib/README.md#py-lib)
   7. [Ruby library](./lib/README.md#rb-lib)
 
+
+## [Plugins]
+  Maven project implementing the backbone of BAR, including several [Java plugins](./BAR/README.md#bar-plugins),
+  the structure of the [BAR menu](./BAR/README.md#bar-menu) and the BAR API. While BAR is mainly a
+  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#bar-plugins) have started to
+  explore some of the scripting capabilities of [ImageJ2](http://imagej.net/ImageJ2).
+
+  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
+
+
+## Utilities
+  Productivity software.
+
+  1. [BAR Commander](./BAR/src/main/java/bar/plugin/Commander.java), a keyboard-based file browser
+  that produces filtered lists of directory contents. Features include: drag-and-drop support,
+  interaction with native file manager, regex filtering, and built-in console for common operations.
 
 
 ## Help?
@@ -137,13 +147,11 @@ Contributors
 ------------
 BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
 with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho),
-[Wayne Rasband][ij1], [Jerome Mutterer](https://github.com/mutterer) and
-[Kota Miura](https://github.com/cmci). This project would not have been possible without the support
-of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+[Wayne Rasband](http://imagej.nih.gov/ij/), [Jerome Mutterer](https://github.com/mutterer) and
+[Kota Miura](https://github.com/cmci). BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java)
+from Robert Harder and Nathan Blomquist. This project would not have been possible without the
+support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
 
-
-[ij1]: http://imagej.nih.gov/ij/
-[fiji]: http://fiji.sc/
 
 
 
