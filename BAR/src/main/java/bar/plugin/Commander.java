@@ -57,7 +57,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -108,18 +107,26 @@ import bar.Utils;
 public class Commander implements PlugIn, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
 
-	/** Defaults for "Reset" option */
+	/** Default path to be listed at startup */
 	private static final String DEF_PATH = System.getProperty("user.home");
+
+	/** Default query to be displayed at startup */
+	private static final String PROMPT_PLACEHOLDER = "search or press ! for console";
+
+	/** Character that triggers Console mode */
+	private static final String CONSOLE_TRIGGER = "!";
+
+	/** Flag that monitors if file list reached maximum size */
+	private boolean truncatedList = false;
+
+	/** Flag that toggles changes to status bar messages */
+	private boolean freezeStatusBar = false;
+
+	/** Defaults for "Reset" option */
 	private static final int DEF_MAX_SIZE = 200;
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
 	private static final boolean DEF_REGEX = false;
-	private static final String PROMPT_PLACEHOLDER = "search or press ! for console";
-
-	/** Flag that monitors if file list reached maximum size */
-	private boolean truncatedList = false;
-	/** Flag that toggles changes to status bar messages */
-	private boolean freezeStatusBar = false;
 
 	/** Parameters **/
 	private static final int FRAME_WIDTH = 250;
@@ -139,7 +146,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
 
-	private ArrayList<String> filenames, bookmarks, prevSearches;
+	private ArrayList<String> filenames, bookmarks;
+	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
 	private JTable table;
 	private static TableModel tableModel;
@@ -197,7 +205,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list, favorites and history
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
-		prevSearches = new ArrayList<String>();
+		prevSearches = new ArrayList<SavedSearch>();
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
@@ -261,10 +269,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		cboxPanel.add(regexCheckBox, c);
 
 		// Create the 'history' button and blend it with prompt
-		final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
-		historyButton = new JButton(icon);
+		//final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
+		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
+		prompt.setFont(prompt.getFont().deriveFont(15f));
+		historyButton = new JButton("<html>&hellip;</html>");
 		historyButton.setBackground(prompt.getBackground());
-		historyButton.setBorder(new EmptyBorder(0, 0, 0, 4));
+		historyButton.setFont(prompt.getFont());
+		historyButton.setBorder(new EmptyBorder(0, 0, 0, 2));
+		historyButton.setContentAreaFilled(false);
 		historyButton.addActionListener(this);
 
 		// Create search panel: a unified component looking like a JTextField
@@ -273,10 +285,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		promptPanel.add(historyButton, BorderLayout.LINE_END);
 		promptPanel.setBackground(prompt.getBackground());
 		promptPanel.setBorder(prompt.getBorder() );
-
-		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
-		prompt.setFont(prompt.getFont().deriveFont(15f));
-		historyButton.setContentAreaFilled(false);
 
 		// Place all search-related components into a final container
 		final JPanel searchPanel = new JPanel(new BorderLayout());
@@ -330,6 +338,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Allow folders to be dropped in file list. Consider only first item dropped
 		listPane = new JScrollPane(table);
+		listPane.getViewport().setBackground(Color.WHITE); // http://stackoverflow.com/a/18362310
 		new FileDrop(listPane, new FileDrop.Listener() {
 			public void filesDropped(final java.io.File[] files) {
 				try {
@@ -359,6 +368,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		closeButton.addActionListener(this);
 		buttonPanel.add(closeButton);
 		optionsButton = new JButton(". . .");
+		optionsButton.setFont(optionsButton.getFont().deriveFont(Font.BOLD));
 		optionsButton.addActionListener(this);
 		buttonPanel.add(optionsButton);
 		openButton = new JButton("Open");
@@ -534,8 +544,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			popup.add(mi);
 			popup.addSeparator();
 		}
-		for (final String item : prevSearches) {
-			mi = new JMenuItem(item);
+		for (final SavedSearch search : prevSearches) {
+			mi = new JMenuItem(search.pattern);
 			mi.addActionListener(al);
 			popup.add(mi);
 		}
@@ -680,7 +690,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Case 0: cmd encoded a non-verbose self-contained instruction
 		if (result.equals(String.valueOf(0))) {
-			resetFileList("!" + cmd + " executed...");
+			resetFileList(CONSOLE_TRIGGER + cmd + " executed...");
 			prompt.requestFocus();
 			return;
 		}
@@ -827,7 +837,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Reloads Console commands */
 	void resetCommandList() {
-		prompt.setText("!");  // Resets matchingString
+		prompt.setText(CONSOLE_TRIGGER); // Resets matchingString
 		prompt.selectAll();
 		updateList();
 	}
@@ -936,7 +946,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * running from console.
 	 */
 	void printList() {
-		if (isConsoleMode()) {
+		if (isConsoleMode() || emptyQuery(matchingString)) {
 			Utils.listDirectory(path);
 			return;
 		}
@@ -944,8 +954,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			error("No files in current list");
 			return;
 		}
-		final TextWindow tw = new TextWindow(
-				path + " [" + matchingString + "]", "", 550, 200);
+		final SavedSearch search = new SavedSearch(matchingString,
+				caseSensitive, wholeWord, regex);
+		final TextWindow tw = new TextWindow(path + " " + search.toString(),
+				"", 550, 200);
 		final TextPanel tp = tw.getTextPanel();
 		tp.setColumnHeadings("Double-click on a filename to open it");
 		int counter = 1;
@@ -1018,7 +1030,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Evaluates matches between string an pattern according to current search criteria */
 	boolean match(final String string, final String pattern) {
-		if (!validQuery(pattern)) {
+		if (emptyQuery(pattern)) {
 			return true;
 		} else if (regex) {
 			return Pattern.compile(pattern).matcher(string).matches();
@@ -1287,7 +1299,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.setForeground(Color.BLUE);
 		statusBar.setForeground(Color.BLUE);
 
-		if (matchingString.equals("!")) {
+		if (matchingString.equals(CONSOLE_TRIGGER)) {
 			log("Console enabled...");
 			return;
 		}
@@ -1346,7 +1358,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	boolean isConsoleMode() {
-		return matchingString.startsWith("!");
+		return matchingString.startsWith(CONSOLE_TRIGGER);
 	}
 
 	void quit() {
@@ -1586,29 +1598,61 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-	/** Validates the specified search term */
-	boolean validQuery(final String query) {
-		return !(query.isEmpty() || query.equals(PROMPT_PLACEHOLDER));
+	/** Checks if the specified search term contains a real query */
+	boolean emptyQuery(final String query) {
+		return (query.isEmpty() || query.equals(CONSOLE_TRIGGER)
+				|| query.equals(PROMPT_PLACEHOLDER));
+	}
+
+	/**
+	 * Returns a SavedSearch associated with the specified search term or null
+	 * if no SavedSearch Object is found
+	 */
+	SavedSearch getSavedSearch(final String pattern) {
+		for (final SavedSearch s : prevSearches) {
+			if (s.pattern.equals(pattern))
+				return s;
+		}
+		return null;
 	}
 
 	/** Implements ActionListeners for the 'history' dropdown menu */
 	private class HistoryActionListener implements ActionListener {
 		public void actionPerformed(final ActionEvent e) {
 			final String cmd = e.getActionCommand();
-			if (cmd.equals("Save search")) {
-				final String newEntry = prompt.getText();
-				if (!validQuery(newEntry))
-					log("Invalid search query...");
-				else if (prevSearches.contains(newEntry))
-					log("Query already saved...");
-				else
-					prevSearches.add(prompt.getText());
-			} else if (cmd.equals("Clear searches")) {
+
+			if (cmd.equals("Clear searches")) {
 				prevSearches.clear();
+
+			} else if (cmd.equals("Save search")) {
+				final String query = prompt.getText();
+				if (emptyQuery(query)) {
+					log("Invalid search query...");
+				} else {
+					final SavedSearch existringEntry = getSavedSearch(query);
+					final SavedSearch newEntry = new SavedSearch(query,
+							caseSensitive, wholeWord, regex);
+					if (existringEntry == null) {
+						prevSearches.add(newEntry);
+						log("Saved query. "
+								+ String.valueOf(prevSearches.size())
+								+ " item(s) in history...");
+					} else {
+						prevSearches.set(prevSearches.indexOf(existringEntry),
+								newEntry);
+						log("Saved query updated...");
+					}
+				}
+
 			} else {
-				prompt.setText(cmd);
+				final SavedSearch search = getSavedSearch(cmd);
+				prompt.setText(search.pattern);
+				caseSensitiveCheckBox.setSelected(search.caseSensitive);
+				wholeWordCheckBox.setSelected(search.wholeWord);
+				regexCheckBox.setSelected(search.regex);
 			}
 		}
+
 	}
 
 	/** Implements ActionListeners for the "options" dropdown menu */
@@ -1630,6 +1674,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					resetFileList();
 				else
 					resetCommandList();
+				prompt.requestFocusInWindow();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
 			} else { // A bookmark was selected
@@ -1801,6 +1846,39 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
 			return lbl;
 		}
+	}
+
+	/** This class represents a saved search */
+	private class SavedSearch {
+
+		public String pattern = "";
+		public boolean caseSensitive = false;
+		public boolean wholeWord = false;
+		public boolean regex = false;
+
+		public SavedSearch(final String path, final boolean caseSensitive,
+				final boolean wholeWord, final boolean regex) {
+			this.pattern = path;
+			this.caseSensitive = caseSensitive;
+			this.wholeWord = wholeWord;
+			this.regex = regex;
+		}
+
+		/** Returns a string representation of a SavedSearch */
+		public String toString() {
+			final StringBuffer sb = new StringBuffer();
+			sb.append("[").append(this.pattern).append("]");
+			if (this.regex) {
+				sb.append(" [Regex]");
+			} else {
+				if (this.caseSensitive)
+					sb.append(" [Aa]");
+				if (this.wholeWord)
+					sb.append(" [\\b]");
+			}
+			return sb.toString();
+		}
+
 	}
 
 }
