@@ -308,6 +308,32 @@ public class Utils implements PlugIn {
 
 	}
 
+	/**
+	 * Alternative to {@link #listDirectory(dir, int, int) listDirectory(dir,
+	 * xPos, yPos)} in which the TextWindow is displayed on the center of the
+	 * screen.
+	 */
+	public static void listDirectory(final String dir) {
+		listDirectory(dir, -1, -1);
+	}
+
+	/**
+	 * Alternative to {@link #listDirectory(dir, int, int) listDirectory(dir,
+	 * xPos, yPos)} in which the TextWindow is displayed with a slight offset
+	 * from frontmost window. Positioning defaults to the center of the screen
+	 * if frontmost window could not be retrieved or is too close to screen
+	 * boundaries.
+	 */
+	public static void listDirectory(final String dir, final boolean cascade) {
+		final java.awt.Frame frame = WindowManager.getFrontWindow();
+		int xPos = -1; int yPos = -1;
+		if (cascade && frame != null) {
+			final java.awt.Point pos = frame.getLocationOnScreen();
+			xPos = (int) pos.getX() + 20;
+			yPos = (int) pos.getY() + 40;
+		}
+		listDirectory(dir, xPos, yPos);
+	}
 
 	/**
 	 * Installs a macro file. An error message is displayed in a dialog box if
