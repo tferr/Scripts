@@ -195,9 +195,25 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Prints the contents of a directory to a dedicated IJ1 table. An error is
-	 * message is displayed in a dialog box if directory could not be found.
-	 * Some system files (dot files, Thumbs.db, ...) are excluded from the list.
+	 * Prints the contents of a directory to a dedicated TextWindow displayed at
+	 * the specified location (or at the center of the screen if one of the
+	 * specified coordinates is invalid). An error message is displayed in a
+	 * dialog box if directory could not be found or if directory is empty. Some
+	 * system files (dot files, Thumbs.db, ...) are excluded from the list. A
+	 * {@link bar.FileDrop FileDrop} listener is attached to the TextWindow,
+	 * which means that, once displayed, the method can be triggered by dragging
+	 * and dropping files from the native file manager.
+	 * 
+	 * @param dir
+	 *            Path of the directory to be listed
+	 * @param xPos
+	 *            The screen x location (from top-left corner) where TextWindow
+	 *            should be displayed
+	 * @param yPos
+	 *            The screen y location (from top-left corner) where TextWindow
+	 *            should be displayed
+	 * @see {@link #listDirectory(String) listDirectory(dir) }
+	 * @see {@link #listDirectory(String, boolean) listDirectory(dir, cascade) }
 	 */
 	public static void listDirectory(String dir, int xPos, int yPos) {
 
