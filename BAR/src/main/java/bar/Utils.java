@@ -12,6 +12,7 @@ package bar;
 
 import ij.IJ;
 import ij.Menus;
+import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
@@ -27,9 +28,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.io.FileFilter;
 
 import net.imagej.ui.swing.script.TextEditor;
 import net.imagej.ui.swing.script.TextEditor.Tab;
@@ -200,42 +199,96 @@ public class Utils implements PlugIn {
 	 * message is displayed in a dialog box if directory could not be found.
 	 * Some system files (dot files, Thumbs.db, ...) are excluded from the list.
 	 */
-	public static void listDirectory(final String dir) {
-		// Method must be static so it can be called from ijm
+	public static void listDirectory(String dir, int xPos, int yPos) {
+
+		if (!dir.endsWith(File.separator))
+			dir += File.separator;
 
 		final File f = new File(dir);
-		if (!fileExists(f) || !f.isDirectory()) return;
+		if (!fileExists(f) || !f.isDirectory())
+			return;
 
-		final String[] files = f.list();
-		final ArrayList<String> list = new ArrayList<String>();
-		for (int i=0; i<files.length; i++) {
-			final String file = files[i];
-			if (file.startsWith(".") || file.equals("Thumbs.db")) //TODO exclude other files?
-				continue;
-			if ( (new File(dir+file)).isDirectory() )
-				list.add(file + File.separator);
-			else
-				list.add(file);
-		}
+		// Define the FileFilter to exclude system files
+		final FileFilter filter = new FileFilter() {
+			@Override
+			public boolean accept(final File f) {
+				if (f.isHidden() || f.getName().equals("Thumbs.db"))
+					return false;
+				else
+					return true;
+			}
+		};
 
-		if (list.size()==0) {
-			if (IJ.showMessageWithCancel("Empty Directory", dir +"\nis empty. Open it?"))
+		// Retrieve file list
+		final File[] files = f.listFiles(filter);
+		if (files.length == 0) {
+			if (IJ.showMessageWithCancel("Empty Directory", dir
+					+ "\nis empty. Open it?"))
 				revealFile(dir);
 			return;
 		}
 
-		final TextWindow tw = new TextWindow(dir,"", 550, 200);
+		// Create Window and validate positioning
+		final int T_WIDTH = 550;
+		final int T_HEIGHT = 200;
+		final TextWindow tw = new TextWindow(dir + " [All files]", "", T_WIDTH, T_HEIGHT);
+		if (xPos > IJ.getScreenSize().getWidth() - (T_WIDTH / 2))
+			xPos = -1;
+		if (yPos > IJ.getScreenSize().getHeight() - (T_HEIGHT / 2))
+			yPos = -1;
+		if (xPos > 0 && yPos > 0)
+			tw.setLocation(xPos, yPos);
+
+		// Implement drag and drop support. Consider only first file dropped
+		new FileDrop(tw, new FileDrop.Listener() {
+			public void filesDropped(final java.io.File[] files) {
+				try {
+					final String dir = (files[0].isDirectory()) ? files[0]
+							.getCanonicalPath() : files[0].getParent();
+					if (dir == null) {
+						IJ.error("BAR " + getVersion(),
+								"Error: Drag and Drop failed...");
+						return;
+					}
+					int xPos, yPos;
+					try {
+						final java.awt.Point pos = tw.getLocationOnScreen();
+						xPos = (int) pos.getX() + 20;
+						yPos = (int) pos.getY() + 40;
+					} catch (final java.awt.IllegalComponentStateException e) {
+						xPos = yPos = -1;
+					}
+					listDirectory(dir, xPos, yPos);
+
+				} catch (final Exception e) {
+					IJ.error("BAR " + getVersion(),
+							"Error: Drag and Drop failed...");
+					return;
+				}
+			}
+		});
+
+		// Populate TextPanel
 		final TextPanel tp = tw.getTextPanel();
-		tp.setColumnHeadings("Double-click on a filename to open it");
+		final String HEADING = "Double-click on a filename to open it. Drag & "
+				+ "drop a folder to generate new lists";
+		tp.setColumnHeadings(HEADING);
 
-		Collections.sort(list);
-		final Iterator<String> it = list.listIterator();
-		int counter = 1;
-		while (it.hasNext())
-			tw.append( ""+ IJ.pad(counter++,2) +": "+ dir + it.next() );
+		final int padDigits = (int) (Math.log10(files.length) + 1);
+		for (int i = 0; i < files.length; i++) {
+			final String fname = (files[i].isDirectory()) ? files[i].getName()
+					+ File.separator : files[i].getName();
+			tp.appendWithoutUpdate("" + IJ.pad((i + 1), padDigits) + ": " + dir + fname);
+		}
 
-		IJ.showStatus("" + (counter-1) + " items in " + SNIPPETS_DIR);
+		// Hack: create an empty row as wide as heading to ensure heading is fully visible
+		final String spacer = "                                                 "
+				+ "                                                             "
+				+ "                          ";
+		tp.appendWithoutUpdate(spacer);
+
 		tp.updateDisplay();
+		IJ.showStatus(String.valueOf(files.length) + " items in " + dir);
 
 	}
 
