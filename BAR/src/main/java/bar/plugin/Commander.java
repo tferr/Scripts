@@ -18,6 +18,7 @@ import ij.IJ;
 import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
+import ij.gui.ImageWindow;
 import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
 import ij.text.TextPanel;
@@ -946,24 +947,56 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * running from console.
 	 */
 	void printList() {
-		if (isConsoleMode() || emptyQuery(matchingString)) {
-			Utils.listDirectory(path);
-			return;
-		}
+
 		if (filenames.size() < 1) {
 			error("No files in current list");
 			return;
 		}
+
+		// Set location of TextWindow: an offset position of the active
+		// non-image window, otherwise the center of the Commander frame
+		int xPos, yPos;
+		try {
+			final java.awt.Window window = WindowManager.getActiveWindow();
+			if (window == null || window instanceof ImageWindow) {
+				final java.awt.Point pos = frame.getLocationOnScreen();
+				xPos = (int) pos.getX() + (frame.getWidth() / 2);
+				yPos = (int) pos.getY() + (frame.getHeight() / 2);
+			} else {
+				final java.awt.Point pos = window.getLocationOnScreen();
+				xPos = (int) pos.getX() + 20;
+				yPos = (int) pos.getY() + 40;
+			}
+		} catch (final Exception e) {
+			xPos = yPos = -1;
+		}
+
+		// Non interactive mode: Print an unfiltered list
+		if (isConsoleMode() || emptyQuery(matchingString)) {
+			Utils.listDirectory(path, xPos, yPos);
+			return;
+		}
+
+		// Set TextWindow of filtered list
 		final SavedSearch search = new SavedSearch(matchingString,
 				caseSensitive, wholeWord, regex);
 		final TextWindow tw = new TextWindow(path + " " + search.toString(),
 				"", 550, 200);
+		if (xPos > 0 && yPos > 0)
+			tw.setLocation(xPos, yPos);
+
+		// Populate list
 		final TextPanel tp = tw.getTextPanel();
 		tp.setColumnHeadings("Double-click on a filename to open it");
 		int counter = 1;
-		final int padLngth = (int) (Math.log10(filenames.size()) + 1);
+		final int padDigits = (int) (Math.log10(filenames.size()) + 1);
 		for (final String f : filenames)
-			tw.append("" + IJ.pad(counter++, padLngth) + ": " + path + f);
+			tp.appendWithoutUpdate("" + IJ.pad(counter++, padDigits) + ": " + path + f);
+
+		// Hack: create an empty row as wide as heading to ensure heading is fully visible
+		final String spacer = "                                                              ";
+		tp.appendWithoutUpdate(spacer);
+
 		tp.updateDisplay();
 	}
 
