@@ -729,8 +729,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			quit();
 			return exitStatus;
 		} else if (cmd.startsWith("help")) {
-			log("Displaying help...");
-			IJ.showMessage("Commander Help", helpMessage());
+			new ij.gui.HTMLDialog("Commander Help", helpMessage(), false);
 			return exitStatus;
 		} else if (cmd.startsWith("ls")) {
 			printList();
@@ -1232,6 +1231,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				.append("filename to jump to the first file starting with that letter. Additional ")
 				.append("presses of the same letter will cycle through all the files starting with ")
 				.append("that initial.</dd>");
+		sb.append("    <dt>Shortcuts and tooltips:</dt>");
+		sb.append("    <dd>Pause the cursor over Commanders' components to access a full list of ")
+				.append("shortcut keys.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
@@ -1333,17 +1335,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
 				+ "&emsp;! &emsp; Console mode<br>"
-				+ "&emsp;&crarr;&ensp; Open filtered item <br>"
-				+ "&emsp;" + metaKey + "+1&ensp; Open 1<sup>st</sup> hit<br>"
-				+ "&emsp;" + metaKey + "+2&ensp; Open 2<sup>nd</sup> hit<br>"
-				+ "&emsp;" + metaKey + "+3&ensp; Open 3<sup>rd</sup> hit</html>");
+				+ "&emsp;&crarr;&ensp; Open filtered item<br>"
+				+ "&emsp;" + metaKey + "+B&ensp;Activate file list<br>"
+				+ "&emsp;" + metaKey + "+L&ensp;Activate search field</html>");
 		table.setToolTipText("<html>Navigation shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
 				+ "&emsp;&crarr;&emsp; Open item<br>"
 				+ "&emsp;&larr;&emsp; Parent directory<br>"
 				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
 				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
-				+ metaKey + "+&uarr;, &lArr;&ensp;Search prompt</html>");
+				+ "&ensp;" + metaKey + "+B&ensp;Activate file list<br>"
+				+ "&ensp;" + metaKey + "+L&ensp;Activate search field</html>");
 	}
 
 	void updateConsoleStatus() {
