@@ -868,6 +868,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		log(blinkMsg, 500);
 	}
 
+
+	/** Enables/Disables console Mode */
+	void toggleConsoleMode() {
+		if (isConsoleMode())
+			resetFileList();
+		else
+			resetCommandList();
+	}
+
 	/**
 	 * Checks if the specified file belongs to a problematic list of extensions
 	 * known to trigger undesirable IJ commands. (mainly compiled files that
@@ -1408,6 +1417,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		frame.dispose();
 	}
 
+	void activateTable() {
+		final int index = table.getSelectedRow();
+		if (index>0)
+			table.setRowSelectionInterval(index, index);
+		else
+			table.setRowSelectionInterval(0, 0);
+		table.requestFocusInWindow();
+	}
+
 	/* ActionEvent Methods */
 	@Override
 	public void actionPerformed(final ActionEvent e) {
@@ -1475,34 +1493,45 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		final int key = ke.getKeyCode();
 		final Object source = ke.getSource();
-		final boolean meta = (ke.isControlDown() || ke.isMetaDown());
+		final boolean meta = (ke.getModifiers() & Toolkit.getDefaultToolkit()
+				.getMenuShortcutKeyMask()) != 0;
+		final boolean metaShift = meta && ke.isShiftDown();
 
 		// Close if Esc, Ctrl+W or Cmd+W
 		if (key == KeyEvent.VK_ESCAPE || (key == KeyEvent.VK_W && meta)) {
 			quit();
+
+		// Trigger Menu accelerators
+		} else if (metaShift) {
+			if (key == KeyEvent.VK_C) // Enter/Exit Console
+				toggleConsoleMode();
+			else if (key == KeyEvent.VK_G) // Go To...
+				changeDirectory("");
+			else if (!isConsoleMode() && key == KeyEvent.VK_R) // Reveal Path
+				Utils.revealFile(path);
+
+		} else if (meta) {
+
+			if (key == KeyEvent.VK_L) {
+				prompt.requestFocusInWindow();
+				prompt.selectAll();
+			} else if (key == KeyEvent.VK_B) {
+				activateTable();
+			} else if (!isConsoleMode() && key == KeyEvent.VK_D) {
+					addBookmark();
+			} else if (!isConsoleMode() && key == KeyEvent.VK_P) {
+					printList();
+			} else if (!isConsoleMode() && key == KeyEvent.VK_R) {
+					resetFileList("Contents reloaded...");
+			}
+
 		} else if (source == prompt) {
 
-			// Open top hits if their shortcuts are pressed from prompt
-			if (meta && key == KeyEvent.VK_1) {
-				setSelectedItem(0);
-				openItem(selectedItem);
-			} else if (meta && key == KeyEvent.VK_2) {
-				setSelectedItem(1);
-				openItem(selectedItem);
-			} else if (meta && key == KeyEvent.VK_3) {
-				setSelectedItem(2);
-				openItem(selectedItem);
-
 			// Up or down arrows pressed in prompt: Move the focus to list
-			} else if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
-
-				final int index = table.getSelectedRow();// list.getSelectedIndex();
-				if (index>0)
-					table.setRowSelectionInterval(index, index);
-				else
-					table.setRowSelectionInterval(0, 0);
-				table.requestFocus();
+			if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
+				activateTable();
 			}
+
 		} else if (source == table) {
 
 			// Focus in list and left arrow key: move up in directory hierarchy
@@ -1522,9 +1551,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				setSelectedItem(table.getSelectedRow());
 				openItem(selectedItem);
 
-			// Focus in list and backspace or meta + up arrow: Switch focus back to prompt
-			} else if (key == KeyEvent.VK_BACK_SPACE || (meta && key == KeyEvent.VK_UP)) {
-				prompt.requestFocus();
+			// Focus in list and backspace: Switch focus back to prompt
+			} else if (key == KeyEvent.VK_BACK_SPACE) {
+				prompt.requestFocusInWindow();
+				prompt.selectAll();
 
 				// Focus in list and up/down arrow key: Loop through list
 			} else if (key == KeyEvent.VK_UP) {
@@ -1712,10 +1742,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			} else if (command.equals("Refresh File List")) {
 				resetFileList("Contents reloaded...");
 			} else if (command.contains("Console")) {
-				if (isConsoleMode())
-					resetFileList();
-				else
-					resetCommandList();
+				toggleConsoleMode();
 				prompt.requestFocusInWindow();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
