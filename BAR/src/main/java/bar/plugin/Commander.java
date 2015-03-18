@@ -396,6 +396,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Auto-scroll table using keystrokes
 		table.addKeyListener(new KeyAdapter() {
 			public void keyTyped(final KeyEvent evt) {
+				if (evt.isControlDown() || evt.isMetaDown())
+					return;
 				final int nRows = tableModel.getRowCount();
 				final char ch = Character.toLowerCase(evt.getKeyChar());
 				if (!Character.isLetterOrDigit(ch)) {
