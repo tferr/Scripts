@@ -248,8 +248,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			closeOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_CLOSE_ON_OPEN);
 			ijmLegacy = prefs.getBoolean("cmder.ijmLegacy", DEF_IJM_LEGACY);
 			caseSensitive = prefs.getBoolean("cmder.caseSensitive", false);
-			regex = prefs.getBoolean("cmder.regex", false);
 			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
+			regex = prefs.getBoolean("cmder.regex", false);
 			path = prefs.get("cmder.path", DEF_PATH);
 
 			// Bookmarks and Saved Searches
@@ -518,8 +518,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
-		log("Changing directory...");
 		try {
+			log("Changing directory...");
 			Class.forName("fiji.util.gui.GenericDialogPlus");
 			final GenericDialogPlus gd = new GenericDialogPlus("Change directory", frame);
 			gd.addDirectoryField("cd to..", defaultpath, 50);
@@ -1005,7 +1005,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/**
 	 * Checks if the specified file belongs to a problematic list of extensions
-	 * known to trigger undesirable IJ commands. (mainly compiled files that
+	 * known to trigger "undesirable" IJ commands. (mainly compiled files that
 	 * activate the "Plugins>Install command)
 	 */
 	boolean isOpenable(String path) {
@@ -1375,10 +1375,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("    <dt>Keyboard navigation in file list:</dt>");
 		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
 				.append("filename to jump to the first file starting with that letter. Additional ")
-				.append("presses of the same letter will cycle through all the files starting with ")
+				.append("presses of the same letter will cycle through the remaining files starting with ")
 				.append("that initial.</dd>");
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
-		sb.append("    <dd>Pause the cursor over Commanders' components to access a full list of ")
+		sb.append("    <dd>Pause the cursor over Commanders' components to access a detailed list of ")
 				.append("shortcut keys.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
