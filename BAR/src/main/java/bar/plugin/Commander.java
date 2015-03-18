@@ -1527,13 +1527,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/** Toggles "Add to Favorites", "Reveal Path", "Print Current List", etc. */
+	/** Toggles "Favorites", "Reveal Path", "Print Current List", etc. */
 	void validateOptionsMenu() {
 		for (final Component item : optionsMenu.getComponents()) {
 			if (item instanceof JMenuItem) {
 				final String label = ((JMenuItem) item).getText();
-				if (label.equals("Add to Favorites")
-						|| label.equals("Reveal Path")
+				if (label.equals("Favorites") || label.equals("Reveal Path")
 						|| label.equals("Print Current List")
 						|| label.equals("Refresh File List")) {
 					item.setEnabled(!isConsoleMode());
