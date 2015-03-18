@@ -219,9 +219,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 							+ "Bookmarks and previously saved searches will be forgotten.\n \n"
 							+ "(Preferences can be reset by holding \"Alt\" when starting Commander)")) {
 				prefs.clear();
-				if (frame!=null){
+				if (frame != null) {
 					frame.setLocation(DEF_FRAME_X, DEF_FRAME_Y);
 					frame.setSize(DEF_FRAME_WIDTH, DEF_FRAME_HEIGHT);
+					maxSize = DEF_MAX_SIZE;
+					closeOnOpen = DEF_CLOSE_ON_OPEN;
+					ijmLegacy = DEF_IJM_LEGACY;
+					caseSensitive = wholeWord = regex = false;
+					path = DEF_PATH;
+					clearBookmarks();
+					clearSearches();
+					resetFileList();
 				}
 			}
 		} catch (final Exception e) {
@@ -614,10 +622,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, modifierB));
 		mi.addActionListener(al);
 		popup.add(mi);
-		mi = new JMenuItem("Options...");
+		popup.addSeparator();
+		mi = new JMenuItem("Preferences...");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
-		popup.addSeparator();
 
 		return popup;
 	}
@@ -1355,17 +1364,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void showOptionsDialog() {
 		log("Prompting for options...");
 		boolean hardReset = false;
-		final GenericDialog gd = new GenericDialog("Commander Options");
-		gd.addNumericField("Maximum number of items in list", maxSize, 0);
-		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
-		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
-		gd.addCheckbox("Clear Favorites list", false);
-		gd.enableYesNoCancel("OK", "Reset Options");
+		final GenericDialog gd = new GenericDialog("Commander Preferences", frame);
+		gd.addNumericField("Maximum number of items in file list", maxSize, 0);
+		gd.addCheckbox("Close Commander after opening a file", closeOnOpen);
+		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
+		gd.addMessage("");
+		gd.addCheckbox("Clear Favorites", false);
+		gd.addCheckbox("Clear Saved searches", false);
+		gd.enableYesNoCancel("OK", "Restore Defaults");
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			log("Prompt dismissed...");
-			frame.toFront();
 			return;
 		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
@@ -1373,20 +1383,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			ijmLegacy = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
-			frame.toFront();
+			if (gd.getNextBoolean())
+				clearSearches();
 		} else {
-			hardReset = true;
-			maxSize = DEF_MAX_SIZE;
-			ijmLegacy = DEF_IJM_LEGACY;
-			closeOnOpen = DEF_CLOSE_ON_OPEN;
-			regex = DEF_REGEX;
-			setPath(DEF_PATH);
-			showOptionsDialog();
+			clearPreferences();
 		}
-		if (hardReset)
-			resetFileList();
-		else
-			updateList();
+		updateList();
 	}
 
 	void updateList() {
@@ -1845,7 +1847,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private class OptionsActionListener implements ActionListener {
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
-			if (command.equals("Options...")) {
+			if (command.equals("Preferences...")) {
 				showOptionsDialog();
 			} else if (command.equals("Go To...")) {
 				changeDirectory("");
