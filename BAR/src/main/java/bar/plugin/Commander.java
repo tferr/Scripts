@@ -57,6 +57,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -125,20 +126,19 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Flag that toggles changes to status bar messages */
 	private boolean freezeStatusBar = false;
 
-	/** Defaults for "Reset" option */
-	private static final int DEF_MAX_SIZE = 200;
+	/** Defaults */
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
-	private static final boolean DEF_REGEX = false;
+	private static final int DEF_MAX_SIZE = 200;
+	private static final int DEF_FRAME_WIDTH = 250;
+	private static final int DEF_FRAME_HEIGHT = 450;
+	private static final int DEF_FRAME_X = 30;
+	private static final int DEF_FRAME_Y = 0;
 
 	/** Parameters **/
-	private static final int FRAME_WIDTH = 250;
-	private static final int FRAME_HEIGHT = 450;
-	private String path = DEF_PATH;
-	private int maxSize = DEF_MAX_SIZE;
-	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
-	private boolean ijmLegacy = DEF_IJM_LEGACY;
-	private boolean caseSensitive, regex, wholeWord = false;
+	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
+	private boolean closeOnOpen, ijmLegacy, caseSensitive, regex, wholeWord;
+	private String path;
 	private String matchingString = "";
 
 	private JFrame frame;
@@ -155,6 +155,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTable table;
 	private static TableModel tableModel;
 	private JTableHeader tableHeader;
+	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
@@ -168,6 +169,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			IJ.selectWindow("BAR Commander");
 			return;
 		}
+
+		if (IJ.altKeyDown())
+			clearPreferences();
+
+		// Initialize file list, favorites and history. Set defaults
+		filenames = new ArrayList<String>();
+		bookmarks = new ArrayList<String>();
+		prevSearches = new ArrayList<SavedSearch>();
+		loadPreferences();
 
 		// Check if a path has been specified in plugins.config
 		if ("!lib".equals(arg))
@@ -202,13 +212,61 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
+	void clearPreferences() {
+		try {
+			if (IJ.showMessageWithCancel("Reset all options to defaults?", "Reset Commander preferences?\n"
+							+ "Bookmarks and previously saved searches will be forgotten.\n \n"
+							+ "(Preferences can be reset by holding \"Alt\" when starting Commander)")) {
+				prefs.clear();
+				if (frame!=null){
+					frame.setLocation(DEF_FRAME_X, DEF_FRAME_Y);
+					frame.setSize(DEF_FRAME_WIDTH, DEF_FRAME_HEIGHT);
+				}
+			}
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	void loadPreferences() {
+		try {
+			frameX = prefs.getInt("cmder.frameX", DEF_FRAME_X);
+			frameY = prefs.getInt("cmder.frameY", DEF_FRAME_Y);
+			frameWidth = prefs.getInt("cmder.frameWidth", DEF_FRAME_WIDTH);
+			frameHeight = prefs.getInt("cmder.frameHeight", DEF_FRAME_HEIGHT);
+			maxSize = prefs.getInt("cmder.maxSize", DEF_MAX_SIZE);
+			closeOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_CLOSE_ON_OPEN);
+			ijmLegacy = prefs.getBoolean("cmder.ijmLegacy", DEF_IJM_LEGACY);
+			caseSensitive = prefs.getBoolean("cmder.caseSensitive", false);
+			regex = prefs.getBoolean("cmder.regex", false);
+			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
+			path = prefs.get("cmder.path", DEF_PATH);
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	void savePreferences() {
+		try {
+			prefs.putInt("cmder.frameX", frame.getX());
+			prefs.putInt("cmder.frameY", frame.getY());
+			prefs.putInt("cmder.frameWidth", frame.getWidth());
+			prefs.putInt("cmder.frameHeight", frame.getHeight());
+			prefs.putInt("cmder.maxSize", maxSize);
+			prefs.putBoolean("cmder.closeOnOpen", closeOnOpen);
+			prefs.putBoolean("cmder.ijmLegacy", ijmLegacy);
+			prefs.putBoolean("cmder.caseSensitive", caseSensitive);
+			prefs.putBoolean("cmder.regex", regex);
+			prefs.putBoolean("cmder.wholeWord", wholeWord);
+			prefs.put("cmder.path", path);
+
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
 	/** Initializes lists, builds and displays prompt */
 	void runInteractively() {
-
-		// Initialize file list, favorites and history
-		filenames = new ArrayList<String>();
-		bookmarks = new ArrayList<String>();
-		prevSearches = new ArrayList<SavedSearch>();
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
@@ -405,7 +463,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		frame.add(container);
 		frame.addWindowListener(this);
 		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setSize(frameWidth, frameHeight);
+		frame.setLocation(frameX, frameY);
 		frame.setVisible(true);
 		//openButton.getRootPane().setDefaultButton(openButton);
 		prompt.requestFocusInWindow();
@@ -1415,6 +1474,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	void quit() {
+		savePreferences();
 		WindowManager.removeWindow(frame);
 		frame.dispose();
 	}
