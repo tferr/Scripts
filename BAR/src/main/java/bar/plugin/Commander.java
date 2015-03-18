@@ -241,6 +241,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			regex = prefs.getBoolean("cmder.regex", false);
 			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
 			path = prefs.get("cmder.path", DEF_PATH);
+
+			// Bookmarks and Saved Searches
+			final String favs[] = prefs.get("cmder.bookmarks", "").split(",");
+			for (final String f : favs)
+				if (!f.isEmpty())
+					bookmarks.add(f);
+			final int nQueries = prefs.getInt("cmder.nQueries", 2);
+			for (int i = 0; i < nQueries; i++) {
+				final SavedSearch srch = new SavedSearch(prefs.get("cmder.prevSearch" + i, ""));
+				if (srch.valid())
+					prevSearches.add(srch);
+			}
 		} catch (final Exception e) {
 			IJ.handleException(e);
 		}
@@ -260,6 +272,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			prefs.putBoolean("cmder.wholeWord", wholeWord);
 			prefs.put("cmder.path", path);
 
+			// Bookmarks and Saved Searches
+			String favs = "";
+			for (final String b : bookmarks)
+				favs += b + ",";
+			prefs.put("cmder.bookmarks", favs);
+			prefs.putInt("cmder.nQueries", prevSearches.size());
+			for (int i = 0; i < prevSearches.size(); i++) {
+				prefs.put("cmder.prevSearch" + i, prevSearches.get(i).toPrefsString());
+			}
 		} catch (final Exception e) {
 			IJ.handleException(e);
 		}
@@ -540,10 +561,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Clears all bookmarks in "Favorites" (optionsMenu) */
 	void clearBookmarks() {
-		if (bookmarks.size() == 0)
-			return;
-		optionsMenu.remove(optionsMenu.getComponentCount() - 1);
-		bookmarks.clear();
+		try {
+			bookmarks.clear();
+			prefs.put("cmder.bookmarks", "");
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	/** Clears previous searched in "History" dropdown menu */
+	void clearSearches() {
+		prevSearches.clear();
+		try {
+			final int nQueries = prefs.getInt("cmder.nQueries", 2);
+			prefs.putInt("cmder.nQueries", 0);
+			for (int i = 0; i < nQueries; i++)
+				prefs.remove("cmder.prevSearch" + i);
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
 	}
 
 	/** Creates optionsMenu */
@@ -614,7 +650,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			popup.addSeparator();
 		}
 		for (final SavedSearch search : prevSearches) {
-			mi = new JMenuItem(search.pattern);
+			mi = new JMenuItem(search.query);
 			mi.addActionListener(al);
 			popup.add(mi);
 		}
@@ -1744,7 +1780,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	SavedSearch getSavedSearch(final String pattern) {
 		for (final SavedSearch s : prevSearches) {
-			if (s.pattern.equals(pattern))
+			if (s.query.equals(pattern))
 				return s;
 		}
 		return null;
@@ -1756,8 +1792,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			final String cmd = e.getActionCommand();
 
 			if (cmd.equals("Clear searches")) {
-				prevSearches.clear();
-
+				clearSearches();
 			} else if (cmd.equals("Save search")) {
 				final String query = prompt.getText();
 				if (emptyQuery(query)) {
@@ -1780,7 +1815,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 			} else {
 				final SavedSearch search = getSavedSearch(cmd);
-				prompt.setText(search.pattern);
+				prompt.setText(search.query);
 				caseSensitiveCheckBox.setSelected(search.caseSensitive);
 				wholeWordCheckBox.setSelected(search.wholeWord);
 				regexCheckBox.setSelected(search.regex);
@@ -1982,23 +2017,45 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** This class represents a saved search */
 	private class SavedSearch {
 
-		public String pattern = "";
+		public String query = "";
 		public boolean caseSensitive = false;
 		public boolean wholeWord = false;
 		public boolean regex = false;
+		private static final String delimiter = "@,";
 
-		public SavedSearch(final String path, final boolean caseSensitive,
+		/** Default constructor. */
+		public SavedSearch(final String query, final boolean caseSensitive,
 				final boolean wholeWord, final boolean regex) {
-			this.pattern = path;
+			this.query = query;
 			this.caseSensitive = caseSensitive;
 			this.wholeWord = wholeWord;
 			this.regex = regex;
 		}
 
-		/** Returns a string representation of a SavedSearch */
+		/**
+		 * Creates a new saved search from a concatenated string, as generated
+		 * by {@link #toPrefsString() }. Use {@link #valid() } to assess if
+		 * constructor was successful.
+		 */
+		public SavedSearch(final String prefString) {
+			final String[] items = prefString.split(delimiter);
+			if (items.length > 3) {
+				this.query = items[0];
+				this.caseSensitive = Boolean.parseBoolean(items[1]);
+				this.wholeWord = Boolean.parseBoolean(items[2]);
+				this.regex = Boolean.parseBoolean(items[3]);
+			}
+		}
+
+		/** Assesses if saved search holds a valid query */
+		public boolean valid() {
+			return !this.query.isEmpty();
+		}
+
+		/** Returns a readable representation of a SavedSearch */
 		public String toString() {
 			final StringBuffer sb = new StringBuffer();
-			sb.append("[").append(this.pattern).append("]");
+			sb.append("[").append(this.query).append("]");
 			if (this.regex) {
 				sb.append(" [Regex]");
 			} else {
@@ -2007,6 +2064,22 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				if (this.wholeWord)
 					sb.append(" [\\b]");
 			}
+			return sb.toString();
+		}
+
+		/**
+		 * Converts a SavedSearch into a single string in which search elements
+		 * are joint using {@link SavedSearch#delimiter}. This allows saved
+		 * Searches to be stored in a Preferences file.
+		 *
+		 * @see {@link #SavedSearch(String) }.
+		 */
+		public String toPrefsString() {
+			final StringBuffer sb = new StringBuffer();
+			sb.append(this.query).append(delimiter);
+			sb.append(this.caseSensitive).append(delimiter);
+			sb.append(this.wholeWord).append(delimiter);
+			sb.append(this.regex).append(delimiter);
 			return sb.toString();
 		}
 
