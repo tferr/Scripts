@@ -665,8 +665,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void showHistoryMenu() {
 		final JPopupMenu popup = new JPopupMenu();
 		final HistoryActionListener al = new HistoryActionListener();
+		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		JMenuItem mi;
 		mi = new JMenuItem("Save search");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
 		if (prevSearches.size() > 0) {
@@ -1137,6 +1139,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		tp.appendWithoutUpdate(spacer);
 
 		tp.updateDisplay();
+	}
+
+	void saveQuery() {
+		final String query = prompt.getText();
+		if (emptyQuery(query)) {
+			log("Invalid search query...");
+		} else {
+			final SavedSearch existringEntry = getSavedSearch(query);
+			final SavedSearch newEntry = new SavedSearch(query, caseSensitive, wholeWord, regex);
+			if (existringEntry == null) {
+				prevSearches.add(newEntry);
+				log("Saved query. " + String.valueOf(prevSearches.size())
+						+ " item(s) in history...");
+			} else {
+				prevSearches
+						.set(prevSearches.indexOf(existringEntry), newEntry);
+				log("Saved query updated...");
+			}
+		}
 	}
 
 	void selectParentDirectory(final String currentDir) {
@@ -1635,12 +1656,23 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				prompt.selectAll();
 			} else if (key == KeyEvent.VK_B) {
 				activateTable();
+			} else if (key == KeyEvent.VK_COMMA) {
+				showOptionsDialog();
+			} else if (key == KeyEvent.VK_S) {
+				saveQuery();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_D) {
-					addBookmark();
+				addBookmark();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_P) {
-					printList();
+				printList();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_R) {
-					resetFileList("Contents reloaded...");
+				resetFileList("Contents reloaded...");
+			}
+
+		} else if (source == prompt) {
+
+			// Up or down arrows pressed in prompt: Move the focus to list
+			if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
+				activateTable();
 			}
 
 		} else if (source == prompt) {
@@ -1814,25 +1846,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			if (cmd.equals("Clear searches")) {
 				clearSearches();
 			} else if (cmd.equals("Save search")) {
-				final String query = prompt.getText();
-				if (emptyQuery(query)) {
-					log("Invalid search query...");
-				} else {
-					final SavedSearch existringEntry = getSavedSearch(query);
-					final SavedSearch newEntry = new SavedSearch(query,
-							caseSensitive, wholeWord, regex);
-					if (existringEntry == null) {
-						prevSearches.add(newEntry);
-						log("Saved query. "
-								+ String.valueOf(prevSearches.size())
-								+ " item(s) in history...");
-					} else {
-						prevSearches.set(prevSearches.indexOf(existringEntry),
-								newEntry);
-						log("Saved query updated...");
-					}
-				}
-
+				saveQuery();
 			} else {
 				final SavedSearch search = getSavedSearch(cmd);
 				prompt.setText(search.query);
