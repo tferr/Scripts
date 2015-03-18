@@ -148,6 +148,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JLabel statusBar;
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
+	private JMenu bookmarksMenu;
 
 	private ArrayList<String> filenames, bookmarks;
 	private ArrayList<SavedSearch> prevSearches;
@@ -495,10 +496,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Adds current path to "Favorites" menu */
 	void addBookmark() {
 		if (!bookmarks.contains(path)) {
-			if (bookmarks.size() > 0)
-				optionsMenu.remove(optionsMenu.getComponentCount() - 1);
 			bookmarks.add(path);
-			optionsMenu.add(createBookmarkMenu());
+			updateBookmarksMenu();
 			log("New bookmark: "+ path);
 		} else
 			error("Already bookmarked "+ path);
@@ -588,12 +587,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final OptionsActionListener al = new OptionsActionListener();
 		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		final int modifierB = (java.awt.event.InputEvent.SHIFT_MASK | modifierA);
-		JMenuItem mi = new JMenuItem("Add to Favorites");
-		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifierA));
-		mi.addActionListener(al);
-		popup.add(mi);
+		bookmarksMenu = new JMenu("Favorites");
+		updateBookmarksMenu();
+		popup.add(bookmarksMenu);
 		popup.addSeparator();
-		mi = new JMenuItem("Print Current List");
+		JMenuItem mi = new JMenuItem("Print Current List");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
@@ -622,17 +620,34 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return popup;
 	}
 
-	/** Creates "Favorites" (bookmarks) menu */
-	JMenu createBookmarkMenu() {
+	/** Creates the "Favorites" (bookmarks) menu */
+	void updateBookmarksMenu() {
 		final OptionsActionListener al = new OptionsActionListener();
-		final JMenu menu = new JMenu("Favorites");
-		JMenuItem mi;
-		for (final String bookmark : bookmarks) {
-			mi = new JMenuItem(bookmark);
+		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		bookmarksMenu.removeAll();
+		JMenuItem mi = new JMenuItem("Add to Favorites");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifierA));
+		mi.addActionListener(al);
+		bookmarksMenu.add(mi);
+		if (bookmarks.size() > 0) {
+			mi = new JMenuItem("Clear favorites");
 			mi.addActionListener(al);
-			menu.add(mi);
+			bookmarksMenu.add(mi);
+			bookmarksMenu.addSeparator();
 		}
-		return menu;
+		for (final String bookmark : bookmarks) {
+			mi = new JMenuItem();
+			final int lgth = 50;
+			if (bookmark.length() > lgth) {
+				mi.setText("..." + bookmark.substring(bookmark.length() - lgth));
+				mi.setToolTipText(bookmark);
+			} else {
+				mi.setText(bookmark);
+			}
+			mi.setActionCommand(bookmark);
+			mi.addActionListener(al);
+			bookmarksMenu.add(mi);
+		}
 	}
 
 	/** Displays History Menu */
@@ -1843,6 +1858,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				prompt.requestFocusInWindow();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
+			} else if (command.equals("Clear favorites")) {
+				clearBookmarks();
+				updateBookmarksMenu();
 			} else { // A bookmark was selected
 				changeDirectory(command);
 			}
