@@ -518,7 +518,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		log("Changing directory...");
 		try {
 			Class.forName("fiji.util.gui.GenericDialogPlus");
-			final GenericDialogPlus gd = new GenericDialogPlus("Change directory");
+			final GenericDialogPlus gd = new GenericDialogPlus("Change directory", frame);
 			gd.addDirectoryField("cd to..", defaultpath, 50);
 			gd.setOKLabel("    Set Path    ");
 			gd.addDialogListener(new DialogListener() {
@@ -822,13 +822,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Case 0: cmd encoded a non-verbose self-contained instruction
 		if (result.equals(String.valueOf(0))) {
 			resetFileList(CONSOLE_TRIGGER + cmd + " executed...");
-			prompt.requestFocus();
+			prompt.requestFocusInWindow();
 			return;
 		}
 
 		// Remaining cases: cmd encodes a new path
 		changeDirectory(result);
-		prompt.requestFocus();
+		prompt.requestFocusInWindow();
 
 	}
 
@@ -995,6 +995,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			resetFileList();
 		else
 			resetCommandList();
+		prompt.requestFocusInWindow();
 	}
 
 	/**
