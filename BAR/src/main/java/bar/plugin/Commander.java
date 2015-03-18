@@ -171,6 +171,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return;
 		}
 
+		Utils.shiftClickWarning();
 		if (IJ.altKeyDown())
 			clearPreferences();
 
@@ -312,6 +313,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final int cboxGap = caseSensitiveCheckBox.getIconTextGap();
 		caseSensitiveCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 		caseSensitiveCheckBox.setIconTextGap(cboxGap-1);
+		caseSensitiveCheckBox.setEnabled(!regex);
 		caseSensitiveCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -324,6 +326,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		wholeWordCheckBox = new JCheckBox("Whole word", wholeWord);
 		wholeWordCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 		wholeWordCheckBox.setIconTextGap(cboxGap-1);
+		wholeWordCheckBox.setEnabled(!regex);
 		wholeWordCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
