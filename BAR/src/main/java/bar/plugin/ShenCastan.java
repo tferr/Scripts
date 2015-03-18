@@ -23,6 +23,7 @@ import java.awt.AWTEvent;
 import java.awt.Rectangle;
 
 import bar.Utils;
+import fiji.Debug;
 
 /**
  * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
@@ -49,6 +50,11 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	private static double f = 0.50d; // smoothing factor
 	double[] tmpresX; // x coords of the gradient
 	double[] tmpresY; // y coords of the gradient
+
+	/* Debug from within Eclipse */
+	public static void main(final String[] args) {
+		Debug.runFilter("/Applications/ImageJ/samples/blobs.gif", "Shen-Castan Edge Detector", "");
+	}
 
 	/** Returns types of supported images */
 	public int setup(final String arg, final ImagePlus imp) {
