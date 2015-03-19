@@ -57,6 +57,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -125,20 +126,19 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Flag that toggles changes to status bar messages */
 	private boolean freezeStatusBar = false;
 
-	/** Defaults for "Reset" option */
-	private static final int DEF_MAX_SIZE = 200;
+	/** Defaults */
 	private static final boolean DEF_CLOSE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
-	private static final boolean DEF_REGEX = false;
+	private static final int DEF_MAX_SIZE = 200;
+	private static final int DEF_FRAME_WIDTH = 250;
+	private static final int DEF_FRAME_HEIGHT = 450;
+	private static final int DEF_FRAME_X = 30;
+	private static final int DEF_FRAME_Y = 0;
 
 	/** Parameters **/
-	private static final int FRAME_WIDTH = 250;
-	private static final int FRAME_HEIGHT = 450;
-	private String path = DEF_PATH;
-	private int maxSize = DEF_MAX_SIZE;
-	private boolean closeOnOpen = DEF_CLOSE_ON_OPEN;
-	private boolean ijmLegacy = DEF_IJM_LEGACY;
-	private boolean caseSensitive, regex, wholeWord = false;
+	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
+	private boolean closeOnOpen, ijmLegacy, caseSensitive, regex, wholeWord;
+	private String path;
 	private String matchingString = "";
 
 	private JFrame frame;
@@ -148,6 +148,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JLabel statusBar;
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
+	private JMenu bookmarksMenu;
 
 	private ArrayList<String> filenames, bookmarks;
 	private ArrayList<SavedSearch> prevSearches;
@@ -155,6 +156,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTable table;
 	private static TableModel tableModel;
 	private JTableHeader tableHeader;
+	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
@@ -168,6 +170,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			IJ.selectWindow("BAR Commander");
 			return;
 		}
+
+		Utils.shiftClickWarning();
+		if (IJ.altKeyDown())
+			clearPreferences();
+
+		// Initialize file list, favorites and history. Set defaults
+		filenames = new ArrayList<String>();
+		bookmarks = new ArrayList<String>();
+		prevSearches = new ArrayList<SavedSearch>();
+		loadPreferences();
 
 		// Check if a path has been specified in plugins.config
 		if ("!lib".equals(arg))
@@ -202,13 +214,90 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
+	void clearPreferences() {
+		try {
+			if (IJ.showMessageWithCancel("Reset all options to defaults?", "Reset Commander preferences?\n"
+							+ "Bookmarks and previously saved searches will be forgotten.\n \n"
+							+ "(Preferences can be reset by holding \"Alt\" when starting Commander)")) {
+				prefs.clear();
+				if (frame != null) {
+					frame.setLocation(DEF_FRAME_X, DEF_FRAME_Y);
+					frame.setSize(DEF_FRAME_WIDTH, DEF_FRAME_HEIGHT);
+					maxSize = DEF_MAX_SIZE;
+					closeOnOpen = DEF_CLOSE_ON_OPEN;
+					ijmLegacy = DEF_IJM_LEGACY;
+					caseSensitive = wholeWord = regex = false;
+					path = DEF_PATH;
+					clearBookmarks();
+					clearSearches();
+					resetFileList();
+				}
+			}
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	void loadPreferences() {
+		try {
+			frameX = prefs.getInt("cmder.frameX", DEF_FRAME_X);
+			frameY = prefs.getInt("cmder.frameY", DEF_FRAME_Y);
+			frameWidth = prefs.getInt("cmder.frameWidth", DEF_FRAME_WIDTH);
+			frameHeight = prefs.getInt("cmder.frameHeight", DEF_FRAME_HEIGHT);
+			maxSize = prefs.getInt("cmder.maxSize", DEF_MAX_SIZE);
+			closeOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_CLOSE_ON_OPEN);
+			ijmLegacy = prefs.getBoolean("cmder.ijmLegacy", DEF_IJM_LEGACY);
+			caseSensitive = prefs.getBoolean("cmder.caseSensitive", false);
+			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
+			regex = prefs.getBoolean("cmder.regex", false);
+			path = prefs.get("cmder.path", DEF_PATH);
+
+			// Bookmarks and Saved Searches
+			final String favs[] = prefs.get("cmder.bookmarks", "").split(",");
+			for (final String f : favs)
+				if (!f.isEmpty())
+					bookmarks.add(f);
+			final int nQueries = prefs.getInt("cmder.nQueries", 2);
+			for (int i = 0; i < nQueries; i++) {
+				final SavedSearch srch = new SavedSearch(prefs.get("cmder.prevSearch" + i, ""));
+				if (srch.valid())
+					prevSearches.add(srch);
+			}
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	void savePreferences() {
+		try {
+			prefs.putInt("cmder.frameX", frame.getX());
+			prefs.putInt("cmder.frameY", frame.getY());
+			prefs.putInt("cmder.frameWidth", frame.getWidth());
+			prefs.putInt("cmder.frameHeight", frame.getHeight());
+			prefs.putInt("cmder.maxSize", maxSize);
+			prefs.putBoolean("cmder.closeOnOpen", closeOnOpen);
+			prefs.putBoolean("cmder.ijmLegacy", ijmLegacy);
+			prefs.putBoolean("cmder.caseSensitive", caseSensitive);
+			prefs.putBoolean("cmder.regex", regex);
+			prefs.putBoolean("cmder.wholeWord", wholeWord);
+			prefs.put("cmder.path", path);
+
+			// Bookmarks and Saved Searches
+			String favs = "";
+			for (final String b : bookmarks)
+				favs += b + ",";
+			prefs.put("cmder.bookmarks", favs);
+			prefs.putInt("cmder.nQueries", prevSearches.size());
+			for (int i = 0; i < prevSearches.size(); i++) {
+				prefs.put("cmder.prevSearch" + i, prevSearches.get(i).toPrefsString());
+			}
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
 	/** Initializes lists, builds and displays prompt */
 	void runInteractively() {
-
-		// Initialize file list, favorites and history
-		filenames = new ArrayList<String>();
-		bookmarks = new ArrayList<String>();
-		prevSearches = new ArrayList<SavedSearch>();
 
 		// Create search prompt
 		prompt = new JTextField(PROMPT_PLACEHOLDER);
@@ -224,6 +313,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final int cboxGap = caseSensitiveCheckBox.getIconTextGap();
 		caseSensitiveCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 		caseSensitiveCheckBox.setIconTextGap(cboxGap-1);
+		caseSensitiveCheckBox.setEnabled(!regex);
 		caseSensitiveCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -236,6 +326,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		wholeWordCheckBox = new JCheckBox("Whole word", wholeWord);
 		wholeWordCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 		wholeWordCheckBox.setIconTextGap(cboxGap-1);
+		wholeWordCheckBox.setEnabled(!regex);
 		wholeWordCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -316,6 +407,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Auto-scroll table using keystrokes
 		table.addKeyListener(new KeyAdapter() {
 			public void keyTyped(final KeyEvent evt) {
+				if (evt.isControlDown() || evt.isMetaDown())
+					return;
 				final int nRows = tableModel.getRowCount();
 				final char ch = Character.toLowerCase(evt.getKeyChar());
 				if (!Character.isLetterOrDigit(ch)) {
@@ -405,7 +498,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		frame.add(container);
 		frame.addWindowListener(this);
 		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setSize(frameWidth, frameHeight);
+		frame.setLocation(frameX, frameY);
 		frame.setVisible(true);
 		//openButton.getRootPane().setDefaultButton(openButton);
 		prompt.requestFocusInWindow();
@@ -415,10 +509,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Adds current path to "Favorites" menu */
 	void addBookmark() {
 		if (!bookmarks.contains(path)) {
-			if (bookmarks.size() > 0)
-				optionsMenu.remove(optionsMenu.getComponentCount() - 1);
 			bookmarks.add(path);
-			optionsMenu.add(createBookmarkMenu());
+			updateBookmarksMenu();
 			log("New bookmark: "+ path);
 		} else
 			error("Already bookmarked "+ path);
@@ -426,10 +518,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
-		log("Changing directory...");
 		try {
+			log("Changing directory...");
 			Class.forName("fiji.util.gui.GenericDialogPlus");
-			final GenericDialogPlus gd = new GenericDialogPlus("Change directory");
+			final GenericDialogPlus gd = new GenericDialogPlus("Change directory", frame);
 			gd.addDirectoryField("cd to..", defaultpath, 50);
 			gd.setOKLabel("    Set Path    ");
 			gd.addDialogListener(new DialogListener() {
@@ -481,10 +573,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Clears all bookmarks in "Favorites" (optionsMenu) */
 	void clearBookmarks() {
-		if (bookmarks.size() == 0)
-			return;
-		optionsMenu.remove(optionsMenu.getComponentCount() - 1);
-		bookmarks.clear();
+		try {
+			bookmarks.clear();
+			prefs.put("cmder.bookmarks", "");
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+	}
+
+	/** Clears previous searched in "History" dropdown menu */
+	void clearSearches() {
+		prevSearches.clear();
+		try {
+			final int nQueries = prefs.getInt("cmder.nQueries", 2);
+			prefs.putInt("cmder.nQueries", 0);
+			for (int i = 0; i < nQueries; i++)
+				prefs.remove("cmder.prevSearch" + i);
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
 	}
 
 	/** Creates optionsMenu */
@@ -493,12 +600,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final OptionsActionListener al = new OptionsActionListener();
 		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		final int modifierB = (java.awt.event.InputEvent.SHIFT_MASK | modifierA);
-		JMenuItem mi = new JMenuItem("Add to Favorites");
-		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifierA));
-		mi.addActionListener(al);
-		popup.add(mi);
+		bookmarksMenu = new JMenu("Favorites");
+		updateBookmarksMenu();
+		popup.add(bookmarksMenu);
 		popup.addSeparator();
-		mi = new JMenuItem("Print Current List");
+		JMenuItem mi = new JMenuItem("Print Current List");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
@@ -519,33 +625,53 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, modifierB));
 		mi.addActionListener(al);
 		popup.add(mi);
-		mi = new JMenuItem("Options...");
+		popup.addSeparator();
+		mi = new JMenuItem("Preferences...");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
-		popup.addSeparator();
 
 		return popup;
 	}
 
-	/** Creates "Favorites" (bookmarks) menu */
-	JMenu createBookmarkMenu() {
+	/** Creates the "Favorites" (bookmarks) menu */
+	void updateBookmarksMenu() {
 		final OptionsActionListener al = new OptionsActionListener();
-		final JMenu menu = new JMenu("Favorites");
-		JMenuItem mi;
-		for (final String bookmark : bookmarks) {
-			mi = new JMenuItem(bookmark);
+		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		bookmarksMenu.removeAll();
+		JMenuItem mi = new JMenuItem("Add to Favorites");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifierA));
+		mi.addActionListener(al);
+		bookmarksMenu.add(mi);
+		if (bookmarks.size() > 0) {
+			mi = new JMenuItem("Clear favorites");
 			mi.addActionListener(al);
-			menu.add(mi);
+			bookmarksMenu.add(mi);
+			bookmarksMenu.addSeparator();
 		}
-		return menu;
+		for (final String bookmark : bookmarks) {
+			mi = new JMenuItem();
+			final int lgth = 50;
+			if (bookmark.length() > lgth) {
+				mi.setText("..." + bookmark.substring(bookmark.length() - lgth));
+				mi.setToolTipText(bookmark);
+			} else {
+				mi.setText(bookmark);
+			}
+			mi.setActionCommand(bookmark);
+			mi.addActionListener(al);
+			bookmarksMenu.add(mi);
+		}
 	}
 
 	/** Displays History Menu */
 	void showHistoryMenu() {
 		final JPopupMenu popup = new JPopupMenu();
 		final HistoryActionListener al = new HistoryActionListener();
+		final int modifierA = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		JMenuItem mi;
 		mi = new JMenuItem("Save search");
+		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, modifierA));
 		mi.addActionListener(al);
 		popup.add(mi);
 		if (prevSearches.size() > 0) {
@@ -555,7 +681,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			popup.addSeparator();
 		}
 		for (final SavedSearch search : prevSearches) {
-			mi = new JMenuItem(search.pattern);
+			mi = new JMenuItem(search.query);
 			mi.addActionListener(al);
 			popup.add(mi);
 		}
@@ -701,13 +827,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Case 0: cmd encoded a non-verbose self-contained instruction
 		if (result.equals(String.valueOf(0))) {
 			resetFileList(CONSOLE_TRIGGER + cmd + " executed...");
-			prompt.requestFocus();
+			prompt.requestFocusInWindow();
 			return;
 		}
 
 		// Remaining cases: cmd encodes a new path
 		changeDirectory(result);
-		prompt.requestFocus();
+		prompt.requestFocusInWindow();
 
 	}
 
@@ -874,11 +1000,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			resetFileList();
 		else
 			resetCommandList();
+		prompt.requestFocusInWindow();
 	}
 
 	/**
 	 * Checks if the specified file belongs to a problematic list of extensions
-	 * known to trigger undesirable IJ commands. (mainly compiled files that
+	 * known to trigger "undesirable" IJ commands. (mainly compiled files that
 	 * activate the "Plugins>Install command)
 	 */
 	boolean isOpenable(String path) {
@@ -1015,6 +1142,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		tp.appendWithoutUpdate(spacer);
 
 		tp.updateDisplay();
+	}
+
+	void saveQuery() {
+		final String query = prompt.getText();
+		if (emptyQuery(query)) {
+			log("Invalid search query...");
+		} else {
+			final SavedSearch existringEntry = getSavedSearch(query);
+			final SavedSearch newEntry = new SavedSearch(query, caseSensitive, wholeWord, regex);
+			if (existringEntry == null) {
+				prevSearches.add(newEntry);
+				log("Saved query. " + String.valueOf(prevSearches.size())
+						+ " item(s) in history...");
+			} else {
+				prevSearches
+						.set(prevSearches.indexOf(existringEntry), newEntry);
+				log("Saved query updated...");
+			}
+		}
 	}
 
 	void selectParentDirectory(final String currentDir) {
@@ -1229,10 +1375,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("    <dt>Keyboard navigation in file list:</dt>");
 		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
 				.append("filename to jump to the first file starting with that letter. Additional ")
-				.append("presses of the same letter will cycle through all the files starting with ")
+				.append("presses of the same letter will cycle through the remaining files starting with ")
 				.append("that initial.</dd>");
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
-		sb.append("    <dd>Pause the cursor over Commanders' components to access a full list of ")
+		sb.append("    <dd>Pause the cursor over Commanders' components to access a detailed list of ")
 				.append("shortcut keys.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
@@ -1243,17 +1389,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	void showOptionsDialog() {
 		log("Prompting for options...");
 		boolean hardReset = false;
-		final GenericDialog gd = new GenericDialog("Commander Options");
-		gd.addNumericField("Maximum number of items in list", maxSize, 0);
-		gd.addCheckbox("Close window after opening selected file", closeOnOpen);
-		gd.addCheckbox("Open IJM files in built-in (legacy) editor", ijmLegacy);
-		gd.addCheckbox("Clear Favorites list", false);
-		gd.enableYesNoCancel("OK", "Reset Options");
+		final GenericDialog gd = new GenericDialog("Commander Preferences", frame);
+		gd.addNumericField("Maximum number of items in file list", maxSize, 0);
+		gd.addCheckbox("Close Commander after opening a file", closeOnOpen);
+		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
+		gd.addMessage("");
+		gd.addCheckbox("Clear Favorites", false);
+		gd.addCheckbox("Clear Saved searches", false);
+		gd.enableYesNoCancel("OK", "Restore Defaults");
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			log("Prompt dismissed...");
-			frame.toFront();
 			return;
 		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
@@ -1261,20 +1408,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			ijmLegacy = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
-			frame.toFront();
+			if (gd.getNextBoolean())
+				clearSearches();
 		} else {
-			hardReset = true;
-			maxSize = DEF_MAX_SIZE;
-			ijmLegacy = DEF_IJM_LEGACY;
-			closeOnOpen = DEF_CLOSE_ON_OPEN;
-			regex = DEF_REGEX;
-			setPath(DEF_PATH);
-			showOptionsDialog();
+			clearPreferences();
 		}
-		if (hardReset)
-			resetFileList();
-		else
-			updateList();
+		updateList();
 	}
 
 	void updateList() {
@@ -1391,13 +1530,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/** Toggles "Add to Favorites", "Reveal Path", "Print Current List", etc. */
+	/** Toggles "Favorites", "Reveal Path", "Print Current List", etc. */
 	void validateOptionsMenu() {
 		for (final Component item : optionsMenu.getComponents()) {
 			if (item instanceof JMenuItem) {
 				final String label = ((JMenuItem) item).getText();
-				if (label.equals("Add to Favorites")
-						|| label.equals("Reveal Path")
+				if (label.equals("Favorites") || label.equals("Reveal Path")
 						|| label.equals("Print Current List")
 						|| label.equals("Refresh File List")) {
 					item.setEnabled(!isConsoleMode());
@@ -1415,6 +1553,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	void quit() {
+		savePreferences();
 		WindowManager.removeWindow(frame);
 		frame.dispose();
 	}
@@ -1519,12 +1658,23 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				prompt.selectAll();
 			} else if (key == KeyEvent.VK_B) {
 				activateTable();
+			} else if (key == KeyEvent.VK_COMMA) {
+				showOptionsDialog();
+			} else if (key == KeyEvent.VK_S) {
+				saveQuery();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_D) {
-					addBookmark();
+				addBookmark();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_P) {
-					printList();
+				printList();
 			} else if (!isConsoleMode() && key == KeyEvent.VK_R) {
-					resetFileList("Contents reloaded...");
+				resetFileList("Contents reloaded...");
+			}
+
+		} else if (source == prompt) {
+
+			// Up or down arrows pressed in prompt: Move the focus to list
+			if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
+				activateTable();
 			}
 
 		} else if (source == prompt) {
@@ -1684,7 +1834,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	SavedSearch getSavedSearch(final String pattern) {
 		for (final SavedSearch s : prevSearches) {
-			if (s.pattern.equals(pattern))
+			if (s.query.equals(pattern))
 				return s;
 		}
 		return null;
@@ -1696,31 +1846,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			final String cmd = e.getActionCommand();
 
 			if (cmd.equals("Clear searches")) {
-				prevSearches.clear();
-
+				clearSearches();
 			} else if (cmd.equals("Save search")) {
-				final String query = prompt.getText();
-				if (emptyQuery(query)) {
-					log("Invalid search query...");
-				} else {
-					final SavedSearch existringEntry = getSavedSearch(query);
-					final SavedSearch newEntry = new SavedSearch(query,
-							caseSensitive, wholeWord, regex);
-					if (existringEntry == null) {
-						prevSearches.add(newEntry);
-						log("Saved query. "
-								+ String.valueOf(prevSearches.size())
-								+ " item(s) in history...");
-					} else {
-						prevSearches.set(prevSearches.indexOf(existringEntry),
-								newEntry);
-						log("Saved query updated...");
-					}
-				}
-
+				saveQuery();
 			} else {
 				final SavedSearch search = getSavedSearch(cmd);
-				prompt.setText(search.pattern);
+				prompt.setText(search.query);
 				caseSensitiveCheckBox.setSelected(search.caseSensitive);
 				wholeWordCheckBox.setSelected(search.wholeWord);
 				regexCheckBox.setSelected(search.regex);
@@ -1733,7 +1864,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private class OptionsActionListener implements ActionListener {
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
-			if (command.equals("Options...")) {
+			if (command.equals("Preferences...")) {
 				showOptionsDialog();
 			} else if (command.equals("Go To...")) {
 				changeDirectory("");
@@ -1748,6 +1879,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				prompt.requestFocusInWindow();
 			} else if (command.equals("Reveal Path")) {
 				Utils.revealFile(path);
+			} else if (command.equals("Clear favorites")) {
+				clearBookmarks();
+				updateBookmarksMenu();
 			} else { // A bookmark was selected
 				changeDirectory(command);
 			}
@@ -1922,23 +2056,45 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** This class represents a saved search */
 	private class SavedSearch {
 
-		public String pattern = "";
+		public String query = "";
 		public boolean caseSensitive = false;
 		public boolean wholeWord = false;
 		public boolean regex = false;
+		private static final String delimiter = "@,";
 
-		public SavedSearch(final String path, final boolean caseSensitive,
+		/** Default constructor. */
+		public SavedSearch(final String query, final boolean caseSensitive,
 				final boolean wholeWord, final boolean regex) {
-			this.pattern = path;
+			this.query = query;
 			this.caseSensitive = caseSensitive;
 			this.wholeWord = wholeWord;
 			this.regex = regex;
 		}
 
-		/** Returns a string representation of a SavedSearch */
+		/**
+		 * Creates a new saved search from a concatenated string, as generated
+		 * by {@link #toPrefsString() }. Use {@link #valid() } to assess if
+		 * constructor was successful.
+		 */
+		public SavedSearch(final String prefString) {
+			final String[] items = prefString.split(delimiter);
+			if (items.length > 3) {
+				this.query = items[0];
+				this.caseSensitive = Boolean.parseBoolean(items[1]);
+				this.wholeWord = Boolean.parseBoolean(items[2]);
+				this.regex = Boolean.parseBoolean(items[3]);
+			}
+		}
+
+		/** Assesses if saved search holds a valid query */
+		public boolean valid() {
+			return !this.query.isEmpty();
+		}
+
+		/** Returns a readable representation of a SavedSearch */
 		public String toString() {
 			final StringBuffer sb = new StringBuffer();
-			sb.append("[").append(this.pattern).append("]");
+			sb.append("[").append(this.query).append("]");
 			if (this.regex) {
 				sb.append(" [Regex]");
 			} else {
@@ -1947,6 +2103,22 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				if (this.wholeWord)
 					sb.append(" [\\b]");
 			}
+			return sb.toString();
+		}
+
+		/**
+		 * Converts a SavedSearch into a single string in which search elements
+		 * are joint using {@link SavedSearch#delimiter}. This allows saved
+		 * Searches to be stored in a Preferences file.
+		 *
+		 * @see {@link #SavedSearch(String) }.
+		 */
+		public String toPrefsString() {
+			final StringBuffer sb = new StringBuffer();
+			sb.append(this.query).append(delimiter);
+			sb.append(this.caseSensitive).append(delimiter);
+			sb.append(this.wholeWord).append(delimiter);
+			sb.append(this.regex).append(delimiter);
 			return sb.toString();
 		}
 
