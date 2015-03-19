@@ -11,6 +11,7 @@
 
 package bar.plugin;
 
+import fiji.Debug;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.DialogListener;
@@ -23,7 +24,6 @@ import java.awt.AWTEvent;
 import java.awt.Rectangle;
 
 import bar.Utils;
-import fiji.Debug;
 
 /**
  * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to

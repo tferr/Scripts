@@ -1388,7 +1388,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	void showOptionsDialog() {
 		log("Prompting for options...");
-		boolean hardReset = false;
 		final GenericDialog gd = new GenericDialog("Commander Preferences", frame);
 		gd.addNumericField("Maximum number of items in file list", maxSize, 0);
 		gd.addCheckbox("Close Commander after opening a file", closeOnOpen);

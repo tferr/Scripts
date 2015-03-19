@@ -359,7 +359,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		final Object source = e.getSource();
 		if (source==list) {
 
-			java.awt.Point pos = list.getLocationOnScreen();
+			final java.awt.Point pos = list.getLocationOnScreen();
 			final int xPos = (int) pos.getX() + 10;
 			final int yPos = (int) pos.getY() + 10;
 			Utils.listDirectory(Utils.getSnippetsDir(), xPos, yPos);
