@@ -14,7 +14,7 @@
 
 <groupId>com.github.tferr</groupId>
 <artifactId>BAR_</artifactId>
-<version>1.1.1</version>
+<version>1.1.2-SNAPSHOT</version>
 
 <name>BAR_.jar</name>
 <description>BAR: A collection of Broadly Applicable Routines for ImageJ1.</description>
