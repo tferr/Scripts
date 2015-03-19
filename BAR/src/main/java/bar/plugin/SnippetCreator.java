@@ -392,7 +392,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		if (!string.endsWith("\n")) string +="\n";
 		ta.insert(string, startPos);
 		ta.select(startPos, ta.getCaretPosition());
-		if (IJ.isMacOSX()) ta.requestFocus();
+		ta.requestFocusInWindow();
 	}
 
 
