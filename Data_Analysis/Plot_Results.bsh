@@ -1,6 +1,6 @@
 /* Plot_Results.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
- * Creates an ImageJ XY plot from imported spreadsheet data. TF, 2014.06
+ * Creates an ImageJ XY plot from imported spreadsheet data.
  */
 
 import ij.IJ;
@@ -38,11 +38,21 @@ shapes[5] = Plot.X;      slabels[5] = "X";      colors[5] = "Magenta";
 
 
 ResultsTable rt = ResultsTable.getResultsTable();
-if (rt==null || rt.getCounter()==0)
-	Opener.openResultsTable("");
+if (rt==null || rt.getCounter()==0) {
+	GenericDialog gd = new GenericDialog("No Results table available");
+	gd.addMessage("Open new file, or try to retrieve data from clipboard?");
+	gd.enableYesNoCancel("Open new file", "Read clipboard");
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return;
+	else if (gd.wasOKed())
+		Opener.openResultsTable("");
+	else
+		IJ.run("Clipboard to Results", "");
+}
 rt = ResultsTable.getResultsTable();
 if (rt==null || rt.getCounter()==0)
-	{ IJ.error("Could not retrieve data from Results table"); return; }
+	return;
 
 String title = "Imported Data";
 String[] headings = rt.getHeadings();
@@ -88,7 +98,7 @@ double[] x;
 if (noXvalues) {
 	x = new double[y.length];
 	for (int i=0; i<y.length; i++) x[i] = i;
-} else 
+} else
 	x = rt.getColumnAsDoubles(xCol);
 
 // NB: addErrorBars requires a Plot constructor with intial arrays
