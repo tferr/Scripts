@@ -87,8 +87,9 @@ Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#sni
 
 ```python
 # Load BARlib.py
-import sys, bar
-sys.path.append(bar.Utils.getLibDir())
+import sys
+from bar import Utils as barUtils
+sys.path.append(barUtils.getLibDir())
 import BARlib as lib
 
 # Confirm availability of BARlib

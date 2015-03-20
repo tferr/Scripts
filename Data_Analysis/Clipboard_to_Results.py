@@ -11,7 +11,8 @@
 # copied to the clipboard
 
 
-import os, sys, tempfile, bar
+import os, sys, tempfile
+from bar import Utils as barUtils
 from ij import IJ
 from ij.plugin.filter import Analyzer
 import ij.measure.ResultsTable as RT
@@ -19,7 +20,7 @@ import ij.measure.ResultsTable as RT
 
 fd, path = tempfile.mkstemp()
 try:
-    os.write(fd, bar.Utils.getClipboardText())
+    os.write(fd, barUtils.getClipboardText())
     os.close(fd)
     rt = RT.open(path) #IOException if getClipboardText()==""
     if Analyzer.resetCounter():

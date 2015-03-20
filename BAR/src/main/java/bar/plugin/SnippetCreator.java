@@ -184,8 +184,9 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	public static String pyHeader() {
 		final StringBuilder sb = commonHeader(PY);
 		sb.append("# Load BARlib.py\n");
-		sb.append("import sys, bar\n");
-		sb.append("sys.path.append(bar.Utils.getLibDir())\n");
+		sb.append("import sys\n");
+		sb.append("from bar import Utils as barUtils\n");
+		sb.append("sys.path.append(barUtils.getLibDir())\n");
 		sb.append("import BARlib as lib\n");
 		sb.append("\n");
 		sb.append("# Confirm availability of BARlib\n");
