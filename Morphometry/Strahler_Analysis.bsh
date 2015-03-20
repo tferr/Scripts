@@ -82,7 +82,7 @@ boolean validInstallation() {
 		return true;
 	} catch( ClassNotFoundException e ) {
 		URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/";
-		AS_VRSN = "AnalyzeSkeleton_-2.0.3.jar";
+		AS_VRSN = "AnalyzeSkeleton_-2.0.4.jar";
 		SK_VRSN = "Skeletonize3D_-1.0.1.jar";
 		msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
 			+ "Strahler Analysis requires AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be installed in\n"
