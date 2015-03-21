@@ -23,6 +23,7 @@ import ij.text.TextWindow;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Menu;
+import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -117,9 +118,12 @@ public class Utils implements PlugIn {
 	 * !IJ.macroRunning().
 	 */
 	private void moveSubmenu(final String subMenu) {
-		shiftClickWarning();
+
 		final Menu barMenu = Menus.getImageJMenu("BAR");
 		final PopupMenu popMenu = Menus.getPopupMenu();
+		final String placeHolderString = subMenu + " ";
+		final Menu placeHolder = new Menu(placeHolderString);
+		placeHolder.setEnabled(false);
 
 		final Integer popmenuPos = getMenuItem(popMenu, subMenu);
 		final Integer barmenuPos = getMenuItem(barMenu, subMenu);
@@ -131,31 +135,26 @@ public class Utils implements PlugIn {
 
 		if (popmenuPos==-1) { // parent is MenuBar
 
-			popMenu.addSeparator();
+			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount()-1);
+			if (!(lastItem instanceof Menu))
+				popMenu.addSeparator();
 			popMenu.add(barMenu.getItem(barmenuPos));
-			removeLastSeparator(barMenu);
+			barMenu.insert(placeHolder, barmenuPos);
 			if (!IJ.macroRunning())
 				IJ.showMessage("BAR v"+ VERSION, ""+ subMenu +"> transferred to context menu.\n"
 						+"Right-click on the image canvas to access it.");
 
 		} else { // parent is PopupMenu
 
-			barMenu.addSeparator();
-			barMenu.add(popMenu.getItem(popmenuPos));
-			removeLastSeparator(popMenu);
+			final Integer placeholderPos = getMenuItem(barMenu, placeHolderString);
+			barMenu.remove(placeholderPos);
+			barMenu.insert(popMenu.getItem(popmenuPos), placeholderPos);
+			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount()-1);
+			if (lastItem.getLabel().equals("-"))
+				popMenu.remove(lastItem);
 			if (!IJ.macroRunning())
-				IJ.showStatus("BAR>"+ subMenu +"> transferred to main menu.");
+				IJ.showStatus("BAR>" + subMenu + "> transferred to main menu.");
 
-		}
-	}
-
-	/** Removes any trailing separator(s) from the specified menu. */
-	private void removeLastSeparator(final Menu menu) {
-		if (menu==null) return;
-		final int lastItem = menu.getItemCount()-1;
-		if (menu.getItem(lastItem).getLabel().equals("-")) {
-			menu.remove(lastItem);
-			removeLastSeparator(menu);
 		}
 	}
 
