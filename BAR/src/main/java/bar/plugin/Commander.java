@@ -866,9 +866,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else if (cmd.startsWith("refresh")) {
 			freezeStatusBar = false;
 			return exitStatus;
-		} else if (cmd.startsWith("reveal")) {
-			Utils.revealFile(path);
-			return exitStatus;
 		} else if (cmd.startsWith("..")) {
 			selectParentDirectory(path);
 			return exitStatus;
@@ -907,17 +904,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = Utils.getSnippetsDir();
 		} else if (cmd.equals("lib")) {
 			exitStatus = Utils.getLibDir();
-		//} else if (cmd.equals("bar")) {
-		//	exitStatus = Utils.getBARDir();
 		} else if (cmd.equals("samples")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
 		} else if (cmd.equals("scripts")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
-		}// else if (cmd.equals("tools/")) {
-		 //	exitStatus = IJ.getDirectory("macros") + "tools";
-		 //} else if (cmd.equals("toolsets")) {
-		 //	exitStatus = IJ.getDirectory("macros") + cmd;
-		 //}
+		}
 		return exitStatus;
 
 	}
