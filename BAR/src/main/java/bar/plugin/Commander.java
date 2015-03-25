@@ -148,9 +148,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JLabel statusBar;
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
-	private JMenu bookmarksMenu;
+	private JMenu bookmarksMenu, recentMenu;
 
-	private ArrayList<String> filenames, bookmarks;
+	private ArrayList<String> filenames, bookmarks, recentPaths;
 	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
 	private JTable table;
@@ -178,6 +178,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list, favorites and history. Set defaults
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
+		recentPaths = new ArrayList<String>();
 		prevSearches = new ArrayList<SavedSearch>();
 		loadPreferences();
 
@@ -229,6 +230,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					caseSensitive = wholeWord = regex = false;
 					path = DEF_PATH;
 					clearBookmarks();
+					clearRecentPaths();
 					clearSearches();
 					resetFileList();
 				}
@@ -252,11 +254,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			regex = prefs.getBoolean("cmder.regex", false);
 			path = prefs.get("cmder.path", DEF_PATH);
 
-			// Bookmarks and Saved Searches
+			// Bookmarks Recent paths and Saved Searches
 			final String favs[] = prefs.get("cmder.bookmarks", "").split(",");
 			for (final String f : favs)
 				if (!f.isEmpty())
 					bookmarks.add(f);
+			final String recent[] = prefs.get("cmder.recentPaths", "").split(",");
+			for (final String r : recent)
+				if (!r.isEmpty())
+					recentPaths.add(r);
 			final int nQueries = prefs.getInt("cmder.nQueries", 2);
 			for (int i = 0; i < nQueries; i++) {
 				final SavedSearch srch = new SavedSearch(prefs.get("cmder.prevSearch" + i, ""));
@@ -282,11 +288,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			prefs.putBoolean("cmder.wholeWord", wholeWord);
 			prefs.put("cmder.path", path);
 
-			// Bookmarks and Saved Searches
+			// Bookmarks, Recent paths and Saved Searches
 			String favs = "";
 			for (final String b : bookmarks)
 				favs += b + ",";
 			prefs.put("cmder.bookmarks", favs);
+			String recent = "";
+			for (final String r : recentPaths)
+				recent += r + ",";
+			prefs.put("cmder.recentPaths", recent);
 			prefs.putInt("cmder.nQueries", prevSearches.size());
 			for (int i = 0; i < prevSearches.size(); i++) {
 				prefs.put("cmder.prevSearch" + i, prevSearches.get(i).toPrefsString());
@@ -516,6 +526,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			error("Already bookmarked "+ path);
 	}
 
+	/** Adds current path to "Recent" menu */
+	void addRecentPath(final String path, final int maxListSize) {
+		recentPaths.remove(path);
+		recentPaths.add(0, path);
+		if (recentPaths.size() > maxListSize)
+			recentPaths.remove(recentPaths.size() - 1);
+		updateRecentMenu();
+	}
+
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
 		try {
@@ -581,7 +600,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/** Clears previous searched in "History" dropdown menu */
+	/** Clears recent paths in "Recent folders" (optionsMenu) */
+	void clearRecentPaths() {
+		try {
+			recentPaths.clear();
+			prefs.put("cmder.recentPaths", "");
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+		updateRecentMenu();
+	}
+
+	/** Clears previous searches in "History" dropdown menu */
 	void clearSearches() {
 		prevSearches.clear();
 		try {
@@ -603,6 +633,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		bookmarksMenu = new JMenu("Favorites");
 		updateBookmarksMenu();
 		popup.add(bookmarksMenu);
+		recentMenu = new JMenu("Recent Folders");
+		updateRecentMenu();
+		popup.add(recentMenu);
 		popup.addSeparator();
 		JMenuItem mi = new JMenuItem("Print Current List");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, modifierA));
@@ -661,6 +694,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			mi.setActionCommand(bookmark);
 			mi.addActionListener(al);
 			bookmarksMenu.add(mi);
+		}
+	}
+
+	/** Creates the "Recent Folders" menu */
+	void updateRecentMenu() {
+		if (recentPaths.size() == 0) {
+			recentMenu.setEnabled(false);
+			return;
+		} else {
+			recentMenu.setEnabled(true);
+			recentMenu.removeAll();
+			final RecentActionListener al = new RecentActionListener();
+			JMenuItem mi;
+			for (final String r : recentPaths) {
+				final String entry = new File(r).getName();
+				mi = new JMenuItem(entry.isEmpty() ? File.separator : entry);
+				mi.setActionCommand(r);
+				mi.addActionListener(al);
+				recentMenu.add(mi);
+			}
+			recentMenu.addSeparator();
+			mi = new JMenuItem("Clear Menu");
+			mi.addActionListener(al);
+			recentMenu.add(mi);
 		}
 	}
 
@@ -1292,6 +1349,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			newPath += File.separator;
 		path = newPath;
 		repaintColumnHeader(newPath);
+		addRecentPath(newPath, 10);
 	}
 
 	void setSelectedItem(final int index) {
@@ -1385,6 +1443,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
 		gd.addMessage("");
 		gd.addCheckbox("Clear Favorites", false);
+		gd.addCheckbox("Clear Recent folders", false);
 		gd.addCheckbox("Clear Saved searches", false);
 		gd.enableYesNoCancel("OK", "Restore Defaults");
 		gd.addHelp(helpMessage());
@@ -1398,6 +1457,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			ijmLegacy = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
+			if (gd.getNextBoolean())
+				clearRecentPaths();
 			if (gd.getNextBoolean())
 				clearSearches();
 		} else {
@@ -1873,6 +1934,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				clearBookmarks();
 				updateBookmarksMenu();
 			} else { // A bookmark was selected
+				changeDirectory(command);
+			}
+		}
+	}
+
+	/** Implements ActionListeners for the "recent folders" menu */
+	private class RecentActionListener implements ActionListener {
+		public void actionPerformed(final ActionEvent e) {
+			final String command = e.getActionCommand();
+			if (command.startsWith("Clear")) {
+				clearRecentPaths();
+			} else {
 				changeDirectory(command);
 			}
 		}
