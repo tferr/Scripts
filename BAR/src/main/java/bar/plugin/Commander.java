@@ -944,7 +944,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory("Choose new directory");
 		} else if (cmd.startsWith("~")) {
 			exitStatus = IJ.getDirectory("home");
-		} else if (cmd.startsWith("image")) {
+		} else if (cmd.startsWith("imp")) {
 			exitStatus = IJ.getDirectory("image");
 		} else if (cmd.equals("luts")) {
 			exitStatus = IJ.getDirectory(cmd);
@@ -967,6 +967,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else if (cmd.equals("scripts")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
 		}
+
+		if (exitStatus != null && exitStatus.isEmpty())
+			exitStatus = null;
+
 		return exitStatus;
 
 	}
