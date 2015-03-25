@@ -598,6 +598,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} catch (final Exception e) {
 			IJ.handleException(e);
 		}
+		updateBookmarksMenu();
 	}
 
 	/** Clears recent paths in "Recent folders" (optionsMenu) */
@@ -1932,7 +1933,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				Utils.revealFile(path);
 			} else if (command.equals("Clear favorites")) {
 				clearBookmarks();
-				updateBookmarksMenu();
 			} else { // A bookmark was selected
 				changeDirectory(command);
 			}
