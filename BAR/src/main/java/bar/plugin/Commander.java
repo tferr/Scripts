@@ -1363,12 +1363,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Creates HTML text for built-in help */
 	String helpMessage() {
+		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 		final StringBuffer sb = new StringBuffer();
 		sb.append("<html>");
 		sb.append("<head>");
 		sb.append("  <style type='text/css'>");
 		sb.append("  .cnsl {color: blue; font-family: monospace;}");
 		sb.append("  .srch {color: black; font-family: monospace;}");
+		sb.append("  .kb {bgcolor: #BBBBBB; background: #BBBBBB; color: white;}");
 		sb.append("   ol {margin-top: -10px; margin-left:20px;}");
 		sb.append("   dl {margin-top: -10px;");
 		sb.append("  </style>");
@@ -1403,7 +1405,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("      <ol>");
 		sb.append("        <li>Drag and drop the desired folder into the Commander list</li>");
 		sb.append("        <li>Type: <span class='srch'>.tif</span> &mdash; Enter</li>");
-		sb.append("        <li>Choose <i>Print Current List</i> from the Options Menu</li>");
+		sb.append("        <li>Press <span class='kb'>&thinsp;").append(metaKey).append("+P&thinsp;</span> ")
+				.append("<i>Print Current List</i> in Options Menu)</li>");
 		sb.append("      </ol>");
 		sb.append("    </li>");
 		sb.append("    <li>Retrieve both TIFF and JPEG files in a directory:</li>");
@@ -1424,16 +1427,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("  <h4>Tips:</h4>");
 		sb.append("  <dl>");
 		sb.append("    <dt>Drag and drop alternatives:</dt>");
-		sb.append("    <dd><i>Go To...</i> or the console commands <span class='cnsl'>!goto</span> or ")
-				.append("<span class='cnsl'>!cd</span>.</dd>");
+		sb.append("    <dd><i>Go To...</i> (<span class='kb'>&thinsp;").append(metaKey).append("+Shift+G&thinsp;</span>) ")
+				.append("or the console commands <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.</dd>");
 		sb.append("    <dt>Keyboard navigation in file list:</dt>");
 		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
 				.append("filename to jump to the first file starting with that letter. Additional ")
 				.append("presses of the same letter will cycle through the remaining files starting with ")
 				.append("that initial.</dd>");
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
-		sb.append("    <dd>Pause the cursor over Commanders' components to access a detailed list of ")
-				.append("shortcut keys.</dd>");
+		sb.append("    <dd>Checkboxes and buttons can also be controlled by pressing <span class='kb'>&thinsp;Alt&thinsp;</span> ")
+				.append("and the highlighted letter of their labels. E.g.: Pressing <span class='kb'>&thinsp;Alt+R&thinsp;</span> ")
+				.append("toggles the <i>Regex</i> checkbox.<br>A full list of shortcut keys is displayed when pausing the cursor ")
+				.append("over Commanders' components.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
