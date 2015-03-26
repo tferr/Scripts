@@ -37,6 +37,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -625,6 +627,77 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/** Creates the "Copy Path" menu */
+	JMenu copyPathMenu() {
+		final JMenu cm = new JMenu("Copy Path");
+		JMenuItem mi = new JMenuItem("Default Path");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("");
+			}
+		});
+		cm.add(mi);
+		mi = new JMenuItem("Short Path");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("short");
+			}
+		});
+		cm.add(mi);
+		mi = new JMenuItem("URL");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("url");
+			}
+		});
+		cm.add(mi);
+		return cm;
+	}
+
+	/**
+	 * Copies current path to the system clipboard.
+	 *
+	 * @param type
+	 *            if "url", the path URL is copied. If "short", an abbreviated
+	 *            path is copied. This means short filenames in 8.3 format for
+	 *            Windows and relative paths with escaped whitespaces in Unix.
+	 *            The default path is copied if <code>type</code> has any other
+	 *            value.
+	 */
+	void pathToClipboard(final String type) {
+		String path = this.path;
+		try {
+			if (type.equals("url")) {
+				path = new File(path).toURI().toURL().toString();
+			} else if (type.equals("short")) {
+				if (path.length() > 1 && path.endsWith(File.separator))
+					path = path.substring(0, path.length() - 1);
+				if (IJ.isWindows()) {
+					final Runtime rt = Runtime.getRuntime();
+					final Process process = rt.exec("cmd /c for %I in (\""
+							+ path + "\") do @echo %~fsI");
+					process.waitFor();
+					final java.io.InputStream is = process.getInputStream();
+					final java.util.Scanner s = new java.util.Scanner(is)
+							.useDelimiter("\\A");
+					if (s.hasNext())
+						path = s.next();
+				} else {
+					path = path.replace(System.getProperty("user.home"), "~");
+					path = path.replace(" ", "\\ ");
+				}
+			}
+			final StringSelection stringSelection = new StringSelection(path);
+			final Clipboard cb = Toolkit.getDefaultToolkit()
+					.getSystemClipboard();
+			cb.setContents(stringSelection, null);
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+		log("Path copied to clipboard...", 500);
+		//if(IJ.debugMode) IJ.log(path);
+	}
+
 	/** Creates optionsMenu */
 	JPopupMenu createOptionsMenu() {
 		final JPopupMenu popup = new JPopupMenu();
@@ -659,6 +732,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, modifierB));
 		mi.addActionListener(al);
 		popup.add(mi);
+		popup.addSeparator();
+		popup.add(copyPathMenu());
 		popup.addSeparator();
 		mi = new JMenuItem("Preferences...");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, modifierA));
