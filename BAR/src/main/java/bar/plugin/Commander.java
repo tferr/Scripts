@@ -37,6 +37,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -148,9 +150,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JLabel statusBar;
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
-	private JMenu bookmarksMenu;
+	private JMenu bookmarksMenu, recentMenu;
 
-	private ArrayList<String> filenames, bookmarks;
+	private ArrayList<String> filenames, bookmarks, recentPaths;
 	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
 	private JTable table;
@@ -178,6 +180,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		// Initialize file list, favorites and history. Set defaults
 		filenames = new ArrayList<String>();
 		bookmarks = new ArrayList<String>();
+		recentPaths = new ArrayList<String>();
 		prevSearches = new ArrayList<SavedSearch>();
 		loadPreferences();
 
@@ -229,6 +232,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					caseSensitive = wholeWord = regex = false;
 					path = DEF_PATH;
 					clearBookmarks();
+					clearRecentPaths();
 					clearSearches();
 					resetFileList();
 				}
@@ -252,11 +256,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			regex = prefs.getBoolean("cmder.regex", false);
 			path = prefs.get("cmder.path", DEF_PATH);
 
-			// Bookmarks and Saved Searches
+			// Bookmarks Recent paths and Saved Searches
 			final String favs[] = prefs.get("cmder.bookmarks", "").split(",");
 			for (final String f : favs)
 				if (!f.isEmpty())
 					bookmarks.add(f);
+			final String recent[] = prefs.get("cmder.recentPaths", "").split(",");
+			for (final String r : recent)
+				if (!r.isEmpty())
+					recentPaths.add(r);
 			final int nQueries = prefs.getInt("cmder.nQueries", 2);
 			for (int i = 0; i < nQueries; i++) {
 				final SavedSearch srch = new SavedSearch(prefs.get("cmder.prevSearch" + i, ""));
@@ -282,11 +290,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			prefs.putBoolean("cmder.wholeWord", wholeWord);
 			prefs.put("cmder.path", path);
 
-			// Bookmarks and Saved Searches
+			// Bookmarks, Recent paths and Saved Searches
 			String favs = "";
 			for (final String b : bookmarks)
 				favs += b + ",";
 			prefs.put("cmder.bookmarks", favs);
+			String recent = "";
+			for (final String r : recentPaths)
+				recent += r + ",";
+			prefs.put("cmder.recentPaths", recent);
 			prefs.putInt("cmder.nQueries", prevSearches.size());
 			for (int i = 0; i < prevSearches.size(); i++) {
 				prefs.put("cmder.prevSearch" + i, prevSearches.get(i).toPrefsString());
@@ -516,6 +528,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			error("Already bookmarked "+ path);
 	}
 
+	/** Adds current path to "Recent" menu */
+	void addRecentPath(final String path, final int maxListSize) {
+		recentPaths.remove(path);
+		recentPaths.add(0, path);
+		if (recentPaths.size() > maxListSize)
+			recentPaths.remove(recentPaths.size() - 1);
+		updateRecentMenu();
+	}
+
 	/** Prompts for a new path (requires fiji.util.gui.GenericDialogPlus) */
 	void cdToDirectory(final String defaultpath) {
 		try {
@@ -579,9 +600,21 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} catch (final Exception e) {
 			IJ.handleException(e);
 		}
+		updateBookmarksMenu();
 	}
 
-	/** Clears previous searched in "History" dropdown menu */
+	/** Clears recent paths in "Recent folders" (optionsMenu) */
+	void clearRecentPaths() {
+		try {
+			recentPaths.clear();
+			prefs.put("cmder.recentPaths", "");
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+		updateRecentMenu();
+	}
+
+	/** Clears previous searches in "History" dropdown menu */
 	void clearSearches() {
 		prevSearches.clear();
 		try {
@@ -594,6 +627,77 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/** Creates the "Copy Path" menu */
+	JMenu copyPathMenu() {
+		final JMenu cm = new JMenu("Copy Path");
+		JMenuItem mi = new JMenuItem("Default Path");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("");
+			}
+		});
+		cm.add(mi);
+		mi = new JMenuItem("Short Path");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("short");
+			}
+		});
+		cm.add(mi);
+		mi = new JMenuItem("URL");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				pathToClipboard("url");
+			}
+		});
+		cm.add(mi);
+		return cm;
+	}
+
+	/**
+	 * Copies current path to the system clipboard.
+	 *
+	 * @param type
+	 *            if "url", the path URL is copied. If "short", an abbreviated
+	 *            path is copied. This means short filenames in 8.3 format for
+	 *            Windows and relative paths with escaped whitespaces in Unix.
+	 *            The default path is copied if <code>type</code> has any other
+	 *            value.
+	 */
+	void pathToClipboard(final String type) {
+		String path = this.path;
+		try {
+			if (type.equals("url")) {
+				path = new File(path).toURI().toURL().toString();
+			} else if (type.equals("short")) {
+				if (path.length() > 1 && path.endsWith(File.separator))
+					path = path.substring(0, path.length() - 1);
+				if (IJ.isWindows()) {
+					final Runtime rt = Runtime.getRuntime();
+					final Process process = rt.exec("cmd /c for %I in (\""
+							+ path + "\") do @echo %~fsI");
+					process.waitFor();
+					final java.io.InputStream is = process.getInputStream();
+					final java.util.Scanner s = new java.util.Scanner(is)
+							.useDelimiter("\\A");
+					if (s.hasNext())
+						path = s.next();
+				} else {
+					path = path.replace(System.getProperty("user.home"), "~");
+					path = path.replace(" ", "\\ ");
+				}
+			}
+			final StringSelection stringSelection = new StringSelection(path);
+			final Clipboard cb = Toolkit.getDefaultToolkit()
+					.getSystemClipboard();
+			cb.setContents(stringSelection, null);
+		} catch (final Exception e) {
+			IJ.handleException(e);
+		}
+		log("Path copied to clipboard...", 500);
+		//if(IJ.debugMode) IJ.log(path);
+	}
+
 	/** Creates optionsMenu */
 	JPopupMenu createOptionsMenu() {
 		final JPopupMenu popup = new JPopupMenu();
@@ -603,6 +707,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		bookmarksMenu = new JMenu("Favorites");
 		updateBookmarksMenu();
 		popup.add(bookmarksMenu);
+		recentMenu = new JMenu("Recent Folders");
+		updateRecentMenu();
+		popup.add(recentMenu);
 		popup.addSeparator();
 		JMenuItem mi = new JMenuItem("Print Current List");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, modifierA));
@@ -625,6 +732,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, modifierB));
 		mi.addActionListener(al);
 		popup.add(mi);
+		popup.addSeparator();
+		popup.add(copyPathMenu());
 		popup.addSeparator();
 		mi = new JMenuItem("Preferences...");
 		mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, modifierA));
@@ -661,6 +770,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			mi.setActionCommand(bookmark);
 			mi.addActionListener(al);
 			bookmarksMenu.add(mi);
+		}
+	}
+
+	/** Creates the "Recent Folders" menu */
+	void updateRecentMenu() {
+		if (recentPaths.size() == 0) {
+			recentMenu.setEnabled(false);
+			return;
+		} else {
+			recentMenu.setEnabled(true);
+			recentMenu.removeAll();
+			final RecentActionListener al = new RecentActionListener();
+			JMenuItem mi;
+			for (final String r : recentPaths) {
+				final String entry = new File(r).getName();
+				mi = new JMenuItem(entry.isEmpty() ? File.separator : entry);
+				mi.setActionCommand(r);
+				mi.addActionListener(al);
+				recentMenu.add(mi);
+			}
+			recentMenu.addSeparator();
+			mi = new JMenuItem("Clear Menu");
+			mi.addActionListener(al);
+			recentMenu.add(mi);
 		}
 	}
 
@@ -866,9 +999,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else if (cmd.startsWith("refresh")) {
 			freezeStatusBar = false;
 			return exitStatus;
-		} else if (cmd.startsWith("reveal")) {
-			Utils.revealFile(path);
-			return exitStatus;
 		} else if (cmd.startsWith("..")) {
 			selectParentDirectory(path);
 			return exitStatus;
@@ -889,7 +1019,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory("Choose new directory");
 		} else if (cmd.startsWith("~")) {
 			exitStatus = IJ.getDirectory("home");
-		} else if (cmd.startsWith("image")) {
+		} else if (cmd.startsWith("imp")) {
 			exitStatus = IJ.getDirectory("image");
 		} else if (cmd.equals("luts")) {
 			exitStatus = IJ.getDirectory(cmd);
@@ -907,17 +1037,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = Utils.getSnippetsDir();
 		} else if (cmd.equals("lib")) {
 			exitStatus = Utils.getLibDir();
-		//} else if (cmd.equals("bar")) {
-		//	exitStatus = Utils.getBARDir();
 		} else if (cmd.equals("samples")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
 		} else if (cmd.equals("scripts")) {
 			exitStatus = IJ.getDirectory("imagej") + cmd;
-		}// else if (cmd.equals("tools/")) {
-		 //	exitStatus = IJ.getDirectory("macros") + "tools";
-		 //} else if (cmd.equals("toolsets")) {
-		 //	exitStatus = IJ.getDirectory("macros") + cmd;
-		 //}
+		}
+
+		if (exitStatus != null && exitStatus.isEmpty())
+			exitStatus = null;
+
 		return exitStatus;
 
 	}
@@ -1301,6 +1429,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			newPath += File.separator;
 		path = newPath;
 		repaintColumnHeader(newPath);
+		addRecentPath(newPath, 10);
 	}
 
 	void setSelectedItem(final int index) {
@@ -1309,12 +1438,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Creates HTML text for built-in help */
 	String helpMessage() {
+		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 		final StringBuffer sb = new StringBuffer();
 		sb.append("<html>");
 		sb.append("<head>");
 		sb.append("  <style type='text/css'>");
 		sb.append("  .cnsl {color: blue; font-family: monospace;}");
 		sb.append("  .srch {color: black; font-family: monospace;}");
+		sb.append("  .kb {bgcolor: #BBBBBB; background: #BBBBBB; color: white;}");
 		sb.append("   ol {margin-top: -10px; margin-left:20px;}");
 		sb.append("   dl {margin-top: -10px;");
 		sb.append("  </style>");
@@ -1349,7 +1480,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("      <ol>");
 		sb.append("        <li>Drag and drop the desired folder into the Commander list</li>");
 		sb.append("        <li>Type: <span class='srch'>.tif</span> &mdash; Enter</li>");
-		sb.append("        <li>Choose <i>Print Current List</i> from the Options Menu</li>");
+		sb.append("        <li>Press <span class='kb'>&thinsp;").append(metaKey).append("+P&thinsp;</span> ")
+				.append("<i>Print Current List</i> in Options Menu)</li>");
 		sb.append("      </ol>");
 		sb.append("    </li>");
 		sb.append("    <li>Retrieve both TIFF and JPEG files in a directory:</li>");
@@ -1370,16 +1502,18 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("  <h4>Tips:</h4>");
 		sb.append("  <dl>");
 		sb.append("    <dt>Drag and drop alternatives:</dt>");
-		sb.append("    <dd><i>Go To...</i> or the console commands <span class='cnsl'>!goto</span> or ")
-				.append("<span class='cnsl'>!cd</span>.</dd>");
+		sb.append("    <dd><i>Go To...</i> (<span class='kb'>&thinsp;").append(metaKey).append("+Shift+G&thinsp;</span>) ")
+				.append("or the console commands <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.</dd>");
 		sb.append("    <dt>Keyboard navigation in file list:</dt>");
 		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
 				.append("filename to jump to the first file starting with that letter. Additional ")
 				.append("presses of the same letter will cycle through the remaining files starting with ")
 				.append("that initial.</dd>");
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
-		sb.append("    <dd>Pause the cursor over Commanders' components to access a detailed list of ")
-				.append("shortcut keys.</dd>");
+		sb.append("    <dd>Checkboxes and buttons can also be controlled by pressing <span class='kb'>&thinsp;Alt&thinsp;</span> ")
+				.append("and the highlighted letter of their labels. E.g.: Pressing <span class='kb'>&thinsp;Alt+R&thinsp;</span> ")
+				.append("toggles the <i>Regex</i> checkbox.<br>A full list of shortcut keys is displayed when pausing the cursor ")
+				.append("over Commanders' components.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
@@ -1394,6 +1528,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
 		gd.addMessage("");
 		gd.addCheckbox("Clear Favorites", false);
+		gd.addCheckbox("Clear Recent folders", false);
 		gd.addCheckbox("Clear Saved searches", false);
 		gd.enableYesNoCancel("OK", "Restore Defaults");
 		gd.addHelp(helpMessage());
@@ -1407,6 +1542,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			ijmLegacy = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
+			if (gd.getNextBoolean())
+				clearRecentPaths();
 			if (gd.getNextBoolean())
 				clearSearches();
 		} else {
@@ -1880,8 +2017,19 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				Utils.revealFile(path);
 			} else if (command.equals("Clear favorites")) {
 				clearBookmarks();
-				updateBookmarksMenu();
 			} else { // A bookmark was selected
+				changeDirectory(command);
+			}
+		}
+	}
+
+	/** Implements ActionListeners for the "recent folders" menu */
+	private class RecentActionListener implements ActionListener {
+		public void actionPerformed(final ActionEvent e) {
+			final String command = e.getActionCommand();
+			if (command.startsWith("Clear")) {
+				clearRecentPaths();
+			} else {
 				changeDirectory(command);
 			}
 		}
