@@ -105,6 +105,7 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   1. [BAR Commander](./BAR/src/main/java/bar/plugin/Commander.java), a keyboard-based file browser
   that produces filtered lists of directory contents. Features include: drag-and-drop support,
   interaction with native file manager, regex filtering, and built-in console for common operations.
+  ([Documentation page](http://fiji.sc/BAR#Commander))
 
 
 ## Help?
