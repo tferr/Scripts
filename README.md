@@ -34,7 +34,8 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   Aiders for the annotation of scientific images.
 
   1. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
-  2. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
+  2. (bsh) [Cumulative Z-Project](./Annotation/README.md#cumulative-z-Project)
+  3. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
 
 
 ## [Image Segmentation][Segmentation]
@@ -90,15 +91,6 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   7. [Ruby library](./lib/README.md#rb-lib)
 
 
-## [Plugins]
-  Maven project implementing the backbone of BAR, including several [Java plugins](./BAR/README.md#bar-plugins),
-  the structure of the [BAR menu](./BAR/README.md#bar-menu) and the BAR API. While BAR is mainly a
-  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#bar-plugins) have started to
-  explore some of the scripting capabilities of [ImageJ2](http://imagej.net/ImageJ2).
-
-  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
-
-
 ## Utilities
   Productivity software.
 
@@ -106,6 +98,15 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   that produces filtered lists of directory contents. Features include: drag-and-drop support,
   interaction with native file manager, regex filtering, and built-in console for common operations.
   ([Documentation page](http://fiji.sc/BAR#Commander))
+
+
+## [Plugins]
+  Maven project implementing the backbone of BAR, including several [Java plugins](./BAR/README.md#bar-plugins),
+  the structure of the [BAR menu](./BAR/README.md#bar-menu) and the BAR API. While BAR is mainly a
+  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#bar-plugins) have started to
+  explore some of the scripting capabilities of [ImageJ2](http://imagej.net/ImageJ2).
+
+  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
 
 
 ## Help?

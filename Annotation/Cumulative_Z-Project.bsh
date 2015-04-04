@@ -1,0 +1,107 @@
+/*
+ * Cumulative_Z-Project.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * BeanShell script that produces cumulative projections using ImageJ's built-in projector
+ * ("Image>Stacks>Z Project.."). An immediate application of these progressive projections is
+ * the display of trailing paths of moving particles in timelapse experiments. For a demo, run
+ * it on Trackmate's sample image ("File>Open Samples>Tracks for TrackMate", in  Fiji/IJ2)
+ */
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.plugin.RGBStackConverter;
+import ij.plugin.ZProjector;
+import ij.process.ImageProcessor;
+
+
+int startSlice, stopSlice;
+int method = ZProjector.MAX_METHOD;
+ImagePlus imp;
+
+void run(String arg) {
+	imp = WindowManager.getCurrentImage();
+	if (invalidImage(imp)) {
+		String sample = "http://fiji.sc/samples/FakeTracks.tif";
+		if (IJ.showMessageWithCancel("Invalid image",
+				"A stack is required but none was found.\nOpen sample image from fiji.sc?")) {
+			imp = new ImagePlus(sample);
+			if (invalidImage(imp)) {
+				IJ.error("Error:\n\"" + sample + "\" could not be retrieved.");
+				return;
+			}
+			imp.show();
+		} else
+			return;
+	}
+	if (imp.isComposite()) {
+		if (IJ.showMessageWithCancel("Convert to RGB?",
+				"Multichannel images must be first converted to RGB.\nConvert?")) {
+			(new RGBStackConverter()).convertToRGB(imp);
+		} else
+			return;
+	}
+	startSlice = 1;
+	stopSlice = (imp.isHyperStack()) ? imp.getNSlices() : imp.getStackSize();
+	if (!showDialog(imp))
+		return;
+	ImagePlus imp2 = cumulativeZProject(imp, method);
+	if (imp2 != null) {
+		imp2.setCalibration(imp.getCalibration());
+		imp2.show();
+	}
+}
+
+ImagePlus cumulativeZProject(ImagePlus imp, int method) {
+	if (method<0 || method>=ZProjector.METHODS.length)
+		return null;
+	
+	if (imp.isHyperStack() && imp.getNFrames() > 1) {
+		ZProjector zp = new ZProjector(imp);
+		zp.setMethod(method);
+		zp.setStartSlice(startSlice);
+		zp.setStopSlice(stopSlice);
+		zp.doHyperStackProjection(true);
+		imp = zp.getProjection();
+		startSlice = 1;
+		stopSlice = imp.getStackSize();
+	}
+
+	ZProjector zp = new ZProjector(imp);
+	zp.setMethod(method);
+	zp.setStartSlice(startSlice);
+	ImageStack stack = new ImageStack(imp.getWidth(), imp.getHeight());
+	for (int z = startSlice; z <= stopSlice; z++) {
+		zp.setStopSlice(z);
+		if (imp.getBitDepth() == 24)
+			zp.doRGBProjection(true);
+		else
+			zp.doProjection(true);
+		ImageProcessor ip = zp.getProjection().getProcessor();
+		stack.addSlice("Proj " + startSlice + "-" + z, ip);
+   }
+   return new ImagePlus(WindowManager.makeUniqueName("CumulativeProj_" + imp.getTitle()), stack);
+}
+
+boolean invalidImage(ImagePlus imp) {
+	return imp == null || (imp != null && imp.getStackSize() == imp.getNChannels());
+}
+
+boolean showDialog(ImagePlus imp) {
+	GenericDialog gd = new GenericDialog("Cumulative Z-Project");
+	gd.addSlider("Start slice:", startSlice, stopSlice, startSlice);
+	gd.addSlider("Stop slice:", startSlice, stopSlice, stopSlice);
+	gd.addChoice("Projection type:", ZProjector.METHODS, ZProjector.METHODS[method]);
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return false;
+	startSlice = (int)Math.min(1, gd.getNextNumber());
+	stopSlice = (int)Math.max(stopSlice, gd.getNextNumber());
+	method = gd.getNextChoiceIndex();
+	return true;
+}
+
+run("");

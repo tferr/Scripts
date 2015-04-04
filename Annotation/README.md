@@ -9,6 +9,12 @@
    Tool in the ImageJ toolbar).
    ([Download .ijm](./Combine_Orthogonal_Views.ijm?raw=true))
 
+###[Cumulative Z-Project](./Cumulative_Z-Project.bsh)
+   Produces cumulative projections using ImageJ's built-in projector (_Image>Stacks>Z Project..._).
+   An immediate application of these progressive projections is the display of trailing paths of
+   moving particles in timelapse experiments.
+   ([Download .bsh](./Cumulative_Z-Project.bsh?raw=true))
+
 ###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
    generating particle-size heat maps.
