@@ -1,0 +1,270 @@
+/*
+ * Multichannel_ZT-axis_Profile.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * BeanShell script that extends Image>Stack>Plot Z-axis Profile to multichannel (composite) images.
+ * It features a "live" option, guesses displayed lookup tables and ignores disabled channels (i.e.,
+ * those deselected in the "Channels" widget (Image>Color>Channels Tool).
+ *
+ * N.B.:
+ *  - Intensities (mean, min or max) are retrieved from active ROI or entire canvas if no ROI exists
+ *  - With hyperstacks, intensities can be averaged across Z-slices at each time point
+ *  - Limits of Y-axis are set to include data from all visible channels
+ */
+
+import ij.CompositeImage;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.gui.Plot;
+import ij.gui.Roi;
+import ij.measure.Calibration;
+import ij.process.ImageProcessor;
+import ij.process.ImageStatistics;
+import ij.util.Tools;
+
+import java.awt.Color;
+import java.awt.image.IndexColorModel;
+import java.util.Arrays;
+
+
+/* Options for Plot's y-axis values */
+String[] yOptions = new String[] {"Mean", "Max", "Min"};
+
+/* Default choice for y-axis value */
+String yOption = yOptions[0];
+
+/* Default choice for calibrated x-axis */
+boolean calibratedX = true;
+
+/* Default choice for Z-slice averaging */
+boolean averageZ = true;
+
+
+/* Prompts user for settings. Returns false if user aborted prompt otherwise true. */
+boolean showOptions() {
+	GenericDialog gd = new GenericDialog("Multichannel Z/T-axis Profile");
+	gd.addRadioButtonGroup("Vertical y-axis:", super.yOptions, 1, 3, super.yOption);
+	gd.setInsets(5, 20, 0);
+	gd.addCheckbox("Average Z-dimension in time profiles", super.averageZ);
+	gd.setInsets(20, 10, 0);
+	gd.addMessage("Horizontal x-axis:");
+	gd.addCheckbox("Calibrated units", super.calibratedX);;
+	gd.showDialog();
+	super.yOption = gd.getNextRadioButton();
+	super.averageZ = gd.getNextBoolean();
+	super.calibratedX = gd.getNextBoolean();
+	return !gd.wasCanceled();
+}
+
+/*
+ * Returns the multichannel plot: "Intensity vs time" (frames), or "Intensity vs
+ * depth" (slices) if stack contains no time dimension. An "Intensity vs channel"
+ * plot is not considered.
+ */
+Plot getPlot() {
+
+	// Retrieve image properties
+	ImageStack stack = imp.getImageStack();
+	Roi roi = imp.getRoi();
+	int channels = imp.getNChannels();
+	int slices = imp.getNSlices();
+	int frames = imp.getNFrames();
+
+	// Retrieve active channels and respective LUT colors. We could use
+	// CompositeImage.getChannelColor() but as of IJ1.49 it requires each
+	// channel to be activated (by ImagePlus.setPositionWithoutUpdate())
+	// which causes an annoying glich in the image canvas/c-slider
+	Color[] colors;
+	boolean[] states;
+	if (imp.isComposite()) {
+		CompositeImage ci = (CompositeImage)imp;
+		states = ci.getActiveChannels();
+		colors = new Color[channels];
+		for (int c=0; c<channels; c++) {
+			if (!states[c])
+				continue;
+			colors[c] = getLutColor(ci.getChannelLut(c+1));
+		}
+	} else {
+		states = new boolean[channels];
+		Arrays.fill(states, Boolean.TRUE);
+		colors = getUniqueColors(channels);
+	}
+
+	// Define range of Z-dimension
+	int zStart, zEnd;
+	if (super.averageZ) {
+		zStart = 1; zEnd = slices;
+	} else {
+		zStart = zEnd = imp.getZ();
+	}
+
+	// Use Z-slices as abscissae if no frames exist
+	boolean zProfile = (frames==1) ? true : false;
+	int divisor = frames;
+	if (zProfile) {
+		zStart = zEnd = 1;
+		frames = slices; divisor = 1;
+	}
+
+	// Retrieve all the series to be plotted
+	double[][] data = new double[channels][frames];
+	for (int c=1; c<=channels; c++) {
+		if (!states[c-1])
+			continue;
+		for (int f=1; f<=frames; f++) {
+			double sum = 0.0d;
+			for (int z=zStart; z<=zEnd; z++) {
+				if (zProfile)
+					idx = imp.getStackIndex(c, f, z);
+				else
+					idx = imp.getStackIndex(c, z, f);
+				ImageProcessor ip = stack.getProcessor(idx);
+				ip.setRoi(roi);
+				ImageStatistics stats = ip.getStatistics();
+				sum += getIntensity(stats);
+			}
+			data[c-1][f-1] = sum / divisor;
+		}
+	}
+
+	// Assign x-axis label and values
+	String xLabel = (zProfile) ? "Slice" : "Frame";
+	double[] xvalues = new double[frames];
+	Calibration cal = imp.getCalibration();
+	if (super.calibratedX && cal.scaled()) {
+		double c = 1.0d;
+		if (zProfile) {
+			c = cal.pixelDepth;
+			xLabel = cal.getZUnit();
+		} else {
+			c = cal.frameInterval;
+			xLabel = cal.getTimeUnit();
+		}
+		for (int i=0; i<frames; i++)
+			xvalues[i] = i * c;
+	} else {
+		for (int i=0; i<frames; i++)
+			xvalues[i] = i + 1;
+	}
+
+	// Determine y-axis limits and label
+	double[] ylimits = get2DarrayMinMax(data);
+	String yLabel = super.yOption;
+	if (!zProfile)
+		yLabel += (averageZ) ? " (Z-axis avg)" : " (slice "+ imp.getZ().toString() +")";
+
+	// Build plot
+	Plot plot = new Plot("Z/T-axis Plot of "+ imp.getTitle(), xLabel, yLabel);
+	plot.setLimits(xvalues[0], xvalues[frames-1], ylimits[0], ylimits[1]);
+	for (int c=1; c<=channels; c++) {
+		if (states[c-1]) {
+			double[] yvalues = new double[frames];
+			for (int f=0; f<frames; f++)
+				yvalues[f] = data[c-1][f];
+			plot.setColor(colors[c-1]);
+			plot.addPoints(xvalues, yvalues, Plot.LINE);
+		}
+	}
+
+	// Highlight current position as per ij.plugin.ZAxisProfiler
+	if (!super.firstRun) {
+		int pos = (zProfile) ? imp.getZ() : imp.getT();
+		double normPos = (pos-1.0) / (frames-1.0);
+		if (normPos==0.0 || normPos==1.0)
+			plot.setLineWidth(2);
+		plot.setColor(Color.blue);
+		plot.drawNormalizedLine(normPos, 0, normPos, 1.0);
+
+		// Reset drawing settings
+		plot.setColor(Color.black);
+		plot.setLineWidth(1);
+	}
+	super.firstRun = false;
+
+	return plot;
+}
+
+/* Returns {min, max} of a two-dimensional array */
+double[] get2DarrayMinMax(double[][] a) {
+	double min = Double.MAX_VALUE;
+	double max = -Double.MAX_VALUE;
+	double value;
+	for (int i = 0; i < a.length; i++) {
+		for (int j = 0; j < a[i].length; j++) {
+			value = a[i][j];
+			if (value<min)
+				min = value;
+			if (value>max)
+				max = value;
+		}
+	}
+	return new double[] {min, max};
+}
+
+/* Returns the ImageStatistics measure specified by the user */
+double getIntensity(ImageStatistics stats) {
+	if (super.yOption.equals(super.yOptions[0]))
+		return stats.mean;
+	else if (super.yOption.equals(super.yOptions[1]))
+		return stats.max;
+	else
+		return stats.min;
+}
+
+/*
+ * Returns the color associated with the specified LUT. See
+ * ij.CompositeImage.getChannelColor()
+ */
+Color getLutColor(IndexColorModel cm) {
+	int index = cm.getMapSize() - 1;
+	int r = cm.getRed(index);
+	int g = cm.getGreen(index);
+	int b = cm.getBlue(index);
+	if (r<100 || g<100 || b<100)
+		return new Color(r, g, b);
+	else
+		return Color.BLACK;
+}
+
+/* Returns an array of colors with the specified size */
+Color[] getUniqueColors(int n) {
+	Color[] defaults = {Color.BLACK, Color.DARK_GRAY, Color.RED, Color.GREEN,
+						Color.BLUE, Color.MAGENTA, Color.CYAN, Color.YELLOW};
+	Color[] newcolors = new Color[n];
+	for (int i=0; i<n; i++)
+		newcolors[i] = (i<defaults.length) ? defaults[i] : Color.BLACK;
+	return newcolors;
+}
+
+
+/* PlotMaker interface */
+ImagePlus getSourceImage() {
+	return imp;
+}
+
+
+// Retrieve input image and ensure it is a valid stack
+ImagePlus imp = WindowManager.getCurrentImage();
+if (imp==null) {
+	IJ.error("Z/T-stack required but none was found.");
+	return;
+}
+int stackSize = imp.getStackSize();
+if(stackSize==1 || imp.getNChannels()==stackSize) {
+	IJ.error("Z/T-stack required but none was found.");
+	return;
+}
+// Retrieve options from user
+if (!showOptions())
+	return;
+
+boolean firstRun = true;
+Plot plot = getPlot();
+if (plot==null)
+	return;
+plot.setPlotMaker(this);
+plot.show();
