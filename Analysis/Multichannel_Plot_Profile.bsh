@@ -105,10 +105,15 @@ ImagePlus getSourceImage() {
 
 
 imp = WindowManager.getCurrentImage();
-if (invalidRequirements()) return;
+if (invalidRequirements())
+	return;
+if (IJ.altKeyDown())
+	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
+				"Ignore spatial calibration and\nuse pixel distances instead?");
 ci = (CompositeImage)imp;
 cal = getSpatialCalibration();
 plot = getPlot();
-if (plot==null) return;
+if (plot==null)
+	return;
 plot.setPlotMaker(this);
 plot.show();
