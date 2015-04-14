@@ -27,7 +27,22 @@ See also: [Data Analysis]
      To change the color of the plotted curves, turn on _Live mode_, activate the image, and apply a
      new LUT using the drop-down menu of the "Channels" widget.
    * By default, the X-axis will use spatially calibrated distances. To use pixel distances instead
-     set the flag [`pixelUnits`](./Multichannel_Plot_Profile.bsh#L27-L29) to `true`.
+     hold down the "Alt" key when running the plugin from the _BAR>Analysis>_ menu.
+
+
+###[Multichannel ZT-axis Profile](./Multichannel_ZT-axis_Profile.bsh)
+   Extends the built-in command _Image>Stack>Plot Z-axis Profile_ to multichannel (composite) images,
+   while providing extra functionality such as Z-averaging (3D timelapses images) and choice of
+   statistic to be plotted.
+   ([Download .bsh](./Multichannel_ZT-axis_Profile.bsh?raw=true))
+
+   Notes:
+
+   * Intensities (mean, min or max) are retrieved from active ROI or entire canvas if no ROI exists
+   * With timelapse hyperstacks, intensities can be averaged across Z-slices at each time point
+   * Limits of Y-axis are automatically set to include data from all visible channels
+   * Similarly to [Multichannel Plot Profile](#multichannel-plot-profile), only visible channels
+     (those active in the _Image> Color> Channels Tool_ widget) are plotted
 
 
 ###[Smoothed Plot Profile](./Smoothed_Plot_Profile.bsh)

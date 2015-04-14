@@ -17,7 +17,8 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
   1. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
-  2. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
+  1. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
+  3. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]
