@@ -7,8 +7,8 @@
  * 'Clear Thresholded Pixels.ijm').
  *
  * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
- * applied to the Z-dimension. With 8-bit images thresholded values are se to to 255, with
- * 16/32-bit images to the maximum of active ROI.
+ * applied to the Z-dimension of the active channel/frame. With 8-bit images thresholded values
+ * are set to to 255, with 16/32-bit images to the maximum of active ROI.
  * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
  *
  *   attr = call("bar.Utils.getSegmentationDir")+"Apply_Threshold_To_ROI.ijm";
@@ -35,7 +35,8 @@ if (scope=="" && depth>1) {
 	Dialog.addChoice("Apply to:", optns);
 	Dialog.show();
 	scope = Dialog.getChoice();
-} else if (startsWith(scope, "all")) {
+}
+if (startsWith(scope, "all")) {
 	start = 1; end = depth;
 } else if (startsWith(scope, "preceding")) {
 	start = 1; end = currentSlice;

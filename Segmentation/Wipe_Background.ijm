@@ -8,13 +8,9 @@
  * multidimensional hyperstacks. Currently the filtering is restricted to the Z-dimension,
  * but it could be easily extended to other dimensions. It could be greatly simplified if
  * the goal was to deal exclusively with 2D/3D images
- *
- * Known issues:
- * - 5D stacks escape batch mode
- *
- * TF, 2014.10
  */
 
+requires("1.49q"); // In older versions maskID is diplayed in batch mode if hyperstack
 getThreshold(lower, upper);
 if (lower==-1 && !is("binary"))
 	exit("A thresholded or 8-bit binary image is required.");
@@ -106,11 +102,5 @@ setBatchMode(true);
 		Stack.setPosition(channel, activeSlice, frame);
 		if (areaROI) run("Restore Selection");
 		setThreshold(lower, upper);
-		closeImg(maskID);
 	}
 setBatchMode(false);
-
-// For whatever reason (IJ 1.48o) some hyperstacks manage to be displayed in BatchMode
-function closeImg(id) {
-	selectImage(id); close();
-}
