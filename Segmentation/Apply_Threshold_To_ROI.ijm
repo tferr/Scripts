@@ -35,7 +35,8 @@ if (scope=="" && depth>1) {
 	Dialog.addChoice("Apply to:", optns);
 	Dialog.show();
 	scope = Dialog.getChoice();
-} else if (startsWith(scope, "all")) {
+}
+if (startsWith(scope, "all")) {
 	start = 1; end = depth;
 } else if (startsWith(scope, "preceding")) {
 	start = 1; end = currentSlice;
