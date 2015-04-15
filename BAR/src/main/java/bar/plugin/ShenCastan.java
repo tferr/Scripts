@@ -67,11 +67,15 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	public int showDialog(final ImagePlus imp, final String command, final PlugInFilterRunner pfr) {
 		this.pfr = pfr;
 
-		final String msg = "<html>Shen-Castan filtering is an edge detection technique. It is an alternative<p>"
-				+ "to other popular approaches such as Canny-Deriche filtering.<p> <p>"
-				+ "The Shen-Castan coefficient corresponds to a smooting factor <i>alpha</i>.<p>"
-				+ "<i>Alpha</i> can vary between 0 (high smoothing, suitable for noisy images)<p>"
-				+ "and 1 (no smoothing, suitable for non-noisy images).";
+		final String msg = "<html><div WIDTH=350>"
+				+ "<a href='https://github.com/tferr/Scripts/blob/master/Segmentation/README.md#shen-castan-edge-detector'>"
+				+ "Shen-Castan</a> filtering is an edge detection technique. It is an alternative "
+				+ "to other popular approaches such as "
+				+ "<a href='http://en.wikipedia.org/wiki/Canny_edge_detector'>Canny</a>-"
+				+ "<a href='http://en.wikipedia.org/wiki/Deriche_edge_detector'>Deriche</a> filtering.</p>"
+				+ "<p>The Shen-Castan coefficient corresponds to a smooting factor <i>alpha</i>. "
+				+ "<i>Alpha</i> can vary between 0 (high smoothing, suitable for noisy images) "
+				+ "and 1 (no smoothing, suitable for non-noisy images).</p></div></html>";
 
 		final GenericDialog gd = new GenericDialog(command);
 		gd.addSlider("Coefficient:", 0.0001d, 1.0001d, f);
