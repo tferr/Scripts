@@ -666,7 +666,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void pathToClipboard(final String type) {
 		String path = this.path;
-		if (table.getSelectedRow() > -1 && !selectedItem.startsWith(".."))
+		if (!isConsoleMode() && table.getSelectedRow() > -1
+				&& !selectedItem.startsWith(".."))
 			path += selectedItem;
 		try {
 			if (type.equals("url")) {
