@@ -142,7 +142,7 @@ function drawHistogramLabels(color) {
 
 function drawLabel() {
 	leftMargin = 3/plotSize; topMargin = 15/plotSize;
-	colWidth = 83/plotSize;	 rowHeight = 13/plotSize;
+	colWidth = 100/plotSize; rowHeight = 13/plotSize;
 	row1 = topMargin;        col1 = leftMargin;
 	row2 = row1 + rowHeight; col2 = col1 + colWidth;
 	row3 = row2 + rowHeight; col3 = col2 + colWidth;
