@@ -3,7 +3,7 @@
  *
  * Returns the local maxima and minima of an ImageJ plot. Requires ImageJ 1.48d or newer.
  * See http://fiji.sc/Find_Peaks for details.
- * Tiago Ferreira, v1.0.3 2014.06.19
+ * Tiago Ferreira, v1.0.4 2015.04.15
  */
 
 import ij.IJ;
@@ -23,6 +23,7 @@ double minPeakDistance;
 double minMaximaValue = Double.NaN;
 double maxMinimaValue = Double.NaN;
 boolean excludeOnEdges;
+boolean listValues;
 
 int[] findPositions(double[] values, double tolerance, boolean minima) {
 	int[] positions = null;
@@ -57,15 +58,16 @@ boolean prompt() {
 	gd.addNumericField("Min._value of maxima:", minMaximaValue, 2, 6, "(NaN: no filtering)");
 	gd.addNumericField("Max._value of minima:", maxMinimaValue, 2, 6, "(NaN: no filtering)");
 	gd.addCheckbox("Exclude peaks on edges of plot", excludeOnEdges);
+	gd.addCheckbox("List values", listValues);
 	gd.addHelp("http://fiji.sc/Find_Peaks");
 	gd.showDialog();
-	boolean dialogOKed = (gd.wasCanceled()) ? false : true;
 	tolerance = gd.getNextNumber();
 	minPeakDistance = gd.getNextNumber();
 	minMaximaValue = gd.getNextNumber();
 	maxMinimaValue = gd.getNextNumber();
 	excludeOnEdges = gd.getNextBoolean();
-	return dialogOKed;
+	listValues = gd.getNextBoolean();
+	return !gd.wasCanceled();
 }
 
 int[] trimPeakHeight(int[] positions, boolean minima) {
@@ -158,7 +160,10 @@ plot.addLabel(0.25, 0, minima.length +" minima");
 plot.setColor(Color.BLACK);
 plot.addLabel(0.50, 0, "Min. amp.: "+ IJ.d2s(tolerance,2) +"  Min. dx.: "+ IJ.d2s(minPeakDistance,2) );
 plot.setLineWidth(1);
+
 if (plotTitle.startsWith("Peaks in"))
 	pw.drawPlot(plot);
 else
-	plot.show();
+	pw = plot.show();
+if (listValues)
+	pw.getResultsTable().show("Plot Values");
