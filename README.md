@@ -35,7 +35,7 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   Aiders for the annotation of scientific images.
 
   1. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
-  2. (bsh) [Cumulative Z-Project](./Annotation/README.md#cumulative-z-Project)
+  2. (bsh) [Cumulative Z-Project](./Annotation/README.md#cumulative-z-project)
   3. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
 
 
@@ -141,7 +141,7 @@ BAR scripts have contributed to the following publications:
 
 License
 -------
-These scripts are free software: you can redistribute them and/or modify them under the terms of the
+This program is free software: you can redistribute them and/or modify them under the terms of the
 [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later version.
 
