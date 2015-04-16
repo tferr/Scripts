@@ -77,14 +77,14 @@ function promptForSettings() {
   addMore= slot<maxTools-1;
   dirs= folders.length>0;
   Dialog.create("Toolset Creator: Designing slot "+ slot+1);
-  msg = "<html>For each slot you can either append 1) a <i>Built-in Tool</i> or 2) a designed<p>"
-      + "<i>Menu Tool</i>, a drop-down menu listing commands (i.e., executable files) in<p>"
-      + "subfolders of the <tt>plugins/</tt> directory. This latter option is automatically<p>"
-      + "disabled if no subdirectories are found.<p><p>"
-      + "When building menu icons, the first two characters of the folder name are<p>"
-      + "used if neither a symbol or a string is specified.<p><p>"
-      + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design<p>"
-      + "will lead to an empty toolset file.";
+  msg = "<html><div WIDTH=400>For each slot you can either append 1) a <i>Built-in Tool</i> or 2) "
+      + "a designed <i>Menu Tool</i>, a drop-down menu listing commands (i.e., executable files) "
+      + "in subfolders of the <tt>plugins/</tt> directory. This latter option is automatically "
+      + "disabled if no subdirectories are found.<br><br>"
+      + "When building menu icons, the first two characters of the folder name "
+      + "are used if neither a symbol or a string is specified.<br><br>"
+      + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design"
+      + "will lead to an empty toolset file.</div>";
   Dialog.addHelp(msg);
   Dialog.setInsets(5, 0, 0);
   Dialog.addMessage("Option 1) Add a Built-in Tool to slot "+ slot+1 +":");

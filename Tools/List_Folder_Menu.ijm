@@ -45,9 +45,9 @@ function autoReload() {
 	if (File.exists(pathToThisFile))
 		run("Install...", "install=["+ pathToThisFile +"]");
 	else
-		showMessage("List Folder Menu Tool", "<html>File not found:"
-			+ "<p style='width:340px;'><i>"+ pathToThisFile +"</i></p> <p><p>"
-			+ "You must reinstall the tool manually to start using the new settings.<p>");
+		showMessage("List Folder Menu Tool", "<html><div WIDTH=420>"
+			+ "File not found:<br><i>"+ pathToThisFile +"</i><br>"
+			+ "You must reinstall the tool manually to start using the new settings.</div>");
 	exit();
 }
 
