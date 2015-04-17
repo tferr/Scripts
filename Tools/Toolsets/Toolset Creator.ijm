@@ -83,7 +83,7 @@ function promptForSettings() {
       + "disabled if no subdirectories are found.<br><br>"
       + "When building menu icons, the first two characters of the folder name "
       + "are used if neither a symbol or a string is specified.<br><br>"
-      + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design"
+      + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design "
       + "will lead to an empty toolset file.</div>";
   Dialog.addHelp(msg);
   Dialog.setInsets(5, 0, 0);
