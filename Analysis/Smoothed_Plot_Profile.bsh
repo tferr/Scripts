@@ -137,3 +137,4 @@ if (plot==null) return;
 plot.setPlotMaker(this);
 plot.show();
 firstRun = false;
+return;
