@@ -150,10 +150,11 @@ Contributors
 ------------
 BAR was created and is maintained by [Tiago Ferreira](mailto:tiagoalvespedrosa_at_gmail_dot_com)
 with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho),
-[Wayne Rasband](http://imagej.nih.gov/ij/), [Jerome Mutterer](https://github.com/mutterer) and
-[Kota Miura](https://github.com/cmci). BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java)
-from Robert Harder and Nathan Blomquist. This project would not have been possible without the
-support of the outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+[Wayne Rasband](http://imagej.nih.gov/ij/), [Jerome Mutterer](https://github.com/mutterer),
+[Kota Miura](https://github.com/cmci) and [Jan Eglinger](https://github.com/imagejan).
+BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java) from Robert Harder and Nathan
+Blomquist. This project would not have been possible without the support of the outstanding
+[ImageJ community](http://imagej.net/Mailing_Lists).
 
 
 

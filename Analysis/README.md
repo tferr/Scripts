@@ -1,6 +1,6 @@
 # Analysis
 
-[BARs][Home] that complement built-in commands in the ImageJ `Analyze>` menu.
+[BARs][Home] that complement built-in commands related to image analysis.
 
 See also: [Data Analysis]
 
