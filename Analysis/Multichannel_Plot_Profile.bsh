@@ -117,3 +117,4 @@ if (plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();
+return;

@@ -176,11 +176,11 @@ Plot getPlot() {
 		double normPos = (pos-1.0) / (frames-1.0);
 		if (normPos==0.0 || normPos==1.0)
 			plot.setLineWidth(2);
-		plot.setColor(Color.blue);
+		plot.setColor(Color.DARK_GRAY);
 		plot.drawNormalizedLine(normPos, 0, normPos, 1.0);
 
 		// Reset drawing settings
-		plot.setColor(Color.black);
+		plot.setColor(Color.BLACK);
 		plot.setLineWidth(1);
 	}
 	super.firstRun = false;
@@ -268,3 +268,5 @@ if (plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();
+return;
+
