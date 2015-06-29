@@ -25,6 +25,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
+import ij.gui.ImageCanvas;
 import ij.gui.Roi;
 import ij.plugin.ZProjector;
 import ij.measure.Calibration;
@@ -218,6 +219,16 @@ void skeletonizeWithoutHermits(ImagePlus imp) {
 	}
 }
 
+/* Runs ij.plugin.CalibrationBar on the specified image using a suitable scale */
+void addCalibrationBar(ImagePlus imp, int nLabels) {
+	ImageCanvas ic = imp.getCanvas();
+	double zoom = 1.0;
+	double mag = (ic!=null) ? ic.getMagnification() : 1.0;
+	if (zoom<=1 && mag<1)
+		zoom = (double) 1.0/mag;
+	IJ.run(imp, "Calibration Bar...",
+		"fill=Black label=White number="+ nLabels +" zoom="+ zoom +" overlay");
+}
 
 // Retrieve analysis image and its ROI
 ImagePlus srcImp = WindowManager.getCurrentImage();
@@ -425,10 +436,10 @@ if (iterationStack.getSize()>1 && (outIS || outCM)) {
 		} catch (ClassNotFoundException) {
 			IJ.run(imp3, "Fire", "");
 		}
-		IJ.run(imp3, "Calibration Bar...", " overlay");
 		if (validRootRoi) imp3.setRoi(roi);
 		imp3.show();
 	}
+    addCalibrationBar(imp3, Math.min(order, 5));
 }
 
 IJ.showProgress(0, 0);
