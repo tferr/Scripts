@@ -240,6 +240,16 @@ void paintPoints(ImageStack stack, points, int value, String sliceLabel) {
 	}
 }
 
+/* Clears point positions */
+void clearPoints(ImageProcessor ip, points) {
+	if (points!=null) {
+		for (int j=0; j<points.size(); j++) {
+			Point point = points.get(j);
+			ip.putPixel(point.x, point.y, 0);
+		}
+	}
+}
+
 /*
  * Skeletonization method that erodes the thinned structure in order to eliminate
  * isolated pixels. Thinning and pruning may give rise to single point arbors.
