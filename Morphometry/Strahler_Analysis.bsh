@@ -70,11 +70,14 @@ boolean tabular = false;
 /* Remove isolated pixels from thinned images? */
 boolean erodeIsolatedPixels = true;
 
-/* Title of results window */
+/* Title of main results window */
 String STRAHLER_TABLE = "Strahler_Table";
 
-/* Version of this script */
-String VERSION = "1.4.0 2015.01.01";
+/* Title of detailed results window */
+String VERBOSE_TABLE = "Strahler_Iteration_Log";
+
+/* Version of the program */
+String VERSION = "1.4.1-DEV 2015.06.30";
 
 /* Flag for 'root-protective' ROI */
 private static boolean validRootRoi;
@@ -292,6 +295,10 @@ if (roi!=null) srcImp.setRoi(roi);
 ImageProcessor ip = imp.getProcessor();
 skeletonizeWithoutHermits(imp);
 
+// Initialize ResultsTable: main and detailed info
+ResultsTable rt = getTable(STRAHLER_TABLE);
+ResultsTable logrt = getTable(VERBOSE_TABLE);
+
 // Analyze root
 ImageProcessor rootIp;
 SkeletonResult rootResult;
@@ -324,11 +331,8 @@ if (validRootRoi) {
 
 }
 
-// Initialize ResultsTable and display images. Use Z-projections
-// to populate iteration stack when dealing with 3D skeletons
-ResultsTable rt = getTable(STRAHLER_TABLE);
-rt.setPrecision(5);
-
+// Initialize display images. Use Z-projections to populate
+// iteration stack when dealing with 3D skeletons
 int nSlices = imp.getNSlices();
 ImageStack iterationStack;
 ZProjector zp;
@@ -398,12 +402,17 @@ do {
 	rt.addValue("# End-points", nEndpoints);
 	rt.addValue("Ramification ratios", nEndpoints2/nEndpoints);
 	if (verbose) {
-		rt.addValue("Average branch length", sum(sr.getAverageBranchLength()));
-		rt.addValue("# Trees", sr.getNumOfTrees());
-		rt.addValue("# Branches", sum(sr.getBranches()));
-		rt.addValue("# Junctions", nJunctions);
-		rt.addValue("# Triple points", sum(sr.getTriples()));
-		rt.addValue("# Quadruple points", sum(sr.getQuadruples()));
+	    logrt.incrementCounter();
+        logrt.addLabel("Image", title);
+        logrt.addValue("Structure", "Skel. at iteration "+ Integer.toString(order));
+        logrt.addValue("Notes", errorMsg);
+		logrt.addValue("# Trees", sr.getNumOfTrees());
+		logrt.addValue("# Branches", sum(sr.getBranches()));
+		logrt.addValue("# End-points", nEndpoints);
+		logrt.addValue("# Junctions", nJunctions);
+		logrt.addValue("# Triple points", sum(sr.getTriples()));
+		logrt.addValue("# Quadruple points", sum(sr.getQuadruples()));
+		logrt.addValue("Average branch length", average(sr.getAverageBranchLength()));
 	}
 
 	// Remember main results
@@ -476,6 +485,8 @@ if (iterationStack.getSize()>1 && (outIS || outCM)) {
 	}
     addCalibrationBar(imp3, Math.min(order, 5));
 }
+if (verbose)
+	logrt.show(VERBOSE_TABLE);
 
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
