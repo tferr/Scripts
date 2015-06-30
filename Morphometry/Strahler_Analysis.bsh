@@ -132,11 +132,21 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 	gd.addMessage("Elimination of Skeleton Loops:", headerFont);
 	gd.addChoice("Method:", AnalyzeSkeleton_.pruneCyclesModes,
 					AnalyzeSkeleton_.pruneCyclesModes[super.pruneChoice]);
+
+	// 8-bit grayscale is the only image type recognized by AnalyzeSkeleton_,
+	// so we'll provide the user with a pre-filtered list of valid choices
+	ArrayList validIds = new ArrayList();
+	ArrayList validTitles = new ArrayList();
 	int[] ids = WindowManager.getIDList();
-	String[] imgTitles = new String[ids.length];
-	for (int i=0; i<ids.length; ++i )
-		imgTitles[i] = WindowManager.getImage(ids[i]).getTitle();
-	gd.addChoice("Unsegmented image:", imgTitles, grayscaleImgChoice);
+	for (int i=0; i<ids.length; ++i ) {
+		ImagePlus imp = WindowManager.getImage(ids[i]);
+		if (imp.getBitDepth()==8) { //TODO: ignore composites?
+			validIds.add(ids[i]);
+			validTitles.add(imp.getTitle());
+		}
+	}
+	gd.addChoice("8-bit grayscale image:", validTitles.toArray(new String[validTitles.size()]),
+		grayscaleImgChoice);
 
 	// Part 3: Output
 	gd.setInsets(25, 0, 0);
@@ -147,8 +157,8 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 
 	gd.addHelp("http://fiji.sc/Strahler");
 	gd.showDialog();
-	if (gd.wasCanceled()) return null;
 
+	return (gd.wasCanceled()) ? null : WindowManager.getImage(validIds.get(imgChoice));
 	super.maxPruning = (int)gd.getNextNumber();
 	super.protecRoot = gd.getNextBoolean();
 	super.erodeIsolatedPixels = gd.getNextBoolean();
@@ -158,7 +168,6 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 	super.outCM = gd.getNextBoolean();
 	super.verbose = gd.getNextBoolean();
 
-	return WindowManager.getImage(ids[imgChoice]);
 }
 
 /* Returns the table of the specified window title */
