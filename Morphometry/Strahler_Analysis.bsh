@@ -41,6 +41,7 @@ import skeleton_analysis.SkeletonResult;
 import Skeletonize3D_.Skeletonize3D_;
 
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 
@@ -187,14 +188,17 @@ boolean dialogItemChanged(GenericDialog gd, java.awt.AWTEvent e) {
 
 }
 
-/* Returns the table of the specified window title */
+/* Returns the table of the specified window title setting common properties */
 ResultsTable getTable(String title) {
 	ResultsTable rt = null;
-	window = WindowManager.getFrame(title);
+	Window window = WindowManager.getWindow(title);
 	if (window!=null)
 		rt = ((TextWindow)window).getTextPanel().getResultsTable();
 	if (rt==null)
 		rt = new ResultsTable();
+	rt.setPrecision(5);
+	rt.setNaNEmptyCells(true);
+	rt.showRowNumbers(false);
 	return rt;
 }
 
