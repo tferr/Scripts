@@ -216,6 +216,11 @@ double sum(double[] array) {
 	return sum;
 }
 
+/* Returns the average of an int[]/double[] array */
+double average(array) {
+	return sum(array) / array.length;
+}
+
 /*
  * Paints point positions. NB: BeanShell does not seem to suport generics:
  * paintPoints(ImageStack stack, ArrayList<Point> points, int value, String label)
