@@ -24,6 +24,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
+import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.gui.ImageCanvas;
 import ij.gui.Roi;
@@ -61,6 +62,9 @@ boolean outCM = true;
 
 /* Default option for verbose mode */
 boolean verbose = true;
+
+/* Default option for tabular option */
+boolean tabular = false;
 
 /* Remove isolated pixels from thinned images? */
 boolean erodeIsolatedPixels = true;
@@ -113,7 +117,7 @@ boolean validImage(ImagePlus imp) {
  */
 ImagePlus getOriginalImp(String grayscaleImgChoice) {
 
-	gd = new GenericDialog("Strahler Analysis v"+ super.VERSION);
+	GenericDialog gd = new GenericDialog("Strahler Analysis v"+ super.VERSION);
 	headerFont = new Font("SansSerif", Font.BOLD, 12);
 
 	// Part 1. Main Options
@@ -122,10 +126,6 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 	gd.addSlider("     Max. n. of iterations:", 1, 20, super.maxPruning);
 	gd.addCheckbox("Infer root end-points from rectangular ROI", super.protectRoot);
 	gd.addCheckbox("Ignore single-point arbors (Isolated pixels)", super.erodeIsolatedPixels);
-	if (!super.validRootRoi) {
-		Checkbox roiOption = (Checkbox)gd.getCheckboxes().elementAt(0);
-		roiOption.setEnabled(false);
-	}
 
 	// Part 2: Loop elimination
 	gd.setInsets(25, 0, 0);
@@ -151,22 +151,39 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 	// Part 3: Output
 	gd.setInsets(25, 0, 0);
 	gd.addMessage("Output Options:", headerFont);
-	gd.addCheckbox("Iteration stack (Document individual iterations)", super.outIS);
-	gd.addCheckbox("Heat-map image (Summarize analysis)", super.outCM);
-	gd.addCheckbox("Show detailed information (Verbose mode)", super.verbose);
+	gd.addCheckbox("Display_iteration stack", super.outIS);
+	gd.addCheckbox("Show detailed information", super.verbose);
+	gd.addCheckbox("Tabular data only (no image output)", super.tabular);
 
 	gd.addHelp("http://fiji.sc/Strahler");
+	gd.addDialogListener(this);
+	dialogItemChanged(gd, null);
 	gd.showDialog();
 
 	return (gd.wasCanceled()) ? null : WindowManager.getImage(validIds.get(imgChoice));
+}
+
+/* Retrive dialog options using the DialogListener interface */
+boolean dialogItemChanged(GenericDialog gd, java.awt.AWTEvent e) {
+
 	super.maxPruning = (int)gd.getNextNumber();
 	super.protecRoot = gd.getNextBoolean();
 	super.erodeIsolatedPixels = gd.getNextBoolean();
 	super.pruneChoice = gd.getNextChoiceIndex();
-	imgChoice = gd.getNextChoiceIndex();
+	super.imgChoice = gd.getNextChoiceIndex();
 	super.outIS = gd.getNextBoolean();
-	super.outCM = gd.getNextBoolean();
 	super.verbose = gd.getNextBoolean();
+	super.tabular = gd.getNextBoolean();
+
+	// Enable/Disable key components of GenericDialog
+	Choice imgChoice = (Choice)gd.getChoices().elementAt(1);
+	imgChoice.setEnabled((super.pruneChoice>1) ? true : false);
+	Vector checkboxes = gd.getCheckboxes();
+	Checkbox roiOption = (Checkbox)checkboxes.elementAt(0);
+	roiOption.setEnabled(super.validRootRoi);
+	Checkbox stackOption = (Checkbox)checkboxes.elementAt(2);
+	stackOption.setEnabled(!super.tabular);
+	return !gd.wasCanceled();
 
 }
 
