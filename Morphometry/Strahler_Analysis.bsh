@@ -326,6 +326,7 @@ if (validRootRoi && verbose) {
 	AnalyzeSkeleton_ root = new AnalyzeSkeleton_();
 	root.setup("", rootImp);
 	rootResult = root.run(pruneChoice, false, false, origImp, true, false);
+	rootImp.flush();
 
 	// We assume ROI contains only end-point branches, slab voxels and
 	// no junction points. We'll thus remove end-points at ROI boundaries
@@ -488,6 +489,7 @@ for (int i=1; i<=order; i++) {
 	AnalyzeSkeleton_ maskAs = new AnalyzeSkeleton_();
 	maskAs.setup("", maskImp);
 	SkeletonResult maskSr = maskAs.run(pruneChoice, false, false, origImp, true, false);
+	maskImp.flush();
 
 	// Since all branches are disconnected at this stage, the n. of branches is
 	// the same as the # the trees unless zero-branches trees exist, i.e., trees
@@ -540,3 +542,4 @@ rt.show(STRAHLER_TABLE);
 
 IJ.showProgress(0, 0);
 IJ.showTime(imp, imp.getStartTime(), "Strahler Analysis concluded... ");
+imp.flush();
