@@ -56,10 +56,7 @@ int pruneChoice = AnalyzeSkeleton_.SHORTEST_BRANCH;
 boolean protectRoot = true;
 
 /* Default option for 'iteration-stack' output */
-boolean outIS = true;
-
-/* Default option for 'heat-map' output */
-boolean outCM = true;
+boolean outIS = false;
 
 /* Default option for verbose mode */
 boolean verbose = true;
