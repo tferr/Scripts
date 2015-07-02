@@ -454,7 +454,9 @@ if (validRootRoi && verbose) {
 }
 
 // Create iteration stack
+Calibration cal = srcImp.getCalibration();
 ImagePlus imp2 = new ImagePlus("StrahlerIteration_"+ title, iterationStack);
+imp2.setCalibration(cal);
 if (outIS) {
 	if (validRootRoi) {
 		iterationStack.addSlice("Root", rootIp);
@@ -475,13 +477,14 @@ ImageProcessor ip3 = zp.getProjection().getProcessor().convertToShortProcessor(f
 clearPoints(ip3, junctionsList); // disconnect branches
 ip3.multiply(1/255.0); // map intensities to Strahler orders
 ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
+imp3.setCalibration(cal);
 
 // Measure segmented orders
 double prevNbranches = Double.NaN;
 for (int i=1; i<=order; i++) {
 
 	// Segment branches by order
-	ImagePlus maskImp = imp3.duplicate();
+	ImagePlus maskImp = imp3.duplicate(); // Calibration will be retained
 	IJ.setThreshold(maskImp, i, i); //TODO: Use ImagePlus/ImageProcessor API
 	IJ.run(maskImp, "Convert to Mask", "");
 
