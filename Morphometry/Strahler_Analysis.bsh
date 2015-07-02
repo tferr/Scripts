@@ -277,7 +277,8 @@ void addCalibrationBar(ImagePlus imp, int nLabels) {
 
 // Retrieve analysis image and its ROI
 ImagePlus srcImp = WindowManager.getCurrentImage();
-if (!validImage(srcImp)) return;
+if (!validImage(srcImp))
+	return;
 String title = srcImp.getTitle();
 Roi roi = srcImp.getRoi();
 validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
@@ -349,10 +350,10 @@ ZProjector zp;
 
 ImageStack iterationStack = new ImageStack( imp.getWidth(), imp.getHeight() );
 if (nSlices>1) {
-    zp = new ZProjector(imp);
-    zp.setMethod(ZProjector.MAX_METHOD);
-    zp.setStartSlice(1);
-    zp.setStopSlice(nSlices);
+	zp = new ZProjector(imp);
+	zp.setMethod(ZProjector.MAX_METHOD);
+	zp.setStartSlice(1);
+	zp.setStopSlice(nSlices);
 }
 
 // Initialize AnalyzeSkeleton_
@@ -397,20 +398,20 @@ do {
 	}
 
 	// Add current tree(s) to debug animation
-    if (nSlices>1) {
-        zp.doProjection();
-        ipd = zp.getProjection().getProcessor();
-    } else {
-        ipd = ip.duplicate();
-    }
-    iterationStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
+	if (nSlices>1) {
+		zp.doProjection();
+		ipd = zp.getProjection().getProcessor();
+	} else {
+		ipd = ip.duplicate();
+	}
+	iterationStack.addSlice("Order "+ IJ.pad(order, 2), ipd);
 
 	// Report properties of pruned structures
 	if (verbose) {
-	    logrt.incrementCounter();
-        logrt.addLabel("Image", title);
-        logrt.addValue("Structure", "Skel. at iteration "+ Integer.toString(order));
-        logrt.addValue("Notes", errorMsg);
+		logrt.incrementCounter();
+		logrt.addLabel("Image", title);
+		logrt.addValue("Structure", "Skel. at iteration "+ Integer.toString(order));
+		logrt.addValue("Notes", errorMsg);
 		logrt.addValue("# Trees", sr.getNumOfTrees());
 		logrt.addValue("# Branches", sum(sr.getBranches()));
 		logrt.addValue("# End-points", nEndpoints);
@@ -454,13 +455,13 @@ if (validRootRoi && verbose) {
 // Create iteration stack
 ImagePlus imp2 = new ImagePlus("StrahlerIteration_"+ title, iterationStack);
 if (outIS) {
-    if (validRootRoi) {
-        iterationStack.addSlice("Root", rootIp);
-        paintPoints(iterationStack, rootEndpointsList, 255, "Root end-points");
-        imp2.setRoi(roi);
-    }
-    paintPoints(iterationStack, endpointsList, 255, "End-points");
-    paintPoints(iterationStack, junctionsList, 255, "Junction-points");
+	if (validRootRoi) {
+		iterationStack.addSlice("Root", rootIp);
+		paintPoints(iterationStack, rootEndpointsList, 255, "Root end-points");
+		imp2.setRoi(roi);
+	}
+	paintPoints(iterationStack, endpointsList, 255, "End-points");
+	paintPoints(iterationStack, junctionsList, 255, "Junction-points");
 }
 
 // Generate Strahler mask
@@ -478,39 +479,39 @@ ImagePlus imp3 = new ImagePlus("StrahlerMask_"+ title, ip3);
 double prevNbranches = Double.NaN;
 for (int i=1; i<=order; i++) {
 
-    // Segment branches by order
-    ImagePlus maskImp = imp3.duplicate();
-    IJ.setThreshold(maskImp, i, i); //TODO: Use ImagePlus/ImageProcessor API
-    IJ.run(maskImp, "Convert to Mask", "");
+	// Segment branches by order
+	ImagePlus maskImp = imp3.duplicate();
+	IJ.setThreshold(maskImp, i, i); //TODO: Use ImagePlus/ImageProcessor API
+	IJ.run(maskImp, "Convert to Mask", "");
 
-    // Analyze segmented order
-    AnalyzeSkeleton_ maskAs = new AnalyzeSkeleton_();
-    maskAs.setup("", maskImp);
-    SkeletonResult maskSr = maskAs.run(pruneChoice, false, false, origImp, true, false);
+	// Analyze segmented order
+	AnalyzeSkeleton_ maskAs = new AnalyzeSkeleton_();
+	maskAs.setup("", maskImp);
+	SkeletonResult maskSr = maskAs.run(pruneChoice, false, false, origImp, true, false);
 
-    // Since all branches are disconnected at this stage, the n. of branches is
-    // the same as the # the trees unless zero-branches trees exist, i.e., trees
-    // with no slab voxels (defined by just an end-point). We will ignore those
-    // trees if the user requested it
-    int nBranches = (erodeIsolatedPixels) ? sum(maskSr.getBranches()) : maskSr.getNumOfTrees();
+	// Since all branches are disconnected at this stage, the n. of branches is
+	// the same as the # the trees unless zero-branches trees exist, i.e., trees
+	// with no slab voxels (defined by just an end-point). We will ignore those
+	// trees if the user requested it
+	int nBranches = (erodeIsolatedPixels) ? sum(maskSr.getBranches()) : maskSr.getNumOfTrees();
 
 	// Log measurements
 	rt.incrementCounter();
-    rt.addLabel("Image", title);
-    rt.addValue("Strahler Order", i);
-    rt.addValue("# Branches", nBranches);
-    rt.addValue("Ramification ratios", prevNbranches/nBranches);
-    rt.addValue("Average branch length", average(maskSr.getAverageBranchLength()));
-    rt.addValue("Unit", cal.getUnit());
-    String noteMsg = "";
-    if (i==1) {
-    	noteMsg = (erodeIsolatedPixels) ? "Ignoring" : "Including";
-    	noteMsg += " single-point arbors...";
-    }
-   	rt.addValue("Notes", noteMsg);
+	rt.addLabel("Image", title);
+	rt.addValue("Strahler Order", i);
+	rt.addValue("# Branches", nBranches);
+	rt.addValue("Ramification ratios", prevNbranches/nBranches);
+	rt.addValue("Average branch length", average(maskSr.getAverageBranchLength()));
+	rt.addValue("Unit", cal.getUnit());
+	String noteMsg = "";
+	if (i==1) {
+		noteMsg = (erodeIsolatedPixels) ? "Ignoring" : "Including";
+		noteMsg += " single-point arbors...";
+	}
+	rt.addValue("Notes", noteMsg);
 
-    // Remember results for previous order
-    prevNbranches = (double)nBranches;
+	// Remember results for previous order
+	prevNbranches = (double)nBranches;
 
 }
 
@@ -519,19 +520,19 @@ rt.addValue("Notes", errorMsg);
 
 // Display outputs
 if (!tabular) {
-    if (outIS)
-        imp2.show();
-    ip3.setMinAndMax(0, order);
-    try {
-        Class.forName("Sholl_Utils");
-        ip3.setColorModel(Sholl_Utils.matlabJetColorMap(0));
-    } catch (ClassNotFoundException) {
-        IJ.run(imp3, "Fire", "");
-    }
-    if (validRootRoi)
-        imp3.setRoi(roi);
-    imp3.show();
-    addCalibrationBar(imp3, Math.min(order, 5));
+	if (outIS)
+		imp2.show();
+	ip3.setMinAndMax(0, order);
+	try {
+		Class.forName("Sholl_Utils");
+		ip3.setColorModel(Sholl_Utils.matlabJetColorMap(0));
+	} catch (ClassNotFoundException) {
+		IJ.run(imp3, "Fire", "");
+	}
+	if (validRootRoi)
+		imp3.setRoi(roi);
+	imp3.show();
+	addCalibrationBar(imp3, Math.min(order, 5));
 }
 if (verbose)
 	logrt.show(VERBOSE_TABLE);
