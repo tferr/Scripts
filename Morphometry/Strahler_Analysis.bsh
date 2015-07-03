@@ -46,6 +46,25 @@ import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 
 
+// Before starting we must remind non-Fiji users to install required dependencies
+try {
+	Class.forName("skeleton_analysis.AnalyzeSkeleton_");
+	Class.forName("Skeletonize3D_.Skeletonize3D_");
+} catch( ClassNotFoundException e ) {
+	URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/";
+	AS_VRSN = "AnalyzeSkeleton_-2.0.4.jar";
+	SK_VRSN = "Skeletonize3D_-1.0.1.jar";
+	msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
+		+ "Strahler Analysis requires AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be installed in\n"
+		+ "the plugins/ folder. Please install the missing file(s) by double-clicking on the links below:\n \n"
+		+ URL + AS_VRSN +"\n"+ URL + SK_VRSN;
+	//IJ.handleException(e);
+	IJ.log(msg);
+	IJ.error("Strahler Analysis Error",
+		"Dependencies not found!\nCheck the Log window for installation details.");
+	return;
+}
+
 /* Default value for max. number of prunning cycles */
 int maxPruning = 10;
 
@@ -80,30 +99,8 @@ String VERSION = "1.4.1-DEV 2015.06.30";
 private static boolean validRootRoi;
 
 
-/* Reminds the user to install required dependencies */
-boolean validInstallation() {
-	try {
-		Class.forName("skeleton_analysis.AnalyzeSkeleton_");
-		Class.forName("Skeletonize3D_.Skeletonize3D_");
-		return true;
-	} catch( ClassNotFoundException e ) {
-		URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/";
-		AS_VRSN = "AnalyzeSkeleton_-2.0.4.jar";
-		SK_VRSN = "Skeletonize3D_-1.0.1.jar";
-		msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
-			+ "Strahler Analysis requires AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be installed in\n"
-			+ "the plugins/ folder. Please install the missing file(s) by double-clicking on the links below:\n \n"
-			+ URL + AS_VRSN +"\n"+ URL + SK_VRSN;
-		IJ.log(msg);
-		return false;
-	}
-}
-
 /* Checks if image fulfills analysis requirements */
 boolean validImage(ImagePlus imp) {
-	boolean valid = validInstallation();
-	if (!valid)
-		IJ.error("Strahler Analysis", "Dependencies not found.");
 	valid = imp!=null && imp.getBitDepth()==8;
 	if (!valid)
 		IJ.error("Strahler Analysis", "An 8-bit image is required but none was found.");
