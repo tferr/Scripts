@@ -450,6 +450,13 @@ if (validRootRoi && verbose) {
 
 }
 
+// Safety check
+if (iterationStack==null || iterationStack.getSize()<1) { //TODO: Make error more informative
+	IJ.error("Strahler Analysis Error", "Could not complete analysis!\n"
+		+ "Enable verbose mode and check "+ VERBOSE_TABLE + " for details.");
+	return;
+}
+
 // Create iteration stack
 Calibration cal = srcImp.getCalibration();
 ImagePlus imp2 = new ImagePlus("StrahlerIteration_"+ title, iterationStack);
