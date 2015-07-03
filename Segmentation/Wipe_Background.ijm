@@ -12,8 +12,8 @@
 
 requires("1.49q"); // In older versions maskID is diplayed in batch mode if hyperstack
 getThreshold(lower, upper);
-if (lower==-1 && !is("binary"))
-	exit("A thresholded or 8-bit binary image is required.");
+if (lower==-1 && upper==-1)
+	exit("A thresholded image is required.");
 
 optnsA = newArray("Active ROI", "Whole image");
 optnsB = newArray("Current slice only", "All slices", "Preceding slices", "Subsequent slices");
