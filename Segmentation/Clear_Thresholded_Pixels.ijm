@@ -51,5 +51,6 @@ for (i=start; i<=end; i++) {
 	changeValues(lower, upper, 0);
 }
 Stack.setPosition(channel, currentSlice, frame);
-setThreshold(lower, upper);
 setBatchMode(false);
+setThreshold(lower, upper);
+updateDisplay();
