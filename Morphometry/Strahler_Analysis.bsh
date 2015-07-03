@@ -93,7 +93,7 @@ String STRAHLER_TABLE = "Strahler_Table";
 String VERBOSE_TABLE = "Strahler_Iteration_Log";
 
 /* Version of the program */
-String VERSION = "1.4.1-DEV 2015.06.30";
+String VERSION = "1.5.0 2015.07.03";
 
 /* Flag for 'root-protective' ROI */
 private static boolean validRootRoi;
