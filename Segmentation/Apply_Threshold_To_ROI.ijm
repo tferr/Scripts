@@ -8,7 +8,7 @@
  *
  * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
  * applied to the Z-dimension of the active channel/frame. With 8-bit images thresholded values
- * are set to to 255, with 16/32-bit images to the maximum of active ROI.
+ * are set to to 255, with 16/32-bit images to 65535.
  * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
  *
  *   attr = call("bar.Utils.getSegmentationDir")+"Apply_Threshold_To_ROI.ijm";
@@ -60,7 +60,7 @@ updateDisplay();
 
 function getMax() {
 	max = 255;
-	if (bitDepth()!=8)
-		getStatistics(null, null, null, max);
+	if (bitDepth()>8)
+		max = 65535;
 	return max;
 }
