@@ -136,6 +136,8 @@ if (nCount>0 && maskID!=imgID) {
 Stack.setPosition(channel, activeSlice, frame);
 if (areaRoi && (wholeImg || isHyper))
 	run("Restore Selection");
+setThreshold(lower, upper);
+updateDisplay();
 
 
 function helpMsg() {
