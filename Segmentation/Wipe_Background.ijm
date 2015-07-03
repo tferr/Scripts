@@ -117,6 +117,19 @@ if (nCount>0 && maskID!=imgID) {
 	// seem to escape batchMode (at least with 1J 1.49t, Java 1.6)
 	selectImage(maskID);
 	close();
+
+	// Report progress
+	showStatus("Filtered out "+ nCount +" particles...");
+	if (isOpen("Log"))
+		print(">>> "+ getTitle() +": Filtered out "+ nCount +" particles...");
+
+} else {
+
+	showMessage("No particles were detected with\nthe specified settings:\n \n"
+			+ "\n    Size: "+ size
+			+ "\n    Circ: "+ circ
+			+ "\n    Threshold: "+ lower +"-"+ upper);
+
 }
 
 // Restore original state
