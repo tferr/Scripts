@@ -23,7 +23,8 @@ var bCmds= newMenu("Settings Menu Tool", newArray("Define tags...", "Define pref
             "Remove all suffixes", "-", "Toggle numeric labels", "Toggle labels in Results"));
 macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2aD5dDa2Dd5D59D68D69D77D78D86D87D96D1aD1bD1cD29D2bD39D49D4bD4cD4dD58D67D76D85D92D93D94Da1Db1Db2Db4Dc1Dc4Dd4De3D5aD6aD79D88D95D97Da5Da6D19D91D4aD5bDa4Db5D3aD5cDa3Dc5" {
     setBatchMode(true);
-    cmd= getArgument(); i= roiManager("index"); n= roiManager("count");
+    cmd= getArgument();
+    n= roiManager("count");
     bools= newArray("true", "false");
     if(cmd=="Define tags...") {
         createNewList("labels", "Label");
@@ -52,10 +53,12 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
     } else if(cmd=="Remove all suffixes") {
         renamePattern(0, n, "\\].*", "");
     } else if(cmd=="Toggle numeric labels") {
-        roiManager("UseNames", bools[usenames]); usenames= !usenames;
+        roiManager("UseNames", bools[usenames]);
+        usenames= !usenames;
         roiManager("Show All with labels");
     } else if(cmd=="Toggle labels in Results") {
-        setOption("Display Label", label); label= !label;
+        setOption("Display Label", label);
+        label= !label;
     } else if (cmd!="-")
         run(cmd);
 }
@@ -85,7 +88,10 @@ macro "Add suffix Menu Tool - C037 T0b10ST6b10fTab10fTeb10x" {
 }
 
 macro "Selection cycler [Shift click: Previous] [Alt click: First] Action Tool - C037L020dL0268L0d68Lf2fdLf298Lfd98" {
-    if (roiManager("count")==0) {showStatus("ROI Manager is empty."); exit;}
+    if (roiManager("count")==0) {
+        showStatus("ROI Manager is empty.");
+        exit;
+    }
     i= roiManager("index");
     if (isKeyDown("alt") || i<0)
         roiManager('select', 0);
@@ -127,32 +133,51 @@ macro "Help Action Tool - C037T3e16?" {
     showMessage("ROI Manager Tools", help);
 }
 
+
+/*
+ * Retrieves the array containing the specified list of strings of <type>
+ * "labels", "prefixes" or "suffixes" using the IJ preferences mechanism.
+ * Default lists are generated if pre-existing ones cannot be retrieved
+ */
 function getPrefList(type) {
     prefs= call("ij.Prefs.get",  "rmtools."+type, "no"+type);
     if (startsWith(prefs,"no")) {
-        if (type=="labels") items= "Cortex|DG|CA3|CA1|Striatum|-|Custom...";
-        if (type=="prefixes") items= "WT|KO|Custom...";
-        if (type=="suffixes") items= "Anterior|Posterior|Ventral|Medial|Dorsal|Custom...";
+        if (type=="labels")
+            items= "Cortex|DG|CA3|CA1|Striatum|-|Custom...";
+        if (type=="prefixes")
+            items= "WT|KO|Custom...";
+        if (type=="suffixes")
+            items= "Anterior|Posterior|Ventral|Medial|Dorsal|Custom...";
         call("ij.Prefs.set", "rmtools."+type, items);
         return split(items, "|");
     } else
         return split(prefs, "|");
 }
 
+/*
+ * Prompts the user for a new list of strings of <type> "labels", prefixes
+ * "prefixes" or "suffixes", saving it using the IJ preferences mechanism.
+ * <prompt> is an alternative string to describe <type> in the dialog prompt
+ */
 function createNewList(type, prompt) {
+
   help= "<html>None of the "+ type +" should contain \"|\", \"[\" and \"]\" as these are<br>"
        +"used to define word boundaries. Entries defined by a single<br>"
        +"hyphen are interpreted as menu separators.<br><br>If you prefer, you can define "
        +"the last "+ prompt +" as \"Custom...\" to<br>be prompted for ad-hoc strings.";
-  prefs= ""; items= getPrefList(type);
+
+  prefs= "";
+  items= getPrefList(type);
   Dialog.create('Define '+ type);
-    for (i=1; i<=items.length; i++)
-        Dialog.addString(prompt +" "+ i +":", items[i-1], 15);
-    Dialog.addCheckbox("Add more "+type, false);
-    Dialog.addCheckbox("Reset all entries", false);
-    Dialog.addHelp(help);
+  for (i=1; i<=items.length; i++)
+      Dialog.addString(prompt +" "+ i +":", items[i-1], 15);
+  Dialog.addCheckbox("Add more "+type, false);
+  Dialog.addCheckbox("Reset all entries", false);
+  Dialog.addHelp(help);
   Dialog.show();
-  add= Dialog.getCheckbox(); res= Dialog.getCheckbox();
+  add= Dialog.getCheckbox();
+  res= Dialog.getCheckbox();
+
   for (i=1; i<=items.length; i++)
       prefs+= Dialog.getString() +"|";
   if (res) {
@@ -165,6 +190,7 @@ function createNewList(type, prompt) {
       call("ij.Prefs.set", "rmtools."+type, prefs);
       createNewList(type, prompt);
   }
+
   // The Fiji editor appends ".ijm" to .txt files, we'll try to find the file w/o extension
   path= getDirectory("macros")+"toolsets/";
   list= getFileList(path);
@@ -174,55 +200,79 @@ function createNewList(type, prompt) {
       run("Install...", "install=["+ path +"]");
   else
       showMessage("ROI Manager Tools could not be reloaded as it was not\n"
-                 +"found in the ImageJ/macros/toolset directory. You must\n"
+                 +"found in the /macros/toolset directory. You must\n"
                  +"re-install the file manually to reload the new settings.");
+
 }
 
+/*
+ * Renames the ROI in the ROI Manager list with the specified position <item>
+ * (0-based index). If position is negative, user is prompt for a range of
+ * of indices. If <newname> is "Custom..." user is prompt for new ROI name.
+ * If <placement> is "Prefix", <newname> is prepended to existing name. If
+ * "Suffix", <newname> it is appended to existing name.
+ */
 function renameROI(newname, placement, item) {
     custom= (newname=="Custom...");
     if (item<0) { // multiple ROIs selected
         n= roiManager("count");
         if (custom) {
             Dialog.create("Rename Multiple ROIs");
-              Dialog.addString(placement +":", "", 18);
-              Dialog.addString("Range:",  "1-"+ n, 9);
+            Dialog.addString(placement +":", "", 18);
+            Dialog.addString("Range:",  "1-"+ n, 9);
             Dialog.show;
-            newname= Dialog.getString(); rg= parseRange(Dialog.getString);
+            newname= Dialog.getString();
+            rg= parseRange(Dialog.getString);
         } else
             rg= parseRange(getString("\""+ newname +"\"; ROI range:", "1-"+ n));
         for (i=rg[0]; i<rg[1]; i++)
             renameROI(newname, placement, i);
-        roiManager("Deselect"); return;
+        roiManager("Deselect");
+        return;
     }
     oldname= call("ij.plugin.frame.RoiManager.getName", item);
     if (custom) newname= getString(placement +":", "");
     if (placement=="Prefix") {
        sep= indexOf(oldname, "[");
-       if (sep!=-1) oldname= substring(oldname, sep+1);
+       if (sep!=-1)
+           oldname= substring(oldname, sep+1);
        newname+= "["+oldname;
     } else if (placement=="Suffix") {
        sep= lastIndexOf(oldname, "]");
-       if (sep!=-1) oldname= substring(oldname, 0, sep);
+       if (sep!=-1)
+           oldname= substring(oldname, 0, sep);
        newname= oldname +"]"+ newname;
     } else // rename
-        newname= IJ.pad(i+1, 2) +":"+ newname;
+        newname= IJ.pad(item+1, 2) +":"+ newname;
     roiManager("select", item);
     roiManager("rename", newname);
 }
 
+/*
+ * Selects the next ROI in the ROI Manager (or the previous if
+ * "backwards" is true) by looping through the ROI Manager list
+ */
 function walkList(idx, backwards) {
     lngth= roiManager("count");
-    if (idx<0) return;
+    if (idx<0)
+        return;
     if (backwards) {
-        idx-= 1; if (idx<0) idx= lngth-1;
+        idx-= 1;
+        if (idx<0) idx= lngth-1;
     } else {
-        idx+= 1; if (idx>=lngth) idx= 0;
+        idx+= 1;
+        if (idx>=lngth) idx= 0;
     }
     roiManager("select", idx);
 }
 
-function renamePattern(min, max, old, new) {
-    for (i=min; i<max; i++) {
+/*
+ * Renames ROIs in the ROI Manager list within the specified range
+ * (0-based indices) by replacing all occurrences of the string
+ * "old" with the string "new" in the ROI name
+ */
+function renamePattern(first, last, old, new) {
+    for (i=first; i<=last; i++) {
         name= call("ij.plugin.frame.RoiManager.getName", i);
         name= replace(name, old, new);
         roiManager("select", i);
