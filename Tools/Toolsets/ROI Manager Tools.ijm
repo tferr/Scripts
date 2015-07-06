@@ -5,9 +5,7 @@
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
  * then use the '>>' drop down menu to activate it. Requires IJ 1.46 or newer.
  *
- * TF, 04.2012: Initial version
- * TF, 12.2013: Fixed a bug in which labels were not being saved
- * TF, 06.2015: Added option to select multiple ROIs by pattern
+ * TF, 2015.07, see https://github.com/tferr/Scripts/releases for release notes
  */
 
 var labels= getPrefList("labels");
@@ -150,7 +148,7 @@ macro "Help Action Tool - C037T3e16?" {
        +"Tags rename ROIs, prefixes and suffixes are appended to the listed name.<br><br>"
        +"To rename multiple ROIs, press <i>Deselect</i> in the ROI Manager, and choose a label<br>"
        +"from one of menus. Alternatively, choose <i>Rename by pattern...</i> from the Settings<br>"
-       +" menu. In both cases, you can specify the Range of ROIs to be renamed, as when<br>"
+       +"menu. In both cases, you can specify the Range of ROIs to be renamed, as when<br>"
        +"using the ROI Manager <i>Properties...</i> command.<br><br>"
        +"To rename single ROIs, use the <i>Selection cycler</i> to walk through the listed ROIs one<<br>"
        +"item at a time.<br><br>"
