@@ -100,7 +100,7 @@ function promptForSettings() {
       Dialog.addChoice("Icon color:", sColors, color);
   }
   if (addMore)
-      Dialog.addCheckbox("Keep appending tools ["+ maxTools-1-slot +" slot(s) remain available]", true);
+      Dialog.addCheckbox("Keep appending tools ("+ maxTools-1-slot +" slot(s) remain available)", true);
   Dialog.show();
   btool= Dialog.getChoice;
   if (dirs) {
@@ -120,12 +120,20 @@ function promptForSettings() {
       folders = trimChosenItem(folders, folder);
       idx= substring(alphaCounter, slot, slot+1);
       mName= replace(folder, "-", "");
-      if (text=="" && icon==sIcons[0]) text= mName;
-      print(f, "   var "+ idx +"List= getPluginList('"+ folder +"');");
+      if (text=="" && icon==sIcons[0])
+          text= mName;
+      print(f, "   var "+ idx +"Dir= '"+ folder +"';");
+      print(f, "   var "+ idx +"List= getPluginList("+ idx +"Dir);");
       print(f, "   var "+ idx +"Cmds= newMenu('"+ mName +" Menu Tool',"+ idx +"List);");
       print(f, " macro '"+ mName +" Menu Tool - "+ makeIcon(text, icon, color) +"' {");
       print(f, "   cmd= getArgument();");
-      print(f, "   if (cmd!='-') run(cmd);");
+      print(f, "   if (startsWith(cmd,'Reveal ')) {");
+	  print(f, "       call('bar.Utils.revealFile', getDirectory('plugins')+"+ idx +"Dir);");
+      print(f, "   } else if (startsWith(cmd,'No executable') || endsWith(cmd,' not found') || endsWith(cmd,'...')) {");
+      print(f, "       showMessageWithCancel('Reveal '+ getDirectory('plugins')+ "+ idx +"Dir +'?');");
+	  print(f, "       call('bar.Utils.revealFile', getDirectory('plugins')+"+ idx +"Dir);");
+	  print(f, "   } else if (cmd!='-')");
+      print(f, "       run(cmd);");
       print(f, " }\n ");
   }
   return add;
