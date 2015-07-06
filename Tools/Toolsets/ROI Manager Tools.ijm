@@ -49,9 +49,9 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
         range= parseRange(Dialog.getString);
         renamePattern(range[0], range[1], oldstr, newstr);
     } else if(cmd=="Remove all prefixes") {
-        renamePattern(0, n, ".*\\[", "");
+        renamePattern(0, n-1, ".*\\[", "");
     } else if(cmd=="Remove all suffixes") {
-        renamePattern(0, n, "\\].*", "");
+        renamePattern(0, n-1, "\\].*", "");
     } else if(cmd=="Toggle numeric labels") {
         roiManager("UseNames", bools[usenames]);
         usenames= !usenames;
@@ -225,7 +225,7 @@ function renameROI(newname, placement, item) {
             rg= parseRange(Dialog.getString);
         } else
             rg= parseRange(getString("\""+ newname +"\"; ROI range:", "1-"+ n));
-        for (i=rg[0]; i<rg[1]; i++)
+        for (i=rg[0]; i<=rg[1]; i++)
             renameROI(newname, placement, i);
         roiManager("Deselect");
         return;
@@ -281,14 +281,25 @@ function renamePattern(first, last, old, new) {
     roiManager("Deselect");
 }
 
+
+/*
+ * Retrieves a two-element array containing the range of ROI Manager
+ * indices (0-based positions) from a hyphen containing string. E.g.,
+ * "1-71" returns {0, 70}. Macros calling this function will be aborted
+ * if the parsed range is invalid.
+ */
 function parseRange(string) {
     range= split(string, "-");
     if (range.length==1) {
-        min= 0; max= parseFloat(range[0]);
+        min= 0;
+        max= parseFloat(range[0]);
     } else {
-        min= parseFloat(range[0]); max= parseFloat(range[1]);
+        min= parseFloat(range[0]);
+        max= parseFloat(range[1]);
     }
-    min= maxOf(0, min-1); max= minOf(max, roiManager("count"));
-    if (min>max || max==0) exit("Invalid ROI range.");
+    min= maxOf(0, min-1);
+    max= minOf(max, roiManager("count")-1);
+    if (min>max || max==0)
+        exit("Invalid ROI range.");
     return newArray(min, max);
 }
