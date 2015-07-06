@@ -3,10 +3,11 @@
  *
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
- * then use the '>>' drop down menu to activate it. Requires IJ 1.45d or newer.
+ * then use the '>>' drop down menu to activate it. Requires IJ 1.46 or newer.
  *
  * TF, 04.2012: Initial version
- * TF, 12.2013: Fixed a bug in which labels were not being saved.
+ * TF, 12.2013: Fixed a bug in which labels were not being saved
+ * TF, 06.2015: Added option to select multiple ROIs by pattern
  */
 
 var labels= getPrefList("labels");
@@ -19,8 +20,9 @@ macro "AutoRun" { run("ROI Manager..."); }
 macro "Unused Tool-" {}
 
 var bCmds= newMenu("Settings Menu Tool", newArray("Define tags...", "Define prefixes...",
-            "Define suffixes...", "-", "Rename by pattern...", "-", "Remove all prefixes",
-            "Remove all suffixes", "-", "Toggle numeric labels", "Toggle labels in Results"));
+            "Define suffixes...", "-", "Rename ROIs by pattern...", "Select ROIs by pattern...", "-",
+            "Remove all prefixes", "Remove all suffixes", "-", "Toggle numeric labels",
+            "Toggle labels in Results"));
 macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2aD5dDa2Dd5D59D68D69D77D78D86D87D96D1aD1bD1cD29D2bD39D49D4bD4cD4dD58D67D76D85D92D93D94Da1Db1Db2Db4Dc1Dc4Dd4De3D5aD6aD79D88D95D97Da5Da6D19D91D4aD5bDa4Db5D3aD5cDa3Dc5" {
     setBatchMode(true);
     cmd= getArgument();
@@ -32,22 +34,45 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
         createNewList("prefixes", "Prefix");
     } else if(cmd=="Define suffixes...") {
         createNewList("suffixes", "Suffix");
-    } else if(cmd=="Rename by pattern...") {
+    } else if(endsWith(cmd, "pattern...")) {
+
+        rplc= (cmd=="Rename ROIs by pattern...");
         help= "<html>Search is case sensitive. Regex patterns can also be used, e.g.,<br>"
              +"\"<tt>[0-9&&[^1]]\</tt>\" to find a digit that is not 1, or \"<tt>-.*-\</tt>\" to "
              +"find<br>any character sequence flanked by hyphens. You may need to<br>"
-             +"escape metacharacters ('.', '[', ']', '^', '$', etc.) by a backslash.<br><br>"
-             +"Note that replaced patterns should always give rise to unique<br>"
-             +"names as the ROI Manager cannot cope with duplicated entries.";
-        Dialog.create("Rename Pattern");
-          Dialog.addString("Find:", oldstr, 18);
-          Dialog.addString("Replace:", newstr, 18);
-          Dialog.addString("Range:", maxOf(1,i+1) +"-"+ n, 9);
-          Dialog.addHelp(help);
+             +"escape metacharacters ('.', '[', ']', '^', '$', etc.) by a backslash.";
+        if (rplc) {
+            help+= "<br><br>"
+                +"Note that replaced patterns should always give rise to unique<br>"
+                +"names as the ROI Manager cannot cope with duplicated entries.";
+        }
+        Dialog.create(cmd);
+        Dialog.addString("Find:", oldstr, 18);
+        if (rplc)
+            Dialog.addString("Replace:", newstr, 18);
+        Dialog.addString("Range:", 1 +"-"+ n, 9);
+        items = newArray("Contains", "Starts with ", "Ends with", "Regex");
+        Dialog.addRadioButtonGroup("Find options:", items, 2, 2, "Contains");
+        Dialog.addHelp(help);
         Dialog.show();
-        oldstr= Dialog.getString(); newstr= Dialog.getString();
+        findString= Dialog.getString();
+        choice= Dialog.getRadioButton();
+        if (choice==items[0])
+            findString= ".*"+ findString +".*";
+        else if (choice==items[1])
+            findString= "^"+ findString +".*";
+        else if (choice==items[2])
+            findString= ".*"+ findString +"$";
+        if (rplc)
+            replaceString= Dialog.getString();
+        else
+            replaceString= "";
         range= parseRange(Dialog.getString);
-        renamePattern(range[0], range[1], oldstr, newstr);
+        if (rplc)
+            renamePattern(range[0], range[1], findString, replaceString);
+        else
+            selectPattern(findString, range[0], range[1]);
+
     } else if(cmd=="Remove all prefixes") {
         renamePattern(0, n-1, ".*\\[", "");
     } else if(cmd=="Remove all suffixes") {
@@ -282,6 +307,21 @@ function renamePattern(first, last, old, new) {
     roiManager("Deselect");
 }
 
+/*
+ * Selects ROIs in the ROI Manager list within the specified range
+ * (0-based indices) whose name matches the specified pattern
+ */
+function selectPattern(pattern, first, last) {
+    indexes = newArray(last-first+1);
+    k = 0;
+    for (i=first; i<=last; i++) {
+        name = call("ij.plugin.frame.RoiManager.getName", i);
+        if (matches(name, pattern))
+            indexes[k++] = i;
+    }
+    indexes = Array.trim(indexes, k);
+    roiManager("select", indexes);
+}
 
 /*
  * Retrieves a two-element array containing the range of ROI Manager
