@@ -92,6 +92,7 @@ macro "Selection cycler [Shift click: Previous] [Alt click: First] Action Tool -
         showStatus("ROI Manager is empty.");
         exit;
     }
+    setBatchMode(true);
     i= roiManager("index");
     if (isKeyDown("alt") || i<0)
         roiManager('select', 0);
