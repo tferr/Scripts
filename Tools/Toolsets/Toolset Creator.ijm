@@ -1,10 +1,8 @@
 /* Toolset Creator
  * IJ BAR: https://github.com/tferr/Scripts#scripts
- * http://imagej.nih.gov/ij/macros/toolsets/Toolset%20Creator.txt
  *
  * Creates toolsets of Built-in Tools and Menu Tools listing installed plugins.
- * v.13 2014.10 TF: Replace .txt with .ijm extensions in newly created files
- * v.12 2014.02 TF: Adds support for IJ's 1.48 expandable toolbar
+ * v.14 2015.07, see https://github.com/tferr/Scripts/releases for release notes
  */
 
 var maxTools= 10;
@@ -50,7 +48,7 @@ macro "Toolset Creator" {
     while (add && slot<maxTools) {
         add= promptForSettings(); slot++;
     }
-    if (menus) printFoot();
+    if (menus) printFooter();
     File.close(f);
     open(path);
     showStatus("Toolset created. Use the '>>' menu to switch between toolsets");
@@ -77,14 +75,16 @@ function promptForSettings() {
   addMore= slot<maxTools-1;
   dirs= folders.length>0;
   Dialog.create("Toolset Creator: Designing slot "+ slot+1);
-  msg = "<html><div WIDTH=400>For each slot you can either append 1) a <i>Built-in Tool</i> or 2) "
+  msg = "<html><div WIDTH=450>For each slot you can either append 1) a <i>Built-in Tool</i> or 2) "
       + "a designed <i>Menu Tool</i>, a drop-down menu listing commands (i.e., executable files) "
       + "in subfolders of the <tt>plugins/</tt> directory. This latter option is automatically "
-      + "disabled if no subdirectories are found.<br><br>"
-      + "When building menu icons, the first two characters of the folder name "
-      + "are used if neither a symbol or a string is specified.<br><br>"
+      + "disabled if no subdirectories are found."
+      + "<br><br>"
+      + "When building menu icons, the first two characters of the folder name are "
+      + "used if neither a symbol or a string is specified. "
       + "Unfortunately, hitting <i>Cancel</i> or pressing <i>Esc</i> halfway through the design "
-      + "will lead to an empty toolset file.</div>";
+      + "will lead to an empty toolset file."
+      + "</div></html>";
   Dialog.addHelp(msg);
   Dialog.setInsets(5, 0, 0);
   Dialog.addMessage("Option 1) Add a Built-in Tool to slot "+ slot+1 +":");
@@ -100,7 +100,7 @@ function promptForSettings() {
       Dialog.addChoice("Icon color:", sColors, color);
   }
   if (addMore)
-      Dialog.addCheckbox("Keep appending tools ["+ maxTools-1-slot +" slot(s) remain available]", true);
+      Dialog.addCheckbox("Keep appending tools ("+ maxTools-1-slot +" slot(s) remain available)", true);
   Dialog.show();
   btool= Dialog.getChoice;
   if (dirs) {
@@ -120,12 +120,20 @@ function promptForSettings() {
       folders = trimChosenItem(folders, folder);
       idx= substring(alphaCounter, slot, slot+1);
       mName= replace(folder, "-", "");
-      if (text=="" && icon==sIcons[0]) text= mName;
-      print(f, "   var "+ idx +"List= getPluginList('"+ folder +"');");
+      if (text=="" && icon==sIcons[0])
+          text= mName;
+      print(f, "   var "+ idx +"Dir= '"+ folder +"';");
+      print(f, "   var "+ idx +"List= getPluginList("+ idx +"Dir);");
       print(f, "   var "+ idx +"Cmds= newMenu('"+ mName +" Menu Tool',"+ idx +"List);");
       print(f, " macro '"+ mName +" Menu Tool - "+ makeIcon(text, icon, color) +"' {");
       print(f, "   cmd= getArgument();");
-      print(f, "   if (cmd!='-') run(cmd);");
+      print(f, "   if (startsWith(cmd,'Reveal ')) {");
+	  print(f, "       call('bar.Utils.revealFile', getDirectory('plugins')+"+ idx +"Dir);");
+      print(f, "   } else if (startsWith(cmd,'No executable') || endsWith(cmd,' not found') || endsWith(cmd,'...')) {");
+      print(f, "       showMessageWithCancel('Reveal '+ getDirectory('plugins')+ "+ idx +"Dir +'?');");
+	  print(f, "       call('bar.Utils.revealFile', getDirectory('plugins')+"+ idx +"Dir);");
+	  print(f, "   } else if (cmd!='-')");
+      print(f, "       run(cmd);");
       print(f, " }\n ");
   }
   return add;
@@ -166,43 +174,48 @@ function printHeader() {
   print(f, " *   Those listed on the botoom of the '>>' list (e.g. drawing tools).");
   print(f, " *");
   print(f, " * Menu Tools:");
-  print(f, " *   List executable files in subfolders of the ImageJ/plugins/ directory. IJ");
-  print(f, " *   executables are all '.txt', '.class' and '.jar' files with at least one");
-  print(f, " *   underscore in the filename and all '.ijm' and '.js' files.");
+  print(f, " *   List executable files in subfolders of the ImageJ/plugins/ directory. Executables");
+  print(f, " *   are 1) all macros ('.ijm'), 2) all script files ('.js', '.bsh', '.clj', etc), and");
+  print(f, " *   3) plugins ('.class' and '.jar' files) with at least one underscore in the filename.");
   print(f, " *");
-  print(f, " *   For any Menu Tool, hold down Shift while selecting a '.ijm' or '.js' file");
-  print(f, " *   in the dropdown list and ImageJ will open that macro or script.");
+  print(f, " *   For any Menu Tool, hold down Shift while selecting a macro or script file in the");
+  print(f, " *   dropdown list and ImageJ will open that macro or script.");
   print(f, " *");
-  print(f, " *   Edit the three lines below '// Settings:' to change which files should be");
-  print(f, " *   listed: e.g. you can exclude or rename the commands implemented by .jar");
-  print(f, " *   files containing plugins.config instructions. N.B.: These three lines can");
-  print(f, " *   be deleted if you have not created Menu Tools.");
+  print(f, " *   Edit the three lines below '// Settings:' to change which files should be listed:");
+  print(f, " *   E.g., you can exclude or rename the commands implemented by .jar files containing");
+  print(f, " *   plugins.config instructions. N.B.: These three lines can be deleted if you have not");
+  print(f, " *   created Menu Tools.");
   print(f," */\n ");
   print(f,"// Settings:");
-  print(f," var AllowedFileExtensions= newArray('class','txt','ijm','jar','js');");
+  print(f," var AllowedFileExtensions= newArray('class','jar','ijm','bsh','js','py','clj','rb','groovy');");
   print(f," var IgnoreFilenamesContaining= newArray('$');");
   print(f," var ReplaceFilenames= newArray('3D Viewer:ImageJ_3D_Viewer.jar');\n \n ");
 }
 
-function printFoot() {
+function printFooter() {
   print(f, "\nfunction getPluginList(subfolder) {");
   print(f, "  dir= getDirectory('plugins')+ subfolder +File.separator;");
   print(f, "  list= newArray(''+ subfolder +' not found','in the plugins directory...');");
-  print(f, "  if (!File.exists(dir)) return list;");
+  print(f, "  if (!File.exists(dir))");
+  print(f, "      return list;");
   print(f, "  rawlist= getFileList(dir);");
   print(f, "  for (count=0, i=0; i< rawlist.length; i++) {");
-  print(f, "      isMacro= endsWith(rawlist[i],'.ijm') || endsWith(rawlist[i],'.js');");
-  print(f, "      if (indexOf(rawlist[i], '_')==-1 && !isMacro) rawlist[i]='-';");
+  print(f, "      isPlugin= endsWith(rawlist[i],'.class') || endsWith(rawlist[i],'.jar');");
+  print(f, "      if (indexOf(rawlist[i], '_')==-1 && isPlugin)");
+  print(f, "          rawlist[i]='-';");
   print(f, "      for (h=0; h<IgnoreFilenamesContaining.length; h++)");
   print(f, "          if (indexOf(rawlist[i], IgnoreFilenamesContaining[h])!=-1) rawlist[i]='-';");
   print(f, "      for (j=0; j<AllowedFileExtensions.length; j++)");
   print(f, "          if (endsWith(rawlist[i], AllowedFileExtensions[j])) count++;");
   print(f, "  }");
-  print(f, "  if (count==0)");
-  print(f, "      list= newArray('No executable files found','on '+''+subfolder);");
-  print(f, "  else");
-  print(f, "      list= newArray(count);");
-  print(f, "  for (index=0, i=0; i< rawlist.length; i++) {");
+  print(f, "  if (count==0) {");
+  print(f, "      list= newArray('No executable files found','on '+''+subfolder+'...');");
+  print(f, "      return list;");
+  print(f, "  }");
+  print(f, "  list= newArray(count+2);");
+  print(f, "  list[0]= 'Reveal '+ subfolder;");
+  print(f, "  list[1]= '-';");
+  print(f, "  for (index=2, i=0; i< rawlist.length; i++) {");
   print(f, "      for (h=0; h< AllowedFileExtensions.length; h++) {");
   print(f, "          cmdlength= lengthOf(rawlist[i])-lengthOf(AllowedFileExtensions[h])-1;");
   print(f, "          if (endsWith(rawlist[i], AllowedFileExtensions[h])) {");
