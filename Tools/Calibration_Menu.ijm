@@ -98,13 +98,13 @@ function getCSVchoice() {
 
   Dialog.create("Calibration Menu");
   Dialog.addChoice("Calibration file:", list, cFile);
-  Dialog.addHelp("<html>Use this Menu Tool to spatially calibrate images lacking detailed metadata.<p>"
+  Dialog.addHelp("<html>Use this Menu Tool to spatially calibrate images lacking detailed metadata.<br><br>"
         +"<b>Select the csv file corresponding to the device used to acquire the image</b>.<br>"
         +"Select <i>Demo File...</i> to generate a template to be edited by an external spreadsheet<br>"
-        +"application.<p>"
+        +"application.<br><br>"
         +"<b>To apply global calibrations</b>, i.e., to propagate the chosen calibration to all open<br>"
-        +"images, <b>activate the <i>Global</i> checkbox in Image>Properties... [P]</b> (titles of image<br>"
-        +"windows will be labeled with a '<tt>(G)</tt>').<p>"
+        +"images, <b>activate the <i>Global</i> checkbox in Image>Properties... [P]</b> (titles of<br>"
+        +"image windows will be labeled with a '<tt>(G)</tt>').<br><br>"
         +"Calibration settings are loaded from <tt>.csv</tt> files stored in:<br>"
         +"&emsp;&emsp;<tt>"+ cpath +"</tt>");
   Dialog.setInsets(-2, 105, 10);
