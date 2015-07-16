@@ -99,7 +99,11 @@ import bar.FileDrop;
 import bar.Utils;
 
 /**
- * This class implements a file browser modeled after <a href=
+ * Implements a light-weight and fast keyboard-based file browser for ImageJ
+ * (<i>BAR>BAR Commander...</i> command). . A summary of features is listed on
+ * the BAR <a href="http://imagej.net/BAR#Commander">documentation page</a>.
+ * <p>
+ * Commander is modeled after <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java"
  * >CommandFinder</a> by Mark Longair and <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/macro/FunctionFinder.java"
@@ -107,8 +111,8 @@ import bar.Utils;
  * Schindelin's <a href=
  * "https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java"
  * >Recent_Commands plugin</a> and a bit of DOS nostalgia. Drag and drop support
- * is implemented by <a
- * href="http://www.iharder.net/current/java/filedrop/">FileDrop</a>.
+ * is implemented by {@link bar.FileDrop FileDrop} (<a
+ * href="http://www.iharder.net/current/java/filedrop/">website</a>).
  */
 public class Commander implements PlugIn, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
@@ -160,9 +164,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTableHeader tableHeader;
 	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
+	/**
+	 * Calls the debugger method described in
+	 * {@link fiji.Debug#runFilter(String, String, String)
+	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
+	 */
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
 
+	/* (non-Javadoc)
+	 * @see ij.plugin.PlugIn#run(java.lang.String)
+	 */
 	public void run(final String arg) {
 
 		// Check if Commander is already running
@@ -1706,6 +1718,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		table.requestFocusInWindow();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	/* ActionEvent Methods */
 	@Override
 	public void actionPerformed(final ActionEvent e) {
@@ -1729,6 +1744,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+	 */
 	/* DocumentListener Methods */
 	@Override
 	public void insertUpdate(final DocumentEvent ev) {
@@ -1739,6 +1757,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+	 */
 	@Override
 	public void removeUpdate(final DocumentEvent ev) {
 		try {
@@ -1748,6 +1769,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+	 */
 	// Plain text should not trigger this event
 	@Override
 	public void changedUpdate(final DocumentEvent ev) {
@@ -1759,6 +1783,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	 */
 	/* ListSelectionListener Methods */
 	@Override
 	public void valueChanged(final ListSelectionEvent e) {
@@ -1768,6 +1795,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		openButton.setEnabled(isOpenable(selectedItem));
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
 	/* KeyListener Methods */
 	public void keyPressed(final KeyEvent ke) {
 
@@ -1860,13 +1890,22 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
 	public void keyReleased(final KeyEvent ke) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
 	public void keyTyped(final KeyEvent ke) {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	/* MouseListener Methods */
 	@Override
 	public void mouseClicked(final MouseEvent e) {
@@ -1882,25 +1921,43 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(final MouseEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(final MouseEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	public void mouseEntered(final MouseEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	public void mouseExited(final MouseEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
+	 */
 	/* WindowListener Methods */
 	public void windowClosing(final WindowEvent e) {
 		quit();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
+	 */
 	public void windowActivated(final WindowEvent e) {
 		//if (IJ.isMacintosh() && frame!=null) {
 		//	IJ.wait(10);
@@ -1908,18 +1965,33 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		//}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
+	 */
 	public void windowClosed(final WindowEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
+	 */
 	public void windowDeactivated(final WindowEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
+	 */
 	public void windowDeiconified(final WindowEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
+	 */
 	public void windowIconified(final WindowEvent e) {
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
+	 */
 	public void windowOpened(final WindowEvent e) {
 	}
 
@@ -1932,6 +2004,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			list = new ArrayList<String>();
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+		 */
 		public boolean isCellEditable(final int row, final int column) {
 			return false;
 		}
@@ -1941,18 +2016,30 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			fireTableDataChanged();
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getColumnCount()
+		 */
 		public int getColumnCount() {
 			return COLUMNS;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+		 */
 		public String getColumnName(final int column) {
 			return path; // single column table
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getRowCount()
+		 */
 		public int getRowCount() {
 			return list.size();
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getValueAt(int, int)
+		 */
 		public Object getValueAt(final int row, final int column) {
 			if (row >= list.size())
 				return null;
@@ -1979,8 +2066,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return null;
 	}
 
-	/** Implements ActionListeners for the 'history' dropdown menu */
+	/**
+	 *  Implements ActionListeners for the 'history' dropdown menu.
+	 *
+	 * @see HistoryActionEvent
+	 */
 	private class HistoryActionListener implements ActionListener {
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(final ActionEvent e) {
 			final String cmd = e.getActionCommand();
 
@@ -1999,8 +2094,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-	/** Implements ActionListeners for the "options" dropdown menu */
+	/**
+	 *  Implements ActionListeners for the "options" dropdown menu.
+	 *
+	 * @see OptionsActionEvent
+	 */
 	private class OptionsActionListener implements ActionListener {
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
 			if (command.equals("Preferences...")) {
@@ -2026,8 +2129,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/** Implements ActionListeners for the "recent folders" menu */
+	/**
+	 *  Implements ActionListeners for the "recent folders" menu.
+	 *
+	 * @see RecentActionEvent
+	 */
 	private class RecentActionListener implements ActionListener {
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
 			if (command.startsWith("Clear")) {
@@ -2056,6 +2167,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		private boolean initiated = false;
 		private boolean ignoreUpdates = false;
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#prepareRenderer(javax.swing.table.TableCellRenderer, int, int)
+		 */
 		@Override
 		public Component prepareRenderer(final TableCellRenderer renderer,
 				final int row, final int column) {
@@ -2076,6 +2190,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return c;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#initializeLocalVars()
+		 */
 		@Override
 		protected void initializeLocalVars() {
 			super.initializeLocalVars();
@@ -2083,6 +2200,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			updateColumnWidth();
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#addNotify()
+		 */
 		@Override
 		public void addNotify() {
 			super.addNotify();
@@ -2095,6 +2215,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			});
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#doLayout()
+		 */
 		@Override
 		public void doLayout() {
 			super.doLayout();
@@ -2133,6 +2256,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#tableChanged(javax.swing.event.TableModelEvent)
+		 */
 		@Override
 		public void tableChanged(final TableModelEvent e) {
 			super.tableChanged(e);
@@ -2141,10 +2267,16 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#getScrollableTracksViewportWidth()
+		 */
 		public boolean getScrollableTracksViewportWidth() {
 			return trackViewportWidth;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#createDefaultColumnModel()
+		 */
 		@Override
 		protected TableColumnModel createDefaultColumnModel() {
 			final TableColumnModel model = super.createDefaultColumnModel();

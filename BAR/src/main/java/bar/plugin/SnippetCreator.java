@@ -39,7 +39,10 @@ import java.util.regex.Pattern;
 
 import bar.Utils;
 
-/** Generates templates for new IJ scripts */
+/**
+ * Generates templates for new IJ scripts and implements the <i>BAR>Snippets>New
+ * Snippet...</i> command.
+ */
 public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Definitions */
@@ -70,7 +73,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private static TextArea ta;
 
 
-	/** Prompts user for a new snippet that will be saved in BAR/Snippets/ */
+	/** Prompts user for a new snippet that will be saved in BAR/Snippets/. */
 	public void run(final String arg) {
 		if (showDialog()) {
 			if (sContents.length()>0)
@@ -113,7 +116,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 //		return sb;
 //	}
 
-	/** Returns header for a BSH snippet (BeanShell) */
+	/**
+	 * Returns the header for a BSH snippet (BeanShell).
+	 *
+	 * @return the lines of code required to load the BeanShell BAR library
+	 */
 	public static String bshHeader() {
 		final StringBuilder sb = commonHeader(BSH);
 		sb.append("// Add BAR/lib to classpath and load BARlib.bsh\n");
@@ -127,7 +134,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a CLJ snippet (Clojure) */
+	/**
+	 * Returns the header for a CLJ snippet (Clojure).
+	 *
+	 * @return the lines of code required to load the Clojure BAR library
+	 */
 	public static String cljHeader() {
 		final StringBuilder sb = commonHeader(CLJ);
 		sb.append(";; Load BARlib.clj\n");
@@ -138,7 +149,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a GRV snippet (Groovy) */
+	/**
+	 * Returns the header for a GRV snippet (Groovy).
+	 *
+	 * @return the lines of code required to load the Groovy BAR library
+	 */
 	public static String grvHeader() {
 		final StringBuilder sb = commonHeader(GRV);
 		sb.append("// Parse and load BARlib.groovy\n");
@@ -152,7 +167,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a IJM snippet (IJ1 macro) */
+	/**
+	 * Returns the header for a IJM snippet (IJ1 macro).
+	 *
+	 * @return the lines of code required to load the IJM BAR library
+	 */
 	public static String ijmHeader() {
 		final StringBuilder sb = commonHeader(IJM);
 		sb.append("// Load BARlib.ijm. NB: functions may only be available once\n");
@@ -167,7 +186,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a JS snippet (JavaScript) */
+	/**
+	 * Returns the header for a JS snippet (JavaScript).
+	 *
+	 * @return the lines of code required to load the JavaScript BAR library
+	 */
 	public static String jsHeader() {
 		final StringBuilder sb = commonHeader(JS);
 		sb.append("// Load BARlib.js\n");
@@ -180,7 +203,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a PY snippet (Python) */
+	/**
+	 * Returns the header for a PY snippet (Python).
+	 *
+	 * @return the lines of code required to load the Python BAR library
+	 */
 	public static String pyHeader() {
 		final StringBuilder sb = commonHeader(PY);
 		sb.append("# Load BARlib.py\n");
@@ -194,7 +221,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a RB snippet (Ruby) */
+	/**
+	 * Returns the header for a RB snippet (Ruby).
+	 *
+	 * @return the lines of code required to load the Ruby BAR library
+	 */
 	public static String rbHeader() {
 		StringBuilder sb = new StringBuilder();
 		//sb.append("# @AppService appService\n");
@@ -211,7 +242,11 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return sb.toString();
 	}
 
-	/** Returns header for a NN snippet (No language) */
+	/**
+	 * Returns the header for a snippet of unknown language
+	 *
+	 * @return the placeholder string common to all headers
+	 */
 	public static String nnHeader() {
 		final StringBuilder sb = commonHeader(NN);
 		return sb.toString();
@@ -260,7 +295,12 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return !gd.wasCanceled();
 	}
 
-	/* Retrieves parameters from prompt in an interactive way */
+	/*
+	 * Retrieves parameters from prompt in an interactive way
+	 * 
+	 * @see ij.gui.DialogListener#dialogItemChanged(ij.gui.GenericDialog,
+	 * java.awt.AWTEvent)
+	 */
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		final Object source = (e == null) ? null : e.getSource();
 		final Vector<?> choices = gd.getChoices();
@@ -354,8 +394,13 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		gd.addPanel(p, GridBagConstraints.CENTER, new Insets(0, 0, 0, 0));
 	}
 
+	/*
+	 * Defines actions for custom buttons
+	 *
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
-	/* Defines actions for custom buttons */
 	public void actionPerformed(final ActionEvent e) {
 		final Object source = e.getSource();
 		if (source==list) {

@@ -37,18 +37,38 @@ import net.imagej.ui.swing.script.TextEditor.Tab;
 import org.scijava.Context;
 
 
-/** A collection of miscellaneous utilities for BAR */
+/**
+ * A collection of utilities to interact with BAR and scripting aids for ImageJ.
+ * For more information about BAR see its documentation pages on <a
+ * href="http://imagej.net/BAR">imagej.net</a> and <a
+ * href="https://github.com/tferr/Scripts#ij-bar">GitHub</a>.
+ * 
+ */
 public class Utils implements PlugIn {
 
-	static final String VERSION = "1.1.3";
+	/** The BAR version (as displayed in the BAR>About... dialog */
+	static final String VERSION = "1.1.4";
+
+	/** The URL to BAR's wiki page */
 	static final String DOC_URL = "http://fiji.sc/BAR";
+
+	/** The URL to BAR's GitHub repository */
 	static final String SRC_URL = "https://github.com/tferr/Scripts";
+
+	/** The absolute path to the /BAR directory */
 	static final String BAR_DIR = IJ.getDirectory("plugins")
 			+ "Scripts" + File.separator + "BAR" + File.separator;
+
+	/** The absolute path to the /BAR/Snippets/ directory */
 	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
+
+	/** The absolute path to the /BAR/lib/ directory */
 	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
 
 
+	/* (non-Javadoc)
+	 * @see ij.plugin.PlugIn#run(java.lang.String)
+	 */
 	@Override
 	public void run(final String arg) {
 
@@ -102,7 +122,7 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Displays a status-bar warning on "open by Shift-click" being disabled for
-	 * pre-compiled plugins
+	 * pre-compiled plugins.
 	 */
 	public static void shiftClickWarning() {
 		if (IJ.shiftKeyDown()) {
@@ -113,9 +133,12 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Transfers the specified BAR submenu between the main IJ's menu bar and
-	 * the image's context menu (vice-versa if the submenu is already in the
-	 * context menu). An acknowledgement message is displayed if
-	 * !IJ.macroRunning().
+	 * the image's context menu, or vice-versa if the submenu is already in the
+	 * context menu. An acknowledgement message is displayed if
+	 * {@link ij.IJ#macroRunning()} returns false.
+	 *
+	 * @param subMenu
+	 *            the {@link java.awt.Menu} to be transfered
 	 */
 	private void moveSubmenu(final String subMenu) {
 
@@ -160,8 +183,14 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Returns the index of the MenuItem labeled by the specified string.
-	 * Returns -1 if no match is found, null if menu is not available.
-	 **/
+	 *
+	 * @param menu
+	 *            the java.awt.Menu to be parsed
+	 * @param label
+	 *            the java.awt.MenuItem label being searched
+	 * @return the index of the java.awt.MenuItem. Returns <code>-1</code> if no
+	 *         match is found, <code>null</code> if menu is not available.
+	 */
 	private Integer getMenuItem(final Menu menu, final String label) {
 		int position = -1;
 		if (menu==null) {
@@ -178,8 +207,10 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns text from the system clipboard or an empty string if no text
-	 * could be retrieved.
+	 * Retrieves text from the system clipboard.
+	 *
+	 * @return the text contents of the clipboard or an empty string if no text
+	 *         could be retrieved
 	 */
 	public static String getClipboardText() {
 		String text = "";
@@ -195,24 +226,35 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Prints the contents of a directory to a dedicated TextWindow displayed at
-	 * the specified location (or at the center of the screen if one of the
-	 * specified coordinates is invalid). An error message is displayed in a
-	 * dialog box if directory could not be found or if directory is empty. Some
-	 * system files (dot files, Thumbs.db, ...) are excluded from the list. A
-	 * {@link bar.FileDrop FileDrop} listener is attached to the TextWindow,
-	 * which means that, once displayed, the method can be triggered by dragging
-	 * and dropping files from the native file manager.
+	 * the specified location. The location reverts to the center of the screen
+	 * if one of the specified coordinates is invalid).
+	 * <p>
+	 * An error message is displayed in a dialog box if directory could not be
+	 * found or if directory is empty (see {@link #fileExists(File)}).
+	 * <p>
+	 * A {@link bar.FileDrop FileDrop} listener is attached to the
+	 * {@link ij.text.TextWindow TextWindow}, which means that, once displayed,
+	 * the method can be triggered by dragging and dropping files from the
+	 * native file manager.
+	 * <p>
+	 * Some system files (hidden files, <code>Thumbs.db</code>) are excluded
+	 * from the list. If the directory is empty, users are prompted with the
+	 * option to reveal the file in the native file browser (see
+	 * {@link #revealFile(String)}).
+	 * <p>
+	 * Users can double click on a listed file path to have it open by ImageJ.
 	 * 
 	 * @param dir
 	 *            Path of the directory to be listed
 	 * @param xPos
-	 *            The screen x location (from top-left corner) where TextWindow
-	 *            should be displayed
+	 *            The screen x location (from top-left corner) where the
+	 *            TextWindow should be displayed
 	 * @param yPos
-	 *            The screen y location (from top-left corner) where TextWindow
-	 *            should be displayed
-	 * @see {@link #listDirectory(String) listDirectory(dir) }
-	 * @see {@link #listDirectory(String, boolean) listDirectory(dir, cascade) }
+	 *            The screen y location (from top-left corner) where the
+	 *            TextWindow should be displayed
+	 *
+	 * @see #listDirectory(String)
+	 * @see #listDirectory(String, boolean)
 	 */
 	public static void listDirectory(String dir, int xPos, int yPos) {
 
@@ -308,20 +350,35 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Alternative to {@link #listDirectory(dir, int, int) listDirectory(dir,
-	 * xPos, yPos)} in which the TextWindow is displayed on the center of the
-	 * screen.
+	 * Prints the contents of a directory to a dedicated TextWindow displayed on
+	 * the center of the screen.
+	 *
+	 * @param dir
+	 *            the path of the directory to be listed
+	 *
+	 * @see #listDirectory(String, int, int)
+	 * @see #listDirectory(String, boolean)
 	 */
 	public static void listDirectory(final String dir) {
 		listDirectory(dir, -1, -1);
 	}
 
 	/**
-	 * Alternative to {@link #listDirectory(dir, int, int) listDirectory(dir,
-	 * xPos, yPos)} in which the TextWindow is displayed with a slight offset
-	 * from frontmost window. Positioning defaults to the center of the screen
-	 * if frontmost window could not be retrieved or is too close to screen
-	 * boundaries.
+	 * Prints the contents of a directory to a dedicated TextWindow allowed to
+	 * be displayed with a slight offset from frontmost window. This "cascade"
+	 * positioning defaults to the center of the screen if frontmost window
+	 * could not be retrieved or is too close to screen boundaries.
+	 *
+	 * @param dir
+	 *            the path of the directory to be listed
+	 * @param cascade
+	 *            if <code>true</code> TextWindow "cascades" from ImageJ's
+	 *            {@link ij.WindowManager#getFrontWindow() frontmost} window. If
+	 *            <code>false</code>, TextWidow is displayed in the center of
+	 *            the screen
+	 *
+	 * @see #listDirectory(String, int, int)
+	 * @see #listDirectory(String)
 	 */
 	public static void listDirectory(final String dir, final boolean cascade) {
 		final java.awt.Frame frame = WindowManager.getFrontWindow();
@@ -335,8 +392,15 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Installs a macro file. An error message is displayed in a dialog box if
-	 * filepath is invalid.
+	 * Installs the specified macro file. An error message is displayed in a
+	 * dialog box if file path is invalid.
+	 *
+	 * @param directory
+	 *            the directory containing the macro file to be installed
+	 * @param filename
+	 *            the filename of the macro file to be installed
+	 *
+	 * @see #fileExists(File)
 	 */
 	void installMacroFile(final String directory, final String filename) {
 		if (directory==null || filename==null) return;
@@ -350,7 +414,15 @@ public class Utils implements PlugIn {
 	/**
 	 * Opens the specified file in the IJ2 Script Editor or in the IJ1 built-in
 	 * Editor, if the former cannot be found (vanilla IJ1). No tests assessing
-	 * the existence of file or directory are performed.
+	 * the existence of specified file/directory are performed.
+	 *
+	 * @param dir
+	 *            the directory containing the file to be opened
+	 * @param filename
+	 *            the filename of the file to be opened
+	 *
+	 * @see #openIJ2Script(File)
+	 * @see #openIJ1Script(String, String)
 	 */
 	public static void openScript(final String dir, final String filename) {
 		try {
@@ -363,7 +435,15 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Opens the specified file in the ImageJ1 built-in editor. No tests
-	 * assessing the existence of file or directory are performed.
+	 * assessing the existence of specified file/directory are performed.
+	 *
+	 * @param dir
+	 *            the directory containing the file to be opened
+	 * @param filename
+	 *            the filename of the file to be opened
+	 *
+	 * @see #openScript(String, String)
+	 * @see #openIJ2Script(File)
 	 */
 	public static void openIJ1Script(final String dir, final String filename) {
 		final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
@@ -372,7 +452,13 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Opens the specified file in the ImageJ2 Script Editor. No tests assessing
-	 * whether file exists are performed.
+	 * the existence of the specified file are performed.
+	 *
+	 * @param file
+	 *            the file to be opened
+	 *
+	 * @see #openScript(String, String)
+	 * @see #openIJ1Script(String, String)
 	 */
 	public static void openIJ2Script(final File file){
 		// retrieve the ImageJ application context
@@ -386,7 +472,13 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Opens the specified file in the "Snippets" directory of BAR. No tests
-	 * validating filename path are performed.
+	 * assessing the existence of the specified file are performed.
+	 *
+	 * @param filename
+	 *            the filename of the script to be opened
+	 *
+	 * @see #getSnippetsDir()
+	 * @see #openScript(String, String)
 	 */
 	public static void openSnippet(final String filename) {
 		openScript(SNIPPETS_DIR , filename);
@@ -394,16 +486,28 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Opens the specified file in the "lib" directory of BAR. No tests
-	 * validating filename path are performed.
+	 * assessing the existence of the specified file are performed.
+	 *
+	 * @param filename
+	 *            the filename of the <code>lib/</code> file to be opened
+	 *
+	 * @see #openScript(String, String)
+	 * @see #getLibDir()
 	 */
 	public static void openLib(final String filename) {
 		openScript(LIB_DIR, filename);
 	}
 
 	/**
-	 * Tests whether a file or directory exists. An error message is displayed
-	 * in a dialog box if file path is invalid
-	 * @see {@link #revealFile(File) revealFile(file)}
+	 * Tests whether a file or directory exists. An error
+	 * {@link ij.IJ#showMessage message} is displayed in a dialog box if file
+	 * cannot be found
+	 *
+	 * @param file
+	 *            the File to be tested
+	 * @return true, if successful.
+	 *
+	 * @see #fileExists(String)
 	 */
 	public static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
@@ -421,15 +525,25 @@ public class Utils implements PlugIn {
 	/**
 	 * Tests whether a file or directory exists at the specified path. An error
 	 * message is displayed in a dialog box if file path is invalid
-	 * @see {@link #revealFile(File) revealFile(file)}
+	 *
+	 * @param filepath
+	 *            the file path to be tested
+	 * @return <code>true</code>, if successful
+	 *
+	 * @see #fileExists(File)
 	 */
 	public static boolean fileExists(final String filepath) {
 		return fileExists(new File(filepath));
 	}
 
 	/**
-	 * "Reveals" the specified file path in the operating system. Described in
-	 * {@link #revealFile(File) revealFile(file)}
+	 * "Reveals" the file associated with the specified file path in the
+	 * operating system. Described in {@link #revealFile(File)}
+	 *
+	 * @param filePath
+	 *            the file path to be opened by the operating system
+	 *
+	 * @see #fileExists(File)
 	 */
 	public static void revealFile(final String filePath) {
 		final File file = new File(filePath);
@@ -437,14 +551,16 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * "Reveals" the specified file path in the operating system. If file is a
-	 * directory, opens it in the file manager of the operating system,
-	 * otherwise the application associated with the file type will be launched.
-	 * An error message is displayed in a dialog box if file path is invalid, or
-	 * if the operating system could not be detected.
+	 * "Reveals" the specified file path in the operating system. If
+	 * <code>file</code> is a directory, opens it in the file manager of the
+	 * operating system, otherwise the application associated with the file type
+	 * will be launched. An error message is displayed in a dialog box if file
+	 * path is invalid, or if the operating system could not be detected.
 	 *
-	 * @see {@link #revealFile(String) revealFile(filePath)}
-	 * @see {@link #fileExists(String)}
+	 * @param file
+	 *            the file to be opened by the operating system
+	 *
+	 * @see #fileExists(File)
 	 */
 	public static void revealFile(final File file) {
 		if (!fileExists(file))
@@ -503,57 +619,101 @@ public class Utils implements PlugIn {
 		}
 	}
 
-	/** Returns the path to BAR/Analysis/ */
+	/**
+	 * Returns the path to <code>BAR/Analysis/</code>.
+	 *
+	 * @return the absolute path to the "Analysis" directory
+	 */
 	public static String getAnalysisDir() {
 		return BAR_DIR + "Analysis" + File.separator;
 	}
 
-	/** Returns the path to BAR/Annotation/ */
+	/**
+	 * Returns the path to <code>BAR/Annotation/</code>.
+	 *
+	 * @return the absolute path to the "Annotation" directory
+	 */
 	public static String getAnnotationDir() {
 		return BAR_DIR + "Annotation" + File.separator;
 	}
 
-	/** Returns the path to BAR/Data_Analysis/ */
+	/**
+	 * Returns the path to <code>BAR/Data_Analysis/</code>.
+	 *
+	 * @return the absolute path to the "Data_Analysis" directory
+	 */
 	public static String getDataAnalysisDir() {
 		return BAR_DIR + "Data_Analysis" + File.separator;
 	}
 
-	/** Returns the path to BAR/lib/ */
+	/**
+	 * Returns the path to <code>BAR/lib/</code>.
+	 *
+	 * @return the absolute path to the "lib" directory
+	 */
 	public static String getLibDir() {
 		return LIB_DIR;
 	}
 
-	/** Returns the path to BAR/Morphometry */
+	/**
+	 * Returns the path to <code>BAR/Morphometry/</code>.
+	 *
+	 * @return the absolute path to the "Morphometry" directory
+	 */
 	public static String getMorphometryDir() {
 		return BAR_DIR + "Morphometry" + File.separator;
 	}
 
-	/** Returns the path to the root directory of BAR */
+	/**
+	 * Returns the path to the root directory of BAR.
+	 *
+	 * @return the absolute path to the root directory of BAR
+	 */
 	public static String getBARDir() {
 		return BAR_DIR;
 	}
 
-	/** Returns the path to BAR/Segmentation/ */
+	/**
+	 * Returns the path to <code>BAR/Segmentation/</code>.
+	 *
+	 * @return the absolute path to the "Segmentation" directory
+	 */
 	public static String getSegmentationDir() {
 		return BAR_DIR + "Segmentation" + File.separator;
 	}
 
-	/** Returns the path to Bar/Snippets/ */
+	/**
+	 * Returns the path to <code>Bar/Snippets/</code>.
+	 *
+	 * @return the absolute path to the "Snippets" directory
+	 */
 	public static String getSnippetsDir() {
 		return SNIPPETS_DIR;
 	}
 
-	/** Returns BAR version */
+	/**
+	 * Returns the BAR version as displayed in the "About..." dialog
+	 *
+	 * @return the version of BAR
+	 */
 	public static String getVersion() {
 		return VERSION;
 	}
 
-	/** Returns the URL of BAR's documentation page */
+	/**
+	 * Returns the URL of BAR's documentation page.
+	 *
+	 * @return the documentation URL
+	 */
 	public static String getDocURL() {
 		return DOC_URL;
 	}
 
-	/** Returns the URL of BAR's Git repository */
+	/**
+	 * Returns the URL of BAR's Git repository.
+	 *
+	 * @return the GitHub URL of BAR
+	 */
 	public static String getSourceURL() {
 		return SRC_URL;
 	}

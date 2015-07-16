@@ -26,20 +26,23 @@ import java.awt.Rectangle;
 import bar.Utils;
 
 /**
- * Performs gradient computation using the method proposed by Shen and Castan[1], an alternative to
- * Canny-Deriche filtering.
- *
- * 2014.06, Tiago Ferreira
- *      - Works with 16-bit and 32-bit images and stacks (multithreadable)
+ * Performs gradient computation using the method proposed by Shen and Castan,
+ * an alternative to Canny-Deriche filtering. For a full description, see the
+ * original manuscript: Shen and Castan, CVGIP, 1992, 54 (2) 112-133. <a
+ * href="http://dx.doi.org/10.1016/1049-9652(92)90060-B">DOI:
+ * 10.1016/1049-9652(92)90060-B</a>
+ * <code><pre>
+ * 2014.06-2015.07, Tiago Ferreira
+ *      - Works with 16-bit and 32-bit images and stacks (multithreaded)
  *      - If present, only area ROI is processed
  *      - Added "preview" mode and undo support
+ *      - Licensed under GPL (see ../../../../../LICENSE.txt)
  * 2004.07, Maxime Pinchon
- *      - Algorithm implementation[2]. This initial version no longer works with IJ
- *
- * [1] Shen and Castan, CVGIP, 1992, 54 (2) 112-133. http://dx.doi.org/10.1016/1049-9652(92)90060-B
- * [2] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
- *
- **/
+ *      - Algorithm implementation[1]. This initial version no longer works with IJ
+ * 
+ * [1] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
+ * </pre></code>
+ */
 public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	private ImagePlus imp;
@@ -47,23 +50,32 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	private PlugInFilterRunner pfr;
 	private final int flags = DOES_ALL-DOES_8C-DOES_RGB|SUPPORTS_MASKING|KEEP_PREVIEW|PARALLELIZE_STACKS;
 
-	private static double f = 0.50d; // smoothing factor
-	double[] tmpresX; // x coords of the gradient
-	double[] tmpresY; // y coords of the gradient
+	/** The smoothing factor <i>f</i>. */
+	private static double f = 0.50d;
 
-	/* Debug from within Eclipse */
+	/** The x coordinates of the gradient. */
+	double[] tmpresX;
+
+	/** The y coordinates of the gradient. */
+	double[] tmpresY;
+
+	/**
+	 * Calls the debugger method described in
+	 * {@link fiji.Debug#runFilter(String, String, String)
+	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
+	 */
 	public static void main(final String[] args) {
 		Debug.runFilter("/Applications/ImageJ/samples/blobs.gif", "Shen-Castan Edge Detector", "");
 	}
 
-	/** Returns types of supported images */
+	/** Returns the flags declaring the type of supported images. */
 	public int setup(final String arg, final ImagePlus imp) {
 		Utils.shiftClickWarning();
 		this.imp = imp;
 		return flags;
 	}
 
-	/** Dialog prompt */
+	/** Displays the dialog prompt. */
 	public int showDialog(final ImagePlus imp, final String command, final PlugInFilterRunner pfr) {
 		this.pfr = pfr;
 
@@ -91,7 +103,12 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 			return IJ.setupDialog(imp, flags);
 	}
 
-	/** Read dialog parameters (during preview or after dialog prompt) */
+	/**
+	 * Reads dialog parameters (during preview and upon dismissal of dialog
+	 * prompt).
+	 * 
+	 * @return <code>true</code>, if user specified valid input values
+	 */
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		f = gd.getNextNumber();
 		if (f < 0) f = 0d;
@@ -104,9 +121,14 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see ij.plugin.filter.ExtendedPlugInFilter#setNPasses(int)
+	 */
 	public void setNPasses(final int nPasses) {}
 
-	/** run method */
+	/* (non-Javadoc)
+	 * @see ij.plugin.filter.PlugInFilter#run(ij.process.ImageProcessor)
+	 */
 	public void run(final ImageProcessor ip) {
 		if (canceled)
 			return;
