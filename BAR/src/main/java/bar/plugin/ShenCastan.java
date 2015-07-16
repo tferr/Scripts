@@ -33,6 +33,7 @@ import bar.Utils;
  * 10.1016/1049-9652(92)90060-B</a>
  * <code><pre>
  * 2014.06-2015.07, Tiago Ferreira
+ *      - Extended API
  *      - Works with 16-bit and 32-bit images and stacks (multithreaded)
  *      - If present, only area ROI is processed
  *      - Added "preview" mode and undo support
@@ -133,12 +134,24 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 		if (canceled)
 			return;
 		ip.setSnapshotCopyMode(true);
-		findEdges(ip);
+		findEdges(ip, f);
 		ip.setSnapshotCopyMode(false);
 	}
 
-	/** Method implementing Shen-Castan edge detection */
-	public void findEdges(final ImageProcessor ip) {
+	/**
+	 * Method implementing Shen-Castan edge detection.
+	 *
+	 * @param ip
+	 *            the ImageProcessor to be filtered (8/16/32-bit grayscale
+	 *            image)
+	 * @param f
+	 *            the smoothing factor <i>alpha</i>, i.e., the Shen-Castan
+	 *            coefficient. Can vary between <code>0d</code> (high smoothing,
+	 *            suitable for noisy images) and <code>1d</code> (no smoothing,
+	 *            suitable for non-noisy images). Note that no validation is
+	 *            performed to assess if <i> 0d &gt; alpha &lt; 1d </i>.
+	 */
+	public void findEdges(final ImageProcessor ip, final double f) {
 
 		final int width = ip.getWidth();
 		final int height = ip.getHeight();
@@ -278,12 +291,22 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
 	}
 
-	/** Returns the horizontal component of the computed gradient */
+	/**
+	 * Returns the horizontal component of the computed gradient. Must be called
+	 * after calling {@link #findEdges(ImageProcessor, double)}.
+	 *
+	 * @return the horizontal component of the Shen-Castan gradient
+	 */
 	public double[] getX() {
 		return tmpresX;
 	}
 
-	/** Returns the vertical component of the computed gradient */
+	/**
+	 * Returns the vertical component of the computed gradient. Must be called
+	 * after calling {@link #findEdges(ImageProcessor, double)}.
+	 *
+	 * @return the vertical component of the Shen-Castan gradient
+	 */
 	public double[] getY() {
 		return tmpresY;
 	}
