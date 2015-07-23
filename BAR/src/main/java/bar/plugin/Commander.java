@@ -692,10 +692,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 							+ path + "\") do @echo %~fsI");
 					process.waitFor();
 					final java.io.InputStream is = process.getInputStream();
-					final java.util.Scanner s = new java.util.Scanner(is)
-							.useDelimiter("\\A");
+					final java.util.Scanner s = new java.util.Scanner(is);
+					s.useDelimiter("\\A");
 					if (s.hasNext())
 						path = s.next();
+					s.close();
 				} else {
 					path = path.replace(System.getProperty("user.home"), "~");
 					path = path.replace(" ", "\\ ");
