@@ -31,6 +31,7 @@ import bar.Utils;
  * original manuscript: Shen and Castan, CVGIP, 1992, 54 (2) 112-133. <a
  * href="http://dx.doi.org/10.1016/1049-9652(92)90060-B">DOI:
  * 10.1016/1049-9652(92)90060-B</a>
+ * <p>
  * <code><pre>
  * 2014.06-2015.07, Tiago Ferreira
  *      - Extended API
@@ -61,8 +62,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	double[] tmpresY;
 
 	/**
-	 * Calls the debugger method described in
-	 * {@link fiji.Debug#runFilter(String, String, String)
+	 * Calls {@link fiji.Debug#runFilter(String, String, String)
 	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
 	 */
 	public static void main(final String[] args) {

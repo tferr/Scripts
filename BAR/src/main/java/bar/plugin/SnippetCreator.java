@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 import bar.Utils;
 
 /**
- * Generates templates for new IJ scripts and implements the <i>BAR>Snippets>New
+ * Generates templates for new IJ scripts, implementing the <i>BAR>Snippets>New
  * Snippet...</i> command.
  */
 public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
@@ -72,8 +72,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private static MultiLineLabel infoMsg;
 	private static TextArea ta;
 
-
-	/** Prompts user for a new snippet that will be saved in BAR/Snippets/. */
+	/** Prompts user for a new snippet that will be saved in <tt>BAR/Snippets/</tt>. */
 	public void run(final String arg) {
 		Utils.shiftClickWarning();
 		if (showDialog()) {

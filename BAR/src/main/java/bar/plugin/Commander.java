@@ -165,8 +165,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
 	/**
-	 * Calls the debugger method described in
-	 * {@link fiji.Debug#runFilter(String, String, String)
+	 * Calls {@link fiji.Debug#runFilter(String, String, String)
 	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
 	 */
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
