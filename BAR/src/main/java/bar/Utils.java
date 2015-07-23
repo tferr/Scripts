@@ -55,6 +55,9 @@ public class Utils implements PlugIn {
 	/** The URL to BAR's GitHub repository */
 	static final String SRC_URL = "https://github.com/tferr/Scripts";
 
+	/** The URL to BAR's GitHub repository */
+	static final String API_URL = "http://tferr.github.io/Scripts/apidocs/";
+
 	/** The absolute path to the /BAR directory */
 	static final String BAR_DIR = IJ.getDirectory("plugins")
 			+ "Scripts" + File.separator + "BAR" + File.separator;
@@ -698,6 +701,15 @@ public class Utils implements PlugIn {
 	 */
 	public static String getVersion() {
 		return VERSION;
+	}
+
+	/**
+	 * Returns the URL of BAR's API.
+	 *
+	 * @return the API (javadoc) URL
+	 */
+	public static String getJavadocURL() {
+		return API_URL;
 	}
 
 	/**
