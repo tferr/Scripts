@@ -61,13 +61,14 @@ public class Help implements PlugIn {
 
 	/** Parameters **/
 	private JFrame frame;
+	private static String FRAME_TITLE = "About BAR...";
 
 	/**
 	 * Calls {@link fiji.Debug#runFilter(String, String, String)
 	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
 	 */
 	public static void main(final String[] args) {
-		Debug.run("About BAR...", "");
+		Debug.run(FRAME_TITLE, "");
 	}
 
 	/*
@@ -80,7 +81,7 @@ public class Help implements PlugIn {
 		Utils.shiftClickWarning();
 
 		// Check if "About" window is already being displayed
-		if (WindowManager.getWindow("About BAR...") == null) {
+		if (WindowManager.getWindow(FRAME_TITLE) == null) {
 			try {
 				UIManager.setLookAndFeel(UIManager
 						.getSystemLookAndFeelClassName());
@@ -92,7 +93,7 @@ public class Help implements PlugIn {
 				}
 			});
 		} else {
-			IJ.selectWindow("About BAR...");
+			IJ.selectWindow(FRAME_TITLE);
 		}
 
 	}
@@ -100,7 +101,7 @@ public class Help implements PlugIn {
 	/** Displays the customized "About..." dialog. */
 	void displayGUI() {
 
-		frame = new JFrame("About BAR...");
+		frame = new JFrame(FRAME_TITLE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(final WindowEvent we) {
 				quit();
