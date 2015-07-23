@@ -45,7 +45,7 @@ import org.scijava.Context;
 public class Utils implements PlugIn {
 
 	/** The BAR version (as displayed in the BAR>About... dialog */
-	static final String VERSION = "1.1.4";
+	static final String VERSION = "1.1.5";
 
 	/** The URL to BAR's wiki page */
 	static final String DOC_URL = "http://fiji.sc/BAR";
