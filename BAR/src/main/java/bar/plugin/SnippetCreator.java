@@ -75,6 +75,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/** Prompts user for a new snippet that will be saved in BAR/Snippets/. */
 	public void run(final String arg) {
+		Utils.shiftClickWarning();
 		if (showDialog()) {
 			if (sContents.length()>0)
 				saveAndOpenSnippet();
@@ -97,7 +98,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 			break;
 		default:
 			sb.append(C_CHARS[type])
-				.append(" See http://javadoc.imagej.net for IJ documentation \n\n");
+				.append(" See 'BAR>About BAR...' for scripting resources\n\n");
 			break;
 		}
 		return sb;
