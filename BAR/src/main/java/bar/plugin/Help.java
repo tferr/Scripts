@@ -169,6 +169,8 @@ public class Help implements PlugIn {
 				+ "<a href='https://github.com/tferr/Scripts/issues?q='>All</a> | <a href='https://github.com/tferr/Scripts/issues?q=is%3Aopen'>Open</a> | "
 				+ "<a href='https://github.com/tferr/Scripts/issues?q=is%3Aclosed'>Closed</a> | <a href='https://github.com/tferr/Scripts/issues?q=is%3Apr'>Pull requests</a>"
 				+ "</div></HTML>");
+		// Ensure panel is scrolled to the top
+		htmlPane.setCaretPosition(0);
 
 		// Make URLs browsable
 		htmlPane.addHyperlinkListener(new HyperlinkListener() {
@@ -183,7 +185,7 @@ public class Help implements PlugIn {
 
 		// Panel to hold HTML pane
 		final JScrollPane scrollPane = new JScrollPane(htmlPane);
-		scrollPane.setPreferredSize(new Dimension(410, 200));
+		scrollPane.setPreferredSize(new Dimension(415, 215));
 		frame.add(scrollPane, BorderLayout.CENTER);
 
 		// Panel to hold side buttons, all having fixed width
