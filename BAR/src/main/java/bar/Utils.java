@@ -13,7 +13,6 @@ package bar;
 import ij.IJ;
 import ij.Menus;
 import ij.WindowManager;
-import ij.gui.GenericDialog;
 import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.Editor;
@@ -21,7 +20,6 @@ import ij.text.TextPanel;
 import ij.text.TextWindow;
 
 import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -76,50 +74,46 @@ public class Utils implements PlugIn {
 	public void run(final String arg) {
 
 		shiftClickWarning();
-		if (arg.equalsIgnoreCase("about")) {
-			aboutBox();
-		} else {
 
-			final String[] args = arg.split(":");
-			if (args.length==1) return;
+		final String[] args = arg.split(":");
+		if (args.length==1) return;
 
-			// Instructions related to snippets
-			if (args[0].equalsIgnoreCase("snippet")) {
+		// Instructions related to snippets
+		if (args[0].equalsIgnoreCase("snippet")) {
 
-				if (args[1].equalsIgnoreCase("list")) {
-					listDirectory(SNIPPETS_DIR);
-				} else if (args[1].equalsIgnoreCase("reveal")) {
-					revealFile(SNIPPETS_DIR);
-				} else //TODO implement a "reload snippets" command
-					openSnippet(arg);
+			if (args[1].equalsIgnoreCase("list")) {
+				listDirectory(SNIPPETS_DIR);
+			} else if (args[1].equalsIgnoreCase("reveal")) {
+				revealFile(SNIPPETS_DIR);
+			} else //TODO implement a "reload snippets" command
+				openSnippet(arg);
 
-			// Instructions related to Menu transfers
-			} else if (args[0].equalsIgnoreCase("moveMenu")) {
+		// Instructions related to Menu transfers
+		} else if (args[0].equalsIgnoreCase("moveMenu")) {
 
-				moveSubmenu(args[1]);
+			moveSubmenu(args[1]);
 
-			// Instructions related to tools and toolsets
-			} else if (args[0].startsWith("tools")) {
+		// Instructions related to tools and toolsets
+		} else if (args[0].startsWith("tools")) {
 
-				final String dir = IJ.getDirectory("macros") + args[0]
-						+ File.separator;
-				if (args[1].equalsIgnoreCase("reveal")) {
-					revealFile(dir);
-				} else if (IJ.shiftKeyDown()) {
-					IJ.showStatus("Opening file...");
-					openScript(dir, args[1]);
-				} else {
-					installMacroFile(dir, args[1]);
-				}
-
-			// Instructions related to lib files
-			} else if (arg.startsWith("lib:")) {
-
-				if (args[1].equalsIgnoreCase("reveal")) {
-					revealFile(LIB_DIR);
-				}
-
+			final String dir = IJ.getDirectory("macros") + args[0]
+					+ File.separator;
+			if (args[1].equalsIgnoreCase("reveal")) {
+				revealFile(dir);
+			} else if (IJ.shiftKeyDown()) {
+				IJ.showStatus("Opening file...");
+				openScript(dir, args[1]);
+			} else {
+				installMacroFile(dir, args[1]);
 			}
+
+		// Instructions related to lib files
+		} else if (arg.startsWith("lib:")) {
+
+			if (args[1].equalsIgnoreCase("reveal")) {
+				revealFile(LIB_DIR);
+			}
+
 		}
 	}
 
@@ -728,38 +722,6 @@ public class Utils implements PlugIn {
 	 */
 	public static String getSourceURL() {
 		return SRC_URL;
-	}
-
-	/** Implements the About BAR... command */
-	void aboutBox() {
-		shiftClickWarning();
-		final Font plainf = new Font("SansSerif", Font.PLAIN, 12);
-		final Font boldf = new Font("SansSerif", Font.BOLD, 12);
-
-		final GenericDialog gd = new GenericDialog("About BAR...");
-		gd.addMessage("BAR v" + VERSION, boldf);
-		gd.setInsets(0, 20, 0);
-		gd.addMessage("A curated collection of Broadly Applicable Routines for ImageJ",
-				plainf);
-		gd.setInsets(10, 20, 0);
-		gd.addMessage("Author/Maintainer", boldf);
-		gd.setInsets(0, 20, 0);
-		gd.addMessage("Tiago Ferreira", plainf);
-		gd.addMessage("Contributors", boldf);
-		gd.setInsets(0, 20, 0);
-		gd.addMessage("Johannes Schindelin, Kota Miura, Wayne Rasband, Maxime Pinchon,\n"
-				+"Jérôme Mutterer", plainf);
-		gd.enableYesNoCancel("Open Repository", "Open BAR");
-		gd.addHelp(DOC_URL);
-		gd.setHelpLabel("Online Help");
-		gd.setCancelLabel("Dismiss");
-		gd.showDialog();
-		if (gd.wasCanceled())
-			return;
-		else if (gd.wasOKed())
-			IJ.runPlugIn("ij.plugin.BrowserLauncher", SRC_URL);
-		else
-			revealFile(BAR_DIR);
 	}
 
 }
