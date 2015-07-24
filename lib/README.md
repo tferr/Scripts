@@ -6,7 +6,8 @@ files. These libraries serve as scripting additions to [Snippets] and other rout
 **Tip:** Type in `BARlib` in _BAR> Snippets> Search BAR_ to get the list of all the files using
 scripting additions.
 
-**See Also:** [Snippets], [BAR documentation page](http://fiji.sc/BAR#lib)
+**See Also:** [Snippets], [BAR API](http://tferr.github.io/Scripts/apidocs/),
+[User documentation](http://fiji.sc/BAR#lib)
 
 
 ##[BSH lib](./BARlib.bsh)
@@ -112,10 +113,13 @@ lib.confirmLoading
 
 
 ##Notes
-* [lib Tests](./tests/) can be used to debug libraries
+* For more details on the methods provided by the
+  <tt>[bar.Utils](http://tferr.github.io/Scripts/apidocs/index.html?bar/Utils.html)</tt> class, have a look
+  at the [BAR API](http://tferr.github.io/Scripts/apidocs/)
 * Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. To open lib
   files from within ImageJ, use [Commander](../BAR/src/main/java/bar/plugin/Commander.java) via
   _BAR> lib> Browse /lib_ (or type `!lib` in Commander's search prompt).
+* [lib tests](./tests/) can be used to debug libraries
 
 
 
