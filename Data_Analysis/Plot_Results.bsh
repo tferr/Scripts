@@ -47,6 +47,7 @@ rt = lib.getResultsTable();
 if (rt==null)
 	return;
 
+// Define initial options
 String title = "Imported Data";
 String[] headings = rt.getHeadings();
 int nCols = headings.length;
@@ -55,6 +56,7 @@ int xCol = 0; int yCol = (nCols>1) ? 1 : 0;
 int cColor = 1; int cShape = 3;
 boolean addSeries = true;
 
+// Prompt user for settings
 GenericDialog gd = new GenericDialog("Plot Data");
 gd.addStringField("Plot title:", title, 24);
 gd.addChoice("X-values:", headings, headings[xCol]);
@@ -72,6 +74,7 @@ if (gd.wasCanceled())
 else if (gd.wasOKed())
 	 addSeries = false;
 
+// Retrieve options
 title = gd.getNextString();
 noXvalues = gd.getNextBoolean();
 xCol = gd.getNextChoiceIndex();
@@ -105,6 +108,8 @@ plot.addPoints(x, y, shapes[cShape]);
 int datasets = 2;
 boolean noBars = true;
 //double labelYpos = 0.09;
+
+// Keep appending data until user presses "Finish"
 while (addSeries) {
 	cColor = (cColor<colors.length-1) ? cColor+=1 : 0;
 	yCol = (yCol<nCols-1) ? yCol+=1 : 0;
