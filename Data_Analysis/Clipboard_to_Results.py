@@ -26,6 +26,6 @@ try:
     if Analyzer.resetCounter():
         rt.show("Results")
 except:
-    IJ.error("Could not place clipboard into Results table.")
+    IJ.showMessage("Could not place clipboard into Results table.")
 finally:
     os.remove(path)
