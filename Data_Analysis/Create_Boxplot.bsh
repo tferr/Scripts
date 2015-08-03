@@ -9,6 +9,7 @@ import ij.gui.GenericDialog;
 import ij.measure.ResultsTable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -132,6 +133,51 @@ if (WindowManager.getWindow(TITLE) == null) {
 	frame.getContentPane().removeAll();
 }
 
+// Tweak: Render plot mimicking look and feel of ij.gui.Plot
+plot = chart.getPlot();
+renderer = plot.getRenderer();
+plot.setBackgroundPaint(java.awt.Color.WHITE);
+plot.setRangeGridlinePaint(java.awt.Color.LIGHT_GRAY);
+plot.setOutlineVisible(false);
+renderer.setUseOutlinePaintForWhiskers(true);
+renderer.setMaximumBarWidth(0.40);
+if (singleSeries)
+	renderer.setSeriesPaint(0, Color.LIGHT_GRAY);
+if (chart.getLegend()!=null)
+	chart.getLegend().setFrame(org.jfree.chart.block.BlockBorder.NONE);
+
+// Tweak: Resize ChartPanel. Tilt to landscape when plotting large datasets
+cp = new ChartPanel(chart);
+nItems = series.size() * categories.size();
+width = Math.min(100 + nItems * 50, 600);
+height = width * 4 / 3;
+if (nItems>10) {
+	plot.setOrientation(PlotOrientation.HORIZONTAL);
+	cp.setPreferredSize(new java.awt.Dimension(height, width));
+} else
+	cp.setPreferredSize(new java.awt.Dimension(width, height));
+
+// Tweak: Ensure chart is always drawn and not scaled to avoid rendering artifacts
+cp.setMinimumDrawWidth(0);
+cp.setMaximumDrawWidth(Integer.MAX_VALUE);
+cp.setMinimumDrawHeight(0);
+cp.setMaximumDrawHeight(Integer.MAX_VALUE);
+
+// Tweak: Make JTooltips displaying computed data less transient
+cp.setDismissDelay(5 * cp.getDismissDelay());
+
+// Tweak: Support mouse wheel and provide feedback in IJ while navigating ChartPanel
+cp.setMouseWheelEnabled(true);
+cp.addMouseMotionListener(new MouseAdapter() {
+	public void mouseMoved(MouseEvent me) {
+		p = me.getPoint();
+		plotArea = cp.getScreenDataArea();
+		sPos = (plot.getOrientation()==PlotOrientation.VERTICAL) ? p.getY() : p.getX();
+		pPos = plot.getRangeAxis().java2DToValue(sPos, plotArea, plot.getRangeAxisEdge());
+		IJ.showStatus(IJ.d2s(pPos,3) +"... Mouse over datasets for details | Right-click for options...");
+	}
+});
+
 // Tweak: Unregister frame from WindowManager on dismissal
 frame.addWindowListener(new WindowAdapter() {
 	public void windowClosing(WindowEvent we) {
@@ -141,7 +187,7 @@ frame.addWindowListener(new WindowAdapter() {
 });
 
 // Display analysis
-frame.add(new ChartPanel(chart));
+frame.add(cp);
 frame.pack();
 ij.gui.GUI.center(frame);
 frame.setVisible(true);
