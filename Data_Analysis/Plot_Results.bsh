@@ -6,7 +6,6 @@
 import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.gui.Plot;
-import ij.io.Opener;
 import ij.plugin.Colors;
 import ij.util.Tools;
 import ij.measure.ResultsTable;
@@ -37,21 +36,15 @@ shapes[4] = Plot.DOT;    slabels[4] = "Dot";    colors[4] = "Blue";
 shapes[5] = Plot.X;      slabels[5] = "X";      colors[5] = "Magenta";
 
 
-ResultsTable rt = ResultsTable.getResultsTable();
-if (rt==null || rt.getCounter()==0) {
-	GenericDialog gd = new GenericDialog("No Results table available");
-	gd.addMessage("Open new file, or try to retrieve data from clipboard?");
-	gd.enableYesNoCancel("Open new file", "Read clipboard");
-	gd.showDialog();
-	if (gd.wasCanceled())
-		return;
-	else if (gd.wasOKed())
-		Opener.openResultsTable("");
-	else
-		IJ.run("Clipboard to Results", "");
-}
-rt = ResultsTable.getResultsTable();
-if (rt==null || rt.getCounter()==0)
+// Load BAR/lib/BARlib.bsh
+addClassPath(bar.Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+lib = new BARlib();
+
+// Retrieve the Results table containing data
+rt = lib.getResultsTable();
+if (rt==null)
 	return;
 
 String title = "Imported Data";
