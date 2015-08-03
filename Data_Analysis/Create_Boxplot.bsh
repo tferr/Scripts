@@ -1,0 +1,147 @@
+/* Create_Boxplot.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ */
+
+import bar.Utils;
+import ij.IJ;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.measure.ResultsTable;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+
+/** Prompts user to specify which ResultsTable columns to use as input */
+boolean setupDataset(ResultsTable rt) {
+	if (rt==null)
+		return false;
+
+	// Extract column headings w/ numeric data (ignore "Label" column, if present)
+	headings = rt.getHeadings();
+	numIdx = (rt.getLabel(0)!=null || headings[0].equals("Label")) ? 1 : 0;
+	numHeadings = Arrays.copyOfRange(headings, numIdx, headings.length);
+	numItems = headings.length - numIdx;
+	numChoices = new boolean[numItems];
+
+	gd = new GenericDialog("Box Plot Builder");
+	cols = (numItems<6) ? 1 : 3;
+	rows = (numItems%cols>0) ? numItems/cols+1 : numItems/cols;
+	gd.addCheckboxGroup(rows, cols, numHeadings, numChoices, new String[]{"Measurements:"});
+	gd.setInsets(0, 0, 20);
+	gd.addCheckbox("Plot_all (Select all measurements)", false);
+	seriesList = new ArrayList(Arrays.asList(headings));
+	seriesList.add(0, "*None*");
+	gd.addChoice("Group data by:", seriesList.toArray(new String[numItems+1]), null);
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return false;
+	IJ.showStatus("Building Plot...");
+
+	// Retrieve options from prompt
+	for (i=0; i<numItems; i++)
+		numChoices[i] = gd.getNextBoolean();
+	plotAll = gd.getNextBoolean();
+	super.sColumn = seriesList.get(gd.getNextChoiceIndex());
+
+	// Specify categories. "Label" column is not taken into account
+	for (i=0; i<numItems; i++)
+		if (numChoices[i] || plotAll)
+			super.categories.add(numHeadings[i]);
+
+	// Determine if data has to be split and specify series. The "Label" columnn (first
+	// non-numeric column in ResultsTable) is special because it is accessed using
+	// dedicated methods even when its heading has been renamed (at least with IJ1.45a)
+	super.singleSeries = super.sColumn.equals("*None*");
+	super.sColIsLabel = !super.singleSeries &&
+		(super.sColumn.equals("Label") || rt.getColumnIndex(super.sColumn)==rt.COLUMN_NOT_FOUND);
+	if (super.singleSeries)
+		super.series.add("");
+	else if (super.sColIsLabel) {
+		for (i=0; i<rt.getCounter(); i++)
+			super.series.add(rt.getLabel(i));
+	} else for (i=0; i<rt.getCounter(); i++)
+		super.series.add(rt.getStringValue(super.sColumn, i));
+
+	return true;
+}
+
+/** Assesses if the specified row of <tt>sColumn</tt> equals the specified string */
+boolean rowMatches(int row, String s) {
+	if (super.singleSeries)
+		return true;
+	else if (super.sColIsLabel)
+		return super.rt.getLabel(row).equals(s);
+	else
+		return super.rt.getStringValue(super.sColumn, row).equals(s);
+}
+
+
+ArrayList categories = new ArrayList();	// Holds categories list
+HashSet series = new HashSet();	// Holds series list (unique items)
+String sColumn = "Label";		// Heading of column defining groups (series)
+boolean sColIsLabel = true;		// Flag tracking if sColumn is the "Label" column
+boolean singleSeries = false;	// Flag tracking if multiple groups (series) exist
+JFrame frame;					// Frame displaying the analysis
+String TITLE = "Box Plot (Imported Results)"; // Frame title
+
+// Load BAR/lib/BARlib.bsh
+addClassPath(Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+lib = new BARlib();
+
+// Retrieve the Results table containing data
+rt = lib.getResultsTable();
+
+// Prepare dataset: Specify categories and series
+if (!setupDataset(rt))
+	return;
+dataset = new DefaultBoxAndWhiskerCategoryDataset();
+
+// Assemble dataset: Populate lists
+n = rt.getCounter();
+for (s : series) {
+	for (c : categories) {
+		values = new ArrayList();
+		for (row=0; row<n; row++)
+			if (rowMatches(row, s))
+				values.add(rt.getValue(c, row));
+		dataset.add(values, s, c);
+	}
+}
+
+// Create JFreeChart. Analysis is now complete
+chart = ChartFactory.createBoxAndWhiskerChart(
+	null, // chart title
+	null, // Category axis label
+	null, // Numeric axis label
+	dataset, // The BoxAndWhiskerCategoryDataset
+	!singleSeries // Flag controlling legend display
+);
+
+// Tweak: Register frame in WindowManager and reuse it as needed
+if (WindowManager.getWindow(TITLE) == null) {
+	frame = new JFrame(TITLE);
+	WindowManager.addWindow(frame);
+} else {
+	frame = WindowManager.getFrame(TITLE);
+	frame.getContentPane().removeAll();
+}
+
+// Tweak: Unregister frame from WindowManager on dismissal
+frame.addWindowListener(new WindowAdapter() {
+	public void windowClosing(WindowEvent we) {
+		frame.dispose();
+		WindowManager.removeWindow(frame);
+	}
+});
+
+// Display analysis
+frame.add(new ChartPanel(chart));
+frame.pack();
+ij.gui.GUI.center(frame);
+frame.setVisible(true);
