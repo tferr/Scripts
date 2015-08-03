@@ -8,7 +8,16 @@
    the main IJ _Results_ table.
    ([Download .py](./Clipboard_to_Results.py?raw=true))
 
-   See also [Plot Results](#plot-results)
+   See also [Create Boxplot](#create-boxplot), [Plot Results](#plot-results)
+
+
+###[Create Boxplot](./Create_Boxplot.bsh)
+Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in the ImageJ
+Results table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
+The displayed publication-quality plot is highly customized to exemplify JFreeChart scripting.
+([Download .bsh](./Create_Boxplot.bsh?raw=true))
+
+See also [Clipboard to Results](#clipboard-to-results), [Plot Results](#plot-results)
 
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
@@ -53,7 +62,7 @@
    data from imported spreadsheets.
    ([Download .bsh](./Plot_Results.bsh?raw=true))
 
-   See also [Clipboard to Results](#clipboard-to-results)
+   See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create-boxplot)
 
 
 ##See Also

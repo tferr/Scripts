@@ -1,5 +1,24 @@
 /* Create_Boxplot.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Displays a box-and-whisker plot from data in the IJ Results table using BAR and the
+ * JFreeChart library, bundled with Fiji. The displayed plot is highly customized to
+ * exemplify JFreeChart[1] scripting and how to integrate JFreeChart graphs in ImageJ.
+ *
+ * NB: Data can be split into series. In addition to Minimum--[Q1|Median|Q3]--Maximum
+ * and Average (filled ellipses), other properties are also plotted, as per [2]:
+ *   - Outliers (presence highlighted by open ellipses), values outside the 'regular
+ *     range' defined as:
+ *         Q1 - 2.0*IQR > Lower Outliers < Q1 - 1.5*IQR
+ *         Q3 + 1.5*IQR > Higher Outliers < Q3 + 2.0*IQR
+ *   - Far-outs (presence highlighted by open triangles), extreme values defined as:
+ *         Lower Far-outs < Q1 - 2.0*IQR
+ *         Upper Far-outs > Q3 + 2.0*IQR
+ *
+ * [1] http://www.jfree.org/jfreechart/api/javadoc/
+ * [2] http://www.jfree.org/jfreechart/api/javadoc/src-html/org/jfree/data/statistics/BoxAndWhiskerCalculator.html
+ *
+ * Tiago Ferreira, v0.9.0 2015.08.03
  */
 
 import bar.Utils;
@@ -28,7 +47,7 @@ boolean setupDataset(ResultsTable rt) {
 	numItems = headings.length - numIdx;
 	numChoices = new boolean[numItems];
 
-	gd = new GenericDialog("Box Plot Builder");
+	gd = new GenericDialog("Boxplot Builder");
 	cols = (numItems<6) ? 1 : 3;
 	rows = (numItems%cols>0) ? numItems/cols+1 : numItems/cols;
 	gd.addCheckboxGroup(rows, cols, numHeadings, numChoices, new String[]{"Measurements:"});

@@ -25,10 +25,11 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   Operations related to statistics, profiles, histograms and curve fitting.
 
   1. (py) [Clipboard to Results](./Data_Analysis/README.md#clipboard-to-results)
-  2. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
-  3. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
-  4. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
-  5. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
+  2. (bsh) [Create Boxplot](./Data_Analysis/README.md#create-boxplot)
+  3. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
+  4. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
+  5. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
+  6. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
 
 
 ## [Image Annotation][Annotation]
