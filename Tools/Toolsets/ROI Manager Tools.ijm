@@ -204,15 +204,17 @@ function createNewList(type, prompt) {
 
   for (i=1; i<=items.length; i++)
       prefs+= Dialog.getString() +"|";
-  if (res) {
+  call("ij.Prefs.set", "rmtools."+type, prefs); // Store new list
+
+  if (res) { // Reset all items
+      add = false; // Stop asking for new items
       call("ij.Prefs.set", "rmtools."+type, "no"+type);
-      createNewList(type, prompt);
+      createNewList(type, prompt); // Display prompt with reseted list
   }
-  call("ij.Prefs.set", "rmtools."+type, prefs); // store new list
-  if (add) { // keep prompting for new items
+  if (add) { // Keep prompting for new items
       prefs+= "-";
       call("ij.Prefs.set", "rmtools."+type, prefs);
-      createNewList(type, prompt);
+      createNewList(type, prompt);  // Display appended list
   }
 
   // The Fiji editor appends ".ijm" to .txt files, we'll try to find the file w/o extension
