@@ -86,7 +86,7 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
         run(cmd);
 }
 
-var cCmds= newMenu("Rename Menu Tool", labels);
+var cCmds= newMenu("Rename Menu Tool", Array.concat(labels, "-","Custom..."));
 macro "Rename Menu Tool - C037T0b11T T6b10a Tab10g Tfb10s" {
     setBatchMode(true);
     cmd= getArgument(); i= roiManager("index");
@@ -94,7 +94,7 @@ macro "Rename Menu Tool - C037T0b11T T6b10a Tab10g Tfb10s" {
     walkList(i, 0);
 }
 
-var dCmds= newMenu("Add prefix Menu Tool", prefixs);
+var dCmds= newMenu("Add prefix Menu Tool", Array.concat(prefixs, "-","Custom..."));
 macro "Add prefix Menu Tool - C037T0b10PT6b10rTab10fTeb10x" {
     setBatchMode(true);
     cmd= getArgument(); i= roiManager("index");
@@ -102,7 +102,7 @@ macro "Add prefix Menu Tool - C037T0b10PT6b10rTab10fTeb10x" {
     walkList(i, 0);
 }
 
-var eCmds= newMenu("Add suffix Menu Tool", suffixs);
+var eCmds= newMenu("Add suffix Menu Tool", Array.concat(suffixs, "-","Custom..."));
 macro "Add suffix Menu Tool - C037 T0b10ST6b10fTab10fTeb10x" {
     setBatchMode(true);
     cmd= getArgument(); i= roiManager("index");
@@ -167,15 +167,14 @@ function getPrefList(type) {
     prefs= call("ij.Prefs.get",  "rmtools."+type, "no"+type);
     if (startsWith(prefs,"no")) {
         if (type=="labels")
-            items= "Cortex|DG|CA3|CA1|Striatum|-|Custom...";
-        if (type=="prefixes")
-            items= "WT|KO|Custom...";
-        if (type=="suffixes")
-            items= "Anterior|Posterior|Ventral|Medial|Dorsal|Custom...";
-        call("ij.Prefs.set", "rmtools."+type, items);
-        return split(items, "|");
-    } else
-        return split(prefs, "|");
+            prefs= "Cortex|DG|CA3|CA1|Striatum";
+        else if (type=="prefixes")
+            prefs= "WT|KO";
+        else if (type=="suffixes")
+            prefs= "Anterior|Posterior|Ventral|Medial|Dorsal";
+        call("ij.Prefs.set", "rmtools."+type, prefs);
+    }
+    return split(prefs, "|");
 }
 
 /*
