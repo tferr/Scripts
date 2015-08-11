@@ -3,9 +3,9 @@
  *
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
- * then use the '>>' drop down menu to activate it. Requires IJ 1.46 or newer.
+ * then use the '>>' drop down menu to activate it. Requires IJ 1.49 or newer.
  *
- * TF, 2015.07, see https://github.com/tferr/Scripts/releases for release notes
+ * TF, 2015.08, Change log: See https://github.com/tferr/Scripts/releases
  */
 
 var labels= getPrefList("labels");
@@ -14,6 +14,7 @@ var suffixs= getPrefList("suffixes");
 var oldstr= "", newstr= "", usenames;
 
 macro "AutoRun" {
+    requires("1.49v");
     setOption("Display label", true);
     run("ROI Manager...");
 }
@@ -128,7 +129,7 @@ macro "Selection cycler [Shift click: Previous] [Alt click: First] Action Tool -
 var fCmds= newMenu("Save all regions Menu Tool", newArray("In image directory", "Elsewhere..."));
 macro "Save all regions Menu Tool - C037D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D27D28D29D2aD2bD2cD2dD31D33D35D37D38D39D3aD3bD3cD3dD3eD41D43D45D47D48D4eD51D53D55D57D58D5aD5bD5cD5eD61D63D65D67D68D6aD6bD6cD6eD71D73D75D77D78D7eD81D83D85D87D88D8eD91D93D95D97D98D9eDa1Da3Da5Da7Da8DaeDb1Db7Db8DbeDc1Dc2Dc3Dc4Dc5Dc6Dc7Dc8Dc9DcaDcbDccDcdDce" {
     if (roiManager("count")==0)
-        exit("The selection list is empty.");
+        exit("The ROI Manager contains no items.");
     if (nImages==0)
         exit(" No images open. Alternatively, use the\nROI Manager \"More>>Save...\" command.");
     cmd= getArgument();
@@ -186,14 +187,14 @@ function createNewList(type, prompt) {
 
   help= "<html>None of the "+ type +" should contain \"|\", \"[\" and \"]\" as these are<br>"
        +"used to define word boundaries. Entries defined by a single<br>"
-       +"hyphen are interpreted as menu separators.<br><br>If you prefer, you can define "
-       +"the last "+ prompt +" as \"Custom...\" to<br>be prompted for ad-hoc strings.";
+       +"hyphen are interpreted as menu separators.<br><br>The last entry in the drop-down"
+       +" menu will be set to \"Custom...\",<br> allowing you to input ad-hoc strings.";
 
   prefs= "";
   items= getPrefList(type);
   Dialog.create('Define '+ type);
   for (i=1; i<=items.length; i++)
-      Dialog.addString(prompt +" "+ i +":", items[i-1], 15);
+      Dialog.addString(prompt +" "+ i +":", items[i-1], 20);
   Dialog.addCheckbox("Add more "+type, false);
   Dialog.addCheckbox("Reset all entries", false);
   Dialog.addHelp(help);
@@ -216,11 +217,13 @@ function createNewList(type, prompt) {
       createNewList(type, prompt);  // Display appended list
   }
 
-  // The Fiji editor appends ".ijm" to .txt files, we'll try to find the file w/o extension
+  // Reload toolset. When downloaded independently from BAR, this file may have
+  // ".ijm", ".txt", or a ".ijm.txt", so we'll try to find the file w/o extension
   path= getDirectory("macros")+"toolsets/";
   list= getFileList(path);
   for (i=0; i<list.length; i++)
-      if (startsWith(list[i], "ROI Manager Tools")) path+= list[i];
+      if (startsWith(list[i], "ROI Manager Tools"))
+          { path+= list[i]; break; }
   if (File.exists(path))
       run("Install...", "install=["+ path +"]");
   else
