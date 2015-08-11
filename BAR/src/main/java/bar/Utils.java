@@ -19,6 +19,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Random;
 
 import org.scijava.Context;
 
@@ -724,6 +725,41 @@ public class Utils implements PlugIn {
 	 */
 	public static String getSourceURL() {
 		return SRC_URL;
+	}
+
+
+	/**
+	 * Populates the ImageJ "Results" table with random, Gaussian ("normally")
+	 * distributed values. Useful for demonstrating/testing scripts that read
+	 * data from the "Results" table.
+	 */
+	public static void loadDemoResults() {
+		final ResultsTable rt = new ResultsTable();
+		final double[] m1MeanSD = { 200, 50 };
+		final double[] m2MeanSD = { 250, 50 };
+		final double[] a1MeanSD = { 350, 100 };
+		final double[] a2MeanSD = { 300, 100 };
+		final double[] xyMeanSD = { 500, 100 };
+		double value;
+		for (int i = 0; i < 50; i++) {
+			rt.incrementCounter();
+			value = new Random().nextGaussian();
+			rt.setLabel("Type I", i);
+			rt.setValue("Mean", i, m1MeanSD[0] + value * m1MeanSD[1]);
+			rt.setValue("Area", i, a1MeanSD[0] + value * a1MeanSD[1]);
+			rt.setValue("X", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
+			rt.setValue("Y", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
+		}
+		for (int i = 50; i < 100; i++) {
+			rt.incrementCounter();
+			value = new Random().nextGaussian();
+			rt.setLabel("Type II", i);
+			rt.setValue("Mean", i, m2MeanSD[0] + value * m2MeanSD[1]);
+			rt.setValue("Area", i, a2MeanSD[0] + value * a2MeanSD[1]);
+			rt.setValue("X", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
+			rt.setValue("Y", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
+		}
+		rt.show("Results");
 	}
 
 }
