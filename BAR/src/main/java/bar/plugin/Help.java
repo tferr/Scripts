@@ -10,14 +10,6 @@
  */
 package bar.plugin;
 
-import fiji.Debug;
-import ij.IJ;
-import ij.ImageJ;
-import ij.Menus;
-import ij.WindowManager;
-import ij.plugin.BrowserLauncher;
-import ij.plugin.PlugIn;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -55,6 +47,13 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultEditorKit;
 
 import bar.Utils;
+import fiji.Debug;
+import ij.IJ;
+import ij.ImageJ;
+import ij.Menus;
+import ij.WindowManager;
+import ij.plugin.BrowserLauncher;
+import ij.plugin.PlugIn;
 
 /** Implements the <i>BAR>About BAR...</i> command */
 public class Help implements PlugIn {

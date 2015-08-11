@@ -10,15 +10,6 @@
  */
 package bar;
 
-import ij.IJ;
-import ij.Menus;
-import ij.WindowManager;
-import ij.plugin.MacroInstaller;
-import ij.plugin.PlugIn;
-import ij.plugin.frame.Editor;
-import ij.text.TextPanel;
-import ij.text.TextWindow;
-
 import java.awt.Desktop;
 import java.awt.Menu;
 import java.awt.MenuItem;
@@ -29,10 +20,21 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.scijava.Context;
+
+import ij.IJ;
+import ij.Menus;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.io.Opener;
+import ij.measure.ResultsTable;
+import ij.plugin.MacroInstaller;
+import ij.plugin.PlugIn;
+import ij.plugin.frame.Editor;
+import ij.text.TextPanel;
+import ij.text.TextWindow;
 import net.imagej.ui.swing.script.TextEditor;
 import net.imagej.ui.swing.script.TextEditor.Tab;
-
-import org.scijava.Context;
 
 
 /**

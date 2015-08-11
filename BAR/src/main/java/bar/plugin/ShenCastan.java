@@ -11,6 +11,10 @@
 
 package bar.plugin;
 
+import java.awt.AWTEvent;
+import java.awt.Rectangle;
+
+import bar.Utils;
 import fiji.Debug;
 import ij.IJ;
 import ij.ImagePlus;
@@ -19,11 +23,6 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.ExtendedPlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.process.ImageProcessor;
-
-import java.awt.AWTEvent;
-import java.awt.Rectangle;
-
-import bar.Utils;
 
 /**
  * Performs gradient computation using the method proposed by Shen and Castan,

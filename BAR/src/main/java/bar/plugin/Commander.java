@@ -11,19 +11,6 @@
 
 package bar.plugin;
 
-import fiji.Debug;
-import fiji.util.gui.GenericDialogPlus;
-import ij.IJ;
-//import ij.Menus;
-import ij.WindowManager;
-import ij.gui.DialogListener;
-import ij.gui.GenericDialog;
-import ij.gui.ImageWindow;
-import ij.io.OpenDialog;
-import ij.plugin.PlugIn;
-import ij.text.TextPanel;
-import ij.text.TextWindow;
-
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -97,6 +84,18 @@ import javax.swing.table.TableColumnModel;
 
 import bar.FileDrop;
 import bar.Utils;
+import fiji.Debug;
+import fiji.util.gui.GenericDialogPlus;
+import ij.IJ;
+//import ij.Menus;
+import ij.WindowManager;
+import ij.gui.DialogListener;
+import ij.gui.GenericDialog;
+import ij.gui.ImageWindow;
+import ij.io.OpenDialog;
+import ij.plugin.PlugIn;
+import ij.text.TextPanel;
+import ij.text.TextWindow;
 
 /**
  * Implements a light-weight and fast keyboard-based file browser for ImageJ

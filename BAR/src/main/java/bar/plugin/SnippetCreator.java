@@ -10,13 +10,6 @@
  */
 package bar.plugin;
 
-import ij.IJ;
-import ij.gui.DialogListener;
-import ij.gui.GenericDialog;
-import ij.gui.MultiLineLabel;
-import ij.gui.NonBlockingGenericDialog;
-import ij.plugin.PlugIn;
-
 import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Choice;
@@ -38,6 +31,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bar.Utils;
+import ij.IJ;
+import ij.gui.DialogListener;
+import ij.gui.GenericDialog;
+import ij.gui.MultiLineLabel;
+import ij.gui.NonBlockingGenericDialog;
+import ij.plugin.PlugIn;
 
 /**
  * Generates templates for new IJ scripts, implementing the <i>BAR>Snippets>New
