@@ -11,16 +11,19 @@
 var labels= getPrefList("labels");
 var prefixs= getPrefList("prefixes");
 var suffixs= getPrefList("suffixes");
-var oldstr= "", newstr= "", usenames, label= true;
+var oldstr= "", newstr= "", usenames;
 
-macro "AutoRun" { run("ROI Manager..."); }
+macro "AutoRun" {
+    setOption("Display label", true);
+    run("ROI Manager...");
+}
 
 macro "Unused Tool-" {}
 
 var bCmds= newMenu("Settings Menu Tool", newArray("Define tags...", "Define prefixes...",
-            "Define suffixes...", "-", "Rename ROIs by pattern...", "Select ROIs by pattern...", "-",
-            "Remove all prefixes", "Remove all suffixes", "-", "Toggle numeric labels",
-            "Toggle labels in Results"));
+            "Define suffixes...", "-", "Remove all prefixes", "Remove all suffixes", "-",
+            "Select ROIs by pattern...", "Rename ROIs by pattern...", "-",
+            "Toggle \"ROI names as labels\""));
 macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2aD5dDa2Dd5D59D68D69D77D78D86D87D96D1aD1bD1cD29D2bD39D49D4bD4cD4dD58D67D76D85D92D93D94Da1Db1Db2Db4Dc1Dc4Dd4De3D5aD6aD79D88D95D97Da5Da6D19D91D4aD5bDa4Db5D3aD5cDa3Dc5" {
     setBatchMode(true);
     cmd= getArgument();
@@ -75,13 +78,10 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
         renamePattern(0, n-1, ".*\\[", "");
     } else if(cmd=="Remove all suffixes") {
         renamePattern(0, n-1, "\\].*", "");
-    } else if(cmd=="Toggle numeric labels") {
+    } else if(cmd=="Toggle \"ROI names as labels\"") {
         roiManager("UseNames", bools[usenames]);
         usenames= !usenames;
         roiManager("Show All with labels");
-    } else if(cmd=="Toggle labels in Results") {
-        setOption("Display Label", label);
-        label= !label;
     } else if (cmd!="-")
         run(cmd);
 }
