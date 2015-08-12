@@ -727,11 +727,65 @@ public class Utils implements PlugIn {
 		return SRC_URL;
 	}
 
+	/**
+	 * Checks if the ImageJ "Results" table contains valid data. If the
+	 * "Results" table is not open or is empty, the user is prompted with
+	 * alternatives to retrieve one, including: 1) Importing a new file; 2)
+	 * Running a <a href=
+	 * "https://github.com/tferr/Scripts/blob/master/Data_Analysis/Clipboard_to_Results.py"
+	 * target="_blank"> BAR script </a> that tries to import data from the
+	 * system clipboard; or 3) Importing a demo dataset populated by random
+	 * (Gaussian) values.
+	 *
+	 * @return A populated Results table or <code>null</code> if all attempts
+	 *         were unsuccessful
+	 *
+	 * @see #loadDemoResults()
+	 *
+	 */
+	public static ResultsTable getResultsTable() {
+		ResultsTable rt = ResultsTable.getResultsTable();
+		final boolean[] thirdAction = { false };
+		if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0) {
+			final GenericDialog gd = new GenericDialog("No Data in Results Table");
+			gd.addMessage("Import new file, or try to retrieve data from clipboard?");
+			gd.enableYesNoCancel("Import file", "Read clipboard");
+			gd.addHelp("");
+			gd.setHelpLabel("Use demo data");
+			gd.addDialogListener(new ij.gui.DialogListener() {
+				public boolean dialogItemChanged(final GenericDialog gd, final java.awt.AWTEvent e) {
+					if (e != null && e.toString().contains("demo")) {
+						gd.dispose();
+						thirdAction[0] = true;
+					}
+					return true;
+				}
+			});
+			gd.hideCancelButton();
+			gd.showDialog();
+			if (gd.wasCanceled()) {
+				return null;
+			} else if (gd.wasOKed()) {
+				Opener.openResultsTable("");
+			} else if (thirdAction[0]) {
+				loadDemoResults();
+			} else {
+				if (fileExists(new File(getDataAnalysisDir() + "Clipboard_to_Results.py")))
+					IJ.run("Clipboard to Results");
+			}
+		}
+		rt = ResultsTable.getResultsTable();
+		if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0)
+			rt = null;
+		return rt;
+	}
 
 	/**
 	 * Populates the ImageJ "Results" table with random, Gaussian ("normally")
 	 * distributed values. Useful for demonstrating/testing scripts that read
 	 * data from the "Results" table.
+	 *
+	 * @see #getResultsTable()
 	 */
 	public static void loadDemoResults() {
 		final ResultsTable rt = new ResultsTable();

@@ -30,31 +30,6 @@ def randomString():
     import uuid
     return str(uuid.uuid4())
 
-def getResultsTable():
-    """Attempts to return a populated Results table. If the "Results"
-       table is not open or is empty, user is provided with alternatives
-       to retrieve one. Returns None if all attempts were unsuccessful."""
-    from ij import IJ
-    from ij.gui import GenericDialog
-    from ij.measure import ResultsTable
-    from ij.io import Opener
-    rt = ResultsTable.getResultsTable()
-    if rt.getResultsWindow() is None or rt.getCounter() == 0:
-        gd = GenericDialog("No Data in Results Table")
-        gd.addMessage("Import new file, or try to retrieve data from clipboard?")
-        gd.enableYesNoCancel("Import file", "Read clipboard")
-        gd.showDialog()
-        if gd.wasCanceled():
-            return None
-        elif gd.wasOKed():
-            Opener.openResultsTable("")
-        else:
-            IJ.run("Clipboard to Results") # Clipboard_to_Results.py
-    rt = ResultsTable.getResultsTable()
-    if rt.getResultsWindow() is None or rt.getCounter() == 0:
-        rt = None
-    return rt
-
 
 ##### CALCULATIONS #####
 def getSimpleMovingAverage(values, window):

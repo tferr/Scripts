@@ -34,33 +34,6 @@ public class BARlib {
 		return UUID.randomUUID().toString();
 	}
 
-	/**
-	 * Attempts to return a populated Results table. If the "Results"
-	 * table is not open or is empty, user is provided with alternatives
-	 * to retrieve one. Returns null if all attempts were unsuccessful
-	 */
-	ResultsTable getResultsTable() {
-		import ij.gui.GenericDialog;
-		import ij.io.Opener;
-		import ij.measure.ResultsTable;
-		rt = ResultsTable.getResultsTable();
-		if (rt.getResultsWindow()==null || rt.getCounter()==0) {
-			gd = new GenericDialog("No Data in Results Table");
-			gd.addMessage("Import new file, or try to retrieve data from clipboard?");
-			gd.enableYesNoCancel("Import file", "Read clipboard");
-			gd.showDialog();
-			if (gd.wasCanceled())
-				return null;
-			else if (gd.wasOKed())
-				Opener.openResultsTable("");
-			else
-				ij.IJ.run("Clipboard to Results"); // Clipboard_to_Results.py
-		}
-		rt = ResultsTable.getResultsTable();
-		if (rt.getResultsWindow()==null || rt.getCounter()==0)
-			rt = null;
-		return rt;
-	}
 
 	///////////  CALCULATIONS  ///////////
 	/**
