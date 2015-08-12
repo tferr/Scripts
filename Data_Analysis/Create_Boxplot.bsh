@@ -60,6 +60,7 @@ boolean setupDataset(ResultsTable rt) {
 	seriesList = new ArrayList(Arrays.asList(headings));
 	seriesList.add(0, "*None*");
 	gd.addChoice("Group data by:", seriesList.toArray(new String[numItems+1]), null);
+	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Data_Analysis#create-boxplot");
 	gd.showDialog();
 	if (gd.wasCanceled())
 		return false;

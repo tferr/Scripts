@@ -32,6 +32,7 @@ Dialog.create('Distribution Plotter');
 	Dialog.addSlider("Bins:", 2, resCount, sqrt(resCount));
 	Dialog.addCheckbox("Ignore zeros", false);
 	Dialog.addMessage(resCount +" data points (NB: 'NaN' values will be ignored)...");
+	Dialog.addHelp("https://github.com/tferr/Scripts/tree/master/Data_Analysis#distribution-plotter");
 Dialog.show;
 	parameter = Dialog.getChoice;
 	yAxis = Dialog.getChoice;

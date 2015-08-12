@@ -52,6 +52,7 @@ boolean showOptions() {
 	gd.setInsets(20, 10, 0);
 	gd.addMessage("Horizontal x-axis:");
 	gd.addCheckbox("Calibrated units", super.calibratedX);;
+	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Analysis#multichannel-zt-axis-profile");
 	gd.showDialog();
 	super.yOption = gd.getNextRadioButton();
 	super.averageZ = gd.getNextBoolean();
