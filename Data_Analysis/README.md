@@ -19,25 +19,23 @@ exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (n
 [PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
 ([Download .bsh](./Create_Boxplot.bsh?raw=true))
 
-![boxplot](images/box-plot-demo.png)
+![boxplot](../images/box-plot-demo.png)
 
 See also [Clipboard to Results](#clipboard-to-results), [Plot Results](#plot-results),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
-   Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
+Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
+Detailed functionality: 1) Retrieves relative and cumulative frequencies; 2) Fits a Normal
+distribution to histogram of relative frequencies; 3) Offers several methods to determine the
+optimal number of histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
+_Analyze>Distribution..._) and  Freedman–Diaconis'.
 
-  1. Retrives relative and cumulative frequencies
-  2. Fits a Normal distribution to histogram of relative frequencies
-  3. Offers several methods to determine the optimal number of histogram bins: Square root
-   (used by e.g., M. Excel), Sturges', Scott's (used by _Analyze>Distribution..._) and
-   Freedman–Diaconis'
+([Download .ijm](./Distribution_Plotter.ijm?raw=true))
+([Documentation page][DP page])
 
-   ([Download .ijm](./Distribution_Plotter.ijm?raw=true))
-   ([Documentation page][DP page])
-
-   [![][DP image]][DP page]
+[![][DP image]][DP page]
 
 
 ###[Find Peaks](./Find_Peaks.bsh)
