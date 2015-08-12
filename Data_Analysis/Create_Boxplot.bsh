@@ -4,6 +4,7 @@
  * Displays a box-and-whisker plot from data in the IJ Results table using BAR and the
  * JFreeChart library, bundled with Fiji. The displayed plot is highly customized to
  * exemplify JFreeChart[1] scripting and how to integrate JFreeChart graphs in ImageJ.
+ * It also exemplifies how to use BAR to export JFreeCharts as vector graphics.
  *
  * NB: Data can be split into series. In addition to Minimum--[Q1|Median|Q3]--Maximum
  * and Average (filled ellipses), other properties are also plotted, as per [2]:
@@ -22,6 +23,7 @@
  */
 
 import bar.Utils;
+import bar.PlotUtils;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
@@ -202,8 +204,23 @@ frame.addWindowListener(new WindowAdapter() {
 	public void windowClosing(WindowEvent we) {
 		frame.dispose();
 		WindowManager.removeWindow(frame);
+// Tweak: Add right-click options for SVG and PDF export
+menu = cp.getPopupMenu();
+menu.addSeparator();
+mi = new JMenuItem("Export as PDF...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsPDF(chart, cp.getBounds());
 	}
 });
+menu.add(mi);
+mi = new JMenuItem("Export as SVG...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsSVG(chart, cp.getBounds());
+	}
+});
+menu.add(mi);
 
 // Display analysis
 frame.add(cp);
