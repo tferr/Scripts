@@ -511,15 +511,35 @@ public class Utils implements PlugIn {
 	 */
 	public static boolean fileExists(final File file) {
 		final boolean valid = file.exists();
-		final int WIDTH = 400;
 		if (!valid) {
-			IJ.showMessage("Invalid file path", "<html><div WIDTH="+ WIDTH +">"
-					+"Path not found:<br><i>"+ file.toString() +"</i><br><br>"
-					+"The file may have been moved, renamed or deleted. If it has been "
-					+"deleted and is part of your ImageJ installation, you can use the "
-					+"updater to re-install it.</div><html>");
+			IJ.showMessage("Invalid file path",
+					"Path not found:\n" + splitFilenameAcrossLines(file.toString(), 65)
+							+ "\n \nThe file may have been moved, renamed or deleted. If it has been\n"
+							+ "deleted and is part of your ImageJ installation, you can use the\n"
+							+ "updater to re-install it.");
 		}
 		return valid;
+	}
+
+	// http://stackoverflow.com/questions/7528045/
+	static String splitFilenameAcrossLines(String filename, int maxLineLength) {
+		final String[] tokens = filename.split(File.separator);
+		final StringBuilder output = new StringBuilder(filename.length());
+		int lineLength = 0;
+		for (int i = 0; i < tokens.length; i++) {
+			String word = tokens[i];
+			if (lineLength + (File.separator + word).length() > maxLineLength) {
+				if (i > 0)
+					output.append(File.separator).append("\n");
+				lineLength = 0;
+			}
+			if (i < tokens.length - 1
+					&& (lineLength + (word + File.separator).length() + tokens[i + 1].length() <= maxLineLength))
+				word += File.separator;
+			output.append(word);
+			lineLength += word.length();
+		}
+		return output.toString();
 	}
 
 	/**
