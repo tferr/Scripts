@@ -14,10 +14,15 @@
 ###[Create Boxplot](./Create_Boxplot.bsh)
 Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in the ImageJ
 Results table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
-The displayed publication-quality plot is highly customized to exemplify JFreeChart scripting.
+Data can be slip into groups and plot can be exported as vector graphics (publication-quality). It
+exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
+[PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
 ([Download .bsh](./Create_Boxplot.bsh?raw=true))
 
-See also [Clipboard to Results](#clipboard-to-results), [Plot Results](#plot-results)
+![boxplot](images/box-plot-demo.png)
+
+See also [Clipboard to Results](#clipboard-to-results), [Plot Results](#plot-results),
+ [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
