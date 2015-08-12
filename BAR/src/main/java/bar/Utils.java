@@ -39,11 +39,8 @@ import net.imagej.ui.swing.script.TextEditor.Tab;
 
 
 /**
- * A collection of utilities to interact with BAR and scripting aids for ImageJ.
- * For more information about BAR see its documentation pages on <a
- * href="http://imagej.net/BAR">imagej.net</a> and <a
- * href="https://github.com/tferr/Scripts#ij-bar">GitHub</a>.
- * 
+ * A collection of utilities to interact with BAR, including scripting aids for
+ * ImageJ.
  */
 public class Utils implements PlugIn {
 
@@ -122,7 +119,7 @@ public class Utils implements PlugIn {
 
 	/**
 	 * Displays a status-bar warning on "open by Shift-click" being disabled for
-	 * pre-compiled plugins.
+	 * pre-compiled plugins. Used by BAR plugins.
 	 */
 	public static void shiftClickWarning() {
 		if (IJ.shiftKeyDown()) {
@@ -372,7 +369,8 @@ public class Utils implements PlugIn {
 	 * @param dir
 	 *            the path of the directory to be listed
 	 * @param cascade
-	 *            if <code>true</code> TextWindow "cascades" from ImageJ's
+	 *            if <code>true</code> {@link ij.text.TextWindow TextWindow}
+	 *            "cascades" from ImageJ's
 	 *            {@link ij.WindowManager#getFrontWindow() frontmost} window. If
 	 *            <code>false</code>, TextWidow is displayed in the center of
 	 *            the screen

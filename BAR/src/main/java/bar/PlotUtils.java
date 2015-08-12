@@ -47,7 +47,7 @@ public class PlotUtils {
 	/**
 	 * Exports a JFreeChart to a SVG file using the
 	 * <a href= "http://xmlgraphics.apache.org/batik/" target="_blank">Batik SVG
-	 * Toolkit</a> library, bundled with Fiji. This method is taken from
+	 * Toolkit</a>, bundled with Fiji. This method is taken from
 	 * {@linkplain http://dolf.trieschnigg.nl/jfreechart/}
 	 *
 	 * @param chart
@@ -88,9 +88,11 @@ public class PlotUtils {
 	/**
 	 * Exports the specified JFreeChart to a SVG file using the
 	 * <a href="http://xmlgraphics.apache.org/batik/" target="_blank">Batik SVG
-	 * Toolkit</a> library, bundled with Fiji. The destination file is specified
-	 * by the user in a save dialog prompt. An error message is displayed if the
-	 * file could not be saved. Does nothing if {@code chart} is {@code null}.
+	 * Toolkit</a>, , assumed to be installed as third party-library in the
+	 * ImageJ {@code jars} directory (Batik is bundled with Fiji). The
+	 * destination file is specified by the user in a save dialog prompt. An
+	 * error message is displayed if the file could not be saved. Does nothing
+	 * if {@code chart} is {@code null}.
 	 *
 	 * @param chart
 	 *            the <a href="http://javadoc.imagej.net/JFreeChart/" target=
@@ -107,9 +109,9 @@ public class PlotUtils {
 	}
 
 	/**
-	 * Exports the specified JFreeChart to a PDF file using the
-	 * <a href="http://itextpdf.com" target="_blank">iText</a> library, bundled
-	 * with Fiji. The destination file is specified by the user in a save dialog
+	 * Exports the specified JFreeChart to a PDF file using
+	 * <a href="http://itextpdf.com" target="_blank">iText</a>, bundled with
+	 * Fiji. The destination file is specified by the user in a save dialog
 	 * prompt. An error message is displayed if the file could not be saved.
 	 * Does nothing if {@code chart} is {@code null}.
 	 *
@@ -149,12 +151,12 @@ public class PlotUtils {
 	}
 
 	/**
-	 * Exports the specified JFreeChart to a PDF file using the
-	 * <a href="http://itextpdf.com" target="_blank">iText</a> library, assumed
-	 * to be installed (as third party-library) in the ImageJ {@code jars}
-	 * directory (iText is bundled with Fiji). The destination file is specified
-	 * by the user in a save dialog prompt. An error message is displayed if the
-	 * file could not be saved. Does nothing if {@code chart} is {@code null}.
+	 * Exports the specified JFreeChart to a PDF file using
+	 * <a href="http://itextpdf.com" target="_blank">iText</a>, assumed to be
+	 * installed as third party-library in the ImageJ {@code jars} directory
+	 * (iText is bundled with Fiji). The destination file is specified by the
+	 * user in a save dialog prompt. An error message is displayed if the file
+	 * could not be saved. Does nothing if {@code chart} is {@code null}.
 	 *
 	 * @param chart
 	 *            the <a href="http://javadoc.imagej.net/JFreeChart/" target=

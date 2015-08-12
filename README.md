@@ -10,7 +10,8 @@ sciences.
 The easiest way is to install these scripts is to use [ Fiji](http://fiji.sc/) and subscribe to the
 [BAR update site](http://fiji.sc/List_of_update_sites). Alternatively, you can navigate the collection
 using the sections below, and download individual routines as needed.
-For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Installation).
+For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Installation) or the
+[BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 
 ## [Analysis]
