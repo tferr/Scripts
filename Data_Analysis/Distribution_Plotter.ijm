@@ -9,15 +9,19 @@
  * TF, 2009.11 Initial version
  * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
  * TF, 2014.12 Bug fix: Column headings containing spaces were not parsed properly
+ * TF, 2015.08 Tweaks. Requires BAR_-XX.jar to be installed in IJ's plugins folder
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
 histScale = 0.77;   // Height of modal class relatively to axis of cumulative frequencies
+
+
+if (nResults==0 || !isOpen("Results")) {
+	showMessageWithCancel("The Results table is empty. Open sample data?");
+	call("bar.Utils.loadDemoResults");
+}
+
 resCount = nResults;
-
-if (resCount==0 || !isOpen("Results"))
-	exit("The Results table is empty.");
-
 tabChoices = newArray('Number of values', 'Relative frequency (%)', 'Relative frequency (fractions)');
 binChoices = newArray("Square-root", "Sturges", "Scott (IJ's default)", "Freedman-Diaconis", "Specify manually below:");
 Dialog.create('Distribution Plotter');

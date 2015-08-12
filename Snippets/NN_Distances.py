@@ -4,17 +4,18 @@
 # Calculates the closest pair of points from a 2D/3D list of centroid coordinates (opened in the IJ
 # 'Results' table) calling another BAR script to plot the frequencies of nearest neighbor distances.
 #
-# TF 20150101
+# TF 20150810
 
 import math, sys
 from ij import IJ, Menus
+from bar import Utils
 import ij.measure.ResultsTable as RT
 
 # Specify column headings listing x,y,z positions
 xHeading, yHeading, zHeading = "X", "Y", "Z"
 
-# Retrieve Results Table
-rt = RT.getResultsTable()
+# Retrieve valid data from the Results table
+rt = Utils.getResultsTable();
 
 # Retrive x,y positions
 try:

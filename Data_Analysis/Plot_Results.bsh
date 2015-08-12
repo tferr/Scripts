@@ -36,14 +36,8 @@ shapes[4] = Plot.DOT;    slabels[4] = "Dot";    colors[4] = "Blue";
 shapes[5] = Plot.X;      slabels[5] = "X";      colors[5] = "Magenta";
 
 
-// Load BAR/lib/BARlib.bsh
-addClassPath(bar.Utils.getBARDir());
-importCommands("lib/");
-BARlib();
-lib = new BARlib();
-
-// Retrieve the Results table containing data
-rt = lib.getResultsTable();
+// Retrieve valid data from the Results table
+ResultsTable rt = Utils.getResultsTable();
 if (rt==null)
 	return;
 
