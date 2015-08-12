@@ -28,6 +28,7 @@ import ij.IJ;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.measure.ResultsTable;
+import ij.plugin.frame.PlugInFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
@@ -107,17 +108,11 @@ HashSet series = new HashSet();	// Holds series list (unique items)
 String sColumn = "Label";		// Heading of column defining groups (series)
 boolean sColIsLabel = true;		// Flag tracking if sColumn is the "Label" column
 boolean singleSeries = false;	// Flag tracking if multiple groups (series) exist
-JFrame frame;					// Frame displaying the analysis
-String TITLE = "Box Plot (Imported Results)"; // Frame title
+PlugInFrame frame;				// Frame displaying the analysis
+String TITLE = "Box Plot";		// Frame title
 
-// Load BAR/lib/BARlib.bsh
-addClassPath(Utils.getBARDir());
-importCommands("lib/");
-BARlib();
-lib = new BARlib();
-
-// Retrieve the Results table containing data
-rt = lib.getResultsTable();
+// Retrieve valid data from the Results table
+rt = Utils.getResultsTable();
 
 // Prepare dataset: Specify categories and series
 if (!setupDataset(rt))
@@ -147,11 +142,11 @@ chart = ChartFactory.createBoxAndWhiskerChart(
 
 // Tweak: Register frame in WindowManager and reuse it as needed
 if (WindowManager.getWindow(TITLE) == null) {
-	frame = new JFrame(TITLE);
+	frame = new PlugInFrame(TITLE);
 	WindowManager.addWindow(frame);
 } else {
 	frame = WindowManager.getFrame(TITLE);
-	frame.getContentPane().removeAll();
+	frame.removeAll();
 }
 
 // Tweak: Render plot mimicking look and feel of ij.gui.Plot
@@ -199,11 +194,6 @@ cp.addMouseMotionListener(new MouseAdapter() {
 	}
 });
 
-// Tweak: Unregister frame from WindowManager on dismissal
-frame.addWindowListener(new WindowAdapter() {
-	public void windowClosing(WindowEvent we) {
-		frame.dispose();
-		WindowManager.removeWindow(frame);
 // Tweak: Add right-click options for SVG and PDF export
 menu = cp.getPopupMenu();
 menu.addSeparator();
