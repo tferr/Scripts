@@ -20,7 +20,7 @@
 
 getThreshold(lower, upper);
 if (lower==-1 && upper==-1)
-	{ showStatus("No threshold was set!"); wait(300); exit(); }
+	exit("A thresholded image is required but none was found.");
 
 optns = newArray("current slice only", "all slices", "preceding slices", "subsequent slices");
 Stack.getDimensions(null, null, null, depth, null);

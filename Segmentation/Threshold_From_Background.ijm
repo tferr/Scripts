@@ -11,7 +11,7 @@
  */
 
 if (selectionType==-1)
-    exit("No background ROI selected");
+    exit("A background-defining ROI is\nrequired but none was found.");
 
 factor = getArgument();
 if (factor=="")

@@ -14,7 +14,7 @@
 requires("1.49t");
 getThreshold(lower, upper);
 if (lower==-1 && upper==-1)
-	exit("A thresholded image is required.");
+	exit("A thresholded image is required but none was found.");
 
 // Gather information about image
 imgID = getImageID();
