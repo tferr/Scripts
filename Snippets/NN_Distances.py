@@ -1,13 +1,14 @@
 # NN_Distances.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
-# Calculates the closest pair of points from a 2D/3D list of centroid coordinates (opened in the IJ
-# 'Results' table) calling another BAR script to plot the frequencies of nearest neighbor distances.
+# Calculates the closest pair of points from a 2D/3D list of centroid
+# coordinates (opened in the IJ 'Results' table), calling another BAR
+# script to plot the frequencies of nearest neighbor distances.
 #
 # TF 20150810
 
 import math, sys
-from ij import IJ, Menus
+from ij import IJ
 from bar import Utils
 import ij.measure.ResultsTable as RT
 
@@ -38,7 +39,8 @@ if not None in (x, y):
         minDx = sys.maxint
         nearest = 0
         for j in range(len(x)):
-            if i==j: continue
+            if i==j:
+                continue
             dx = (x[i]-x[j])**2
             dy = (y[i]-y[j])**2
             dz = (z[i]-z[j])**2
@@ -47,18 +49,20 @@ if not None in (x, y):
                 minDx = dst
                 nearest = j+1
         rt.setValue("NN pair", i, nearest)
-        rt.setValue("NN distance", i, minDx);
+        rt.setValue("NN distance", i, minDx)
 
     # Display appended results
     rt.showRowNumbers(True)
     rt.show("Results")
 
-    # Display distributions
-    dp = "Distribution Plotter"
-    if dp in Menus.getCommands().keySet().toArray():
-        IJ.run(dp, "parameter=[NN distance] automatic=Freedman-Diaconis");
-    else:
-        IJ.error("File missing", dp+" not found.\nPlease check your BAR installation.")
+    # Plot distributions if Distribution Plotter is installed. An
+    # alternative approach to verify cmdName availability would be:
+    #     from ij import Menus
+    #     if cmdName in Menus.getCommands().keySet().toArray():
+    cmdName = "Distribution Plotter"
+    cmdFile = Utils.getDataAnalysisDir() + "Distribution_Plotter.ijm"
+    if Utils.fileExists(cmdFile):
+        IJ.run(cmdName, "parameter=[NN distance]")
 
 else:
     IJ.error("Invalid Results Table","Data for X,Y positions not found.")

@@ -6,21 +6,31 @@
  * complementary to the ParticleAnalyzer (Analyze>Analyze Particles...), generating
  * particle-size heat maps. Requires IJ 1.46h.
  *
- * Tiago Ferreira, v.5.1 2014.01.31
+ * Tiago Ferreira, v.5.2 2015.08.13
  */
 
-// For a demo run the following line:
-// run("Blobs (25K)"); setThreshold(126, 255); run("Analyze Particles...", "display clear add"); resetThreshold;
 
-  setBatchMode(true);
-  nROIs= roiManager("count"); nRES= nResults;
+// assess required conditions before proceeding
+requires("1.46h");
+if (roiManager("count")==0 || nResults==0) {
+    showMessageWithCancel("No images open or the ROI Manager is empty...\n"
+        + "Run demo? (Results Table and ROI Manager will be cleared)");
+    run("Blobs (25K)");
+    setThreshold(126, 255);
+    run("Analyze Particles...", "display clear add");
+    resetThreshold();
+}
 
-// assess conditions to proceed
-  requires("1.46h");
-  if (nImages==0 || nROIs==0)
-      exit("No images open or the ROI Manager is empty...");
-  if (nRES==0)
-      { roiManager('Deselect'); roiManager('Measure'); nRES= nResults; }
+setBatchMode(true);
+  nROIs= roiManager("count");
+  nRES= nResults;
+
+// if no measurements exist, measure existing ROIs
+  if (nRES==0) {
+      roiManager('Deselect');
+      roiManager('Measure');
+      nRES= nResults;
+  }
 
 // create the dialog prompt
   Dialog.create("ROI Color Coder: "+ getTitle);
@@ -47,8 +57,8 @@
     Dialog.setInsets(-25, 200, 0);
     Dialog.addCheckbox("Draw tick marks", true);
     if (nROIs!=nRES)
-        Dialog.addMessage(nROIs +" ROI(s) in Manager, "+ nRES +" rows in Results table:\n"+
-                          abs(nROIs-nRES) +" item(s) will be ignored...");
+        Dialog.addMessage(nROIs +" ROI(s) in Manager, "+ nRES +" rows in Results table:\n"
+                + abs(nROIs-nRES) +" item(s) will be ignored...");
     Dialog.addHelp("http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder");
   Dialog.show;
       parameter= Dialog.getChoice;
@@ -57,10 +67,11 @@
       alpha= pad(toHex(255*Dialog.getNumber/100));
       label= Dialog.getString;
       range= split(Dialog.getString, "-");
-      if (range.length==1)
-          { min= NaN; max= parseFloat(range[0]); }
-      else
-          { min= parseFloat(range[0]); max= parseFloat(range[1]); }
+      if (range.length==1) {
+          min= NaN; max= parseFloat(range[0]);
+      } else {
+          min= parseFloat(range[0]); max= parseFloat(range[1]);
+      }
       numLabels= Dialog.getNumber;
       decPlaces= Dialog.getNumber;
       rampH= parseFloat(Dialog.getChoice);
@@ -69,7 +80,7 @@
       ticks= Dialog.getCheckbox;
 
 // get id of image and number of ROIs to colorize
-   id= getImageID;
+   id= getImageID();
    items= minOf(nROIs, nRES);
 
 // get values for chosen parameter
@@ -91,12 +102,15 @@
 
 // continue the legend design
   saveSettings;
-  setColor(0, 0, 0); setBackgroundColor(255, 255, 255);
-  setLineWidth(1); setFont(font, fontS, "antialiased");
+  setColor(0, 0, 0);
+  setBackgroundColor(255, 255, 255);
+  setLineWidth(1);
+  setFont(font, fontS, "antialiased");
   run("RGB Color");
-  if (ticks) // left & right borders
-      { drawLine(0, 0, rampH, 0); drawLine(0, rampW-1, rampH, rampW-1); }
-  else
+  if (ticks) { // left & right borders
+      drawLine(0, 0, rampH, 0);
+      drawLine(0, rampW-1, rampH, rampW-1);
+  } else
       drawRect(0, 0, rampH, rampW);
   run("Rotate 90 Degrees Left");
   run("Canvas Size...", "width="+ canvasW +" height="+ canvasH +" position=Center-Left");
@@ -139,13 +153,14 @@
           roiManager("Set Fill Color", alpha+roiColors[lutIndex]);
   }
 
-// finish
+// display result
   roiManager("Show all");
   if (countNaN!=0)
-      print("   ---\nSome "+ parameter +" values could not be retrieved.\n"
-           + countNaN +" ROI(s) labeled with default color.\n   ---");
-  setBatchMode("exit & display");
-  call("java.lang.System.gc");
+      print("\n>>>> ROI Color Coder:\n"
+          + "Some values from the \""+ parameter +"\" column could not be retrieved.\n"
+          + countNaN +" ROI(s) were labeled with a default color.");
+
+setBatchMode("exit & display");
 
 
 function getLutList() {

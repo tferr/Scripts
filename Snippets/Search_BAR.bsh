@@ -32,7 +32,7 @@ if (Utils.fileExists(PATH)) {
 
     // Build prompt
     GenericDialog gd = new GenericDialog("Search BAR Directory");
-    gd.addStringField("_", searchString, 25);
+    gd.addStringField("_", searchString, 30);
     gd.addCheckbox("Search contents", searchContents);
     gd.addCheckbox("Ignore case", caseInsensitive);
     gd.addHelp(Utils.getDocURL());

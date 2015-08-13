@@ -36,7 +36,8 @@ def getFileList(directory):
     extensions = (".tif", ".stk", ".oib")
     files = []
     for (dirpath, dirnames, filenames) in os.walk(directory):
-        if OUT_SUBDIR in dirnames: dirnames.remove(OUT_SUBDIR)
+        if OUT_SUBDIR in dirnames: # Ignore destination directory
+            dirnames.remove(OUT_SUBDIR)
         for f in filenames:
             if f.endswith(extensions):
                 files.append(os.path.join(dirpath, f))
@@ -63,7 +64,8 @@ if files:
 
     # Define output directory and create it if needed
     out_dir = src_dir + OUT_SUBDIR + os.sep
-    if not os.path.exists(out_dir): os.makedirs(out_dir)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
     # Create a CSV table documenting processed files
     csvPath = out_dir + "_ProcessedFileList.csv"
