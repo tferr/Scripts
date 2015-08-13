@@ -111,8 +111,12 @@ ImagePlus getSourceImage() {
 }
 
 
-// Get image to be profiled
-imp = IJ.getImage();
+// Get image to be profiled. Silence console warnings if no images open.
+try {
+	imp = IJ.getImage();
+} catch (Exception ignored) {
+	return;
+}
 
 // Do not proceed it active ROI cannot be profiled
 if (invalidRoi(imp.getRoi())) {
