@@ -1,8 +1,11 @@
 /* Plot_Results.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  * Creates an ImageJ XY plot from imported spreadsheet data.
+ *
+ * TF, v2015.08 Requires BAR_-XX.jar to be installed in the plugins folder of IJ
  */
 
+import bar.Utils;
 import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.gui.Plot;
@@ -85,6 +88,14 @@ if ((cFlags&Plot.Y_LOG_NUMBERS)!=0 && (cFlags&Plot.Y_NUMBERS)!=0)
 
 double[] y = rt.getColumnAsDoubles(yCol);
 double[] x;
+
+// Ignore x values if user chose the "Label" column
+if (headings[xCol].equals("Label") || rt.getColumnIndex(headings[xCol])==rt.COLUMN_NOT_FOUND) {
+	IJ.showStatus("Ignoring X-values. Chosen column contains no numeric data...");
+	noXvalues = true;
+}
+
+// Define x values
 if (noXvalues) {
 	x = new double[y.length];
 	for (int i=0; i<y.length; i++) x[i] = i;
@@ -126,15 +137,28 @@ while (addSeries) {
 	else if (gd.wasOKed())
 		addSeries = false;
 
-	if (!noXvalues) xCol = gd.getNextChoiceIndex();
+	if (!noXvalues)
+		xCol = gd.getNextChoiceIndex();
 	yCol = gd.getNextChoiceIndex();
 	eCol = gd.getNextChoiceIndex();
 	noBars = gd.getNextBoolean();
 	cShape = gd.getNextChoiceIndex();
 	cColor = gd.getNextChoiceIndex();
-	double[] y2 = rt.getColumnAsDoubles(yCol);
-	double[] x2 = (noXvalues) ? Arrays.copyOf(x, y2.length) : rt.getColumnAsDoubles(xCol);
 
+	// Keep ignoring the "Label" column
+	idx = rt.getColumnIndex(headings[yCol]);
+	if (idx==rt.COLUMN_NOT_FOUND) {
+		IJ.showStatus("Chosen column contains no numeric data...");
+		continue;
+	}
+	if (!noXvalues && rt.getColumnIndex(headings[xCol])==rt.COLUMN_NOT_FOUND) {
+		IJ.showStatus("Ignoring X-values. Chosen column contains no numeric data...");
+		noXvalues = true;
+	}
+
+	// Plot dataset
+	double[] y2 = rt.getColumnAsDoubles(idx);
+	double[] x2 = (noXvalues) ? Arrays.copyOf(x, y2.length) : rt.getColumnAsDoubles(xCol);
 	plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
 	if (noBars && eCol!=yCol)
 		plot.addPoints(x2, y2, shapes[cShape]);
@@ -142,9 +166,12 @@ while (addSeries) {
 		plot.addPoints(x2, y2, rt.getColumnAsDoubles(eCol), shapes[cShape]);
 	//plot.addLabel(0.02, labelYpos, headings[yCol]);
 	//labelYpos += 0.06;
+
+	IJ.showStatus("Series added: "+ headings[yCol]);
 	datasets++;
 }
 
 // Display result
 plot.show();
 return;
+
