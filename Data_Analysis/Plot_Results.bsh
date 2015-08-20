@@ -93,6 +93,25 @@ String[] getColumnChoices(ResultsTable rt) {
 }
 
 /**
+ * Retrieves the Checkbox of a RadioButtonGroup() in a GenericDialog
+ * associated with the specified label. <code>panel</code> is the
+ * java.awt.Panel to which the RadioButtonGroup was added as per
+ * ij.gui.GenericDialog.addRadioButtonGroup().
+ */
+Checkbox getRadioCheckbox(Panel panel, String label) {
+	Component[] components = panel.getComponents();
+	for (int i = 0; i<components.length; i++) {
+		Component c = components[i];
+		if (c instanceof Checkbox) {
+			Checkbox cb = (Checkbox)c;
+			if (cb.getLabel().equals(label))
+				return cb;
+		}
+	}
+	return null;
+}
+
+/**
  * Prompts the user for settings. Position of dialog is stored using
  * the ImageJ preferences mechanism. All the values in the prompt are
  * retrieved in real time by scripting the ij.gui.DialogListener
@@ -252,13 +271,18 @@ DialogListener dl = new DialogListener() {
 				super.pw = super.plot.show(); // Redisplay plot
 			} else if (!rtClosed) {
 
-				// Plot data and auto-select new choices
+				// Plot data and auto-select new defaults for choices & colors
 				addDataset();
 				y1idx = (super.datasetCounter % (super.colChoices.length-1));
 				x1idx = (y1idx+1 % super.colChoices.length);
+				cIdx = (super.datasetCounter % (Colors.colors.length-1));
 				choices = gd.getChoices();
 				choices.elementAt(0).select(x1idx);
 				choices.elementAt(2).select(y1idx);
+				colorRadioButtonGroupPanel = gd.getComponent(gd.getComponents().length-3);
+				cb = getRadioCheckbox(colorRadioButtonGroupPanel, Colors.colors[cIdx]);
+				if (cb!=null)
+					cb.setState(true);
 			}
 			super.datasetButton.setLabel("Add Dataset "+ String.valueOf(super.datasetCounter+1));
 
@@ -285,17 +309,17 @@ String[] colChoices;		// Array holding choices for ResultsTable columns
 String datasetLabel;		// The ResultsTable heading describing the dataset
 boolean validData = true;	// Flag monitoring if all dataset values are valid
 boolean vectorData = false;	// Flag monitoring if dataset is a vector field
-String dShape = "line";		// Description of the dataset shape
-String dColor = "black";	// Description of the dataset color
+String dShape = "line";		// Descriptive label of the dataset shape
+String dColor = "red";		// Descriptive label of the dataset color
 int datasetCounter = 0;		// The number of datasets being plotted
-Button datasetButton;		// The dialog button used to plot datasets
 Plot plot = null;			// The plot produced by this script
 PlotWindow pw = null;		// The plot's window
 String legend = "";			// The plot legend
+Button datasetButton;		// The dialog button used to append datasets to the plot
 
-// After setting-up everything, the interactive plot is created
-// quickly. We try to retrieve valid data from the Results table
-// and if the table is valid, we evoke the prompt:
+
+// After setting-up everything, we try to retrieve valid data from
+// the Results table. If the table is valid, we display the prompt:
 rt = Utils.getResultsTable();
 if (rt!=null)
 	promptForData();
