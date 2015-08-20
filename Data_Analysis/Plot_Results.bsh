@@ -31,7 +31,8 @@ void addDataset() {
 
 	// Do not proceed if dataset contains invalid data
 	if (!super.validData) {
-		IJ.error("The specified column(s) do not\nseem to contain valid data.");
+		IJ.showMessage("Invalid data",
+			"Chosen column(s) do not seem to contain numeric data.");
 		return;
 	}
 
@@ -67,7 +68,6 @@ void addDataset() {
 	super.plot.addLegend(super.legend);
 	super.plot.setLimitsToFit(true);
 	super.datasetCounter++;
-
 }
 
 /**
@@ -103,7 +103,12 @@ void promptForData() {
 	// Define column choices for drop-down menus
 	super.colChoices = getColumnChoices(rt);
 
-	// Build prompt
+	// Build prompt if it is not being displayed
+	gdWindow = WindowManager.getWindow("Plot Builder");
+	if (!IJ.macroRunning() && gdWindow!=null) {
+		gdWindow.toFront();
+		return;
+	}
 	gd = new NonBlockingGenericDialog("Plot Builder");
 	gd.addChoice("      X-values", super.colChoices, super.colChoices[0]);
 	gd.addChoice(" X-error bars", super.colChoices, "*None*");
@@ -115,12 +120,12 @@ void promptForData() {
 	gd.addRadioButtonGroup("Color:", Colors.colors, 5, 2, super.dColor);
 
 	// Add the "Add Dataset" button to the dialog
-    super.datasetButton = new Button("       Add Dataset "
-    		+ String.valueOf(super.datasetCounter+1) + "       ");
-    super.datasetButton.addActionListener(gd);
+	super.datasetButton = new Button("       Add Dataset "
+			+ String.valueOf(super.datasetCounter+1) + "       ");
+	super.datasetButton.addActionListener(gd);
 	buttonPanel = new Panel();
-    buttonPanel.add(super.datasetButton);
-    gd.addPanel(buttonPanel, GridBagConstraints.SOUTH, new Insets(10,0,0,0));
+	buttonPanel.add(super.datasetButton);
+	gd.addPanel(buttonPanel, GridBagConstraints.SOUTH, new Insets(10,0,0,0));
 
 	// Generate a 3-button prompt
 	gd.addHelp("");
