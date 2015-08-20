@@ -61,11 +61,12 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
 
 
 ###[Plot Results](./Plot_Results.bsh)
-   Routine that creates an XY plot from data in the Results table. Useful for plotting
-   data from imported spreadsheets.
-   ([Download .bsh](./Plot_Results.bsh?raw=true))
+The interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
+without error bars), from ImageJ measurements or imported spreadsheet data. Multi-series vector
+field plots are also supported.
+([Download .bsh](./Plot_Results.bsh?raw=true))
 
-   See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create-boxplot)
+See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create-boxplot)
 
 
 ##See Also
