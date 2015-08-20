@@ -1,177 +1,296 @@
 /* Plot_Results.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
- * Creates an ImageJ XY plot from imported spreadsheet data.
  *
- * TF, v2015.08 Requires BAR_-XX.jar to be installed in the plugins folder of IJ
+ * Interactively creates a multi-series plot (XY with or without error bars,
+ * and vector fields) from ImageJ measurements or imported spreadsheet data.
+ * TF, v2015.08
  */
 
 import bar.Utils;
 import ij.IJ;
+import ij.Prefs;
+import ij.gui.DialogListener;
+import ij.gui.ImageWindow;
 import ij.gui.GenericDialog;
+import ij.gui.NonBlockingGenericDialog;
 import ij.gui.Plot;
-import ij.plugin.Colors;
-import ij.util.Tools;
+import ij.gui.PlotDialog;
+import ij.gui.PlotWindow;
 import ij.measure.ResultsTable;
+import ij.plugin.Colors;
+import ij.plugin.frame.Recorder;
+import ij.util.Tools;
+import ij.WindowManager;
 
+/**
+ * Adds a dataset to the script's plot according to the settings
+ * retrieved by the dialog listener. Plot is created if it does
+ * not exist, i.e., if the method has not been called before.
+ */
+void addDataset() {
 
-// flags for axis design
-int[] flags = new int[12]; String[] labels = new String[12]; boolean[] choices = new boolean[12];
-flags[0] = Plot.X_LOG_NUMBERS;  choices[0] = false;  labels[0] = "Logarithmic_scale_X";
-flags[1] = Plot.Y_LOG_NUMBERS;  choices[1] = false;  labels[1] = "Logarithmic_scale_Y";
-flags[2] = Plot.X_GRID;         choices[2] = true;   labels[2] = "Gridlines_X";
-flags[3] = Plot.Y_GRID;         choices[3] = true;   labels[3] = "Gridlines_Y";
-flags[4] = Plot.X_FORCE2GRID;   choices[4] = false;  labels[4] = "Grid_expands_axis_X";
-flags[5] = Plot.Y_FORCE2GRID;   choices[5] = false;  labels[5] = "Grid_expands_axis_Y";
-flags[6] = Plot.X_NUMBERS;      choices[6] = true;   labels[6] = "Labels_at_intervals_X";
-flags[7] = Plot.Y_NUMBERS;      choices[7] = true;   labels[7] = "Labels_at_intervals_Y";
-flags[8] = Plot.X_TICKS;        choices[8] = true;   labels[8] = "Major_ticks_X";
-flags[9] = Plot.Y_TICKS;        choices[9] = true;   labels[9] = "Major_ticks_Y";
-flags[10]= Plot.X_MINOR_TICKS;  choices[10]= false;  labels[10]= "Minor_ticks_X";
-flags[11]= Plot.Y_MINOR_TICKS;  choices[11]= false;  labels[11]= "Minor_ticks_Y";
-
-// flags for dataset design
-int[] shapes = new int[6]; String[] slabels = new String[6]; String[] colors = new String[6];
-shapes[0] = Plot.LINE;   slabels[0] = "Line";   colors[0] = "Black";
-shapes[1] = Plot.BOX;    slabels[1] = "Square"; colors[1] = "Gray";
-shapes[2] = Plot.CIRCLE; slabels[2] = "Circle"; colors[2] = "Red";
-shapes[3] = Plot.CROSS;  slabels[3] = "Cross";  colors[3] = "Green";
-shapes[4] = Plot.DOT;    slabels[4] = "Dot";    colors[4] = "Blue";
-shapes[5] = Plot.X;      slabels[5] = "X";      colors[5] = "Magenta";
-
-
-// Retrieve valid data from the Results table
-ResultsTable rt = Utils.getResultsTable();
-if (rt==null)
-	return;
-
-// Define initial options
-String title = "Imported Data";
-String[] headings = rt.getHeadings();
-int nCols = headings.length;
-boolean noXvalues = (nCols>1) ? false : true;
-int xCol = 0; int yCol = (nCols>1) ? 1 : 0;
-int cColor = 1; int cShape = 3;
-boolean addSeries = true;
-
-// Prompt user for settings
-GenericDialog gd = new GenericDialog("Plot Data");
-gd.addStringField("Plot title:", title, 24);
-gd.addChoice("X-values:", headings, headings[xCol]);
-gd.setInsets(-5,20,10);
-gd.addCheckbox("Ignore X-values (use incremental counter)", noXvalues);
-gd.addChoice("Y-values:", headings, headings[yCol]);
-gd.setInsets(12,0,0);
-gd.addChoice("Style:", slabels, slabels[cShape]);
-gd.addChoice("Color:", colors, colors[cColor]);
-gd.addCheckboxGroup(flags.length/2, 2, labels, choices, new String[]{"X-axis:","Y-axis:"});
-if (this.nCols>1) gd.enableYesNoCancel("Finish", "Add More Datasets");
-gd.showDialog();
-if (gd.wasCanceled())
-	return;
-else if (gd.wasOKed())
-	 addSeries = false;
-
-// Retrieve options
-title = gd.getNextString();
-noXvalues = gd.getNextBoolean();
-xCol = gd.getNextChoiceIndex();
-yCol = gd.getNextChoiceIndex();
-cShape = gd.getNextChoiceIndex();
-cColor = gd.getNextChoiceIndex();
-int cFlags = 0;
-for (int i=0; i<flags.length; i++)
-	if (gd.getNextBoolean()) cFlags += flags[i];
-if ((cFlags&Plot.X_LOG_NUMBERS)!=0 && (cFlags&Plot.X_NUMBERS)!=0)
-	cFlags -= Plot.X_NUMBERS;
-if ((cFlags&Plot.Y_LOG_NUMBERS)!=0 && (cFlags&Plot.Y_NUMBERS)!=0)
-	cFlags -= Plot.Y_NUMBERS;
-
-double[] y = rt.getColumnAsDoubles(yCol);
-double[] x;
-
-// Ignore x values if user chose the "Label" column
-if (headings[xCol].equals("Label") || rt.getColumnIndex(headings[xCol])==rt.COLUMN_NOT_FOUND) {
-	IJ.showStatus("Ignoring X-values. Chosen column contains no numeric data...");
-	noXvalues = true;
-}
-
-// Define x values
-if (noXvalues) {
-	x = new double[y.length];
-	for (int i=0; i<y.length; i++) x[i] = i;
-} else
-	x = rt.getColumnAsDoubles(xCol);
-
-// NB: addErrorBars requires a Plot constructor with intial arrays
-plot = new Plot(title, headings[xCol], headings[yCol], cFlags);
-xlimits = Tools.getMinMax(x);
-ylimits = Tools.getMinMax(y);
-plot.setLimits(xlimits[0], xlimits[1], ylimits[0], ylimits[1]);
-plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
-plot.addPoints(x, y, shapes[cShape]);
-
-int datasets = 2;
-boolean noBars = true;
-//double labelYpos = 0.09;
-
-// Keep appending data until user presses "Finish"
-while (addSeries) {
-	cColor = (cColor<colors.length-1) ? cColor+=1 : 0;
-	yCol = (yCol<nCols-1) ? yCol+=1 : 0;
-
-	GenericDialog gd = new GenericDialog("Append Series #"+ datasets);
-	if (!noXvalues)
-		gd.addChoice("X-values:", headings, headings[xCol]);
-	gd.addChoice("Y-values:", headings, headings[yCol]);
-	gd.addChoice("Error bars:", headings, headings[yCol]);
-	gd.setInsets(-5,20,10);
-	gd.addCheckbox("Ignore error bars", noBars);
-	gd.setInsets(12,0,0);
-	gd.addChoice("Style:", slabels, slabels[cShape]);
-	gd.addChoice("Color:", colors, colors[cColor]);
-	if (datasets<nCols)
-		gd.enableYesNoCancel("Finish", "Add More Datasets");
-	gd.showDialog();
-	if (gd.wasCanceled())
+	// Do not proceed if dataset contains invalid data
+	if (!super.validData) {
+		IJ.error("The specified column(s) do not\nseem to contain valid data.");
 		return;
-	else if (gd.wasOKed())
-		addSeries = false;
-
-	if (!noXvalues)
-		xCol = gd.getNextChoiceIndex();
-	yCol = gd.getNextChoiceIndex();
-	eCol = gd.getNextChoiceIndex();
-	noBars = gd.getNextBoolean();
-	cShape = gd.getNextChoiceIndex();
-	cColor = gd.getNextChoiceIndex();
-
-	// Keep ignoring the "Label" column
-	idx = rt.getColumnIndex(headings[yCol]);
-	if (idx==rt.COLUMN_NOT_FOUND) {
-		IJ.showStatus("Chosen column contains no numeric data...");
-		continue;
-	}
-	if (!noXvalues && rt.getColumnIndex(headings[xCol])==rt.COLUMN_NOT_FOUND) {
-		IJ.showStatus("Ignoring X-values. Chosen column contains no numeric data...");
-		noXvalues = true;
 	}
 
-	// Plot dataset
-	double[] y2 = rt.getColumnAsDoubles(idx);
-	double[] x2 = (noXvalues) ? Arrays.copyOf(x, y2.length) : rt.getColumnAsDoubles(xCol);
-	plot.setColor(Colors.decode(colors[cColor], Color.GRAY));
-	if (noBars && eCol!=yCol)
-		plot.addPoints(x2, y2, shapes[cShape]);
-	else
-		plot.addPoints(x2, y2, rt.getColumnAsDoubles(eCol), shapes[cShape]);
-	//plot.addLabel(0.02, labelYpos, headings[yCol]);
-	//labelYpos += 0.06;
+	// Create and display plot with ajusted limits if first dataset
+	boolean firstRun = false;
+	if (super.plot==null || super.pw==null) {
+		firstRun = true;
+		xLimits = Tools.getMinMax(x1);
+		yLimits = Tools.getMinMax(y1);
+		super.plot = new Plot(WindowManager.makeUniqueName("Plotted Results"),
+				"", "", Plot.DEFAULT_FLAGS);
+		super.plot.setLimits(xLimits[0], xLimits[1], yLimits[0], yLimits[1]);
+		super.pw = super.plot.show();
+	}
 
-	IJ.showStatus("Series added: "+ headings[yCol]);
-	datasets++;
+	// Add the dataset (with vectors, all column choices must be valid)
+	super.plot.setColor(super.dColor);
+	if (super.vectorData) //
+		super.plot.drawVectors(super.x1, super.y1, super.x2, super.y2);
+	else {
+		super.plot.addPoints(super.x1, super.y1, Plot.toShape(super.dShape));
+		if (super.x2!=null)
+			super.plot.addHorizontalErrorBars(super.x2);
+		if (super.y2!=null)
+			super.plot.addErrorBars(super.y2);
+	}
+
+	// Update plot legend, dataset tally, and axis limits
+	if (!firstRun)
+		super.legend += "\n";
+	super.legend += super.datasetLabel;
+	super.plot.setColor(Color.BLACK);
+	super.plot.addLegend(super.legend);
+	super.plot.setLimitsToFit(true);
+	super.datasetCounter++;
+
 }
 
-// Display result
-plot.show();
-return;
+/**
+ * Generates abscissae from row numbers of current ResultsTable
+ * Useful for datasets in which only Y-values need to be plotted).
+ */
+ double[] generateX() {
+ 	int size = super.rt.getCounter();
+	double[] incX = new double[size];
+	for (int i=0; i<size; i++)
+		incX[i] = (double)i;
+	return incX;
+}
 
+/** Retrieves a list of column choices for the specified ResultsTable. */
+String[] getColumnChoices(ResultsTable rt) {
+	n = rt.getLastColumn();
+	cChoices = new String[n+2];
+	for (int i=0; i<=n; i++)
+		cChoices[i] = rt.getColumnHeading(i);
+	cChoices[n+1] = "*None*";
+	return cChoices;
+}
+
+/**
+ * Prompts the user for settings. Position of dialog is stored using
+ * the ImageJ preferences mechanism. All the values in the prompt are
+ * retrieved in real time by scripting the ij.gui.DialogListener
+ * interface (see anonymous inner class <code>dl</code> below).
+ */
+void promptForData() {
+
+	// Define column choices for drop-down menus
+	super.colChoices = getColumnChoices(rt);
+
+	// Build prompt
+	gd = new NonBlockingGenericDialog("Plot Builder");
+	gd.addChoice("      X-values", super.colChoices, super.colChoices[0]);
+	gd.addChoice(" X-error bars", super.colChoices, "*None*");
+	gd.addChoice("      Y-values", super.colChoices, super.colChoices[1]);
+	gd.addChoice(" Y-error bars", super.colChoices, "*None*");
+	gd.addCheckbox("Vector field dataset", super.vectorData);
+	gd.addMessage("");
+	gd.addRadioButtonGroup("Style:", super.S_LABELS, 4, 2, super.dShape);
+	gd.addRadioButtonGroup("Color:", Colors.colors, 5, 2, super.dColor);
+
+	// Add the "Add Dataset" button to the dialog
+    super.datasetButton = new Button("       Add Dataset "
+    		+ String.valueOf(super.datasetCounter+1) + "       ");
+    super.datasetButton.addActionListener(gd);
+	buttonPanel = new Panel();
+    buttonPanel.add(super.datasetButton);
+    gd.addPanel(buttonPanel, GridBagConstraints.SOUTH, new Insets(10,0,0,0));
+
+	// Generate a 3-button prompt
+	gd.addHelp("");
+	gd.setHelpLabel("Options...");
+	gd.enableYesNoCancel("Close", "Reload");
+	gd.hideCancelButton();
+	gd.addDialogListener(dl);
+
+	// Display prompt at last screen position
+	LOC_KEY = "bar.PRloc";
+	loc = Prefs.getLocation(LOC_KEY);
+	if (loc!=null) {
+		gd.centerDialog(false);
+		gd.setLocation(loc);
+	}
+	gd.showDialog();
+	Prefs.saveLocation(LOC_KEY, gd.getLocation());
+
+	// Dialog closure: Update plot if user pressed "OK",
+	// plot dataset if a macro/script "OKayed" the prompt
+	if (gd.wasCanceled()) { // Dialog dismissed
+		return;
+	} if (gd.wasOKed()) { // "Close" button pressed
+		if (IJ.macroRunning())
+			addDataset();
+		else if (super.plot!=null)
+			super.plot.setLimitsToFit(true);
+	} else { // "Reload" button pressed
+		super.rt = Utils.getResultsTable();
+		if (rt!=null) {
+
+			// Re-displaying the prompt is problematic when recording macros
+			// due to duplicated keywords. So, we'll intercept the recording
+			if (Recorder.record)
+				Recorder.setCommand("Plot Results");
+			newPlot = (IJ.altKeyDown() || super.plot==null);
+			if (!newPlot)
+				newPlot = IJ.showMessageWithCancel("New Plot?",
+					"Results Table successfully reloaded. Plot it in new plot?"
+					+"\n(Hold \"Alt\" while reloading to skip this message).");
+			if (newPlot) {
+				super.datasetCounter = 0;
+				super.legend = "";
+				super.plot = null;
+				super.pw = null;
+			}
+			promptForData();
+		}
+	}
+	return;
+}
+
+/** Assesses if the specified ResultsTable heading contains numeric data */
+boolean validColumn(String columnHeading) {
+	return !columnHeading.equals("Label") && !columnHeading.equals("*None*") &&
+		super.rt.getColumnIndex(columnHeading)!=ResultsTable.COLUMN_NOT_FOUND;
+}
+
+/**
+ * Inner class scripting the ij.gui.DialogListener interface. We'll
+ * use it to read in real-time all of the options in the prompt.
+ */
+DialogListener dl = new DialogListener() {
+
+	// This method is invoked by the GenericDialog upon changes
+	dialogItemChanged(GenericDialog gd, java.awt.AWTEvent e) {
+
+		// Read parameters from dialog
+		x1Col = gd.getNextChoiceIndex();
+		x2Col = gd.getNextChoiceIndex();
+		y1Col = gd.getNextChoiceIndex();
+		y2Col = gd.getNextChoiceIndex();
+		super.vectorData = gd.getNextBoolean();
+		super.dShape = gd.getNextRadioButton();
+		super.dColor = gd.getNextRadioButton();
+
+		// Define the dataset: A vector field or a X,Y series (using
+		// incremental x-values if user chose a non-numeric column)
+		super.x1 = validColumn(super.colChoices[x1Col])?super.rt.getColumnAsDoubles(x1Col):null;
+		if (!super.vectorData && super.x1==null)
+			super.x1 = generateX();
+		validX1 = super.x1 != null;
+		super.datasetLabel = super.colChoices[y1Col];
+		super.y1 = validColumn(super.datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
+		validY1 = super.y1 != null;
+		super.x2 = validColumn(super.colChoices[x2Col])?super.rt.getColumnAsDoubles(x2Col):null;
+		validX2 = super.x2 != null;
+		super.y2 = validColumn(super.colChoices[y2Col])?super.rt.getColumnAsDoubles(y2Col):null;
+		validY2 = super.y2 != null;
+
+		// Assess if choices are valid and plot/table remain available
+		if (super.vectorData)
+			super.validData = validX1 && validY1 && validX2 && validY2;
+		else
+			super.validData = validX1 && validY1;
+		window = (ImageWindow)super.pw;
+		pwClosed = window!=null && window.closed;
+		rtClosed = ResultsTable.getResultsWindow()==null;
+
+		// Update dialog components if dialog is being displayed
+		if (e != null && !IJ.macroRunning()) {
+
+			// Update "Add Dataset" button
+			if (pwClosed)
+				super.datasetButton.setLabel("Reopen Closed Plot");
+			if (rtClosed)
+				super.datasetButton.setLabel("Results Table Closed...");
+			super.datasetButton.setEnabled(!rtClosed && super.validData);
+
+			// Update choice labels
+			gd.getComponent(0).setText(super.vectorData?"X-start (X1)":"X-values");
+			gd.getComponent(0).setForeground(validX1?Color.BLACK:Color.GRAY);
+			gd.getComponent(2).setText(super.vectorData?"X-end (X2)":"X-error bars");
+			gd.getComponent(2).setForeground(validX2?Color.BLACK:Color.GRAY);
+			gd.getComponent(4).setText(super.vectorData?"Y-start (Y1)":"Y-values");
+			gd.getComponent(4).setForeground(validY1?Color.BLACK:Color.GRAY);
+			gd.getComponent(6).setText(super.vectorData?"Y-end (Y2)":"Y-error bars");
+			gd.getComponent(6).setForeground(validY2?Color.BLACK:Color.GRAY);
+		}
+
+		// Check if the 'Add dataset' button has been pressed
+		if (e != null && e.getSource()==super.datasetButton) {
+			if (pwClosed) {
+				super.pw = super.plot.show(); // Redisplay plot
+			} else if (!rtClosed) {
+
+				// Plot data and auto-select new choices
+				addDataset();
+				y1idx = (super.datasetCounter % (super.colChoices.length-1));
+				x1idx = (y1idx+1 % super.colChoices.length);
+				choices = gd.getChoices();
+				choices.elementAt(0).select(x1idx);
+				choices.elementAt(2).select(y1idx);
+			}
+			super.datasetButton.setLabel("Add Dataset "+ String.valueOf(super.datasetCounter+1));
+
+		// Check if the 'Options' button has been pressed
+		} else if (e != null && e.toString().contains("Options")) {
+			if (super.plot==null)
+				IJ.showMessage("No data",
+					"At least one dataset must be added\nto the plot before customizing it.");
+			else
+				new PlotDialog(super.plot, PlotDialog.AXIS_OPTIONS).showDialog(super.pw);
+		}
+		return true;
+	}
+
+};
+
+/** Definitions of dataset shapes as per ij.gui.Plot.toShape() */
+String[] S_LABELS = {"line","x","box","connected","triangle","dot","circle","cross"};
+
+/** Parameters */
+ResultsTable rt;			// ResultsTable from which data is retrieved
+double[] x1, y1, x2, y2;	// Dataset arrays (ResultsTable numeric columns)
+String[] colChoices;		// Array holding choices for ResultsTable columns
+String datasetLabel;		// The ResultsTable heading describing the dataset
+boolean validData = true;	// Flag monitoring if all dataset values are valid
+boolean vectorData = false;	// Flag monitoring if dataset is a vector field
+String dShape = "line";		// Description of the dataset shape
+String dColor = "black";	// Description of the dataset color
+int datasetCounter = 0;		// The number of datasets being plotted
+Button datasetButton;		// The dialog button used to plot datasets
+Plot plot = null;			// The plot produced by this script
+PlotWindow pw = null;		// The plot's window
+String legend = "";			// The plot legend
+
+// After setting-up everything, the interactive plot is created
+// quickly. We try to retrieve valid data from the Results table
+// and if the table is valid, we evoke the prompt:
+rt = Utils.getResultsTable();
+if (rt!=null)
+	promptForData();
