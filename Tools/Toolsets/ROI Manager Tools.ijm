@@ -3,7 +3,7 @@
  *
  * ImageJ toolset that renames selections stored in the ROI Manager. Supersedes the
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
- * then use the '>>' drop down menu to activate it. Requires IJ 1.49 or newer.
+ * then use the '>>' drop down menu to activate it. Requires IJ 1.50b or newer.
  *
  * TF, 2015.08, Change log: See https://github.com/tferr/Scripts/releases
  */
@@ -14,7 +14,7 @@ var suffixs= getPrefList("suffixes");
 var oldstr= "", newstr= "", usenames;
 
 macro "AutoRun" {
-    requires("1.49v");
+    requires("1.50b");
     setOption("Display label", true);
     run("ROI Manager...");
 }
@@ -43,11 +43,6 @@ macro "Settings Menu Tool - C037D3eD4eD5eD6bD6cD6dD7aD89D98Da7Db6Dc6Dd6De4De5D2a
              +"\"<tt>[0-9&&[^1]]\</tt>\" to find a digit that is not 1, or \"<tt>-.*-\</tt>\" to "
              +"find<br>any character sequence flanked by hyphens. You may need to<br>"
              +"escape metacharacters ('.', '[', ']', '^', '$', etc.) by a backslash.";
-        if (rplc) {
-            help+= "<br><br>"
-                +"Note that replaced patterns should always give rise to unique<br>"
-                +"names as the ROI Manager cannot cope with duplicated entries.";
-        }
         Dialog.create(cmd);
         Dialog.addString("Find:", oldstr, 18);
         if (rplc)
@@ -143,18 +138,18 @@ macro "Save all regions Menu Tool - C037D11D12D13D14D15D16D17D18D19D1aD1bD1cD21D
 }
 
 macro "Help Action Tool - C037T3e16?" {
-  help= "<html>The ROI Manager <i>Rename...</i> command cannot rename multiple ROIs, requiring user<br>"
-       +"input each time it is used. This set of tools addresses this issue by using 3 types of<br>"
-       +"predefined labels: \"Tags\", \"Prefixes\" and \"Suffixes\", specified in the <i>Settings</i> Menu.<br>"
-       +"Tags rename ROIs, prefixes and suffixes are appended to the listed name.<br><br>"
+  help= "<html>The ROI Manager <i>Rename...</i> command requires user input each time it is used,<br>"
+       +"becoming combersome when working with multip ROIs. This set of tools addresses<br>"
+       +"this issue by using 3 types of predefined labels: \"Tags\", \"Prefixes\" and \"Suffixes\",<br>"
+       +"specified in the <i>Settings</i> Menu. Tags rename ROIs, prefixes and suffixes are<br>"
+       +"appended to the ROI name.<br><br>"
        +"To rename multiple ROIs, press <i>Deselect</i> in the ROI Manager, and choose a label<br>"
-       +"from one of menus. Alternatively, choose <i>Rename by pattern...</i> from the Settings<br>"
-       +"menu. In both cases, you can specify the Range of ROIs to be renamed, as when<br>"
+       +"from one of menus. Alternatively, choose <i>Rename by pattern...</i> from the <i>Settings</i><br>"
+       +"menu. In both cases, you can specify the range of ROIs to be renamed, as when<br>"
        +"using the ROI Manager <i>Properties...</i> command.<br><br>"
-       +"To rename single ROIs, use the <i>Selection cycler</i> to walk through the listed ROIs one<<br>"
-       +"item at a time.<br><br>"
-       +"Use the <i>Save</i> menu to store all ROIs in a .zip file named after the active image.<br><br>"
-       +"You may need to stretch the ROI Manager window to accommodate long ROI names.";
+       +"To rename single ROIs, use the <i>Selection cycler</i> to walk through the listed ROIs<br>"
+       +"one item at a time.<br><br>"
+       +"Use the <i>Save</i> menu to store all ROIs in a .zip file named after the active image.";
     showMessage("ROI Manager Tools", help);
 }
 
