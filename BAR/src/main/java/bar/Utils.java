@@ -45,7 +45,7 @@ import net.imagej.ui.swing.script.TextEditor.Tab;
 public class Utils implements PlugIn {
 
 	/** The BAR version (as displayed in the BAR>About... dialog */
-	static final String VERSION = "1.1.5";
+	static final String VERSION = "1.1.6";
 
 	/** The URL to BAR's wiki page */
 	static final String DOC_URL = "http://fiji.sc/BAR";
