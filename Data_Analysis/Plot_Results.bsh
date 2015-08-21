@@ -3,6 +3,10 @@
  *
  * Interactively creates a multi-series plot (XY with or without error bars,
  * and vector fields) from ImageJ measurements or imported spreadsheet data.
+ *
+ * Requires BAR_-X.X.X.jar. To use it without BAR append the getResultsTable()
+ * method in bar.Utils to this file, replacing its calls accordingly.
+ *
  * TF, v2015.08
  */
 
@@ -71,18 +75,21 @@ void addDataset() {
 }
 
 /**
- * Generates abscissae from row numbers of current ResultsTable
- * Useful for datasets in which only Y-values need to be plotted).
+ * Generates abscissae from row numbers of the specified ResultsTable.
+ * Useful for datasets in which only Y-values need to be plotted.
  */
- double[] generateX() {
- 	int size = super.rt.getCounter();
+ double[] generateX(ResultsTable rt) {
+ 	int size = rt.getCounter();
 	double[] incX = new double[size];
 	for (int i=0; i<size; i++)
 		incX[i] = (double)i;
 	return incX;
 }
 
-/** Retrieves a list of column choices for the specified ResultsTable. */
+/**
+ * Retrieves a list of column choices for the specified ResultsTable.
+ * The "Label" column (containing non-numeric data) is excluded).
+ */
 String[] getColumnChoices(ResultsTable rt) {
 	n = rt.getLastColumn();
 	cChoices = new String[n+2];
@@ -93,22 +100,24 @@ String[] getColumnChoices(ResultsTable rt) {
 }
 
 /**
- * Retrieves the Checkbox of a RadioButtonGroup() in a GenericDialog
+ * Activates the Checkbox of a RadioButtonGroup() in a GenericDialog
  * associated with the specified label. <code>panel</code> is the
- * java.awt.Panel to which the RadioButtonGroup was added as per
- * ij.gui.GenericDialog.addRadioButtonGroup().
+ * java.awt.Panel to which the RadioButtonGroup (java.awt.CheckboxGroup)
+ * was added as per ij.gui.GenericDialog.addRadioButtonGroup().
  */
-Checkbox getRadioCheckbox(Panel panel, String label) {
+void activateRadioCheckbox(Panel panel, String label) {
 	Component[] components = panel.getComponents();
 	for (int i = 0; i<components.length; i++) {
 		Component c = components[i];
 		if (c instanceof Checkbox) {
 			Checkbox cb = (Checkbox)c;
-			if (cb.getLabel().equals(label))
-				return cb;
+			if (cb.getLabel().equals(label)) {
+				cb.setState(true);
+				return;
+			}
 		}
 	}
-	return null;
+	return;
 }
 
 /**
@@ -129,9 +138,9 @@ void promptForData() {
 		return;
 	}
 	gd = new NonBlockingGenericDialog("Plot Builder");
-	gd.addChoice("      X-values", super.colChoices, super.colChoices[0]);
+	gd.addChoice("      X-values", super.colChoices, "*None*");
 	gd.addChoice(" X-error bars", super.colChoices, "*None*");
-	gd.addChoice("      Y-values", super.colChoices, super.colChoices[1]);
+	gd.addChoice("      Y-values", super.colChoices, super.colChoices[0]);
 	gd.addChoice(" Y-error bars", super.colChoices, "*None*");
 	gd.addCheckbox("Vector field dataset", super.vectorData);
 	gd.addMessage("");
@@ -225,7 +234,7 @@ DialogListener dl = new DialogListener() {
 		// incremental x-values if user chose a non-numeric column)
 		super.x1 = validColumn(super.colChoices[x1Col])?super.rt.getColumnAsDoubles(x1Col):null;
 		if (!super.vectorData && super.x1==null)
-			super.x1 = generateX();
+			super.x1 = generateX(super.rt);
 		validX1 = super.x1 != null;
 		super.datasetLabel = super.colChoices[y1Col];
 		super.y1 = validColumn(super.datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
@@ -271,18 +280,18 @@ DialogListener dl = new DialogListener() {
 				super.pw = super.plot.show(); // Redisplay plot
 			} else if (!rtClosed) {
 
-				// Plot data and auto-select new defaults for choices & colors
+				// Plot data and auto-select new defaults for next dataset
 				addDataset();
-				y1idx = (super.datasetCounter % (super.colChoices.length-1));
-				x1idx = (y1idx+1 % super.colChoices.length);
-				cIdx = (super.datasetCounter % (Colors.colors.length-1));
 				choices = gd.getChoices();
-				choices.elementAt(0).select(x1idx);
+				y1idx = (super.datasetCounter % (super.colChoices.length-1));
 				choices.elementAt(2).select(y1idx);
-				colorRadioButtonGroupPanel = gd.getComponent(gd.getComponents().length-3);
-				cb = getRadioCheckbox(colorRadioButtonGroupPanel, Colors.colors[cIdx]);
-				if (cb!=null)
-					cb.setState(true);
+				cIdx = (super.datasetCounter % (Colors.colors.length-1));
+				colorRadioButtonGroupPanel = gd.getComponent(13); // empirically determined
+				activateRadioCheckbox(colorRadioButtonGroupPanel, Colors.colors[cIdx]);
+				//x1idx = (y1idx+1 % super.colChoices.length);
+				//choices.elementAt(0).select(x1idx);
+				//shapeRadioButtonGroupPanel = gd.getComponent(11);
+				//activateRadioCheckbox(shapeRadioButtonGroupPanel, S_LABELS[cIdx])
 			}
 			super.datasetButton.setLabel("Add Dataset "+ String.valueOf(super.datasetCounter+1));
 

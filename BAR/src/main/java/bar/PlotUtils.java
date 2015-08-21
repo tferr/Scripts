@@ -41,6 +41,8 @@ import ij.io.SaveDialog;
  * <a href= "http://javadoc.imagej.net/JFreeChart/" target="_blank">JFreeChart
  * </a>, <a href= "http://itextpdf.com" target="_blank">iText </a> and
  * <a href= "http://xmlgraphics.apache.org/batik/" target="_blank">Batik</a>.
+ * <p>
+ * Warning: the API remains quite immature and may change in future releases
  */
 public class PlotUtils {
 
