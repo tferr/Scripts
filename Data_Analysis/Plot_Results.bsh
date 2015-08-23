@@ -159,7 +159,7 @@ void promptForData() {
 
 	// Generate a 3-button prompt
 	gd.addHelp("");
-	gd.setHelpLabel("Options...");
+	gd.setHelpLabel("Options");
 	gd.enableYesNoCancel("Close", "Reload");
 	gd.hideCancelButton();
 	gd.addDialogListener(dl);
@@ -193,8 +193,8 @@ void promptForData() {
 				Recorder.setCommand("Plot Results");
 			newPlot = (IJ.altKeyDown() || super.plot==null);
 			if (!newPlot)
-				newPlot = IJ.showMessageWithCancel("New Plot?",
-					"Results Table successfully reloaded. Plot it in new graph?"
+				newPlot = IJ.showMessageWithCancel("New Plot Window?",
+					"Results table successfully reloaded. Plot it in new window?"
 					+"\n(Hold \"Alt\" while reloading to skip this message).");
 			if (newPlot) {
 				super.datasetCounter = 0;
@@ -301,7 +301,7 @@ DialogListener dl = new DialogListener() {
 		} else if (e != null && e.toString().contains("Options")) {
 
 			FONTS = new String[]{Font.SANS_SERIF, Font.MONOSPACED, Font.SERIF};
-			ogd = new GenericDialog("Advanced options", gd.getParent());
+			ogd = new GenericDialog("Plot Builder Advanced Options", gd.getParent());
 			ogd.addChoice("Font for new plots:", FONTS, FONTS[0]);
 			ogd.addChoice("Secondary color:", Colors.colors, super.dColor2);
 			ogd.addMessage("\n \nOptions below apply only to the current plot:");
