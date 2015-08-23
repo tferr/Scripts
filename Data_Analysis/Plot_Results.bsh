@@ -48,13 +48,15 @@ void addDataset() {
 		yLimits = Tools.getMinMax(y1);
 		super.plot = new Plot(WindowManager.makeUniqueName("Plotted Results"),
 				"", "", Plot.DEFAULT_FLAGS);
+		if (super.font!=null)
+			super.plot.setFont(super.font);
 		super.plot.setLimits(xLimits[0], xLimits[1], yLimits[0], yLimits[1]);
 		super.pw = super.plot.show();
 	}
 
 	// Add the dataset (with vectors, all column choices must be valid)
-	super.plot.setColor(super.dColor);
-	if (super.vectorData) //
+	super.plot.setColor(super.dColor, super.dColor2);
+	if (super.vectorData)
 		super.plot.drawVectors(super.x1, super.y1, super.x2, super.y2);
 	else {
 		super.plot.addPoints(super.x1, super.y1, Plot.toShape(super.dShape));
@@ -192,7 +194,7 @@ void promptForData() {
 			newPlot = (IJ.altKeyDown() || super.plot==null);
 			if (!newPlot)
 				newPlot = IJ.showMessageWithCancel("New Plot?",
-					"Results Table successfully reloaded. Plot it in new plot?"
+					"Results Table successfully reloaded. Plot it in new graph?"
 					+"\n(Hold \"Alt\" while reloading to skip this message).");
 			if (newPlot) {
 				super.datasetCounter = 0;
@@ -297,12 +299,37 @@ DialogListener dl = new DialogListener() {
 
 		// Check if the 'Options' button has been pressed
 		} else if (e != null && e.toString().contains("Options")) {
-			if (super.plot==null)
-				IJ.showMessage("No data",
+
+			FONTS = new String[]{Font.SANS_SERIF, Font.MONOSPACED, Font.SERIF};
+			ogd = new GenericDialog("Advanced options", gd.getParent());
+			ogd.addChoice("Font for new plots:", FONTS, FONTS[0]);
+			ogd.addChoice("Secondary color:", Colors.colors, super.dColor2);
+			ogd.addMessage("\n \nOptions below apply only to the current plot:");
+			ogd.addNumericField("Line width:", 1, 0, 3, "(Default: 1 pixel)");
+			ogd.addNumericField("Major ticks length:", 7, 0, 3, "(Default: 7 pixels)");
+			ogd.addNumericField("Minor ticks length:", 3, 0, 3, "(Default: 3 pixels)");
+			ogd.addNumericField("Maximum n. of intervals:", 12, 0, 3, "(Default: 12)");
+			ogd.enableYesNoCancel("OK", "Axis Options...");
+			ogd.showDialog();
+			if (ogd.wasOKed()) {
+				super.font = new Font(FONTS[ogd.getNextChoiceIndex()], Font.PLAIN,
+					ij.gui.PlotWindow.fontSize);
+				super.dColor2 = Colors.colors[ogd.getNextChoiceIndex()];
+				if (super.plot!=null) {
+					super.plot.setLineWidth((int)ogd.getNextNumber());
+					super.plot.setTickLength((int)ogd.getNextNumber());
+					super.plot.setMinorTickLength((int)ogd.getNextNumber());
+					super.plot.setMaxIntervals((int)ogd.getNextNumber());
+					super.plot.updateImage();
+				}
+			} else if (!ogd.wasCanceled())
+				if (super.plot==null || super.pw==null)
+					IJ.showMessage("No data",
 					"At least one dataset must be added\nto the plot before customizing it.");
-			else
-				new PlotDialog(super.plot, PlotDialog.AXIS_OPTIONS).showDialog(super.pw);
+				else
+					new PlotDialog(super.plot, PlotDialog.AXIS_OPTIONS).showDialog(super.pw);
 		}
+
 		return true;
 	}
 
@@ -319,12 +346,14 @@ String datasetLabel;		// The ResultsTable heading describing the dataset
 boolean validData = true;	// Flag monitoring if all dataset values are valid
 boolean vectorData = false;	// Flag monitoring if dataset is a vector field
 String dShape = "line";		// Descriptive label of the dataset shape
-String dColor = "red";		// Descriptive label of the dataset color
+String dColor = "red";		// Descriptive label of the dataset main color
+String dColor2 = "black";	// Descriptive label of the dataset secondary color
 int datasetCounter = 0;		// The number of datasets being plotted
 Plot plot = null;			// The plot produced by this script
 PlotWindow pw = null;		// The plot's window
 String legend = "";			// The plot legend
 Button datasetButton;		// The dialog button used to append datasets to the plot
+Font font = null;			// The custom plot font (Advanced Options prompt)
 
 
 // After setting-up everything, we try to retrieve valid data from
