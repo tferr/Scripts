@@ -11,7 +11,7 @@ print "[Line 09]", "Python PI=", math.pi # https://docs.python.org/2/library/mat
 
 # Importing a Java class
 import java.lang.Math
-print "[Line 14]", "Java PI=", java.lang.Math.PI # http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html
+print "[Line 14]", "Java PI=", java.lang.Math.PI # http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
 
 
 # The import statement can occur anywhere in a script

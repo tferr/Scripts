@@ -17,7 +17,8 @@
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import ij.IJ;
-clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-selection = new StringSelection(".bsh");
+
+clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // http://javadoc.imagej.net/Java7/index.html?java/awt/Toolkit.html
+selection = new StringSelection(".bsh");	// http://javadoc.imagej.net/Java7/index.html?java/awt/datatransfer/StringSelection.html
 clipboard.setContents(selection, selection);
-IJ.run("Search BAR");
+IJ.doCommand("Search BAR");	// http://javadoc.imagej.net/ImageJ1/ij/IJ.html#doCommand(java.lang.String)

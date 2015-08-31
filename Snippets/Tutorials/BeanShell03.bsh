@@ -10,7 +10,7 @@
 // works exactly as in Java, but in a more flexible way
 // since import statemenst can occur anywhere in a script
 import java.lang.Math;
-print("Line 13: PI="+ Math.PI);	// http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html
+print("Line 13: PI="+ Math.PI);	// http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
 
 // Importing the class IJ in the ij package
 import ij.IJ;
@@ -27,9 +27,9 @@ print("Line 21: We're running IJ" + ij.IJ.getVersion()); //http://javadoc.imagej
 // here is an example of a method that takes no arguments:
 /** This method returns a string of today's date */
 today() {
-    import java.util.Date;	// http://docs.oracle.com/javase/8/docs/api/java/util/Date.html
+    import java.util.Date;	// http://javadoc.imagej.net/Java7/index.html?java/util/Date.html
     date = new Date();
-    return date.toString();	// http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--
+    return date.toString();	// http://javadoc.imagej.net/Java7/index.html?java/lang/Object.html#toString--
 }
 
 print("Line 33: today() returned" + today());
@@ -39,7 +39,7 @@ print("Line 33: today() returned" + today());
 /** 
  *  This method returns the smallest of two arguments, and is a
  *  kludged assembly of Java.lang.Math.min(), see
- *  http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html
+ *  http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
  */
 minMethod(a, b) {
 	if (a < b) {

@@ -11,4 +11,5 @@
 ## 4. Press Control + P (Command + P on Macs)
 ##
 ## Ready? Try it now:
-IJ.run("BAR Commander...")
+from ij import IJ
+IJ.doCommand("BAR Commander...") # http://javadoc.imagej.net/ImageJ1/ij/IJ.html#doCommand(java.lang.String)
