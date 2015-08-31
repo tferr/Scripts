@@ -1,0 +1,53 @@
+/**
+ * BeanShell02.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * *************************************************
+ * 2. If statements and for loops
+ * *************************************************
+ */
+
+a = 10; b = 20; // NB: Semicolon separating in-line statements
+
+// An if statement:
+if (a == b) {
+	print("Line 13: " + "a is b!");
+} else if (a < b) {
+	print("Line 15: " + "a is smaller than b!");
+} else if (a<b) {
+	print("Line 17: " + "a is greater than b!");
+} else {
+	print("Line 19: " + "This is dead code because previous conditions cover all posiibilities");
+}
+
+// A for loop is used to iterate over collections (lists) and arrays.
+// Arrays are fixed-size collections of elements of the same type (e.g.,
+// an array holding strings can not hold integers). So we need to
+// specify the array type when declaring one
+int[] intArray = { 1, 2, 3 };
+String[] stringArray = {"One", "Two", "Three"};
+
+// Now let's loop through it. We can do it in two ways: Using what is
+// called an "enhanced for loop". Here is an example:
+print("Line 31: "+ "Contents of intArray:");
+for (item : intArray) {
+	print("  Line 33 (enhanced for loop): "+ item);
+}
+
+// Or a for loop that iterates through the array positions (indices).
+// To determine the size of the array (how many positions it has), one
+// uses <length>, a property of array objects. Note that Java (and
+// thus, BeanShell) uses zero-based arrays:
+for (i=0; i<intArray.length; i++) {
+	print("  Line 41 (for loop): intArray["+ i + "] = " + intArray[i]);
+}
+
+// Java switch statements are supported and work with any object:
+cocktail = "Cuba Libre";
+switch (cocktail) {
+	case "Margarita":
+		print("Line 48: cocktail has tequilla");
+	case "Gin and Tonic":
+		print("Line 50: cocktail has gin");
+	case "Cuba Libre":
+		print("Line 52: cocktail has rum");
+}
