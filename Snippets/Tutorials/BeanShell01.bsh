@@ -6,39 +6,44 @@
  * *************************************************
  */
 
+// BeanShell (bsh) is "no-frills Java" and inherits all of Java
+// basic syntax. You can actually mix Java code with bsh and
+// the BeanShell interpreter will recognize all of it (with
+// some minor subtleties, we will discuss later on). Conversely,
+// converting BeanShell into Java is quite straightforward.
+// Here are some basics:
+
 // This is a comment (typically single line)
 /* This is also a comment (typically multi-line) */
 
-// BeanShell features a built-in print command that outputs
-// to the Script Editor's console ("Show Output" button). It
+// BeanShell features a built-in print command that outputs to
+// the Script Editor's console ("Show Output" button). It
 // accepts only one argument (a string, number, object, ...).
 // BTW, Note that in Java and in BeanShell, every statement
 // must end in a semicolon:
-print("Line 15: " + "Hello!");
+print("Line 24: " + "Hello!"); // A concatenated string
 
 // Math works as expected:
 a = 1+1;			// Sum
 b = 2*4;			// Multiplication
 c = Math.pow(2,4);	// Exponentiation (2^14 = 16)
-print("Line 23: "+ a + "," + b + "," + c);
+print("Line 30: "+ a + "," + b + "," + c);
 
 // Division is slightly special:
-print("Line 26:" + "Integer division: 3/4=" + 3/4);
-print("Line 27:" + "Float division: 3/4=" + 3.0/4);
+print("Line 33:" + "Integer division: 3/4=" + 3/4);
+print("Line 34:" + "Float division: 3/4=" + 3.0/4);
 
-// Note that variables may be dynamically typed:
+// Note that, as in Python, variables may be dynamically typed:
 d = 1;
-print("Line 31: " + "d is a number: " + d);
+print("Line 38: " + "d is a number: " + d);
 d = "the 4th letter in the alphabet";
-print("Line 33: " + "but now d is a string: " + d);
+print("Line 40: " + "but now d is a string: " + d);
 
 // Operators:
-print("Line 36: " + "a equals b: " + (a == b));
-print("Line 37: " + "a is not equal to b: " + (a != b));
-print("Line 38: " + "a greater than b: " + (a > b));
-print("Line 39: " + "a is greater or equal to b: " + (a >= b));
+print("Line 43: " + "a equals b: " + (a == b) );
+print("Line 44: " + "a is not equal to b: " + (a != b) );
+print("Line 45: " + "a is not equal to b: " + !(a == b) );
+print("Line 46: " + "a greater than b: " + (a > b) );
+print("Line 47: " + "a is greater or equal to b: " + (a >= b) );
 
-// BeanShell is just no-frills Java. Actually any "normal"
-// Java statements and expressions will be always recognized
-// by the BeanShell interpreter. To know more:
-// http://www.beanshell.org/manual/contents.html
+// To know more: http://www.beanshell.org/manual/contents.html

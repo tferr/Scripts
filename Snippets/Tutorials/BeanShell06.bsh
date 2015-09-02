@@ -1,0 +1,34 @@
+/**
+ * BeanShell06.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * *************************************************
+ * 6. Further examples
+ * *************************************************
+ */
+
+// The majority of BAR scripts are actually written in
+// BeanShell. E.g., have a look the scripts in the "BAR>
+// Analysis>" Menu (Remember the shift-click trick?).
+//
+// Alternatively, open "BAR> Snippets> Search BAR" (itself
+// a BeanShell script) and search for ".bsh". Here it goes:
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import ij.IJ;
+
+// The search field in the "Search BAR" prompt is populated
+// by the text the script detects in clipboard when starting
+// up. We'll thus place ".bsh" in the system clipboard
+// before calling "BAR/Snippets/Search_BAR.bsh":
+
+clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); // http://javadoc.imagej.net/Java7/index.html?java/awt/Toolkit.html
+selection = new StringSelection(".bsh");	// http://javadoc.imagej.net/Java7/index.html?java/awt/datatransfer/StringSelection.html
+clipboard.setContents(selection, selection);
+
+// Now we can simply call the script as if we were running it
+// from the BAR> menu (BTW, this works flawlessly because
+// labels of menu items across all ImageJ menus are unique):
+IJ.doCommand("Search BAR");	// http://javadoc.imagej.net/ImageJ1/ij/IJ.html#doCommand(java.lang.String)
+
+// Now, go ahead and press <<Run>>!

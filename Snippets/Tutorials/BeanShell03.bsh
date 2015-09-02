@@ -2,13 +2,13 @@
  * BeanShell03.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  * *************************************************
- * 3. Scripting Java Classes
+ * 3. Imports statements
  * *************************************************
  */
 
-// In BeanShell, importing classes from Java packages
-// works exactly as in Java, but in a more flexible way
-// since import statemenst can occur anywhere in a script
+// Importing classes from Java packages works exactly
+// as in Java, but in a more flexible way since import
+// statements can occur anywhere in a script:
 import java.lang.Math;
 print("Line 13: PI="+ Math.PI);	// http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
 
@@ -16,63 +16,11 @@ print("Line 13: PI="+ Math.PI);	// http://javadoc.imagej.net/Java7/index.html?ja
 import ij.IJ;
 print("Line 17: We're running IJ" + IJ.getVersion()); //http://javadoc.imagej.net/ImageJ1/index.html?ij/IJ.html
 
-// Note that we can also specify the fully qualified
-// class name without an import declaration:
-print("Line 21: We're running IJ" + ij.IJ.getVersion()); //http://javadoc.imagej.net/ImageJ1/index.html?ij/IJ.html
+// As in Java, we can also specify the fully qualified
+// class name without an import declaration as long as
+// ImageJ is aware of it, i.e., the class is in our
+// CLASSPATH[1]. Here is an example:
+print("Line 23: We're running IJ" + ij.IJ.getVersion()); //http://javadoc.imagej.net/ImageJ1/index.html?ij/IJ.html
 
-// BeanShell methods ("functions") are defined as in in Java,
-// with return values specified by a <return> statement. Bsh
-// methods allow dynamic (loose) of both arguments and return
-// types. We will come back to this in a second. Meanwhile,
-// here is an example of a method that takes no arguments:
-/** This method returns a string of today's date */
-today() {
-    import java.util.Date;	// http://javadoc.imagej.net/Java7/index.html?java/util/Date.html
-    date = new Date();
-    return date.toString();	// http://javadoc.imagej.net/Java7/index.html?java/lang/Object.html#toString--
-}
-
-print("Line 33: today() returned" + today());
-
-
-// A Method with arguments:
-/** 
- *  This method returns the smallest of two arguments, and is a
- *  kludged assembly of Java.lang.Math.min(), see
- *  http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
- */
-minMethod(a, b) {
-	if (a < b) {
-		return a;
-	} else {
-		return b;
-	}
-}
-
-print("Line 52: " + minMethod(10,20) + "is smaller");
-
-
-// We can also specify argument and/or return types:
-/** This method sums only integers */
-int intSum(int a, int b) {
-	return a + b;
-}
-
-print("Line 61: The sum of 2 integers: " + intSum(2,4) );
-
-
-// "Global variables": Similarly to Python's <global> keyword
-// It is possible to explicity refer to a declared variable
-// (or method) defined oustide the scope of a method using
-// the <super> keyword. Example:
-int variable = 2;
-myMethod() {
-	int variable = 40;
-	print("Line 71: Inside the method, variable= " + variable);
-	print("Line 72: Outside the method, variable= " + super.variable);
-	// NB: Note that this would not work for loosely declared variables
-}
-myMethod();
-
+// [1] https://en.wikipedia.org/wiki/Classpath_(Java)
 // To know more: http://www.beanshell.org/manual/
-// 

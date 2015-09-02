@@ -1,0 +1,52 @@
+/**
+ * BeanShell05-4.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * *************************************************
+ * 5.4 Scripting using BAR libs IV
+ * *************************************************
+ */
+
+
+// STEP 3: Instruct Smoothed_Plot_Profile.bsh to use the new
+//         method
+// This is the easiest part. Remember which line to edit?
+// Was it 64? Then go ahead and enjoy the new gaussian fit.
+// Your edited line should look something like:
+
+// [...]
+// avgYvalues = super.lib.getSimpleMovingAverage(xvalues, rawYvalues);
+// [...]
+
+// BTW, the "window size" prompt no longer applies to the new
+// gaussian fit. Is there a way to disable it?
+// (Hint: Look for a boolean parameter)
+
+
+// Discussion:
+//
+// Q1. If libs are just regular files and we can load any file,
+//     why don't we just load executable scripts and access
+//     their methods directly?
+//
+// Hint: What happens when you place an executable instruction
+//       in, e.g., BARlib.bsh and load it using the code below?
+//           addClassPath(bar.Utils.getBARDir());
+//           importCommands("lib/");
+//           BARlib();
+//           lib = new BARlib();
+//
+//
+// Q2. What are the disadvantages of using centralized libraries?
+//
+// Hint: What happens when a new version of the file becomes
+//       available throught the BAR update site? How can that
+//       be solved?
+//
+//
+// Q3. Are all libs loaded through the same mechanism?
+//     What about IJ macro language and Python?
+//
+// Hint: Create a New Python Snippet. Run the default placeholder
+//       code ("lib.confirmLoading"). Are there any new files
+//       added to the lib directory when the snippet runs for the
+//       first time?
