@@ -61,6 +61,10 @@ A batch processor written in [Python](#python).
 ####Scripting additions
  - [lib]
 
+####BeanShell
+ - [BAR Tutorials](./Tutorials/#tutorials)
+ - [Official documentation](http://www.beanshell.org/manual/contents.html)
+
 ####ImageJ Macro Language
  - [Introduction into Macro Programming](http://fiji.sc/Introduction_into_Macro_Programming)
  - [Built-in macro functions](http://imagej.nih.gov/ij/developer/macro/functions.html)
@@ -69,6 +73,7 @@ A batch processor written in [Python](#python).
  - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Templates_ menu
 
 ####Python
+ - [BAR Tutorials](./Tutorials/#tutorials)
  - [Fiji documentation](http://fiji.sc/Jython_Scripting)
  - [Image Processing and Analysis @EMBL](http://cmci.embl.de/documents/120206pyip_cooking/python_imagej_cookbook)
  - [IJ1 examples](http://imagej.nih.gov/ij/macros/python/)
