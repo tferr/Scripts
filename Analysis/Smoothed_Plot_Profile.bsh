@@ -22,18 +22,20 @@ import ij.measure.Calibration;
 
 import java.awt.event.KeyEvent;
 
-
-ImagePlus imp;
-Calibration cal;
-Roi roi;
-Plot plot;
-boolean firstRun;
-
 /* Ignore the image's spatial calibration? */
 boolean pixelUnits = false;
 
-/* Default size for moving average (MA) window */
+/* Default size for moving average (SMA) window */
 int window = 4;
+
+/* Allow interactive refinement of SMA window? */
+boolean interactive = true;
+
+ImagePlus imp;		// The image being analyzed
+Calibration cal;	// The image's calibration
+Roi roi;			// The ROI being profiled
+Plot plot;			// The analysis plot
+boolean firstRun;	// Flag monitoring first run
 
 
 /* Returns the ProfilePlot for the active slice */
@@ -54,7 +56,7 @@ Plot getPlot() {
 	xvalues = assignXvalues(rawYvalues.length);
 
 	// Get new window and generate smoothed data
-	if (!firstRun && IJ.controlKeyDown()) {
+	if (!firstRun && super.interactive && IJ.controlKeyDown()) {
 		IJ.setKeyUp(KeyEvent.VK_CONTROL);
 		newWindow = getWindow();
 		if (newWindow!=IJ.CANCELED) window = newWindow;
@@ -64,7 +66,8 @@ Plot getPlot() {
 	// Prepare plot
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
 	plot.setLimits(xvalues[0], xvalues[xvalues.length-1], p.getMin(), p.getMax());
-	plot.addLabel(0, 0, "In live mode, press 'Ctrl' to adjust moving avg. window:  "+ window);
+	label = (super.interactive) ? "In live mode, press 'Ctrl' to adjust " : "";
+	plot.addLabel(0, 0, label + "moving avg. window:  "+ window);
 
 	// Plot data
 	plot.setColor(Color.BLUE);
@@ -125,8 +128,10 @@ if (invalidRoi(imp.getRoi())) {
 }
 
 // Ask user for moving avg. window
-window = getWindow();
-if (window==IJ.CANCELED) return;
+if (super.interactive) {
+	window = getWindow();
+	if (window==IJ.CANCELED) return;
+}
 
 // Load BAR/lib/BARlib.bsh
 addClassPath(bar.Utils.getBARDir());
