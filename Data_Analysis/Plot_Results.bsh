@@ -357,7 +357,11 @@ Font font = null;			// The custom plot font (Advanced Options prompt)
 
 
 // After setting-up everything, we try to retrieve valid data from
-// the Results table. If the table is valid, we display the prompt:
+// the Results table. If the table is valid, we display the prompt.
+// But first, we need to ensure we have access to the latest IJ1
+// Plot class (e.g., IJ2 still bundles an outdated IJ 1.49s):
+if (IJ.versionLessThan("1.49v"))
+	return;
 rt = Utils.getResultsTable();
 if (rt!=null)
 	promptForData();
