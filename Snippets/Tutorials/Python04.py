@@ -11,9 +11,10 @@ def today():
     """This function returns a string of today's date"""
     import datetime		# https://docs.python.org/2/library/datetime.html
     td = datetime.date.today()
-    return str(td)		# https://docs.python.org/2/library/functions.html?highlight=str()
+    return td
 
-print "[Line 13]", "today() returned", today()
+print "[Line 16]", "today() returned", today()
+print "[Line 17]", "str(today()) returned", str(today())	# https://docs.python.org/2/library/functions.html?highlight=str()
 
 
 # A Function with arguments:
@@ -24,12 +25,12 @@ def minFunction(a, b):
     else:
         return b
 
-print "[Line 27]", minFunction(10,20), "is smaller"
+print "[Line 28]", minFunction(10,20), "is smaller"
 
 
 # NB: Python already features a built-in function that returns the
 # smallest of two or more arguments. Try this:
-print "[Line 31]", "The smallest of all is", min(10,20,-10,"-20")	# https://docs.python.org/2/library/functions.html?highlight=min()
+print "[Line 33]", "The smallest of all is", min(10,20,-10,"-20")	# https://docs.python.org/2/library/functions.html?highlight=min()
 
 
 # A practical scenario: Try to import something that may not be present.
@@ -41,13 +42,13 @@ def myCocktail(a, b):
        if the fictitious cocktail module is installed """
 try:
     from cocktail import theBestDrinkEver
-    print "[Line 44]", "theBestDrinkEver was imported"
+    print "[Line 45]", "theBestDrinkEver was imported"
 except ImportError:
-    print "[Line 46]", "Please install the cocktail package!"
+    print "[Line 47]", "Please install the cocktail package!"
     def theBestDrinkEver():
         return "Cuba Libre!"
 
-print "[Line 50]", "The best drink ever is " + theBestDrinkEver()
+print "[Line 51]", "The best drink ever is " + theBestDrinkEver()
 
 
 # Modifying global variables from within functions: Python wants you to
@@ -62,8 +63,11 @@ def set_best_rum_to_brugal():
 def set_best_rum_to_abuelo():
     best_rum = "Ron Abuelo"
 
-print "[Line 65]", "Best rum: " + best_rum
+print "[Line 66]", "Best rum: " + best_rum
 set_best_rum_to_brugal()
-print "[Line 67]", "Best rum: " + best_rum
+print "[Line 68]", "Best rum: " + best_rum
 set_best_rum_to_abuelo() # This will have no effect
-print "[Line 69]", "Best rum: " + best_rum
+print "[Line 70]", "Best rum: " + best_rum
+
+## To know more:
+# http://www.jython.org/jythonbook/en/1.0/DefiningFunctionsandUsingBuilt-Ins.html

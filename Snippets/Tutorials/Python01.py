@@ -34,7 +34,7 @@ print "Line 33:", "(a is b):", (a is b)
 print "Line 34:", "a==2:", a==2
 print "Line 35:", "a is not b and b!=2:", a is not b and b!=2
 
-# Working with lists Lists are indexed sequences of items. The
+# Working with lists: Lists are indexed sequences of items. The
 # 1st index (item position) is zero, the 2nd index is one, etc.
 my_list =[]				# An empty list
 my_list = [1,2,3,4,5,6]	# A prefilled list
