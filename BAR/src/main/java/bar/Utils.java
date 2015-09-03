@@ -10,19 +10,6 @@
  */
 package bar;
 
-import java.awt.Desktop;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Random;
-
-import org.scijava.Context;
-
 import ij.IJ;
 import ij.Menus;
 import ij.WindowManager;
@@ -34,8 +21,21 @@ import ij.plugin.PlugIn;
 import ij.plugin.frame.Editor;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
+
+import java.awt.Desktop;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Random;
+
 import net.imagej.ui.swing.script.TextEditor;
-import net.imagej.ui.swing.script.TextEditor.Tab;
+
+import org.scijava.Context;
 
 
 /**
@@ -463,9 +463,10 @@ public class Utils implements PlugIn {
 		// https://github.com/imagej/imagej-tutorials/tree/master/call-modern-from-legacy
 		final Context context = (Context)IJ.runPlugIn("org.scijava.Context", "");
 		final TextEditor editor = new TextEditor(context);
-		final Tab tab = editor.open(file);
+		editor.createNewFromTemplate(file, null);
+		//final TextEditor.Tab tab = editor.open(file);
+		//tab.setVisible(true); // TODO. Allow document to be opened in tabs!
 		editor.setVisible(true);
-		tab.setVisible(true);
 	}
 
 	/**
@@ -520,7 +521,7 @@ public class Utils implements PlugIn {
 	}
 
 	// http://stackoverflow.com/questions/7528045/
-	static String splitFilenameAcrossLines(String filename, int maxLineLength) {
+	static String splitFilenameAcrossLines(final String filename, final int maxLineLength) {
 		final String[] tokens = filename.split(File.separator);
 		final StringBuilder output = new StringBuilder(filename.length());
 		int lineLength = 0;
