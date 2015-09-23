@@ -12,6 +12,8 @@
  *  - Limits of Y-axis are set to include data from all visible channels
  */
 
+import bar.Utils;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
@@ -21,6 +23,7 @@ import ij.gui.GenericDialog;
 import ij.gui.Plot;
 import ij.gui.Roi;
 import ij.measure.Calibration;
+import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import ij.util.Tools;
@@ -42,6 +45,32 @@ boolean calibratedX = true;
 /* Default choice for Z-slice averaging */
 boolean averageZ = true;
 
+/* Allow Ctrl triggering of <tt>customRoutine</tt> when in live mode? */
+boolean allowRoutine = true;
+
+
+/* This method is called when the user presses Ctrl in live mode. It takes
+ * the profile of the active channel and does something with it. In this
+ * case it obtains a histogram of the profiled data. It does so by placing
+ * the list of profiled values in the Results table before calling the
+ * Distribution_Plotter IJ1 macro (Part of BAR).
+ *
+ * Note that this is a rather convoluted way of performing such task. However,
+ * it does showcase cooperation among BAR routines written in different
+ * languages.
+ */
+void customRoutine(double[] values) {
+	rt = ResultsTable.getResultsTable();
+	if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0)
+		rt = new ResultsTable();
+	colHeading = "ActiveProfile";
+	for (i=0; i<values.length; i++)
+		rt.setValue(colHeading, i, values[i]);
+	for (i=values.length-1; i<rt.getCounter(); i++)
+		rt.setValue(colHeading, i, Double.NaN);
+	rt.show("Results");
+	IJ.run("Distribution Plotter", "parameter="+ colHeading +" automatic=Freedman-Diaconis");
+}
 
 /* Prompts user for settings. Returns false if user aborted prompt otherwise true. */
 boolean showOptions() {
@@ -161,6 +190,9 @@ Plot getPlot() {
 	// Build plot
 	Plot plot = new Plot("Z/T-axis Plot of "+ imp.getTitle(), xLabel, yLabel);
 	plot.setLimits(xvalues[0], xvalues[frames-1], ylimits[0], ylimits[1]);
+	label = (super.allowRoutine) ? "In live mode, press 'Ctrl' to run custom routine..." : "";
+	plot.addLabel(0, 0, label);
+
 	for (int c=1; c<=channels; c++) {
 		if (states[c-1]) {
 			double[] yvalues = new double[frames];
@@ -168,6 +200,12 @@ Plot getPlot() {
 				yvalues[f] = data[c-1][f];
 			plot.setColor(colors[c-1]);
 			plot.addPoints(xvalues, yvalues, Plot.LINE);
+
+			// Run custom routine on data from active channel
+			if (!super.firstRun && c==imp.getC() && super.allowRoutine && IJ.controlKeyDown()) {
+				IJ.setKeyUp(KeyEvent.VK_CONTROL);
+				customRoutine(yvalues);
+			}
 		}
 	}
 
