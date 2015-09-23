@@ -53,6 +53,17 @@ public class BARlib {
 		return svalues;
 	}
 
+	/** This method returns a gaussian fit from X,Y data */
+	double[] getGaussian(double[]xvalues, double[] yvalues) {
+		import ij.measure.CurveFitter;	// http://javadoc.imagej.net/ImageJ1/index.html?ij/measure/CurveFitter.html
+		cf = new CurveFitter(xvalues, yvalues);
+		cf.doFit(CurveFitter.GAUSSIAN);
+		fittedValues = new double[xvalues.length];
+		for (i=0; i<xvalues.length; i++)
+			fittedValues[i] = cf.f(xvalues[i]);
+		return fittedValues;
+	}
+
 	/** Returns the greatest common divisor between 2 numbers */
 	int gcd(a, b) {
 		return (b==0) ? a : gcd(b, a%b);

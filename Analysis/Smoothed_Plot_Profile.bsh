@@ -62,6 +62,7 @@ Plot getPlot() {
 		if (newWindow!=IJ.CANCELED) window = newWindow;
 	}
 	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, window);
+	//avgYvalues = super.lib.getGaussian(xvalues, rawYvalues);
 
 	// Prepare plot
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
