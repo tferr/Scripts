@@ -3,7 +3,7 @@
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
  * terminal branches of topographic 2D/3D skeletons (http://fiji.sc/Strahler)
- * Tiago Ferreira, 2013-2015
+ * Tiago Ferreira, 2013-2016
  *
  * Requirements:
  * Up-to-date versions of Ignacio Arganda-Carreras Skeletonize[1] and AnalyzeSkeleton[2]
@@ -35,9 +35,9 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import ij.text.TextWindow;
 
-import skeleton_analysis.AnalyzeSkeleton_;
-import skeleton_analysis.Point;
-import skeleton_analysis.SkeletonResult;
+import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
+import sc.fiji.analyzeSkeleton.Point;
+import sc.fiji.analyzeSkeleton.SkeletonResult;
 import Skeletonize3D_.Skeletonize3D_;
 
 import java.awt.Rectangle;
@@ -48,12 +48,12 @@ import java.util.ArrayList;
 
 // Before starting we must remind non-Fiji users to install required dependencies
 try {
-	Class.forName("skeleton_analysis.AnalyzeSkeleton_");
+	Class.forName("sc.fiji.analyzeSkeleton.AnalyzeSkeleton_");
 	Class.forName("Skeletonize3D_.Skeletonize3D_");
 } catch( ClassNotFoundException e ) {
 	URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/";
-	AS_VRSN = "AnalyzeSkeleton_-2.0.4.jar";
-	SK_VRSN = "Skeletonize3D_-1.0.1.jar";
+	AS_VRSN = "AnalyzeSkeleton_-3.0.0.jar";
+	SK_VRSN = "Skeletonize3D_-1.0.2.jar";
 	msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
 		+ "Strahler Analysis requires AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be installed in\n"
 		+ "the plugins/ folder. Please install the missing file(s) by double-clicking on the links below:\n \n"
@@ -93,7 +93,7 @@ String STRAHLER_TABLE = "Strahler_Table";
 String VERBOSE_TABLE = "Strahler_Iteration_Log";
 
 /* Version of the program */
-String VERSION = "1.5.0 2015.07.03";
+String VERSION = "1.5.1 2016.01.19";
 
 /* Flag for 'root-protective' ROI */
 private static boolean validRootRoi;
