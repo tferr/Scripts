@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 
 /* Options for Plot's y-axis values */
-String[] yOptions = new String[] {"Mean", "Max", "Min"};
+String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
 
 /* Default choice for y-axis value */
 String yOption = yOptions[0];
@@ -75,7 +75,7 @@ void customRoutine(double[] values) {
 /* Prompts user for settings. Returns false if user aborted prompt otherwise true. */
 boolean showOptions() {
 	GenericDialog gd = new GenericDialog("Multichannel Z/T-axis Profile");
-	gd.addRadioButtonGroup("Vertical y-axis:", super.yOptions, 1, 3, super.yOption);
+	gd.addRadioButtonGroup("Vertical y-axis:", super.yOptions, 1, 4, super.yOption);
 	gd.setInsets(5, 20, 0);
 	gd.addCheckbox("Average Z-dimension in time profiles", super.averageZ);
 	gd.setInsets(20, 10, 0);
@@ -250,8 +250,10 @@ double getIntensity(ImageStatistics stats) {
 		return stats.mean;
 	else if (super.yOption.equals(super.yOptions[1]))
 		return stats.max;
-	else
+	else if (super.yOption.equals(super.yOptions[2]))
 		return stats.min;
+	else
+		return stats.stdDev;
 }
 
 /*
