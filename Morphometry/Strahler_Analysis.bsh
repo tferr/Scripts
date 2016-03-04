@@ -46,19 +46,21 @@ import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 
 
-// Before starting we must remind non-Fiji users to install required dependencies
+// Before starting we'll inform non-Fiji users of required dependencies
 try {
 	Class.forName("sc.fiji.analyzeSkeleton.AnalyzeSkeleton_");
 	Class.forName("sc.fiji.skeletonize3D.Skeletonize3D_");
 } catch( ClassNotFoundException e ) {
-	URL = "http://maven.imagej.net/service/local/repositories/releases/content/sc/fiji/";
-	AS_VRSN = "AnalyzeSkeleton_/3.0.0/AnalyzeSkeleton_-3.0.0.jar";
-	SK_VRSN = "Skeletonize3D_/2.0.0/Skeletonize3D_-2.0.0.jar";
 	msg = "\n**** Strahler Analysis Error: Required file(s) not found:\n"+ e +"\n \n"
-		+ "Strahler Analysis requires a recent version of AnalyzeSkeleton_.jar and Skeletonize3D_.jar to be\n"
-		+ "installed in the plugins/ folder. Please install the missing file(s) by double-clicking the links below:\n \n"
-		+ URL + AS_VRSN +"\n"+ URL + SK_VRSN  +"\n \n"
-		+ "NB: Do not forget to remove older jar files you may have installed in the past!";
+		+ "Strahler Analysis requires a recent version of AnalyzeSkeleton_.jar and Skeletonize3D_.jar.\n"
+		+ "The easiest way to install these files is to use Fiji:\n";
+	try {
+		Class.forName("net.imagej.ui.swing.updater.ImageJUpdater");
+	} catch (ClassNotFoundException ignored) {
+		msg += "Please download a modern version of ImageJ from http://imagej.net/Downloads, then\n";
+	}
+	msg += "Run Help>Update and ensure you are subscribed to the Fiji update site.\n \n"
+		+ "Please visit http://forum.imagej.net/ if you come across any hurdles.";
 	//IJ.handleException(e);
 	IJ.log(msg);
 	IJ.error("Strahler Analysis Error",
