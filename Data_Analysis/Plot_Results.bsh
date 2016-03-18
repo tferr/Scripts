@@ -7,7 +7,7 @@
  * Requires BAR_-X.X.X.jar. To use it without BAR append the getResultsTable()
  * method in bar.Utils to this file, replacing its calls accordingly.
  *
- * TF, v2015.08
+ * TF, v2016.03
  */
 
 import bar.Utils;
@@ -31,46 +31,39 @@ import ij.WindowManager;
  * retrieved by the dialog listener. Plot is created if it does
  * not exist, i.e., if the method has not been called before.
  */
-void addDataset() {
-
-	// Do not proceed if dataset contains invalid data
-	if (!super.validData) {
-		IJ.showMessage("Invalid data",
-			"Chosen column(s) do not seem to contain numeric data.");
-		return;
-	}
+void addDataset(String datasetLabel, double[]x1, double[]y1, double[]x2, double[]y2, boolean vectorField) {
 
 	// Create and display plot with ajusted limits if first dataset
 	boolean firstRun = false;
 
 	if (super.plot==void || super.pw==void || super.plot==null || super.pw==null) {
 		firstRun = true;
-		xLimits = Tools.getMinMax(x1);
-		yLimits = Tools.getMinMax(y1);
 		super.plot = new Plot(WindowManager.makeUniqueName("Plotted Results"),
 				"", "", Plot.DEFAULT_FLAGS);
 		if (super.font!=void && super.font!=null)
 			super.plot.setFont(super.font);
+		xLimits = Tools.getMinMax(x1);
+		yLimits = Tools.getMinMax(y1);
 		super.plot.setLimits(xLimits[0], xLimits[1], yLimits[0], yLimits[1]);
 		super.pw = super.plot.show();
 	}
 
 	// Add the dataset (with vectors, all column choices must be valid)
 	super.plot.setColor(super.dColor, super.dColor2);
-	if (super.vectorData)
-		super.plot.drawVectors(super.x1, super.y1, super.x2, super.y2);
+	if (vectorField)
+		super.plot.drawVectors(x1, y1, x2, y2);
 	else {
-		super.plot.addPoints(super.x1, super.y1, Plot.toShape(super.dShape));
-		if (super.x2!=null)
-			super.plot.addHorizontalErrorBars(super.x2);
-		if (super.y2!=null)
-			super.plot.addErrorBars(super.y2);
+		super.plot.addPoints(x1, y1, Plot.toShape(super.dShape));
+		if (x2!=void && super.x2!=null)
+			super.plot.addHorizontalErrorBars(x2);
+		if (y2!=void && y2!=null)
+			super.plot.addErrorBars(y2);
 	}
 
 	// Update plot legend, dataset tally, and axis limits
 	if (!firstRun)
 		super.legend += "\n";
-	super.legend += super.datasetLabel;
+	super.legend += datasetLabel;
 	super.plot.setColor(Color.BLACK);
 	super.plot.addLegend(super.legend);
 	super.plot.setLimitsToFit(true);
@@ -222,39 +215,46 @@ boolean validColumn(String columnHeading) {
 DialogListener dl = new DialogListener() {
 
 	// This method is invoked by the GenericDialog upon changes
-	dialogItemChanged(GenericDialog gd, java.awt.AWTEvent e) {
+	public boolean dialogItemChanged(GenericDialog gd, java.awt.AWTEvent e) {
 
 		// Read parameters from dialog
 		x1Col = gd.getNextChoiceIndex();
 		x2Col = gd.getNextChoiceIndex();
 		y1Col = gd.getNextChoiceIndex();
 		y2Col = gd.getNextChoiceIndex();
-		super.vectorData = gd.getNextBoolean();
-		super.dShape = gd.getNextRadioButton();
-		super.dColor = gd.getNextRadioButton();
+		vectorData = gd.getNextBoolean();
+		dShape = gd.getNextRadioButton();
+		dColor = gd.getNextRadioButton();
 
 		// Define the dataset: A vector field or a X,Y series (using
 		// incremental x-values if user chose a non-numeric column)
-		super.x1 = validColumn(super.colChoices[x1Col])?super.rt.getColumnAsDoubles(x1Col):null;
-		if (!super.vectorData && super.x1==null)
-			super.x1 = generateX(super.rt);
-		validX1 = super.x1 != null;
-		super.datasetLabel = super.colChoices[y1Col];
-		super.y1 = validColumn(super.datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
-		validY1 = super.y1 != null;
-		super.x2 = validColumn(super.colChoices[x2Col])?super.rt.getColumnAsDoubles(x2Col):null;
-		validX2 = super.x2 != null;
-		super.y2 = validColumn(super.colChoices[y2Col])?super.rt.getColumnAsDoubles(y2Col):null;
-		validY2 = super.y2 != null;
+		x1 = validColumn(super.colChoices[x1Col])?super.rt.getColumnAsDoubles(x1Col):null;
+		if (!vectorData && x1==null)
+			x1 = generateX(super.rt);
+		validX1 = x1 != void && x1 != null;
+		datasetLabel = super.colChoices[y1Col];
+		y1 = validColumn(datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
+		validY1 = y1 != void && super.y1 != null;
+		x2 = validColumn(super.colChoices[x2Col])?super.rt.getColumnAsDoubles(x2Col):null;
+		validX2 = x2 != void && super.x2 != null;
+		y2 = validColumn(super.colChoices[y2Col])?super.rt.getColumnAsDoubles(y2Col):null;
+		validY2 = y1 != void && super.y2 != null;
 
-		// Assess if choices are valid and plot/table remain available
-		if (super.vectorData)
-			super.validData = validX1 && validY1 && validX2 && validY2;
+		// Assess if all dataset values are valid and plot/table remain available
+		boolean validData = true;
+		if (vectorData)
+			validData = validX1 && validY1 && validX2 && validY2;
 		else
-			super.validData = validX1 && validY1;
-		window = (ImageWindow)super.pw;
-		pwClosed = window!=null && window.closed;
-		rtClosed = ResultsTable.getResultsWindow()==null;
+			validData = validX1 && validY1;
+		pwWindow = (super.pw==void) ? null : (ImageWindow)super.pw;
+		pwClosed = pwWindow!=null && pwWindow.closed;
+		rtWindow = ResultsTable.getResultsWindow();
+		rtClosed = rtWindow==void || rtWindow==null;
+
+		// Set parameters
+		super.vectorData = vectorData;
+		super.dShape = dShape;
+		super.dColor = dColor;
 
 		// Update dialog components if dialog is being displayed
 		if (e != null && !IJ.macroRunning()) {
@@ -264,17 +264,18 @@ DialogListener dl = new DialogListener() {
 				super.datasetButton.setLabel("Reopen Closed Plot");
 			if (rtClosed)
 				super.datasetButton.setLabel("Results Table Closed...");
-			super.datasetButton.setEnabled(!rtClosed && super.validData);
+			super.datasetButton.setEnabled(!rtClosed && validData);
 
 			// Update choice labels
-			gd.getComponent(0).setText(super.vectorData?"X-start (X1)":"X-values");
+			gd.getComponent(0).setText(vectorData?"X-start (X1)":"X-values");
 			gd.getComponent(0).setForeground(validX1?Color.BLACK:Color.GRAY);
-			gd.getComponent(2).setText(super.vectorData?"X-end (X2)":"X-error bars");
+			gd.getComponent(2).setText(vectorData?"X-end (X2)":"X-error bars");
 			gd.getComponent(2).setForeground(validX2?Color.BLACK:Color.GRAY);
-			gd.getComponent(4).setText(super.vectorData?"Y-start (Y1)":"Y-values");
+			gd.getComponent(4).setText(vectorData?"Y-start (Y1)":"Y-values");
 			gd.getComponent(4).setForeground(validY1?Color.BLACK:Color.GRAY);
-			gd.getComponent(6).setText(super.vectorData?"Y-end (Y2)":"Y-error bars");
+			gd.getComponent(6).setText(vectorData?"Y-end (Y2)":"Y-error bars");
 			gd.getComponent(6).setForeground(validY2?Color.BLACK:Color.GRAY);
+
 		}
 
 		// Check if the 'Add dataset' button has been pressed
@@ -284,7 +285,15 @@ DialogListener dl = new DialogListener() {
 			} else if (!rtClosed) {
 
 				// Plot data and auto-select new defaults for next dataset
-				addDataset();
+				if (validData) {
+					addDataset(datasetLabel, x1, y1, x2, x2, vectorData);
+					super.datasetButton.setLabel("Add Dataset "+ (super.datasetCounter+1));
+
+				} else {
+					IJ.showMessage("Invalid data",
+						"Chosen column(s) do not seem to contain numeric data.");
+					return;
+				}
 				choices = gd.getChoices();
 				y1idx = (super.datasetCounter % (super.colChoices.length-1));
 				choices.elementAt(2).select(y1idx);
@@ -296,7 +305,7 @@ DialogListener dl = new DialogListener() {
 				//shapeRadioButtonGroupPanel = gd.getComponent(11);
 				//activateRadioCheckbox(shapeRadioButtonGroupPanel, S_LABELS[cIdx])
 			}
-			super.datasetButton.setLabel("Add Dataset "+ String.valueOf(super.datasetCounter+1));
+
 
 		// Check if the 'Options' button has been pressed
 		} else if (e != null && e.toString().contains("Options")) {
@@ -341,11 +350,8 @@ String[] S_LABELS = {"line","x","box","connected","triangle","dot","circle","cro
 
 /** Parameters */
 ResultsTable rt;			// ResultsTable from which data is retrieved
-double[] x1, y1, x2, y2;	// Dataset arrays (ResultsTable numeric columns)
 String[] colChoices;		// Array holding choices for ResultsTable columns
-String datasetLabel;		// The ResultsTable heading describing the dataset
-boolean validData = true;	// Flag monitoring if all dataset values are valid
-boolean vectorData = false;	// Flag monitoring if dataset is a vector field
+boolean vectorData = false;	// Flag setting vector field data
 String dShape = "line";		// Descriptive label of the dataset shape
 String dColor = "red";		// Descriptive label of the dataset main color
 String dColor2 = "black";	// Descriptive label of the dataset secondary color
