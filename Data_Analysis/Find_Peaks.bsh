@@ -18,12 +18,12 @@ import ij.util.ArrayUtil;
 import ij.util.Tools;
 
 
-double tolerance;
-double minPeakDistance;
+double tolerance = 0d;
+double minPeakDistance =0d;
 double minMaximaValue = Double.NaN;
 double maxMinimaValue = Double.NaN;
-boolean excludeOnEdges;
-boolean listValues;
+boolean excludeOnEdges = false;
+boolean listValues = false;
 
 int[] findPositions(double[] values, double tolerance, boolean minima) {
 	int[] positions = null;
@@ -112,11 +112,12 @@ int[] trimPeakDistance(int[] positions) {
 }
 
 
-double[] xvalues;
-double[] yvalues;
-PlotWindow pw;
-
 void run() {
+
+	double[] xvalues;
+	double[] yvalues;
+	PlotWindow pw;
+
 	ImagePlus imp = WindowManager.getCurrentImage();
 	if (imp==null)
 		{ IJ.error("There are no plots open."); return; }
@@ -168,6 +169,7 @@ void run() {
 		pw = plot.show();
 	if (listValues)
 		pw.getResultsTable().show("Plot Values");
+
 }
 
 run();
