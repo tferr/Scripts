@@ -144,11 +144,11 @@ chart = ChartFactory.createBoxAndWhiskerChart(
 
 // Tweak: Register frame in WindowManager and reuse it as needed
 if (WindowManager.getWindow(TITLE) == null) {
-	frame = new PlugInFrame(TITLE);
+	super.frame = new PlugInFrame(TITLE);
 	WindowManager.addWindow(frame);
 } else {
-	frame = WindowManager.getFrame(TITLE);
-	frame.removeAll();
+	super.frame = WindowManager.getFrame(TITLE);
+	super.frame.removeAll();
 }
 
 // Tweak: Render plot mimicking look and feel of ij.gui.Plot
@@ -215,7 +215,7 @@ mi.addActionListener(new ActionListener() {
 menu.add(mi);
 
 // Display analysis
-frame.add(cp);
-frame.pack();
-ij.gui.GUI.center(frame);
-frame.setVisible(true);
+super.frame.add(cp);
+super.frame.pack();
+ij.gui.GUI.center(super.frame);
+super.frame.setVisible(true);
