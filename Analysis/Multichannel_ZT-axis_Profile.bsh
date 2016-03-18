@@ -291,7 +291,7 @@ ImagePlus getSourceImage() {
 
 // Retrieve input image and ensure it is a valid stack
 ImagePlus imp = WindowManager.getCurrentImage();
-if (eval("imp==void") || imp==null) {
+if (imp==void || imp==null) {
 	IJ.error("Z/T-stack required but none was found.");
 	return;
 }

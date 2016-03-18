@@ -106,7 +106,7 @@ ImagePlus getSourceImage() {
 
 
 imp = WindowManager.getCurrentImage();
-if (invalidRequirements(eval("imp==void")?null:imp))
+if (invalidRequirements(imp==void?null:imp))
 	return;
 if (IJ.altKeyDown())
 	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
