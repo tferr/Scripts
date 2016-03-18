@@ -116,54 +116,58 @@ double[] xvalues;
 double[] yvalues;
 PlotWindow pw;
 
-ImagePlus imp = WindowManager.getCurrentImage();
-if (imp==null)
-	{ IJ.error("There are no plots open."); return; }
-ImageWindow win = imp.getWindow();
-if (win!=null && (win instanceof PlotWindow)) {
-	pw = (PlotWindow)win;
-	float[] fyvalues = pw.getYValues();
-	ArrayUtil stats = new ArrayUtil(fyvalues);
-	tolerance = Math.sqrt(stats.getVariance());
-	yvalues = Tools.toDouble(fyvalues);
-	xvalues = Tools.toDouble(pw.getXValues());
-} else {
-	IJ.error(imp.getTitle() +" is not a plot window.");
-	return;
+void run() {
+	ImagePlus imp = WindowManager.getCurrentImage();
+	if (imp==null)
+		{ IJ.error("There are no plots open."); return; }
+	ImageWindow win = imp.getWindow();
+	if (win!=null && (win instanceof PlotWindow)) {
+		pw = (PlotWindow)win;
+		float[] fyvalues = pw.getYValues();
+		ArrayUtil stats = new ArrayUtil(fyvalues);
+		tolerance = Math.sqrt(stats.getVariance());
+		yvalues = Tools.toDouble(fyvalues);
+		xvalues = Tools.toDouble(pw.getXValues());
+	} else {
+		IJ.error(imp.getTitle() +" is not a plot window.");
+		return;
+	}
+
+	if (!prompt()) return;
+	int[] maxima = findMaxima(yvalues, tolerance);
+	int[] minima = findMinima(yvalues, tolerance);
+	if (!Double.isNaN(minMaximaValue))
+		maxima = trimPeakHeight(maxima, false);
+	if (!Double.isNaN(maxMinimaValue))
+		minima = trimPeakHeight(minima, true);
+	if (minPeakDistance>0) {
+		maxima = trimPeakDistance(maxima);
+		minima = trimPeakDistance(minima);
+	}
+	double[] xMaxima = getCoordinates(xvalues, maxima);
+	double[] yMaxima = getCoordinates(yvalues, maxima);
+	double[] xMinima = getCoordinates(xvalues, minima);
+	double[] yMinima = getCoordinates(yvalues, minima);
+
+	String plotTitle = imp.getTitle();
+	Plot plot = new Plot("Peaks in "+ plotTitle, "", "", xvalues, yvalues);
+	plot.setLineWidth(2);
+	plot.setColor(Color.RED);
+	plot.addPoints(xMaxima, yMaxima, Plot.CIRCLE);
+	plot.addLabel(0.00, 0, maxima.length +" maxima");
+	plot.setColor(Color.BLUE);
+	plot.addPoints(xMinima, yMinima, Plot.CIRCLE);
+	plot.addLabel(0.25, 0, minima.length +" minima");
+	plot.setColor(Color.BLACK);
+	plot.addLabel(0.50, 0, "Min. amp.: "+ IJ.d2s(tolerance,2) +"  Min. dx.: "+ IJ.d2s(minPeakDistance,2) );
+	plot.setLineWidth(1);
+
+	if (plotTitle.startsWith("Peaks in"))
+		pw.drawPlot(plot);
+	else
+		pw = plot.show();
+	if (listValues)
+		pw.getResultsTable().show("Plot Values");
 }
 
-if (!prompt()) return;
-int[] maxima = findMaxima(yvalues, tolerance);
-int[] minima = findMinima(yvalues, tolerance);
-if (!Double.isNaN(minMaximaValue))
-	maxima = trimPeakHeight(maxima, false);
-if (!Double.isNaN(maxMinimaValue))
-	minima = trimPeakHeight(minima, true);
-if (minPeakDistance>0) {
-	maxima = trimPeakDistance(maxima);
-	minima = trimPeakDistance(minima);
-}
-double[] xMaxima = getCoordinates(xvalues, maxima);
-double[] yMaxima = getCoordinates(yvalues, maxima);
-double[] xMinima = getCoordinates(xvalues, minima);
-double[] yMinima = getCoordinates(yvalues, minima);
-
-String plotTitle = imp.getTitle();
-Plot plot = new Plot("Peaks in "+ plotTitle, "", "", xvalues, yvalues);
-plot.setLineWidth(2);
-plot.setColor(Color.RED);
-plot.addPoints(xMaxima, yMaxima, Plot.CIRCLE);
-plot.addLabel(0.00, 0, maxima.length +" maxima");
-plot.setColor(Color.BLUE);
-plot.addPoints(xMinima, yMinima, Plot.CIRCLE);
-plot.addLabel(0.25, 0, minima.length +" minima");
-plot.setColor(Color.BLACK);
-plot.addLabel(0.50, 0, "Min. amp.: "+ IJ.d2s(tolerance,2) +"  Min. dx.: "+ IJ.d2s(minPeakDistance,2) );
-plot.setLineWidth(1);
-
-if (plotTitle.startsWith("Peaks in"))
-	pw.drawPlot(plot);
-else
-	pw = plot.show();
-if (listValues)
-	pw.getResultsTable().show("Plot Values");
+run();
