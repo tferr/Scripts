@@ -15,6 +15,7 @@
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.WindowManager;
 import ij.gui.Plot;
 import ij.gui.ProfilePlot;
 import ij.gui.Roi;
@@ -115,14 +116,12 @@ ImagePlus getSourceImage() {
 }
 
 
-// Get image to be profiled. Silence console warnings if no images open.
-try {
-	imp = IJ.getImage();
-} catch (Exception ignored) {
+// Get image to be profiled. Do not proceed if active ROI cannot be profiled
+imp = WindowManager.getCurrentImage();
+if (eval("imp==void") || imp==null) {
+	IJ.noImage();
 	return;
 }
-
-// Do not proceed it active ROI cannot be profiled
 if (invalidRoi(imp.getRoi())) {
 	IJ.error("Smoothed Profiler", "Line or rectangular ROI required.");
 	return;
