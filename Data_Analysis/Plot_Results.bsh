@@ -165,6 +165,10 @@ void promptForData() {
 		gd.centerDialog(false);
 		gd.setLocation(loc);
 	}
+
+	// Update prompt before displaying it
+	if (!IJ.macroRunning())
+		dl.dialogItemChanged(gd, null);
 	gd.showDialog();
 	Prefs.saveLocation(LOC_KEY, gd.getLocation());
 
@@ -173,9 +177,7 @@ void promptForData() {
 	if (gd.wasCanceled()) { // Dialog dismissed
 		return;
 	} if (gd.wasOKed()) { // "Close" button pressed
-		if (IJ.macroRunning())
-			addDataset();
-		else if (super.plot!=null)
+		if (super.plot!=void && super.plot!=null)
 			super.plot.setLimitsToFit(true);
 	} else { // "Reload" button pressed
 		super.rt = Utils.getResultsTable();
@@ -338,7 +340,11 @@ DialogListener dl = new DialogListener() {
 					"At least one dataset must be added\nto the plot before customizing it.");
 				else
 					new PlotDialog(super.plot, PlotDialog.AXIS_OPTIONS).showDialog(super.pw);
-		}
+
+
+		// Plot a single dataset if called from macro
+		} else if (validData && IJ.macroRunning())
+			addDataset(datasetLabel, x1, y1, x2, x2, vectorData);
 
 		return true;
 	}
