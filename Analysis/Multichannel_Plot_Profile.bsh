@@ -75,7 +75,7 @@ boolean invalidRoi(roi) {
 }
 
 /* Checks if all requirements are met */
-boolean invalidRequirements() {
+boolean invalidRequirements(ImagePlus imp) {
 	errorMsg = "";
 	if (imp==null || imp!=null && !imp.isComposite())
 		errorMsg += "\nError: Multichannel image required.";
@@ -87,7 +87,7 @@ boolean invalidRequirements() {
 }
 
 /* Returns the spatial calibration of the profile */
-Calibration getSpatialCalibration() {
+Calibration getSpatialCalibration(ImagePlus imp) {
 	if (super.pixelUnits) {
 		cal = new Calibration();
 		cal.pixelWidth = 1.0;
@@ -104,14 +104,15 @@ ImagePlus getSourceImage() {
 }
 
 
+
 imp = WindowManager.getCurrentImage();
-if (invalidRequirements())
+if (invalidRequirements(eval("imp==void")?null:imp))
 	return;
 if (IJ.altKeyDown())
 	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
 				"Ignore spatial calibration and\nuse pixel distances instead?");
 ci = (CompositeImage)imp;
-cal = getSpatialCalibration();
+cal = getSpatialCalibration(imp);
 plot = getPlot();
 if (plot==null)
 	return;
