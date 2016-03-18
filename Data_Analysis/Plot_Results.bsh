@@ -42,13 +42,14 @@ void addDataset() {
 
 	// Create and display plot with ajusted limits if first dataset
 	boolean firstRun = false;
-	if (super.plot==null || super.pw==null) {
+
+	if (super.plot==void || super.pw==void || super.plot==null || super.pw==null) {
 		firstRun = true;
 		xLimits = Tools.getMinMax(x1);
 		yLimits = Tools.getMinMax(y1);
 		super.plot = new Plot(WindowManager.makeUniqueName("Plotted Results"),
 				"", "", Plot.DEFAULT_FLAGS);
-		if (super.font!=null)
+		if (super.font!=void && super.font!=null)
 			super.plot.setFont(super.font);
 		super.plot.setLimits(xLimits[0], xLimits[1], yLimits[0], yLimits[1]);
 		super.pw = super.plot.show();
@@ -135,7 +136,7 @@ void promptForData() {
 
 	// Build prompt if it is not being displayed
 	gdWindow = WindowManager.getWindow("Plot Builder");
-	if (!IJ.macroRunning() && gdWindow!=null) {
+	if (!IJ.macroRunning() && gdWindow!=void && gdWindow!=null) {
 		gdWindow.toFront();
 		return;
 	}
@@ -167,7 +168,7 @@ void promptForData() {
 	// Display prompt at last screen position
 	LOC_KEY = "bar.PRloc";
 	loc = Prefs.getLocation(LOC_KEY);
-	if (loc!=null) {
+	if (loc!=void && loc!=null) {
 		gd.centerDialog(false);
 		gd.setLocation(loc);
 	}
@@ -185,13 +186,13 @@ void promptForData() {
 			super.plot.setLimitsToFit(true);
 	} else { // "Reload" button pressed
 		super.rt = Utils.getResultsTable();
-		if (rt!=null) {
+		if (super.rt!=null) {
 
 			// Re-displaying the prompt is problematic when recording macros
 			// due to duplicated keywords. So, we'll intercept the recording
 			if (Recorder.record)
 				Recorder.setCommand("Plot Results");
-			newPlot = (IJ.altKeyDown() || super.plot==null);
+			newPlot = (IJ.altKeyDown() || super.plot==void || super.plot==null);
 			if (!newPlot)
 				newPlot = IJ.showMessageWithCancel("New Plot Window?",
 					"Results table successfully reloaded. Plot it in new window?"
@@ -315,7 +316,7 @@ DialogListener dl = new DialogListener() {
 				super.font = new Font(FONTS[ogd.getNextChoiceIndex()], Font.PLAIN,
 					ij.gui.PlotWindow.fontSize);
 				super.dColor2 = Colors.colors[ogd.getNextChoiceIndex()];
-				if (super.plot!=null) {
+				if (super.plot!=void && super.plot!=null) {
 					super.plot.setLineWidth((int)ogd.getNextNumber());
 					super.plot.setTickLength((int)ogd.getNextNumber());
 					super.plot.setMinorTickLength((int)ogd.getNextNumber());
@@ -323,7 +324,7 @@ DialogListener dl = new DialogListener() {
 					super.plot.updateImage();
 				}
 			} else if (!ogd.wasCanceled())
-				if (super.plot==null || super.pw==null)
+				if (super.plot==void || super.pw==void || super.plot==null || super.pw==null)
 					IJ.showMessage("No data",
 					"At least one dataset must be added\nto the plot before customizing it.");
 				else
