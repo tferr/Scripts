@@ -18,7 +18,7 @@ import ij.plugin.ZProjector;
 import ij.process.ImageProcessor;
 
 
-int startSlice, stopSlice;
+int startSlice = 1, stopSlice = 1;
 int method = ZProjector.MAX_METHOD;
 ImagePlus imp;
 
@@ -53,6 +53,7 @@ void run(String arg) {
 		imp2.setCalibration(imp.getCalibration());
 		imp2.show();
 	}
+	return;
 }
 
 ImagePlus cumulativeZProject(ImagePlus imp, int method) {
