@@ -4,10 +4,11 @@
  *
  * BeanShell script that extends Image>Stack>Plot Z-axis Profile to multichannel (composite) images.
  * It features a "live" option, guesses displayed lookup tables and ignores disabled channels (i.e.,
- * those deselected in the "Channels" widget (Image>Color>Channels Tool).
+ * those deselected in the "Channels" widget (Image>Color>Channels Tool). It also allows users to
+ * call other scripts in live mode (Have a look at customRoutine(double[] values) below).
  *
  * N.B.:
- *  - Intensities (mean, min or max) are retrieved from active ROI or entire canvas if no ROI exists
+ *  - Intensities (mean, min, max stdDev) are retrieved from active ROI or entire canvas if no ROI exists
  *  - With hyperstacks, intensities can be averaged across Z-slices at each time point
  *  - Limits of Y-axis are set to include data from all visible channels
  */

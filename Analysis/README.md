@@ -32,13 +32,13 @@ See also: [Data Analysis]
 
 ###[Multichannel ZT-axis Profile](./Multichannel_ZT-axis_Profile.bsh)
    Extends the built-in command _Image>Stack>Plot Z-axis Profile_ to multichannel (composite) images,
-   while providing extra functionality such as Z-averaging (3D timelapses images) and choice of
-   statistic to be plotted.
+   while providing extra functionality such as Z-averaging (3D timelapses images), choice of
+   statistic to be plotted and ability to trigger custom routines while in live mode.
    ([Download .bsh](./Multichannel_ZT-axis_Profile.bsh?raw=true))
 
    Notes:
 
-   * Intensities (mean, min or max) are retrieved from active ROI or entire canvas if no ROI exists
+   * Intensities (mean, min, max or StdDev) are retrieved from active ROI or entire canvas if no ROI exists
    * With timelapse hyperstacks, intensities can be averaged across Z-slices at each time point
    * Limits of Y-axis are automatically set to include data from all visible channels
    * Similarly to [Multichannel Plot Profile](#multichannel-plot-profile), only visible channels
