@@ -203,24 +203,27 @@ boolean getUserInput() {
 
 double[] xsampled, ysampled, xfitted, yfitted;
 int color, curDegree, nPoints, bestDegree = 1;
-String polynomialName;
+String polynomialName = "";
 Color[] colors;
 PlotWindow pw;
 
 ImagePlus imp = WindowManager.getCurrentImage();
-if (imp==null)
+if (imp==void || imp==null)
 	{ IJ.error("There are no plots open."); return; }
+
 ImageWindow win = imp.getWindow();
-if (win!=null && (win instanceof PlotWindow)) {
-	pw = (PlotWindow)win;
-	xsampled = Tools.toDouble(pw.getXValues());
-	ysampled = Tools.toDouble(pw.getYValues());
-} else {
+
+if (win==void || win==null || !(win!=null && win instanceof PlotWindow)) {
 	IJ.error(imp.getTitle() +" is not a plot window.");
 	return;
 }
 
-if (!getUserInput()) return;
+pw = (PlotWindow)win;
+xsampled = Tools.toDouble(pw.getXValues());
+ysampled = Tools.toDouble(pw.getYValues());
+
+if (!getUserInput())
+	return;
 long startTime = System.currentTimeMillis();
 
 // Ensure xsampled and ysampled have the same size and set the n. of points to be fitted
