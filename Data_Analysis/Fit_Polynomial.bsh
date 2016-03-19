@@ -103,10 +103,10 @@ double getAdjustedRSquared(double rSquared, int p) {
 }
 
 /* Tries to guess the polynomial of best fit while providing some visual feedback */
-int guessDegree(Plot plot) {
-	ImagePlus imp = this.pw.getImagePlus();
+int guessDegree(PlotWindow pw, Plot plot, xsampled, ysampled) {
+	ImagePlus imp = pw.getImagePlus();
 	imp.setHideOverlay(false);
-	yfitted = new double[nPoints];
+	yfitted = new double[xsampled.length];
 	double maxRSquared = 0; //double maxARSquared = 0;
 	for (int i=super.minDegree; i<=super.maxDegree; i++) {
 		super.curDegree = i; super.color = getColor(i);
@@ -159,20 +159,23 @@ int getColor(int index) {
 	return ((255*(index-super.minDegree))/(super.maxDegree-super.minDegree));
 }
 
-/* Adds color ramp to plot */
-void makeLegend(Plot plot) {
+/* Adds legend and color ramp to plot */
+void makeLegend(Plot plot, String upperLabel, boolean ramp) {
 	ImageProcessor ip = plot.getProcessor();
-	int x = (int)(0.5 * (Plot.LEFT_MARGIN + ip.getWidth() - 256));
-	int y = ip.getHeight()-4;
-	for (int i=0; i<256; i++) {
-		ip.setColor( (i!=color) ? colors[i]:Color.BLACK );
-		ip.drawLine(x+i, y, x+i, y-5);
+	ip.drawString(upperLabel, 0, ip.getFontMetrics().getHeight());
+	if (ramp) {
+		int x = (int)(0.5 * (Plot.LEFT_MARGIN + ip.getWidth() - 256));
+		int y = ip.getHeight()-4;
+		for (int i=0; i<256; i++) {
+			ip.setColor( (i!=super.color) ? super.colors[i]:Color.BLACK );
+			ip.drawLine(x+i, y, x+i, y-5);
+		}
+		ip.setColor(Color.BLACK);
+		ip.setJustification(ip.CENTER_JUSTIFY);
+		ip.drawString("Degree", x+128, y-5);
+		ip.drawString(""+super.minDegree, x, y-5);
+		ip.drawString(""+super.maxDegree, x+256, y-5);
 	}
-	ip.setColor(Color.BLACK);
-	ip.setJustification(ip.CENTER_JUSTIFY);
-	ip.drawString("Degree", x+128, y-5);
-	ip.drawString(""+this.minDegree, x, y-5);
-	ip.drawString(""+this.maxDegree, x+256, y-5);
 }
 
 /* Prompts user for settings. Returns false if dialog is dismissed */
@@ -246,7 +249,7 @@ try {
 			if (!plotExists) // Display plot for visual feedback
 				{ pw = plot.show(); plotExists = true; }
 		}
-		defDegree = guessDegree(plot);
+		defDegree = guessDegree(pw, plot, xsampled, ysampled);
 	}
 
 	// Perform final fit
