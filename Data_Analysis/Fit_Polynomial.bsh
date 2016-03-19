@@ -37,7 +37,7 @@ int defDegree = 12;		// the default polynomial degree
 try {
 	Class.forName("org.apache.commons.math3.analysis.polynomials.PolynomialFunction");
 } catch( ClassNotFoundException e ) {
-	String URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/jars/commons-math3-3.2.jar";
+	String URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/jars/commons-math3-3.4.1.jar";
 	IJ.log("\n**** Fit Polynomial Error: Required library not found:\n"+ e +"\n \n"
 		+ "The apache commons math library must be installed in the plugins folder.\n"
 		+ "Please install it in plugins/jars/ by double-clicking on the link below:\n"+ URL);
