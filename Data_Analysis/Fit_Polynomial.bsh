@@ -277,9 +277,26 @@ try {
 	polynomialName = getDegreeString(defDegree);
 	if (verbose) IJ.log("\nFitting "+ plotTitle + ":"+ getLogMessage(fitted, defDegree));
 
-} catch (Exception e) {
+	double RSquared = getRSquared(ysampled, yfitted);
+	color = getColor(Math.min(defDegree,maxDegree));
+	plot.setColor(colors[color]);
+	plot.setLineWidth(2);
+	plot.addPoints(xfitted, yfitted, Plot.LINE);
+	plot.setColor(Color.BLACK);
+	plot.setLineWidth(1);
+	String plotLabel = (guess) ? polynomialName +" (guessed)": polynomialName;
+	plotLabel += "  R^2= "+ IJ.d2s(RSquared, 5, 9) +"  "+ nPoints +" data points";
+	makeLegend(plot, plotLabel, guess);
+	if (plotExists)
+		pw.drawPlot(plot);
+	else
+		plot.show();
 
 	IJ.showStatus("Done. "+ (System.currentTimeMillis()-startTime)/1000.0 +" seconds");
+	IJ.showProgress(0,0);
+
+} catch (Exception e) {
+
 	int errD = (guess) ? curDegree : defDegree;
 	IJ.error("Optimizer failed when dealing with a polynomial of degree\n"
 		+ errD +" ["+ nPoints +" data points] and will now terminate (see console\n"
@@ -292,20 +309,3 @@ try {
 	return;
 
 }
-
-double RSquared = getRSquared(ysampled, yfitted);
-color = getColor(Math.min(defDegree,maxDegree));
-plot.setColor(colors[color]);
-plot.setLineWidth(2);
-plot.addPoints(xfitted, yfitted, Plot.LINE);
-plot.setColor(Color.BLACK);
-plot.setLineWidth(1);
-String plotLabel = (guess) ? polynomialName +" (guessed)": polynomialName;
-plot.addLabel(0.00, 0, plotLabel +"  R^2= "+ IJ.d2s(RSquared, 5, 9) +"  "+ nPoints +" data points");
-if (guess) makeLegend(plot);
-if (plotExists)
-	pw.drawPlot(plot);
-else
-	plot.show();
-IJ.showStatus("Done. "+ (System.currentTimeMillis()-startTime)/1000.0 +" seconds");
-IJ.showProgress(0,0);
