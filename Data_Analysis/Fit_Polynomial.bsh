@@ -79,7 +79,7 @@ String getLogMessage(PolynomialFunction fit, int degree) {
 		cChar++;
 		if (i==25) cChar = 'A'; // this won't work for more than 52 parameters
 	}
-	return "\nPolynomial fit ("+ this.polynomialName +"):"+ formula + parameters +"\n";
+	return "\nPolynomial fit ("+ super.polynomialName +"):"+ formula + parameters +"\n";
 }
 
 /* Returns RSquared, http://en.wikipedia.org/wiki/Coefficient_of_determination */
@@ -120,8 +120,8 @@ int guessDegree(Plot plot) {
 	imp.setHideOverlay(false);
 	yfitted = new double[nPoints];
 	double maxRSquared = 0; //double maxARSquared = 0;
-	for (int i=this.minDegree; i<=this.maxDegree; i++) {
-		curDegree = i; color = getColor(i);
+	for (int i=super.minDegree; i<=super.maxDegree; i++) {
+		super.curDegree = i; super.color = getColor(i);
 		CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
 		for (int j=0; j<nPoints; j++)
 			fitter.addObservedPoint(xsampled[j], ysampled[j]);
@@ -134,20 +134,21 @@ int guessDegree(Plot plot) {
 		if (RSquared>maxRSquared) { //(ARSquared>maxARSquared)
 			bestDegree = i; maxRSquared = RSquared; //maxARSquared = ARSquared;
 		}
-		if (verbose) {
+		if (super.verbose) {
 			IJ.log(getDegreeString(i) +": R^2= "+ RSquared +" Adj. R^2= "+ ARSquared);
 			Roi roi = new TextRoi(0.0, 0.0, "Degree: "+ i);
 			Overlay overlay = new Overlay();
 			overlay.add(roi);
 			overlay.setFillColor(Color.GRAY);
-			overlay.setStrokeColor(colors[color]);
+			overlay.setStrokeColor(super.colors[color]);
 			imp.setOverlay(overlay);
-			plot.setColor(colors[color]);
+			plot.setColor(super.colors[color]);
 			plot.addPoints(xsampled, yfitted, Plot.LINE);
 			pw.drawPlot(plot);
-			if (i==this.maxDegree) overlay.clear();
+			if (i==super.maxDegree)
+				overlay.clear();
 		} else
-			IJ.showProgress(i + this.minDegree, this.maxDegree);
+			IJ.showProgress(i + super.minDegree, super.maxDegree);
 	}
 	return bestDegree;
 }
@@ -167,7 +168,7 @@ Color[] parabolicColors() {
 
 /* Returns the 8-bit position of index relatively to [minDegree maxDegree] */
 int getColor(int index) {
-	return ((255*(index-this.minDegree))/(this.maxDegree-this.minDegree));
+	return ((255*(index-super.minDegree))/(super.maxDegree-super.minDegree));
 }
 
 /* Adds color ramp to plot */
@@ -189,23 +190,23 @@ void makeLegend(Plot plot) {
 /* Prompts user for settings. Returns false if dialog is dismissed */
 boolean getUserInput() {
 	GenericDialog gd = new GenericDialog("Fit Polynomial to Curve...");
-	gd.addSlider("Polynomial degree:", 1, maxDegree, defDegree);
-	gd.addCheckbox("Guess \"best fit\" (ignores specified degree)", guess);
-	gd.addStringField("          Degree range:", minDegree +"-"+ maxDegree, 12);
-	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", verbose);
+	gd.addSlider("Polynomial degree:", 1, super.maxDegree, super.defDegree);
+	gd.addCheckbox("Guess \"best fit\" (ignores specified degree above)", super.guess);
+	gd.addStringField("          Degree range:", super.minDegree +"-"+ super.maxDegree, 12);
+	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", super.verbose);
 	gd.addHelp("http://fiji.sc/Sholl_Analysis#Complementary_Tools");
 	gd.showDialog();
 	boolean proceed = (gd.wasCanceled()) ? false : true;
 
-	defDegree = (int)Math.max(1, gd.getNextNumber());
+	super.defDegree = (int)Math.max(1, gd.getNextNumber());
 	String[] minAndMax = Tools.split(gd.getNextString(), " -");
-	int min = minAndMax.length>=1 ? (int)gd.parseDouble(minAndMax[0]) : minDegree;
-	int max = minAndMax.length==2 ? (int)gd.parseDouble(minAndMax[1]) : maxDegree;
-	min = Double.isNaN(min) ? minDegree : Math.max(1, min);
-	max = Double.isNaN(max) ? maxDegree : max;
-	minDegree = min; maxDegree = max;
-	guess = gd.getNextBoolean();
-	verbose = gd.getNextBoolean();
+	int min = minAndMax.length>=1 ? (int)gd.parseDouble(minAndMax[0]) : super.minDegree;
+	int max = minAndMax.length==2 ? (int)gd.parseDouble(minAndMax[1]) : super.maxDegree;
+	min = Double.isNaN(min) ? super.minDegree : Math.max(1, min);
+	max = Double.isNaN(max) ? super.maxDegree : max;
+	super.minDegree = min; super.maxDegree = max;
+	super.guess = gd.getNextBoolean();
+	super.verbose = gd.getNextBoolean();
 	return proceed;
 }
 
