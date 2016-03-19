@@ -102,18 +102,6 @@ double getAdjustedRSquared(double rSquared, int p) {
 	return ( rSquared - ((1-rSquared) * p) / (this.nPoints-p-1) );
 }
 
-/* Ensures xsampled and ysampled have the same size and returns the n. of points to be fitted */
-int getNumPoints() {
-	int size1 = this.xsampled.length;
-	int size2 = this.ysampled.length;
-	int size = Math.min(size1, size2);
-	if (size1!=size2) {
-		this.xsampled = Arrays.copyOf(this.xsampled, size);
-		this.ysampled = Arrays.copyOf(this.ysampled, size);
-	}
-	return size;
-}
-
 /* Tries to guess the polynomial of best fit while providing some visual feedback */
 int guessDegree(Plot plot) {
 	ImagePlus imp = this.pw.getImagePlus();
@@ -231,7 +219,16 @@ if (win!=null && (win instanceof PlotWindow)) {
 
 if (!getUserInput()) return;
 long startTime = System.currentTimeMillis();
-nPoints = getNumPoints();
+
+// Ensure xsampled and ysampled have the same size and set the n. of points to be fitted
+int xsize = xsampled.length;
+int ysize = ysampled.length;
+int nPoints = Math.min(xsize, ysize);
+if (xsize!=ysize) {
+	xsampled = Arrays.copyOf(xsampled, nPoints);
+	ysampled = Arrays.copyOf(ysampled, nPoints);
+}
+
 if (nPoints==0)
 	{ IJ.error("Could not retrieve values from plot"); return; }
 
