@@ -5,7 +5,7 @@
  * BeanShell script that produces cumulative projections using ImageJ's built-in projector
  * ("Image>Stacks>Z Project.."). An immediate application of these progressive projections is
  * the display of trailing paths of moving particles in timelapse experiments. For a demo, run
- * it on Trackmate's sample image ("File>Open Samples>Tracks for TrackMate", in  Fiji/IJ2)
+ * it on Trackmate's sample image (In Fiji, "File>Open Samples>Tracks for TrackMate")
  */
 
 import ij.IJ;
@@ -25,7 +25,7 @@ ImagePlus imp;
 void run(String arg) {
 	imp = WindowManager.getCurrentImage();
 	if (invalidImage(imp)) {
-		String sample = "http://fiji.sc/samples/FakeTracks.tif";
+		String sample = "http://samples.fiji.sc/FakeTracks.tif";
 		if (IJ.showMessageWithCancel("Invalid image",
 				"A stack is required but none was found.\nOpen sample image from fiji.sc?")) {
 			imp = new ImagePlus(sample);
