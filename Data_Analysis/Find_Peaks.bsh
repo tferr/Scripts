@@ -3,7 +3,7 @@
  *
  * Returns the local maxima and minima of an ImageJ plot. Requires ImageJ 1.48d or newer.
  * See http://imagej.net/Find_Peaks for details.
- * Tiago Ferreira, v1.0.4 2015.04.15
+ * Tiago Ferreira, v1.0.5 2016.03
  */
 
 import ij.IJ;

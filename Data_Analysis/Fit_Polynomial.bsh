@@ -2,7 +2,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Implements polynomial fitting in ImageJ using the apache commons math library.
- * 2014.06, Tiago Ferreira
+ * 2016.03, Tiago Ferreira
  *
  * N.B.: CurveFitter will be deprecated after commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.

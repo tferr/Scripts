@@ -19,8 +19,7 @@
  * [1] http://www.jfree.org/jfreechart/api/javadoc/
  * [2] http://www.jfree.org/jfreechart/api/javadoc/src-html/org/jfree/data/statistics/BoxAndWhiskerCalculator.html
  *
- * Tiago Ferreira, v1.0.0 2015.08.12
- * //TODO: NB The copy command in contextual menu raises a java.io.IOException in Mac OS
+ * Tiago Ferreira, v1.0.1 2016.03
  */
 
 import bar.Utils;
