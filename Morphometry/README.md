@@ -12,7 +12,7 @@
    [![][SA image]][SA page]
 
 #### Requirements
-   If you are running [Fiji](http://imagej.net/) you already have all the required
+   If you are running [Fiji](http://imagej.net/Fiji) you already have all the required
    dependencies. If you are not using Fiji, make sure you are running the latest versions of
    [AnalyzeSkeleton](http://imagej.net/AnalyzeSkeleton) and [Skeletonize 3D](http://imagej.net/Skeletonize3D)
    (for 3D analysis).

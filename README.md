@@ -7,7 +7,7 @@ Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R
 [ImageJ](http://imagej.net/), the de facto standard in scientific image processing in the life
 sciences.
 
-The easiest way is to install these scripts is to use [ Fiji](http://imagej.net/) and subscribe to the
+The easiest way is to install these scripts is to use [Fiji](http://imagej.net/Fiji) and subscribe to the
 [BAR update site](http://imagej.net/List_of_update_sites). Alternatively, you can navigate the collection
 using the sections below, and download individual routines as needed.
 For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation) or the
@@ -119,7 +119,7 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
     [fork](https://github.com/tferr/Scripts/fork) BAR or
     [here](https://help.github.com/articles/using-pull-requests) on how to initiate a
     [pull request](https://github.com/tferr/Scripts/pulls)
-    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Fiji]
+    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][IJ]
  * Having problems? Found a bug? Need to ask a question?
     * See the BAR [FAQs](http://imagej.net/BAR#FAQ), Fiji [FAQs](http://imagej.net/Frequently_Asked_Questions)
     and [Bug reporting best practices](http://imagej.net/Bug_reporting_best_practices). Then, you can either:
