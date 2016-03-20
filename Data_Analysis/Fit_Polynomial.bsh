@@ -59,10 +59,14 @@ double[] calculateSumYandY2(double[] yArray) {
 /* Returns a readable string of the chosen polynomial */
 String getDegreeString(int degree) {
 	String polynName;
-	if (degree==1) polynName = "Straight line";
-	else if (degree==2) polynName = "2nd degree polynomial";
-	else if (degree==3) polynName = "3rd degree polynomial";
-	else polynName = degree +"th degree polynomial";
+	if (degree==1)
+		polynName = "Straight line";
+	else if (degree==2)
+		polynName = "2nd degree polynomial";
+	else if (degree==3)
+		polynName = "3rd degree polynomial";
+	else
+		polynName = degree +"th degree polynomial";
 	return polynName;
 }
 
@@ -75,9 +79,11 @@ String getLogMessage(PolynomialFunction fit, int degree) {
 	for (int i=0; i<degree+1; i++) {
 		parameters += "\n"+ cChar +" = "+ IJ.d2s(coefficients[i], 5, 9);
 		formula += cChar +"x^"+ i;
-		if (i<degree) formula += " + ";
+		if (i<degree)
+			formula += " + ";
 		cChar++;
-		if (i==25) cChar = 'A'; // this won't work for more than 52 parameters
+		if (i==25)
+			cChar = 'A'; // this won't work for more than 52 parameters
 	}
 	return "\nPolynomial fit ("+ super.polynomialName +"):"+ formula + parameters +"\n";
 }
@@ -122,7 +128,8 @@ int guessDegree(PlotWindow pw, Plot plot, xsampled, ysampled) {
 		double RSquared = getRSquared(ysampled, yfitted);
 		double ARSquared = getAdjustedRSquared(RSquared, i-1, n);
 		if (RSquared>maxRSquared) { //(ARSquared>maxARSquared)
-			bestDegree = i; maxRSquared = RSquared; //maxARSquared = ARSquared;
+			bestDegree = i;
+			maxRSquared = RSquared; //maxARSquared = ARSquared;
 		}
 		if (super.verbose) {
 			IJ.log(getDegreeString(i) +": R^2= "+ RSquared +" Adj. R^2= "+ ARSquared);
@@ -145,7 +152,9 @@ int guessDegree(PlotWindow pw, Plot plot, xsampled, ysampled) {
 
 /* Returns an array of 256 'heatmap' colors */
 Color[] parabolicColors() {
-	int[] r = new int[256]; int[] g = new int[256]; int[] b = new int[256];
+	int[] r = new int[256];
+	int[] g = new int[256];
+	int[] b = new int[256];
 	Color[] colors = new Color[256];
 	for (int i=0; i<256; i++) { // create parabolas of vertices (0,255; 255/2,255; 255,255)
 		r[i] = (int)Math.max(0, -255/(127.5*127.5) * (i-255)*(i-255) + 255);
@@ -210,8 +219,10 @@ Color[] colors;
 PlotWindow pw;
 
 ImagePlus imp = WindowManager.getCurrentImage();
-if (imp==void || imp==null)
-	{ IJ.error("There are no plots open."); return; }
+if (imp==void || imp==null) {
+	IJ.error("There are no plots open.");
+	return;
+}
 
 ImageWindow win = imp.getWindow();
 
@@ -237,8 +248,10 @@ if (xsize!=ysize) {
 	ysampled = Arrays.copyOf(ysampled, nPoints);
 }
 
-if (nPoints==0)
-	{ IJ.error("Could not retrieve values from plot"); return; }
+if (nPoints==0) {
+	IJ.error("Could not retrieve values from plot");
+	return;
+}
 
 IJ.showStatus("Retrieving fits. Please wait...");
 colors = parabolicColors();
@@ -249,10 +262,13 @@ Plot plot = new Plot("Polynomial fit "+ plotTitle, "", "", xsampled, ysampled);
 try {
 
 	if (guess) { // Run fitting loop if degree is to be guessed
+
 		if (verbose) {
 			IJ.log("\nGuessing polynomial of 'best fit' for "+ plotTitle +":");
-			if (!plotExists) // Display plot for visual feedback
-				{ pw = plot.show(); plotExists = true; }
+			if (!plotExists) { // Display plot for visual feedback
+				pw = plot.show();
+				plotExists = true;
+			}
 		}
 		defDegree = guessDegree(pw, plot, xsampled, ysampled);
 	}
@@ -277,7 +293,8 @@ try {
 	}
 
 	polynomialName = getDegreeString(defDegree);
-	if (verbose) IJ.log("\nFitting "+ plotTitle + ":"+ getLogMessage(fitted, defDegree));
+	if (verbose)
+		IJ.log("\nFitting "+ plotTitle + ":"+ getLogMessage(fitted, defDegree));
 
 	double RSquared = getRSquared(ysampled, yfitted);
 	color = getColor(Math.min(defDegree,maxDegree));
