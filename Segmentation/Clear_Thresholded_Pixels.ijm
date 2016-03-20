@@ -7,7 +7,7 @@
  *
  * Works with grayscale images but in the case of multi-dimensional stacks threshold is only applied
  * to the Z-dimension of the active channel/frame.
- * Examples on how to call it from other scripts (see http://fiji.sc/BAR for details):
+ * Examples on how to call it from other scripts (see http://imagej.net/BAR for details):
  *
  *   ctp = call("bar.Utils.getSegmentationDir")+"Clear_Thresholded_Pixels.ijm";
  *   IJ.runMacroFile(ctp, "");          // show dialog prompt

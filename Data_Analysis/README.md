@@ -57,7 +57,7 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    required dependencies.
    ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
 
-   [![][Poly image]](http://fiji.sc/Sholl_Analysis#Complementary_Tools)
+   [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
 
 
 ###[Plot Results](./Plot_Results.bsh)
@@ -75,14 +75,14 @@ See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create
 
 [DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
 [DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png
-[FP page]: http://fiji.sc/Find_Peaks
-[FP image]: http://fiji.sc/images/a/a1/FindPeaksSnapshot.png
-[Poly image]: http://fiji.sc/images/f/f0/AnimatedPolyFit.gif
+[FP page]: http://imagej.net/Find_Peaks
+[FP image]: http://imagej.net/_images/a/a1/FindPeaksSnapshot.png
+[Poly image]: http://imagej.net/_images/f/f0/AnimatedPolyFit.gif
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [Fiji] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:------:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
@@ -94,4 +94,4 @@ See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[Fiji]: http://fiji.sc/BAR
+[IJ]: http://imagej.net/BAR

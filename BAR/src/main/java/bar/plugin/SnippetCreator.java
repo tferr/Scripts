@@ -175,7 +175,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		final StringBuilder sb = commonHeader(IJM);
 		sb.append("// Load BARlib.ijm. NB: functions may only be available once\n");
 		sb.append("// a new instance of the macro interpreter is initiated. See\n");
-		sb.append("// http://fiji.sc/BAR#FAQ for details\n");
+		sb.append("// http://imagej.net/BAR#FAQ for details\n");
 		sb.append("libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';\n");
 		sb.append("libContents = File.openAsString(libPath);\n");
 		sb.append("call('ij.macro.Interpreter.setAdditionalFunctions', libContents);\n");

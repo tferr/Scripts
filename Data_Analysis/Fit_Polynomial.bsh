@@ -196,7 +196,7 @@ boolean getUserInput() {
 	gd.addCheckbox("Guess \"best fit\" (ignores specified degree above)", super.guess);
 	gd.addStringField("          Degree range:", super.minDegree +"-"+ super.maxDegree, 12);
 	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", super.verbose);
-	gd.addHelp("http://fiji.sc/Sholl_Analysis#Complementary_Tools");
+	gd.addHelp("http://imagej.net/Sholl_Analysis#Complementary_Tools");
 	gd.showDialog();
 
 	super.defDegree = (int)Math.max(1, gd.getNextNumber());

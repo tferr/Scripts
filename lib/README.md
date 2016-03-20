@@ -7,7 +7,7 @@ files. These libraries serve as scripting additions to [Snippets] and other rout
 scripting additions.
 
 **See Also:** [Snippets], [BAR API](http://tferr.github.io/Scripts/apidocs/),
-[User documentation](http://fiji.sc/BAR#lib)
+[User documentation](http://imagej.net/BAR#lib)
 
 
 ##[BSH lib](./BARlib.bsh)
@@ -59,7 +59,7 @@ Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#sni
 ```java
 // Load BARlib.ijm. NB: functions may only be available once
 // a new instance of the macro interpreter is initiated. See
-// http://fiji.sc/BAR#FAQ for details
+// http://imagej.net/BAR#FAQ for details
 libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
 libContents = File.openAsString(libPath);
 call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
@@ -123,8 +123,8 @@ lib.confirmLoading
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [Fiji] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:------:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
@@ -136,4 +136,4 @@ lib.confirmLoading
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[Fiji]: http://fiji.sc/BAR
+[IJ]: http://imagej.net/BAR

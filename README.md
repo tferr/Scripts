@@ -7,10 +7,10 @@ Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R
 [ImageJ](http://imagej.net/), the de facto standard in scientific image processing in the life
 sciences.
 
-The easiest way is to install these scripts is to use [ Fiji](http://fiji.sc/) and subscribe to the
-[BAR update site](http://fiji.sc/List_of_update_sites). Alternatively, you can navigate the collection
+The easiest way is to install these scripts is to use [ Fiji](http://imagej.net/) and subscribe to the
+[BAR update site](http://imagej.net/List_of_update_sites). Alternatively, you can navigate the collection
 using the sections below, and download individual routines as needed.
-For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Installation) or the
+For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation) or the
 [BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 
@@ -100,7 +100,7 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
   1. [BAR Commander](./BAR/src/main/java/bar/plugin/Commander.java), a keyboard-based file browser
   that produces filtered lists of directory contents. Features include: drag-and-drop support,
   interaction with native file manager, regex filtering, and built-in console for common operations.
-  ([Documentation page](http://fiji.sc/BAR#Commander))
+  ([Documentation page](http://imagej.net/BAR#Commander))
 
 
 ## [Plugins]
@@ -121,8 +121,8 @@ For more details refer to the [BAR documentation page](http://fiji.sc/BAR#Instal
     [pull request](https://github.com/tferr/Scripts/pulls)
     * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Fiji]
  * Having problems? Found a bug? Need to ask a question?
-    * See the BAR [FAQs](http://fiji.sc/BAR#FAQ), Fiji [FAQs](http://fiji.sc/Frequently_Asked_Questions)
-    and [Bug reporting best practices](http://fiji.sc/Bug_reporting_best_practices). Then, you can either:
+    * See the BAR [FAQs](http://imagej.net/BAR#FAQ), Fiji [FAQs](http://imagej.net/Frequently_Asked_Questions)
+    and [Bug reporting best practices](http://imagej.net/Bug_reporting_best_practices). Then, you can either:
       * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
       * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
 
@@ -162,8 +162,8 @@ Blomquist. This project would not have been possible without the support of the 
 
 
 
-| [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [Fiji] |
-|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:------:|
+| [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
+|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
 
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
@@ -174,4 +174,4 @@ Blomquist. This project would not have been possible without the support of the 
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[Fiji]: http://fiji.sc/BAR
+[IJ]: http://imagej.net/BAR

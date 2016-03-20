@@ -2,7 +2,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Sets the threshold as the ROI average plus a factor of its standard deviation. To call it from
- * other scripts (see http://fiji.sc/BAR for details):
+ * other scripts (see http://imagej.net/BAR for details):
  *
  *   tfbpath = call("bar.Utils.getSegmentationDir")+"Threshold_From_Background.ijm";
  *   runMacro(tfbpath, 3);

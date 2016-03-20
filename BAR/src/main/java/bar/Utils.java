@@ -48,7 +48,7 @@ public class Utils implements PlugIn {
 	static final String VERSION = "1.1.6";
 
 	/** The URL to BAR's wiki page */
-	static final String DOC_URL = "http://fiji.sc/BAR";
+	static final String DOC_URL = "http://imagej.net/BAR";
 
 	/** The URL to BAR's GitHub repository */
 	static final String SRC_URL = "https://github.com/tferr/Scripts";

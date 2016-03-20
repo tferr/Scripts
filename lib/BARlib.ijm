@@ -9,7 +9,7 @@
  *     libContents = File.openAsString(libPath);
  *     call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
  *
- * Once a new instance of the macro interpreter is initiated (http://fiji.sc/BAR#FAQ),
+ * Once a new instance of the macro interpreter is initiated (http://imagej.net/BAR#FAQ),
  * you can confirm the availability of new additions by running:
  *
  *     confirmLoading();

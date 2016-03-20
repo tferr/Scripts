@@ -18,7 +18,7 @@
 
 <name>BAR_.jar</name>
 <description>BAR: A curated collection of Broadly Applicable Routines for ImageJ.</description>
-<url>http://fiji.sc/BAR</url>
+<url>http://imagej.net/BAR</url>
 
 <developers>
 		<developer>

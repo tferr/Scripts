@@ -2,7 +2,7 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Returns the local maxima and minima of an ImageJ plot. Requires ImageJ 1.48d or newer.
- * See http://fiji.sc/Find_Peaks for details.
+ * See http://imagej.net/Find_Peaks for details.
  * Tiago Ferreira, v1.0.4 2015.04.15
  */
 
@@ -59,7 +59,7 @@ boolean prompt() {
 	gd.addNumericField("Max._value of minima:", maxMinimaValue, 2, 6, "(NaN: no filtering)");
 	gd.addCheckbox("Exclude peaks on edges of plot", excludeOnEdges);
 	gd.addCheckbox("List values", listValues);
-	gd.addHelp("http://fiji.sc/Find_Peaks");
+	gd.addHelp("http://imagej.net/Find_Peaks");
 	gd.showDialog();
 	tolerance = gd.getNextNumber();
 	minPeakDistance = gd.getNextNumber();

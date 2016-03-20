@@ -17,7 +17,7 @@
 # directory named after <OUT_SUBDIR>.
 #
 # Resources:
-# [1] http://fiji.sc/BAR#Batch_Processors
+# [1] http://imagej.net/BAR#Batch_Processors
 # https://github.com/tferr/Scripts/tree/master/Snippets#batch-processors
 # https://github.com/tferr/Scripts/tree/master/Snippets#python
 
@@ -46,7 +46,7 @@ def getFileList(directory):
 
 # This function processes individual files (the argument <image>
 # being an ImagePlus object). In this example, image is renamed using
-# a random string. See http://fiji.sc/BAR#Python for details
+# a random string. See http://imagej.net/BAR#Python for details
 def myRoutines(image):
     import uuid
     image.setTitle( str(uuid.uuid4()) )

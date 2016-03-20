@@ -2,7 +2,7 @@
 
 While macros and scripts form the bulk of [BAR][Home], some BAR commands are pre-compiled
 java plugins bundled in a single JAR file. This directory contains the source code (a
-[Maven project](http://fiji.sc/Maven)) for the `bar package` implementing such plugins.
+[Maven project](http://imagej.net/Maven)) for the `bar package` implementing such plugins.
 The project also includes [plugins.config](./src/main/resources/plugins.config) that
 organizes the BAR menu [hierarchy](#bar-menu).
 
@@ -107,7 +107,7 @@ The relevant files get stored in the following locations (version 1.0.5):
    Menu bar.
    - While all files could be bundled in a single jar file (arguably a tidier approach),
    spreading files across folders has the main advantage of being compatible with the
-   [Shift-trick](http://fiji.sc/BAR#OpeningBAR), while maintaining an organized menu
+   [Shift-trick](http://imagej.net/BAR#OpeningBAR), while maintaining an organized menu
    hierarchy
    - Files are placed in the proper locations through a [shell script](../misc/symlink_bar.sh)
    (which is only useful for uploading files to the BAR [update site](http://sites.imagej.net/Tiago/))
@@ -116,8 +116,8 @@ The relevant files get stored in the following locations (version 1.0.5):
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [Fiji] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:------:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
@@ -129,4 +129,4 @@ The relevant files get stored in the following locations (version 1.0.5):
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[Fiji]: http://fiji.sc/BAR
+[IJ]: http://imagej.net/BAR

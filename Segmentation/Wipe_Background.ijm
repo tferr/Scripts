@@ -185,7 +185,7 @@ function helpMsg() {
 	+ 'be performed because it is not possible to fullfill both conditions. '
 	+ 'You can read more about shape descriptors on the '
 	+ '<a href="http://imagej.nih.gov/ij/docs/guide/">IJ User guide</a> and '
-	+ '<a href="http://fiji.sc/Category:Particle_analysis">Fiji website</a>.'
+	+ '<a href="http://imagej.net/Category:Particle_analysis">IJ website</a>.'
 	+ '</div>'
 	+ '</html>';
 	return msg;
