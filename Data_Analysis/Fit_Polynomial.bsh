@@ -198,7 +198,6 @@ boolean getUserInput() {
 	gd.addCheckbox("Log details (animates retrieval of \"best fit\")", super.verbose);
 	gd.addHelp("http://fiji.sc/Sholl_Analysis#Complementary_Tools");
 	gd.showDialog();
-	boolean proceed = (gd.wasCanceled()) ? false : true;
 
 	super.defDegree = (int)Math.max(1, gd.getNextNumber());
 	String[] minAndMax = Tools.split(gd.getNextString(), " -");
@@ -209,11 +208,11 @@ boolean getUserInput() {
 	super.minDegree = min; super.maxDegree = max;
 	super.guess = gd.getNextBoolean();
 	super.verbose = gd.getNextBoolean();
-	return proceed;
+	return !gd.wasCanceled();
 }
 
-double[] xsampled, ysampled, xfitted, yfitted;
-int color, curDegree, nPoints, bestDegree = 1;
+
+int color = 1, curDegree = 1, bestDegree = 1;
 String polynomialName = "";
 Color[] colors;
 PlotWindow pw;
@@ -232,8 +231,8 @@ if (win==void || win==null || !(win!=null && win instanceof PlotWindow)) {
 }
 
 pw = (PlotWindow)win;
-xsampled = Tools.toDouble(pw.getXValues());
-ysampled = Tools.toDouble(pw.getYValues());
+double[] xsampled = Tools.toDouble(pw.getXValues());
+double[] ysampled = Tools.toDouble(pw.getYValues());
 
 if (!getUserInput())
 	return;
@@ -284,9 +283,8 @@ try {
 
 	// Construct the polynomial that best fits the data
 	PolynomialFunction fitted = new PolynomialFunction(best);
-
-	xfitted = new double[nPoints];
-	yfitted = new double[nPoints];
+	double[] xfitted = new double[nPoints];
+	double[] yfitted = new double[nPoints];
 	for (int i=0; i<nPoints; i++) {
 		xfitted[i] = xsampled[i];
 		yfitted[i] = fitted.value(xsampled[i]);
