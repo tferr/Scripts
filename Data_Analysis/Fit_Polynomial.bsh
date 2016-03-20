@@ -133,7 +133,7 @@ int guessDegree(PlotWindow pw, Plot plot, xsampled, ysampled) {
 		}
 		if (super.verbose) {
 			IJ.log(getDegreeString(i) +": R^2= "+ RSquared +" Adj. R^2= "+ ARSquared);
-			Roi roi = new TextRoi(0.0, 0.0, "Degree: "+ i);
+			Roi roi = new TextRoi(0.0, 0.0, "Degree: "+ i + " (R\u00b2=" + IJ.d2s(ARSquared, 4) +")");
 			Overlay overlay = new Overlay();
 			overlay.add(roi);
 			overlay.setFillColor(Color.GRAY);
