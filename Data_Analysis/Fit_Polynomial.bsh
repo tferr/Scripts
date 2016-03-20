@@ -48,7 +48,7 @@ try {
 /* Returns an array with the sum of y and y^2 */
 double[] calculateSumYandY2(double[] yArray) {
 	double sumY = 0.0; double sumY2 = 0.0;
-	for (int i=0; i<nPoints; i++) {
+	for (int i=0; i<yArray.length; i++) {
 		double y = yArray[i];
 		sumY += y;
 		sumY2 += y*y;
@@ -89,7 +89,7 @@ double getRSquared(double[] sampledData, double[] fittedData) {
 	double sSumY = sSumYY2[0];
 	double sSumY2 = sSumYY2[1];
 	double fSumY2 = fSumYY2[1];
-	double sumMeanDiffSqr = sSumY2 - sSumY*sSumY/nPoints;
+	double sumMeanDiffSqr = sSumY2 - sSumY*sSumY/sampledData.length;
 	double sumResidualsSqr = sSumY2 - fSumY2;
 	double rSquared = 0.0;
 	if (sumMeanDiffSqr > 0.0)
@@ -98,27 +98,29 @@ double getRSquared(double[] sampledData, double[] fittedData) {
 }
 
 /* Returns Adjusted RSquared, http://en.wikipedia.org/wiki/Coefficient_of_determination */
-double getAdjustedRSquared(double rSquared, int p) {
-	return ( rSquared - ((1-rSquared) * p) / (this.nPoints-p-1) );
+double getAdjustedRSquared(double rSquared, int p, int n) {
+	return ( rSquared - ((1-rSquared) * p) / (n-p-1) );
 }
 
 /* Tries to guess the polynomial of best fit while providing some visual feedback */
 int guessDegree(PlotWindow pw, Plot plot, xsampled, ysampled) {
 	ImagePlus imp = pw.getImagePlus();
 	imp.setHideOverlay(false);
-	yfitted = new double[xsampled.length];
+	n = xsampled.length;
+	yfitted = new double[n];
 	double maxRSquared = 0; //double maxARSquared = 0;
 	for (int i=super.minDegree; i<=super.maxDegree; i++) {
-		super.curDegree = i; super.color = getColor(i);
+		super.curDegree = i;
+		super.color = getColor(i);
 		CurveFitter fitter = new CurveFitter(new LevenbergMarquardtOptimizer());
-		for (int j=0; j<nPoints; j++)
+		for (int j=0; j<n; j++)
 			fitter.addObservedPoint(xsampled[j], ysampled[j]);
 		double[] best = fitter.fit(new PolynomialFunction.Parametric(), new double[i+1]);
 		PolynomialFunction fitted = new PolynomialFunction(best);
-		for (int k=0; k<nPoints; k++)
+		for (int k=0; k<n; k++)
 			yfitted[k] = fitted.value(xsampled[k]);
 		double RSquared = getRSquared(ysampled, yfitted);
-		double ARSquared = getAdjustedRSquared(RSquared, i-1);
+		double ARSquared = getAdjustedRSquared(RSquared, i-1, n);
 		if (RSquared>maxRSquared) { //(ARSquared>maxARSquared)
 			bestDegree = i; maxRSquared = RSquared; //maxARSquared = ARSquared;
 		}
