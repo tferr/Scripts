@@ -2,15 +2,15 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * BeanShell script that performs Strahler analysis in ImageJ by repeated elimination of
- * terminal branches of topographic 2D/3D skeletons (http://fiji.sc/Strahler)
+ * terminal branches of topographic 2D/3D skeletons (http://imagej.net/Strahler)
  * Tiago Ferreira, 2013-2016
  *
  * Requirements:
  * Up-to-date versions of Ignacio Arganda-Carreras Skeletonize[1] and AnalyzeSkeleton[2]
- * plugins. Both are bundled with Fiji (http://fiji.sc/) but can be otherwise downloaded
+ * plugins. Both are bundled with Fiji (http://imagej.net/) but can be otherwise downloaded
  * from http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/plugins/
- * [1] http://fiji.sc/Skeletonize3D
- * [2] http://fiji.sc/AnalyzeSkeleton
+ * [1] http://imagej.net/Skeletonize3D
+ * [2] http://imagej.net/AnalyzeSkeleton
  *
  * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software Foundation
@@ -148,7 +148,7 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 	gd.addCheckbox("Show detailed information", super.verbose);
 	gd.addCheckbox("Tabular data only (no image output)", super.tabular);
 
-	gd.addHelp("http://fiji.sc/Strahler");
+	gd.addHelp("http://imagej.net/Strahler");
 	gd.addDialogListener(this);
 	dialogItemChanged(gd, null);
 	gd.showDialog();
