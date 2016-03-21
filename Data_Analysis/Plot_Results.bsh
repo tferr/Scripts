@@ -236,11 +236,11 @@ DialogListener dl = new DialogListener() {
 		validX1 = x1 != void && x1 != null;
 		datasetLabel = super.colChoices[y1Col];
 		y1 = validColumn(datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
-		validY1 = y1 != void && super.y1 != null;
+		validY1 = y1 != void && y1 != null;
 		x2 = validColumn(super.colChoices[x2Col])?super.rt.getColumnAsDoubles(x2Col):null;
-		validX2 = x2 != void && super.x2 != null;
+		validX2 = x2 != void &&  x2 != null;
 		y2 = validColumn(super.colChoices[y2Col])?super.rt.getColumnAsDoubles(y2Col):null;
-		validY2 = y1 != void && super.y2 != null;
+		validY2 = y1 != void && y2 != null;
 
 		// Assess if all dataset values are valid and plot/table remain available
 		boolean validData = true;
@@ -249,7 +249,7 @@ DialogListener dl = new DialogListener() {
 		else
 			validData = validX1 && validY1;
 		pwWindow = (super.pw==void) ? null : (ImageWindow)super.pw;
-		pwClosed = pwWindow!=null && pwWindow.closed;
+		pwClosed = pwWindow!=null && pwWindow.isClosed();
 		rtWindow = ResultsTable.getResultsWindow();
 		rtClosed = rtWindow==void || rtWindow==null;
 
@@ -346,7 +346,7 @@ DialogListener dl = new DialogListener() {
 		} else if (validData && IJ.macroRunning())
 			addDataset(datasetLabel, x1, y1, x2, x2, vectorData);
 
-		return true;
+		return validData;
 	}
 
 };
