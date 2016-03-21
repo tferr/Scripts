@@ -112,6 +112,7 @@ ImagePlus getOriginalImp(String grayscaleImgChoice) {
 
 	GenericDialog gd = new GenericDialog("Strahler Analysis v"+ super.VERSION);
 	headerFont = new Font("SansSerif", Font.BOLD, 12);
+	gd.setSmartRecording(true);
 
 	// Part 1. Main Options
 	gd.setInsets(0, 0, 0);
