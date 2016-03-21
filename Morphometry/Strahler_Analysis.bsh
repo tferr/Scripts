@@ -102,14 +102,6 @@ String VERSION = "1.5.1 2016.01.19";
 private static boolean validRootRoi;
 
 
-/* Checks if image fulfills analysis requirements */
-boolean validImage(ImagePlus imp) {
-	valid = imp!=null && imp.getBitDepth()==8;
-	if (!valid)
-		IJ.error("Strahler Analysis", "An 8-bit image is required but none was found.");
-	return valid;
-}
-
 /*
  * Creates the dialog prompt, retrieving the image with the original structure. While it
  * is unlikely that the iterative pruning of terminal branches will cause new loops on
@@ -275,13 +267,16 @@ void addCalibrationBar(ImagePlus imp, int nLabels) {
 		"fill=Black label=White number="+ nLabels +" zoom="+ zoom +" overlay");
 }
 
+
 // Retrieve analysis image and its ROI
 ImagePlus srcImp = WindowManager.getCurrentImage();
-if (!validImage(srcImp))
+if (srcImp!=void && srcImp!=null && srcImp.getBitDepth()!=8) {
+	IJ.error("Strahler Analysis", "An 8-bit image is required but none was found.");
 	return;
+}
 String title = srcImp.getTitle();
 Roi roi = srcImp.getRoi();
-validRootRoi = (roi!=null && roi.getType()==Roi.RECTANGLE);
+validRootRoi = roi!=void && roi!=null && roi.getType()==Roi.RECTANGLE;
 
 // TODO: 3D Roots are special. We need to:
 // 1) Check if ROI is associated with all slices or just one
@@ -297,9 +292,11 @@ ImagePlus origImp = getOriginalImp(title);
 if (origImp==null) return;
 
 // Work on a skeletonized copy since we'll be modifing the image
-if (roi!=null) srcImp.killRoi();
+if (roi!=void && roi!=null)
+	srcImp.killRoi();
 ImagePlus imp = srcImp.duplicate();
-if (roi!=null) srcImp.setRoi(roi);
+if (roi!=void && roi!=null)
+	srcImp.setRoi(roi);
 ImageProcessor ip = imp.getProcessor();
 skeletonizeWithoutHermits(imp);
 
@@ -364,7 +361,8 @@ as.setup("", imp);
 // Perform the iterative pruning
 boolean aborted = false;
 int order = 1, nEndpoints = 0, nJunctions = 0, nJunctions2 = 0;
-ArrayList endpointsList, junctionsList;
+ArrayList endpointsList = new ArrayList();
+ArrayList junctionsList = new ArrayList();
 String errorMsg = "";
 
 do {
@@ -399,6 +397,7 @@ do {
 	}
 
 	// Add current tree(s) to debug animation
+	ImageProcessor ipd;
 	if (nSlices>1) {
 		zp.doProjection();
 		ipd = zp.getProjection().getProcessor();
