@@ -52,9 +52,10 @@ if (obsCount==0)
 	exit("No valid data for \""+ parameter +"\" in the Results table");
 
 values = newArray(obsCount);
-for (i=0; i<resCount; i++) {
+for (i=0, j=0; i<resCount; i++) {
 	value = getResult(parameter, i);
-	if (!isNaN(value) && !(ignoreZeros && value==0)) values[i] = value;
+	if (!isNaN(value) && !(ignoreZeros && value==0))
+		values[j++] = value;
 }
 cumFreq = newArray(obsCount);
 if (yAxis==tabChoices[0]) {
