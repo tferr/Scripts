@@ -44,8 +44,8 @@ Dialog.show;
 
 for (i=0, countInvalid=0; i<resCount; i++) {
 	value = getResult(parameter, i);
-	if (isNaN(value)) countInvalid++;
-	if (ignoreZeros && value==0) countInvalid++;
+	if (isNaN(value) || (ignoreZeros && value==0))
+		countInvalid++;
 }
 obsCount = resCount-countInvalid;
 if (obsCount==0)
