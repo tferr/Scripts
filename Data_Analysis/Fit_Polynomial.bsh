@@ -225,7 +225,7 @@ if (imp==void || imp==null) {
 
 ImageWindow win = imp.getWindow();
 
-if (win==void || win==null || !(win!=null && win instanceof PlotWindow)) {
+if (win==void || win==null || !(win instanceof PlotWindow)) {
 	IJ.error(imp.getTitle() +" is not a plot window.");
 	return;
 }
