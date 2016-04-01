@@ -8,8 +8,7 @@
 # if the global variables xradius, yradius, zradius are undefined (i.e., None).
 #
 # [1] https://github.com/tferr/Scripts/tree/master/Snippets#python
-# [2] http://imagej.nih.gov/ij/developer/api/
-#     http://jenkins.imagej.net/job/ImageJ1-javadoc/javadoc/
+# [2] http://javadoc.imagej.net
 
 
 from ij import IJ, ImagePlus, WindowManager
@@ -20,9 +19,9 @@ from ij.plugin import Filters3D
 xradius = yradius = zradius = None
 
 def getSettings(img):
-    """This function assesses (by returning a boolean value) if the filter can
-    be applied to the image passed as argument. Will ask the user for new values
-    if current parameters are undefined."""
+    """This function assesses (by returning a boolean value) if the
+    filter can be applied to the image passed as argument. Will ask
+    the user for new values if current parameters are undefined."""
     global xradius, yradius, zradius
     canProceed = True
 
