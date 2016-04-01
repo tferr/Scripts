@@ -1,3 +1,5 @@
+#@ImagePlus img
+#
 # Median_Filter.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
@@ -11,7 +13,7 @@
 # [2] http://javadoc.imagej.net
 
 
-from ij import IJ, ImagePlus, WindowManager
+from ij import IJ, ImagePlus
 from ij.gui import GenericDialog
 from ij.plugin import Filters3D
 
@@ -23,31 +25,19 @@ def getSettings(img):
     filter can be applied to the image passed as argument. Will ask
     the user for new values if current parameters are undefined."""
     global xradius, yradius, zradius
-    canProceed = True
-
-    if not img:
-        IJ.error("No images open.")
-        canProceed = False
 
     # Get new values if at least one of the parameters is 'null'
-    if canProceed and None in (xradius, yradius, zradius):
+    if None in (xradius, yradius, zradius):
         gd = GenericDialog("Median Filter")
         gd.addNumericField("X radius:", 2.0, 1)
         gd.addNumericField("Y radius:", 2.0, 1)
         gd.addNumericField("Z radius:", 2.0, 1)
         gd.showDialog()
-        if gd.wasCanceled():
-            canProceed = False
-        else:
-            xradius = gd.getNextNumber()
-            yradius = gd.getNextNumber()
-            zradius = gd.getNextNumber()
+        xradius = gd.getNextNumber()
+        yradius = gd.getNextNumber()
+        zradius = gd.getNextNumber()
  
-    return canProceed
-
-
-# Get active image and store it in the variable 'img'
-img = WindowManager.getCurrentImage()
+    return gd.wasOKed()
 
 # Can we proceed?
 if getSettings(img):
