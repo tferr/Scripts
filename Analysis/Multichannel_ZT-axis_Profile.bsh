@@ -62,7 +62,7 @@ boolean allowRoutine = true;
  */
 void customRoutine(double[] values) {
 	rt = ResultsTable.getResultsTable();
-	if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0)
+	if (rt == void || rt == null || rt.getCounter() == 0)
 		rt = new ResultsTable();
 	colHeading = "ActiveProfile";
 	for (i=0; i<values.length; i++)
@@ -306,7 +306,7 @@ if (!showOptions())
 
 boolean firstRun = true;
 Plot plot = getPlot();
-if (plot==null)
+if (plot==void || plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();

@@ -42,7 +42,8 @@ boolean firstRun;	// Flag monitoring first run
 /* Returns the ProfilePlot for the active slice */
 ProfilePlot getProfilePlot() {
 	roi = imp.getRoi();
-	if (roi==null || invalidRoi(roi)) return null;
+	if (roi==void || roi==null || invalidRoi(roi))
+		return null;
 	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
 	return new ProfilePlot(imp, averageHorizontally);
 }

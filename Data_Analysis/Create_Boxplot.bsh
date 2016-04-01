@@ -44,12 +44,12 @@ boolean unset(Object o) {
 
 /** Prompts user to specify which ResultsTable columns to use as input */
 boolean setupDataset(ResultsTable rt) {
-	if (unset(rt))
-		return false;
 
 	// Extract column headings w/ numeric data (ignore "Label" column, if present)
 	headings = rt.getHeadings();
-	numIdx = (!unset(rt.getLabel(0)) || headings[0].equals("Label")) ? 1 : 0;
+	numIdx = 0;
+	if (!unset(rt.getLabel(0)) || headings[0].equals("Label"))
+		numIdx = 1;
 	numHeadings = Arrays.copyOfRange(headings, numIdx, headings.length);
 	numItems = headings.length - numIdx;
 	numChoices = new boolean[numItems];

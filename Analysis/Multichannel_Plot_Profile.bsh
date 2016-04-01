@@ -30,7 +30,8 @@ pixelUnits = false; // Set to true to ignore the image's spatial calibration
 /* Returns the ProfilePlot for the active c,z,t position */
 ProfilePlot getProfilePlot() {
 	roi = imp.getRoi();
-	if (roi==null || invalidRoi(roi)) return null;
+	if (roi==void || roi==null || invalidRoi(roi))
+		return null;
 	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
 	return new ProfilePlot(imp, averageHorizontally);
 }
@@ -38,8 +39,9 @@ ProfilePlot getProfilePlot() {
 /* Returns the multichannel Plot for the active z,t position */
 Plot getPlot() {
 	p = getProfilePlot();
-	n = (p==null) ? 0 : p.getProfile().length;
-	if (p==null || n==0) return null;
+	n = (p==void || p== null) ? 0 : p.getProfile().length;
+	if (p==void || p==null || n==0)
+		return null;
 	xvalues = assignXvalues(n);
 
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
@@ -71,7 +73,7 @@ double[] assignXvalues(size) {
 
 /* Checks if roi is of the right type */
 boolean invalidRoi(roi) {
-	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
+	return (roi==void || roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
 }
 
 /* Checks if all requirements are met */
@@ -106,7 +108,7 @@ ImagePlus getSourceImage() {
 
 
 imp = WindowManager.getCurrentImage();
-if (invalidRequirements(imp==void?null:imp))
+if (invalidRequirements(imp==void?null:imp)) // can't pass an undefined variable to a method
 	return;
 if (IJ.altKeyDown())
 	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
@@ -114,7 +116,7 @@ if (IJ.altKeyDown())
 ci = (CompositeImage)imp;
 cal = getSpatialCalibration(imp);
 plot = getPlot();
-if (plot==null)
+if (plot==void || plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();
