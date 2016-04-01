@@ -50,7 +50,7 @@ public class PlotUtils {
 	 * Exports a JFreeChart to a SVG file using the
 	 * <a href= "http://xmlgraphics.apache.org/batik/" target="_blank">Batik SVG
 	 * Toolkit</a>, bundled with Fiji. This method is taken from
-	 * {@linkplain http://dolf.trieschnigg.nl/jfreechart/}
+	 * {@literal http://dolf.trieschnigg.nl/jfreechart/}
 	 *
 	 * @param chart
 	 *            the <a href= "http://javadoc.imagej.net/JFreeChart/" target=

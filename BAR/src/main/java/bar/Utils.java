@@ -185,8 +185,8 @@ public class Utils implements PlugIn {
 	 *            the java.awt.Menu to be parsed
 	 * @param label
 	 *            the java.awt.MenuItem label being searched
-	 * @return the index of the java.awt.MenuItem. Returns <code>-1</code> if no
-	 *         match is found, <code>null</code> if menu is not available.
+	 * @return the index of the java.awt.MenuItem. Returns {@code -1} if no
+	 *         match is found, {@code null} if menu is not available.
 	 */
 	private Integer getMenuItem(final Menu menu, final String label) {
 		int position = -1;
@@ -234,7 +234,7 @@ public class Utils implements PlugIn {
 	 * the method can be triggered by dragging and dropping files from the
 	 * native file manager.
 	 * <p>
-	 * Some system files (hidden files, <code>Thumbs.db</code>) are excluded
+	 * Some system files (hidden files, {@code Thumbs.db}) are excluded
 	 * from the list. If the directory is empty, users are prompted with the
 	 * option to reveal the file in the native file browser (see
 	 * {@link #revealFile(String)}).
@@ -369,10 +369,10 @@ public class Utils implements PlugIn {
 	 * @param dir
 	 *            the path of the directory to be listed
 	 * @param cascade
-	 *            if <code>true</code> {@link ij.text.TextWindow TextWindow}
+	 *            if {@code true} {@link ij.text.TextWindow TextWindow}
 	 *            "cascades" from ImageJ's
 	 *            {@link ij.WindowManager#getFrontWindow() frontmost} window. If
-	 *            <code>false</code>, TextWidow is displayed in the center of
+	 *            {@code false}, TextWidow is displayed in the center of
 	 *            the screen
 	 *
 	 * @see #listDirectory(String, int, int)
@@ -488,7 +488,7 @@ public class Utils implements PlugIn {
 	 * assessing the existence of the specified file are performed.
 	 *
 	 * @param filename
-	 *            the filename of the <code>lib/</code> file to be opened
+	 *            the filename of the {@code lib/} file to be opened
 	 *
 	 * @see #openScript(String, String)
 	 * @see #getLibDir()
@@ -504,7 +504,7 @@ public class Utils implements PlugIn {
 	 *
 	 * @param file
 	 *            the File to be tested
-	 * @return true, if successful.
+	 * @return {@code true}, if successful.
 	 *
 	 * @see #fileExists(String)
 	 */
@@ -547,7 +547,7 @@ public class Utils implements PlugIn {
 	 *
 	 * @param filepath
 	 *            the file path to be tested
-	 * @return <code>true</code>, if successful
+	 * @return {@code true}, if successful
 	 *
 	 * @see #fileExists(File)
 	 */
@@ -571,7 +571,7 @@ public class Utils implements PlugIn {
 
 	/**
 	 * "Reveals" the specified file path in the operating system. If
-	 * <code>file</code> is a directory, opens it in the file manager of the
+	 * {@code file} is a directory, opens it in the file manager of the
 	 * operating system, otherwise the application associated with the file type
 	 * will be launched. An error message is displayed in a dialog box if file
 	 * path is invalid, or if the operating system could not be detected.
@@ -639,7 +639,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/Analysis/</code>.
+	 * Returns the path to {@code BAR/Analysis/}.
 	 *
 	 * @return the absolute path to the "Analysis" directory
 	 */
@@ -648,7 +648,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/Annotation/</code>.
+	 * Returns the path to {@code BAR/Annotation/}.
 	 *
 	 * @return the absolute path to the "Annotation" directory
 	 */
@@ -657,7 +657,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/Data_Analysis/</code>.
+	 * Returns the path to {@code BAR/Data_Analysis/}.
 	 *
 	 * @return the absolute path to the "Data_Analysis" directory
 	 */
@@ -666,7 +666,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/lib/</code>.
+	 * Returns the path to {@code BAR/lib/}.
 	 *
 	 * @return the absolute path to the "lib" directory
 	 */
@@ -675,7 +675,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/Morphometry/</code>.
+	 * Returns the path to {@code BAR/Morphometry/}.
 	 *
 	 * @return the absolute path to the "Morphometry" directory
 	 */
@@ -693,7 +693,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>BAR/Segmentation/</code>.
+	 * Returns the path to {@code BAR/Segmentation/}.
 	 *
 	 * @return the absolute path to the "Segmentation" directory
 	 */
@@ -702,7 +702,7 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to <code>Bar/Snippets/</code>.
+	 * Returns the path to {@code Bar/Snippets/}.
 	 *
 	 * @return the absolute path to the "Snippets" directory
 	 */

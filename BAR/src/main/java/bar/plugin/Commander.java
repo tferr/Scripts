@@ -99,7 +99,7 @@ import ij.text.TextWindow;
 
 /**
  * Implements a light-weight and fast keyboard-based file browser for ImageJ
- * (<i>BAR>BAR Commander...</i> command). . A summary of features is listed on
+ * ({@literal BAR>BAR Commander...} command). . A summary of features is listed on
  * the BAR <a href="http://imagej.net/BAR#Commander">documentation page</a>.
  * <p>
  * Commander is modeled after <a href=
@@ -169,10 +169,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
 
-
-	/* (non-Javadoc)
-	 * @see ij.plugin.PlugIn#run(java.lang.String)
+	/**
+	 * This method is called when the plugin is loaded. See
+	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it launches
+	 * Commander.
+	 * 
+	 * @param arg
+	 *            ignored (Otherwise specified in plugins.config).
 	 */
+	@Override
 	public void run(final String arg) {
 
 		// Check if Commander is already running

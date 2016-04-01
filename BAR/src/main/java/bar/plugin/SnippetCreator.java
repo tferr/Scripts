@@ -39,8 +39,8 @@ import ij.gui.NonBlockingGenericDialog;
 import ij.plugin.PlugIn;
 
 /**
- * Generates templates for new IJ scripts, implementing the <i>BAR>Snippets>New
- * Snippet...</i> command.
+ * Generates templates for new IJ scripts, implementing the
+ * {@literal BAR> Snippets> New Snippet...} command.
  */
 public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
@@ -71,7 +71,15 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private static MultiLineLabel infoMsg;
 	private static TextArea ta;
 
-	/** Prompts user for a new snippet that will be saved in <tt>BAR/Snippets/</tt>. */
+	/**
+	 * This method is called when the plugin is loaded. See
+	 * {@link ij.plugin.PlugIn#run(java.lang.String)} Prompts user for a new
+	 * snippet that will be saved in {@code BAR/Snippets/}
+	 * 
+	 * @param arg
+	 *            ignored (Otherwise specified in plugins.config).
+	 */
+	@Override
 	public void run(final String arg) {
 		Utils.shiftClickWarning();
 		if (showDialog()) {

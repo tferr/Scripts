@@ -55,7 +55,7 @@ import ij.WindowManager;
 import ij.plugin.BrowserLauncher;
 import ij.plugin.PlugIn;
 
-/** Implements the <i>BAR>About BAR...</i> command */
+/** Implements the {@literal BAR>About BAR...} command */
 public class Help implements PlugIn {
 
 	/** Parameters **/
@@ -70,10 +70,13 @@ public class Help implements PlugIn {
 		Debug.run(FRAME_TITLE, "");
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * This method is called when the plugin is loaded. See
+	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it displays "About"
+	 * window.
 	 * 
-	 * @see ij.plugin.PlugIn#run(java.lang.String)
+	 * @param arg
+	 *            ignored (Otherwise specified in plugins.config).
 	 */
 	public void run(final String arg) {
 
