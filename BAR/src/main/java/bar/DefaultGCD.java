@@ -1,12 +1,14 @@
 package bar;
 
+import net.imagej.ops.AbstractOp;
+
 import org.scijava.ItemIO;
 import org.scijava.plugin.Attr;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 @Plugin(type = BAR.GCD.class, name = BAR.GCD.NAME, attrs = { @Attr(name = "aliases", value = BAR.GCD.ALIASES) })
-public class DefaultGCD implements BAR.GCD {
+public class DefaultGCD extends AbstractOp implements BAR.GCD {
 
 	// -- Inputs --
 
