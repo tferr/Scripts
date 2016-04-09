@@ -119,10 +119,10 @@ void run() {
 	PlotWindow pw;
 
 	ImagePlus imp = WindowManager.getCurrentImage();
-	if (imp==void || imp==null)
+	if (imp==null)
 		{ IJ.error("There are no plots open."); return; }
 	ImageWindow win = imp.getWindow();
-	if (win!=void && win!=null && (win instanceof PlotWindow)) {
+	if (win!=null && (win instanceof PlotWindow)) {
 		pw = (PlotWindow)win;
 		float[] fyvalues = pw.getYValues();
 		ArrayUtil stats = new ArrayUtil(fyvalues);
