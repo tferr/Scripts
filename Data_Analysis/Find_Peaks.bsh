@@ -25,6 +25,9 @@ double maxMinimaValue = Double.NaN;
 boolean excludeOnEdges = false;
 boolean listValues = false;
 
+double[] xvalues;
+double[] yvalues;
+
 int[] findPositions(double[] values, double tolerance, boolean minima) {
 	int[] positions = null;
 	MaximumFinder maxFinder = new MaximumFinder();
@@ -114,8 +117,6 @@ int[] trimPeakDistance(int[] positions) {
 
 void run() {
 
-	double[] xvalues;
-	double[] yvalues;
 	PlotWindow pw;
 
 	ImagePlus imp = WindowManager.getCurrentImage();
