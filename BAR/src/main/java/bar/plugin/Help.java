@@ -146,6 +146,7 @@ public class Help implements PlugIn {
 		}
 
 		// Add contents
+		final String inLineSpacer = "&nbsp;&nbsp;|&nbsp;&nbsp;";
 		htmlPane.setText("<HTML>"
 				+ "<head>"
 				+ "<style type=\"text/css\">"
@@ -159,17 +160,20 @@ public class Help implements PlugIn {
 				+ "</h3>"
 				+ "A curated collection of <i>Broadly Applicable Routines</i> for ImageJ"
 				+ "<h3>Author/Maintainer</h3>"
-				+ "<a href='http://imagej.net/User:Tiago'>Tiago Ferreira</a>"
-				+ "<h3>Contributors</h3>"
-				+ "Maxime Pinchon, Johannes Schindelin, Wayne Rasband, "
-				+ "Jérôme Mutterer, Kota Miura, Jan Eglinger and <a href='https://github.com/tferr/Scripts#contributors'>many others</a>"
+				+ "<a href='http://imagej.net/User:Tiago'>Tiago Ferreira</a> with vital contributions "
+				+ "from <a href='https://github.com/tferr/Scripts#contributors'>many others</a>."
+				+ "<h3>Citation</h3>"
+				+ "<a href='http://dx.doi.org/10.5281/zenodo.28838'>"
+				+ "Tiago Ferreira et al (" + Utils.BUILD_DATE +"). Scripts: BAR "+ Utils.getVersion()
+				+". Zenodo. 10.5281/zenodo.28838</a>"
+				+ "<h3>Development</h3>"
+				+ "<a href='"+ Utils.getSourceURL() + "'>Source</a>" + inLineSpacer
+				+ "<a href='"+ Utils.getSourceURL() + "/releases'>Release History</a>" + inLineSpacer
+				+ "<a href='"+ Utils.getSourceURL() + "/issues'>Issues</a>" + inLineSpacer
+				+ "<a href='"+ Utils.getSourceURL() + "/issues?q=is%3Apr'>Pull requests</a>" + inLineSpacer
+				+ "<a href='"+ Utils.getJavadocURL() + "'>API</a>"
 				+ "<h3>License</h3>"
 				+ "<a href='http://opensource.org/licenses/GPL-3.0'>GNU General Public License (GPL)</a>"
-				+ "<h3>Release Notes</h3>"
-				+ "<a href='https://github.com/tferr/Scripts/releases'>All versions</a> | <a href='https://github.com/tferr/Scripts/releases/latest'>Latest version</a>"
-				+ "<h3>Issues</h3>"
-				+ "<a href='https://github.com/tferr/Scripts/issues?q='>All</a> | <a href='https://github.com/tferr/Scripts/issues?q=is%3Aopen'>Open</a> | "
-				+ "<a href='https://github.com/tferr/Scripts/issues?q=is%3Aclosed'>Closed</a> | <a href='https://github.com/tferr/Scripts/issues?q=is%3Apr'>Pull requests</a>"
 				+ "</div></HTML>");
 		// Ensure panel is scrolled to the top
 		htmlPane.setCaretPosition(0);
@@ -187,7 +191,7 @@ public class Help implements PlugIn {
 
 		// Panel to hold HTML pane
 		final JScrollPane scrollPane = new JScrollPane(htmlPane);
-		scrollPane.setPreferredSize(new Dimension(415, 215));
+		scrollPane.setPreferredSize(new Dimension(420, 220));
 		frame.add(scrollPane, BorderLayout.CENTER);
 
 		// Panel to hold side buttons, all having fixed width
@@ -200,13 +204,11 @@ public class Help implements PlugIn {
 		button = URLButton("GitHub Documentation", Utils.getSourceURL()
 				+ "#ij-bar");
 		buttonPanel.add(button);
-		button = URLButton("Source Code", Utils.getSourceURL());
-		buttonPanel.add(button);
-		button = URLButton("API", Utils.getJavadocURL());
-		buttonPanel.add(button);
 
 		addHeaderLabel(buttonPanel, "ImageJ Resources:");
 		button = URLButton("Search Portal", "http://search.imagej.net");
+		buttonPanel.add(button);
+		button = URLButton("Forum", "http://forum.imagej.net");
 		buttonPanel.add(button);
 		button = URLButton("Javadocs", "http://javadoc.imagej.net");
 		buttonPanel.add(button);

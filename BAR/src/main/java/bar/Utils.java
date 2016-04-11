@@ -47,6 +47,9 @@ public class Utils implements PlugIn {
 	/** The BAR version (as displayed in the BAR>About... dialog */
 	static final String VERSION = "1.1.6";
 
+	/** A reference to the build date */
+	public static final String BUILD_DATE = "2016";
+
 	/** The URL to BAR's wiki page */
 	static final String DOC_URL = "http://imagej.net/BAR";
 
