@@ -16,7 +16,7 @@ organizes the BAR menu [hierarchy](#bar-menu).
 
 
 ### BAR-menu
-The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
+The top-level _BAR_ Menu is organized in the following manner (version 1.x.x):
 
     BAR
     ├── Annotation
@@ -31,9 +31,6 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
     │   ├── Fit Polynomial
     │   ├── Multichannel Plot Profile
     │   └── Plot Results
-    ├── Morphometry
-    │   ├── Move Menu (Context<>Main)
-    │   └── Strahler Analysis
     ├── Segmentation
     │   ├── Move Menu (Context<>Main)
     │   ├── Shen-Castan Edge Detector
@@ -57,7 +54,7 @@ The top-level _BAR_ Menu is organized in the following manner (version 1.0.5):
 
 
 
-The relevant files get stored in the following locations (version 1.0.5):
+The relevant files get stored in the following locations (version 1.x.x):
 
     Fiji.app
     ├── macros
@@ -83,8 +80,6 @@ The relevant files get stored in the following locations (version 1.0.5):
                 │   ├── Fit_Polynomial.bsh
                 │   ├── Multichannel_Plot_Profile.bsh
                 │   └── Plot_Results.bsh
-                ├── Morphometry
-                │   └── Strahler_Analysis.bsh
                 ├── Segmentation
                 │   ├── Apply_Threshold_To_ROI.ijm
                 │   ├── Clear_Thresholded_Pixels.ijm
@@ -124,7 +119,6 @@ The relevant files get stored in the following locations (version 1.0.5):
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib

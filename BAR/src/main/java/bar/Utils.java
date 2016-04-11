@@ -675,15 +675,6 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to {@code BAR/Morphometry/}.
-	 *
-	 * @return the absolute path to the "Morphometry" directory
-	 */
-	public static String getMorphometryDir() {
-		return BAR_DIR + "Morphometry" + File.separator;
-	}
-
-	/**
 	 * Returns the path to the root directory of BAR.
 	 *
 	 * @return the absolute path to the root directory of BAR

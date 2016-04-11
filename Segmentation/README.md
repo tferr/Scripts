@@ -55,7 +55,6 @@ three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initi
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib

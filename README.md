@@ -54,12 +54,6 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   7. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
 
 
-## [Neuronal Morphometry][Morphometry]
-  Scripts related to the quantification of neuronal arbors and other tree-like structures.
-
-  1. (bsh) [Strahler Analysis](./Morphometry/README.md#strahler-analysis)
-
-
 ## [Tools and Toolsets][Tools]
   Additions to the ImageJ toolbar.
 
@@ -176,7 +170,6 @@ Blomquist. This project would not have been possible without the support of the 
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
-[Morphometry]: https://github.com/tferr/Scripts/tree/master/Morphometry#morphometry
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Plugins]: https://github.com/tferr/Scripts/tree/master/BAR#bar-plugins
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
