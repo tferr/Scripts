@@ -45,7 +45,9 @@ import org.scijava.Context;
 
 /**
  * A collection of utilities to interact with BAR, including scripting aids for
- * ImageJ.
+ * ImageJ. Most methods are designed so that they can be called by the IJ macro
+ * language (BTW, Note that the IJ1 macro interpreter converts all returned
+ * objects into their String values).
  */
 public class Utils implements PlugIn {
 
@@ -745,26 +747,29 @@ public class Utils implements PlugIn {
 		return SRC_URL;
 	}
 
+	/** Checks if table in the "Results" window contains valid data */
 	private static boolean validResultsTable() {
 		final ResultsTable rt = ResultsTable.getResultsTable();
 		return (ResultsTable.getResultsWindow() != null && rt != null && rt.getCounter() != 0);
 	}
 
 	/**
-	 * Checks if the ImageJ "Results" table contains valid data. If the
-	 * "Results" table is not open or is empty, the user is prompted with
-	 * alternatives to retrieve one, including: 1) Importing a new file; 2)
-	 * Running a <a href=
-	 * "https://github.com/tferr/Scripts/blob/master/Data_Analysis/Clipboard_to_Results.py"
-	 * target="_blank"> BAR script </a> that tries to import data from the
-	 * system clipboard; or 3) Importing a demo dataset populated by random
-	 * (Gaussian) values.
+	 * Prompts the user for tabular data, retrieved from several sources
+	 * including 1) Importing a new text/csv file; 2) Trying to import data from
+	 * the system clipboard; 3) Importing a demo dataset populated by random
+	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable ResultsTable}
+	 * currently opened by ImageJ. Data is displayed in the "Results" window.
+	 * This method is thought for IJ macros, since the IJ macro language can
+	 * only interact with the "Results" window. Note that any previous data in
+	 * the "Results" window will be lost.
 	 *
-	 * @return A populated Results table or <code>null</code> if all attempts
-	 *         were unsuccessful
+	 * @return A reference to the populated {@code ResultsTable} in the
+	 *         "Results" window or {@code null} if chosen source did not contain
+	 *         valid data. Note that the IJ1 macro interpreter converts all
+	 *         returned objects into their String values
 	 *
-	 * @see #loadDemoResults()
-	 *
+	 * @see #getTable(boolean, WindowListener)
+	 * @see #getTable()
 	 */
 	public static ResultsTable getResultsTable() {
 		try {
@@ -773,6 +778,49 @@ public class Utils implements PlugIn {
 			return null;
 		}
 	}
+
+	/**
+	 * Prompts the user for tabular data, retrieved from several sources
+	 * including 1) Importing a new text/csv file; 2) Trying to import data from
+	 * the system clipboard; 3) Importing a demo dataset populated by random
+	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable}
+	 * currently opened by ImageJ. For 1) and 2) data is displayed in a new,
+	 * dedicated window,
+	 * 
+	 * @return A reference to the chosen {@code ResultsTable} or {@code null} if
+	 *         chosen source did not contain valid data
+	 *
+	 * @see #getTable(boolean, WindowListener)
+	 * @see #getResultsTable()
+	 */
+	public static ResultsTable getTable() {
+		return getTable(false, null);
+	}
+
+	/**
+	 * Prompts the user for tabular data, retrieved from several sources
+	 * including 1) Importing a new text/csv file; 2) Trying to import data from
+	 * the system clipboard; 3) Importing a demo dataset populated by random
+	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable
+	 * ResultsTable} currently opened by ImageJ.
+	 * 
+	 * @param displayInResults
+	 *            If true chosen data is displayed in the "Results" window.
+	 *            Useful, since macros (and several plugins) can only work with
+	 *            the "Results" window. Note that any previous data in the
+	 *            "Results" window will be lost. If false chosen data is
+	 *            displayed on a dedicated window.
+	 *
+	 * @param listener
+	 *            The {@link java.awt.event.WindowListener WindowListener} to be
+	 *            added to the window containing data if retrieval was
+	 *            successful. It is ignored when null.
+	 * @return A reference to the chosen {@code ResultsTable} or {@code null} if
+	 *         chosen source did not contain valid data
+	 *
+	 * @see #getResultsTable()
+	 * @see #getTable()
+	 */
 	public static ResultsTable getTable(final boolean displayInResults, WindowListener listener) {
 
 		ResultsTable rt = null;
@@ -903,9 +951,29 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Populates the ImageJ "Results" table with random, Gaussian ("normally")
-	 * distributed values. Useful for demonstrating/testing scripts that read
-	 * data from the "Results" table.
+	 * Opens a tab or comma delimited text file.
+	 *
+	 * @param path
+	 *            The absolute pathname string of the file. A file open dialog
+	 *            is displayed if path is {@code null} or an empty string.
+	 * @param title
+	 *            The title of the window in which data is displayed. The
+	 *            filename is used if title is null or an empty string. To avoid
+	 *            windows with duplicated titles, title is made unique by
+	 *            {@link ij.WindowManager WindowManager} .
+	 * @param listener
+	 *            The {@link java.awt.event.WindowListener WindowListener} to be
+	 *            added to the window containing data if retrieval was
+	 *            successful. It is ignored when {@code null}.
+	 * @param silent
+	 *            If {@code true}, I/O exceptions are silently ignored.
+	 *
+	 * @return A reference to the opened {@code ResultsTable} or {@code null} if
+	 *         file could not be open.
+	 *
+	 * @see #getTable()
+	 * @see ij.io.Opener#openTable(String)
+	 */
 	public static ResultsTable openAndDisplayTable(String path, final String title, WindowListener listener, boolean silent) {
 		String name = "";
 		if (path == null || path.isEmpty()) {
@@ -939,7 +1007,14 @@ public class Utils implements PlugIn {
 		return rt;
 	}
 
+	/**
+	 * Returns a {@link ij.measure.ResultsTable ResultsTable} containing
+	 * Gaussian ("normally") distributed values without displaying it.
 	 *
+	 * @return the {@code ResultsTable} containing the demo data
+	 *
+	 * @see #getTable(boolean, WindowListener)
+	 * @see #getTable()
 	 * @see #getResultsTable()
 	 */
 	public static ResultsTable generateGaussianData() {
