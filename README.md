@@ -26,12 +26,11 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Data Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
-  1. (py) [Clipboard to Results](./Data_Analysis/README.md#clipboard-to-results)
   2. (bsh) [Create Boxplot](./Data_Analysis/README.md#create-boxplot)
   3. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
   4. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
   5. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
-  6. (bsh) [Plot Results](./Data_Analysis/README.md#plot-results)
+  6. (bsh) [Plot XY Data](./Data_Analysis/README.md#plot-xy-data)
 
 
 ## [Image Annotation][Annotation]
@@ -107,6 +106,14 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
 
 
+# [Misc]
+  Scripts that were deemed unfit for distribution through the BAR update site:
+
+  1. [Capture Window](./misc/README.md#capture-window)
+  2. [Clipboard to Results](./misc.clipboard-to-results)
+  3. [Extract Bouts From Tracks](./misc/extract-bouts-from-tracks)
+
+
 ## Help?
  * Want to Contribute to BAR?
     * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/)
@@ -123,7 +130,12 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 
 
 ## Citations
-BAR scripts have contributed to the following publications:
+
+* To cite BAR:
+
+  [![DOI](https://zenodo.org/badge/4622/tferr/Scripts.svg)](https://zenodo.org/badge/latestdoi/4622/tferr/Scripts)
+
+* BAR scripts have contributed to the following publications:
 
   1. Ferreira et al. Neuronal morphometry directly from bitmap images. Nature Methods (2014), 11(10):982–984. [PMID 25264773](http://www.ncbi.nlm.nih.gov/pubmed/25264773)
   1. Pope and Voigt. Peripheral glia have a pivotal role in the initial response to axon degeneration of peripheral sensory neurons in zebrafish. PLoS ONE (2014), 9(7):e103283. [PMID 25058656](http://www.ncbi.nlm.nih.gov/pubmed/25058656)
@@ -175,3 +187,4 @@ Blomquist. This project would not have been possible without the support of the 
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
 [Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
 [IJ]: http://imagej.net/BAR
+[Misc]:https://github.com/tferr/Scripts/tree/master/misc#misc

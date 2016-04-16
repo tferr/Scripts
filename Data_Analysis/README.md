@@ -2,15 +2,6 @@
 
 [BARs][Home] related to analysis of non-image numerical data.
 
-###[Clipboard to Results](./Clipboard_to_Results.py)
-   Imports numeric values (delimiter-separated values), copied to the clipboard into the
-   _Results_ table. Useful, since BARs that analyze tabular data can only read values from
-   the main IJ _Results_ table.
-   ([Download .py](./Clipboard_to_Results.py?raw=true))
-
-   See also [Create Boxplot](#create-boxplot), [Plot Results](#plot-results)
-
-
 ###[Create Boxplot](./Create_Boxplot.bsh)
 Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in the ImageJ
 Results table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
@@ -60,13 +51,13 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
 
 
-###[Plot Results](./Plot_Results.bsh)
-The interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
+###[Plot XY DATA](./Plot_XY_Data.bsh)
+_The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
 without error bars), from ImageJ measurements or imported spreadsheet data. Multi-series vector
 field plots are also supported.
 ([Download .bsh](./Plot_Results.bsh?raw=true))
 
-See also [Clipboard to Results](#clipboard-to-results), [Create Boxplot](#create-boxplot)
+See also [Create Boxplot](#create-boxplot)
 
 
 ##See Also
