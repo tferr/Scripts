@@ -311,36 +311,7 @@ DialogListener dl = new DialogListener() {
 
 		// Check if the 'Options' button has been pressed
 		} else if (e != null && e.toString().contains("Options")) {
-
-			FONTS = new String[]{Font.SANS_SERIF, Font.MONOSPACED, Font.SERIF};
-			ogd = new GenericDialog("Plot Builder Advanced Options", gd.getParent());
-			ogd.addChoice("Font for new plots:", FONTS, FONTS[0]);
-			ogd.addChoice("Secondary color:", Colors.colors, super.dColor2);
-			ogd.addMessage("\n \nOptions below apply only to the current plot:");
-			ogd.addNumericField("Line width:", 1, 0, 3, "(Default: 1 pixel)");
-			ogd.addNumericField("Major ticks length:", 7, 0, 3, "(Default: 7 pixels)");
-			ogd.addNumericField("Minor ticks length:", 3, 0, 3, "(Default: 3 pixels)");
-			ogd.addNumericField("Maximum n. of intervals:", 12, 0, 3, "(Default: 12)");
-			ogd.enableYesNoCancel("OK", "Axis Options...");
-			ogd.showDialog();
-			if (ogd.wasOKed()) {
-				super.font = new Font(FONTS[ogd.getNextChoiceIndex()], Font.PLAIN,
-					ij.gui.PlotWindow.fontSize);
-				super.dColor2 = Colors.colors[ogd.getNextChoiceIndex()];
-				if (super.plot!=void && super.plot!=null) {
-					super.plot.setLineWidth((int)ogd.getNextNumber());
-					super.plot.setTickLength((int)ogd.getNextNumber());
-					super.plot.setMinorTickLength((int)ogd.getNextNumber());
-					super.plot.setMaxIntervals((int)ogd.getNextNumber());
-					super.plot.updateImage();
-				}
-			} else if (!ogd.wasCanceled())
-				if (super.plot==void || super.pw==void || super.plot==null || super.pw==null)
-					IJ.showMessage("No data",
-					"At least one dataset must be added\nto the plot before customizing it.");
-				else
-					new PlotDialog(super.plot, PlotDialog.AXIS_OPTIONS).showDialog(super.pw);
-
+			showOptions(gd.getParent());
 
 		// Plot a single dataset if called from macro
 		} else if (validData && IJ.macroRunning())
@@ -351,6 +322,43 @@ DialogListener dl = new DialogListener() {
 
 };
 
+/** Displays the "Options" dialog for plot customization */
+public static void showOptions(Frame parentFrame) {
+
+	FONTS = new String[]{Font.SANS_SERIF, Font.MONOSPACED, Font.SERIF};
+	ogd = new GenericDialog("Plot Builder Options", parentFrame);
+	ogd.addChoice("Font for new plots:", FONTS, FONTS[0]);
+	ogd.addChoice("Secondary color:", Colors.colors, super.dColor2);
+	if (super.plot!=null) {
+		ogd.addMessage("\n \nOptions below apply only to the current plot:");
+		ogd.addNumericField("Line width:", 1, 0, 3, "(Default: 1 pixel)");
+		ogd.addNumericField("Major ticks length:", 7, 0, 3, "(Default: 7 pixels)");
+		ogd.addNumericField("Minor ticks length:", 3, 0, 3, "(Default: 3 pixels)");
+		ogd.addNumericField("Maximum n. of intervals:", 12, 0, 3, "(Default: 12)");
+	}
+	ogd.enableYesNoCancel("Apply", "Start New Plot");
+	ogd.hideCancelButton();
+	ogd.showDialog();
+	if (ogd.wasOKed()) {
+		return;
+	} else if (ogd.wasOKed()) {
+		super.font = new Font(FONTS[ogd.getNextChoiceIndex()], Font.PLAIN, ij.gui.PlotWindow.fontSize);
+		super.dColor2 = Colors.colors[ogd.getNextChoiceIndex()];
+		if (super.plot!=null) {
+			super.plot.setLineWidth((int)ogd.getNextNumber());
+			super.plot.setTickLength((int)ogd.getNextNumber());
+			super.plot.setMinorTickLength((int)ogd.getNextNumber());
+			super.plot.setMaxIntervals((int)ogd.getNextNumber());
+			super.plot.updateImage();
+		}
+	} else { // Start new plot
+		super.datasetCounter = 0;
+		super.legend = "";
+		super.plot = null;
+		super.pw = null;
+	}
+
+}
 /** Definitions of dataset shapes as per ij.gui.Plot.toShape() */
 String[] S_LABELS = {"line","x","box","connected","triangle","dot","circle","cross"};
 
