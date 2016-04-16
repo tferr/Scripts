@@ -10,18 +10,6 @@
  */
 package bar;
 
-import ij.IJ;
-import ij.Menus;
-import ij.WindowManager;
-import ij.gui.GenericDialog;
-import ij.io.Opener;
-import ij.measure.ResultsTable;
-import ij.plugin.MacroInstaller;
-import ij.plugin.PlugIn;
-import ij.plugin.frame.Editor;
-import ij.text.TextPanel;
-import ij.text.TextWindow;
-
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.Menu;
@@ -42,6 +30,17 @@ import net.imagej.ui.swing.script.TextEditor;
 
 import org.scijava.Context;
 
+import ij.IJ;
+import ij.Menus;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.io.OpenDialog;
+import ij.measure.ResultsTable;
+import ij.plugin.MacroInstaller;
+import ij.plugin.PlugIn;
+import ij.plugin.frame.Editor;
+import ij.text.TextPanel;
+import ij.text.TextWindow;
 
 /**
  * A collection of utilities to interact with BAR, including scripting aids for
