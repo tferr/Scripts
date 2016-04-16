@@ -6,10 +6,7 @@
  * Distribution tables can be accessed through the 'List' button of the plot window:
  * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
- * TF, 2009.11 Initial version
- * TF, 2014.02 Methods for optimal number of bins, fit to Normal distribution
- * TF, 2014.12 Bug fix: Column headings containing spaces were not parsed properly
- * TF, 2015.08 Tweaks. Requires BAR_-XX.jar to be installed in IJ's plugins folder
+ * TF, 2016.04 Use new BAR API. Fix exception when ignoring zero values.
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
@@ -17,8 +14,8 @@ histScale = 0.77;   // Height of modal class relatively to axis of cumulative fr
 
 
 if (nResults==0 || !isOpen("Results")) {
-	showMessageWithCancel("The Results table is empty. Open sample data?");
-	call("bar.Utils.loadDemoResults");
+	if ("" + call("bar.Utils.getResultsTable") == "null")
+		exit();
 }
 
 resCount = nResults;

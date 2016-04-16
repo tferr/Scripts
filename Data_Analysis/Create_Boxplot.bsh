@@ -116,8 +116,10 @@ boolean singleSeries = false;	// Flag tracking if multiple groups (series) exist
 PlugInFrame frame;				// Frame displaying the analysis
 String TITLE = "Box Plot";		// Frame title
 
-// Retrieve valid data from the Results table
-rt = Utils.getResultsTable();
+// Retrieve valid data
+rt = Utils.getTable();
+if (rt==void || rt==null)
+	return;
 
 // Prepare dataset: Specify categories and series
 if (!setupDataset(rt))
