@@ -55,7 +55,7 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
 _The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
 without error bars), from ImageJ measurements or imported spreadsheet data. Multi-series vector
 field plots are also supported.
-([Download .bsh](./Plot_Results.bsh?raw=true))
+([Download .bsh](./Plot_XY_Data.bsh?raw=true))
 
 See also [Create Boxplot](#create-boxplot)
 

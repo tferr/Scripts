@@ -110,8 +110,8 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   Scripts that were deemed unfit for distribution through the BAR update site:
 
   1. [Capture Window](./misc/README.md#capture-window)
-  2. [Clipboard to Results](./misc.clipboard-to-results)
-  3. [Extract Bouts From Tracks](./misc/extract-bouts-from-tracks)
+  2. [Clipboard to Results](./misc/README.md#clipboard-to-results)
+  3. [Extract Bouts From Tracks](./misc/README.md#extract-bouts-from-tracks)
 
 
 ## Help?
