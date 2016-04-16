@@ -7,7 +7,7 @@
  * Requires BAR_-X.X.X.jar. To use it without BAR append the getResultsTable()
  * method in bar.Utils to this file, replacing its calls accordingly.
  *
- * TF, v2016.03
+ * TF, v2016.04
  */
 
 import bar.Utils;
@@ -23,6 +23,7 @@ import ij.gui.PlotWindow;
 import ij.measure.ResultsTable;
 import ij.plugin.Colors;
 import ij.plugin.frame.Recorder;
+import ij.text.TextWindow;
 import ij.util.Tools;
 import ij.WindowManager;
 
@@ -45,7 +46,7 @@ void addDataset(String datasetLabel, double[]x1, double[]y1, double[]x2, double[
 		xLimits = Tools.getMinMax(x1);
 		yLimits = Tools.getMinMax(y1);
 		super.plot.setLimits(xLimits[0], xLimits[1], yLimits[0], yLimits[1]);
-		super.pw = super.plot.show();
+		super.pw = PWindowWithListener(plot);
 	}
 
 	// Add the dataset (with vectors, all column choices must be valid)
@@ -124,8 +125,15 @@ void activateRadioCheckbox(Panel panel, String label) {
  */
 void promptForData() {
 
+	// Do nothing if table is not available
+	if (super.rt==null) {
+			IJ.showMessage("No Data to Be Plotted",
+				"Since no data is available, Plot Builder will now quit.");
+		return;
+	}
+
 	// Define column choices for drop-down menus
-	super.colChoices = getColumnChoices(rt);
+	super.colChoices = getColumnChoices(super.rt);
 
 	// Build prompt if it is not being displayed
 	gdWindow = WindowManager.getWindow("Plot Builder");
@@ -138,6 +146,7 @@ void promptForData() {
 	gd.addChoice(" X-error bars", super.colChoices, "*None*");
 	gd.addChoice("      Y-values", super.colChoices, super.colChoices[0]);
 	gd.addChoice(" Y-error bars", super.colChoices, "*None*");
+	gd.setInsets(0, 20, 0);
 	gd.addCheckbox("Vector field dataset", super.vectorData);
 	gd.addMessage("");
 	gd.addRadioButtonGroup("Style:", super.S_LABELS, 4, 2, super.dShape);
@@ -154,9 +163,10 @@ void promptForData() {
 	// Generate a 3-button prompt
 	gd.addHelp("");
 	gd.setHelpLabel("Options");
-	gd.enableYesNoCancel("Close", "Reload");
+	gd.enableYesNoCancel("Close", "Data...");
 	gd.hideCancelButton();
 	gd.addDialogListener(dl);
+	gd.addWindowFocusListener(WListener);
 
 	// Display prompt at last screen position
 	LOC_KEY = "bar.PRloc";
@@ -180,26 +190,17 @@ void promptForData() {
 		if (super.plot!=null)
 			super.plot.setLimitsToFit(true);
 	} else { // "Reload" button pressed
-		super.rt = Utils.getResultsTable();
-		if (super.rt!=null) {
 
-			// Re-displaying the prompt is problematic when recording macros
-			// due to duplicated keywords. So, we'll intercept the recording
-			if (Recorder.record)
-				Recorder.setCommand("Plot Results");
-			newPlot = (IJ.altKeyDown() || super.plot==void || super.plot==null);
-			if (!newPlot)
-				newPlot = IJ.showMessageWithCancel("New Plot Window?",
-					"Results table successfully reloaded. Plot it in new window?"
-					+"\n(Hold \"Alt\" while reloading to skip this message).");
-			if (newPlot) {
-				super.datasetCounter = 0;
-				super.legend = "";
-				super.plot = null;
-				super.pw = null;
-			}
-			promptForData();
-		}
+		// Replace data source only if it is valid
+		newRt = getTableWithListener();
+		if (newRT != null)
+			super.rt = newRt;
+		promptForData();
+		// Re-displaying the prompt is problematic when recording macros
+		// due to duplicated keywords. So, we'll reset the recording
+		if (Recorder.record)
+			Recorder.setCommand(Recorder.getCommand());
+
 	}
 	return;
 }
@@ -248,10 +249,6 @@ DialogListener dl = new DialogListener() {
 			validData = validX1 && validY1 && validX2 && validY2;
 		else
 			validData = validX1 && validY1;
-		pwWindow = (super.pw==void) ? null : (ImageWindow)super.pw;
-		pwClosed = pwWindow!=null && pwWindow.isClosed();
-		rtWindow = ResultsTable.getResultsWindow();
-		rtClosed = rtWindow==void || rtWindow==null;
 
 		// Set parameters
 		super.vectorData = vectorData;
@@ -261,12 +258,7 @@ DialogListener dl = new DialogListener() {
 		// Update dialog components if dialog is being displayed
 		if (e != null && !IJ.macroRunning()) {
 
-			// Update "Add Dataset" button
-			if (pwClosed)
-				super.datasetButton.setLabel("Reopen Closed Plot");
-			if (rtClosed)
-				super.datasetButton.setLabel("Results Table Closed...");
-			super.datasetButton.setEnabled(!rtClosed && validData);
+			super.datasetButton.setEnabled(!super.rtClosed && validData);
 
 			// Update choice labels
 			gd.getComponent(0).setText(vectorData?"X-start (X1)":"X-values");
@@ -282,9 +274,9 @@ DialogListener dl = new DialogListener() {
 
 		// Check if the 'Add dataset' button has been pressed
 		if (e != null && e.getSource()==super.datasetButton) {
-			if (pwClosed) {
-				super.pw = super.plot.show(); // Redisplay plot
-			} else if (!rtClosed) {
+			if (super.pwClosed) {
+				super.pw = PWindowWithListener(super.plot); // Redisplay plot
+			} else if (!super.rtClosed) {
 
 				// Plot data and auto-select new defaults for next dataset
 				if (validData) {
@@ -359,6 +351,78 @@ public static void showOptions(Frame parentFrame) {
 	}
 
 }
+
+/**
+ * Inner class scripting the java.awt.event.WindowFocusListener
+ * interface. We'll use it to update the main dialog on every
+ * focus change.
+ */
+WindowFocusListener WListener = new WindowFocusListener() {
+	public void windowGainedFocus(WindowEvent e) {
+		updateDatasetButton();
+	}
+	public void windowLostFocus(WindowEvent e) {
+		updateDatasetButton();
+	}
+};
+
+/**
+ * Inner class scripting java.awt.WindowAdapter, the adapter that
+ * receives window events. We'll use it to keep track of which windows
+ * have been closed, so that main prompt can be updated accordingly.
+ */
+WindowAdapter WinAdapter = new WindowAdapter() {
+	public void windowClosed(WindowEvent e) {
+		if (e.getSource() instanceof ij.text.TextWindow) // ResultsTable
+			super.rtClosed = true;
+		else // Plot Window
+			super.pwClosed = true;
+		updateDatasetButton();
+	}
+};
+
+/**
+ * Displays the specified plot and returns its PlotWindow.
+ * A WindowListener is used to monitor it is closure.
+ */
+PlotWindow PWindowWithListener(Plot plot) {
+	PlotWindow pw = null;
+	if (plot!=null) {
+		super.pwClosed = false;
+		pw = plot.show();
+		pw.addWindowListener(WinAdapter);
+	}
+	return pw;
+}
+
+/**
+ * Returns the ResultsTable to be used as data input.
+ * A WindowListener is used to monitor it is closure.
+ */
+ResultsTable getTableWithListener() {
+	ResultsTable rt = null;
+	rt = Utils.getTable(false, WinAdapter);
+	if (rt!=null)
+		super.rtClosed = false;
+	return rt;
+}
+
+/**
+ * Updates <tt>datasetButton</tt> according to the availability
+ * of required windows when running in interactive mode.
+ */
+void updateDatasetButton() {
+	if (!IJ.macroRunning()) {
+		if (super.pwClosed)
+			super.datasetButton.setLabel("Reopen Closed Plot");
+		else if (super.rtClosed)
+			super.datasetButton.setLabel("Table Closed...");
+		else
+			super.datasetButton.setLabel("Add Dataset "+ (super.datasetCounter+1));
+		super.datasetButton.setEnabled(!super.rtClosed || super.pwClosed);
+	}
+}
+
 /** Definitions of dataset shapes as per ij.gui.Plot.toShape() */
 String[] S_LABELS = {"line","x","box","connected","triangle","dot","circle","cross"};
 
@@ -366,6 +430,8 @@ String[] S_LABELS = {"line","x","box","connected","triangle","dot","circle","cro
 ResultsTable rt;			// ResultsTable from which data is retrieved
 String[] colChoices;		// Array holding choices for ResultsTable columns
 boolean vectorData = false;	// Flag setting vector field data
+boolean pwClosed = false;	// Flag monitoring if Plotwindow has been closed
+boolean rtClosed = false;	// Flag monitoring if ResultsTable has been closed
 String dShape = "line";		// Descriptive label of the dataset shape
 String dColor = "red";		// Descriptive label of the dataset main color
 String dColor2 = "black";	// Descriptive label of the dataset secondary color
@@ -377,8 +443,7 @@ Button datasetButton;		// The dialog button used to append datasets to the plot
 Font font = null;			// The custom plot font (Advanced Options prompt)
 
 
-// After setting-up everything, we try to retrieve valid data from
-// the Results table. If the table is valid, we display the prompt.
-rt = Utils.getResultsTable();
-if (rt!=null)
-	promptForData();
+// After setting-up everything, we try retrieve valid data
+// from an opened ResultsTable and display the prompt
+super.rt = getTableWithListener();
+promptForData();
