@@ -36,11 +36,11 @@ void addDataset(String datasetLabel, double[]x1, double[]y1, double[]x2, double[
 	// Create and display plot with ajusted limits if first dataset
 	boolean firstRun = false;
 
-	if (super.plot==void || super.pw==void || super.plot==null || super.pw==null) {
+	if (super.plot==null || super.pw==null) {
 		firstRun = true;
 		super.plot = new Plot(WindowManager.makeUniqueName("Plotted Results"),
 				"", "", Plot.DEFAULT_FLAGS);
-		if (super.font!=void && super.font!=null)
+		if (super.font!=null)
 			super.plot.setFont(super.font);
 		xLimits = Tools.getMinMax(x1);
 		yLimits = Tools.getMinMax(y1);
@@ -54,9 +54,9 @@ void addDataset(String datasetLabel, double[]x1, double[]y1, double[]x2, double[
 		super.plot.drawVectors(x1, y1, x2, y2);
 	else {
 		super.plot.addPoints(x1, y1, Plot.toShape(super.dShape));
-		if (x2!=void && super.x2!=null)
+		if (super.x2!=null)
 			super.plot.addHorizontalErrorBars(x2);
-		if (y2!=void && y2!=null)
+		if (y2!=null)
 			super.plot.addErrorBars(y2);
 	}
 
@@ -129,7 +129,7 @@ void promptForData() {
 
 	// Build prompt if it is not being displayed
 	gdWindow = WindowManager.getWindow("Plot Builder");
-	if (!IJ.macroRunning() && gdWindow!=void && gdWindow!=null) {
+	if (!IJ.macroRunning() && gdWindow!=null) {
 		gdWindow.toFront();
 		return;
 	}
@@ -161,7 +161,7 @@ void promptForData() {
 	// Display prompt at last screen position
 	LOC_KEY = "bar.PRloc";
 	loc = Prefs.getLocation(LOC_KEY);
-	if (loc!=void && loc!=null) {
+	if (loc!=null) {
 		gd.centerDialog(false);
 		gd.setLocation(loc);
 	}
@@ -177,7 +177,7 @@ void promptForData() {
 	if (gd.wasCanceled()) { // Dialog dismissed
 		return;
 	} if (gd.wasOKed()) { // "Close" button pressed
-		if (super.plot!=void && super.plot!=null)
+		if (super.plot!=null)
 			super.plot.setLimitsToFit(true);
 	} else { // "Reload" button pressed
 		super.rt = Utils.getResultsTable();
@@ -233,14 +233,14 @@ DialogListener dl = new DialogListener() {
 		x1 = validColumn(super.colChoices[x1Col])?super.rt.getColumnAsDoubles(x1Col):null;
 		if (!vectorData && x1==null)
 			x1 = generateX(super.rt);
-		validX1 = x1 != void && x1 != null;
+		validX1 = x1 != null;
 		datasetLabel = super.colChoices[y1Col];
 		y1 = validColumn(datasetLabel)?super.rt.getColumnAsDoubles(y1Col):null;
-		validY1 = y1 != void && y1 != null;
+		validY1 = y1 != null;
 		x2 = validColumn(super.colChoices[x2Col])?super.rt.getColumnAsDoubles(x2Col):null;
-		validX2 = x2 != void &&  x2 != null;
+		validX2 = x2 != null;
 		y2 = validColumn(super.colChoices[y2Col])?super.rt.getColumnAsDoubles(y2Col):null;
-		validY2 = y1 != void && y2 != null;
+		validY2 = y2 != null;
 
 		// Assess if all dataset values are valid and plot/table remain available
 		boolean validData = true;
