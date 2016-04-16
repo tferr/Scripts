@@ -23,14 +23,19 @@ import ij.text.TextPanel;
 import ij.text.TextWindow;
 
 import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.imagej.ui.swing.script.TextEditor;
@@ -740,6 +745,11 @@ public class Utils implements PlugIn {
 		return SRC_URL;
 	}
 
+	private static boolean validResultsTable() {
+		final ResultsTable rt = ResultsTable.getResultsTable();
+		return (ResultsTable.getResultsWindow() != null && rt != null && rt.getCounter() != 0);
+	}
+
 	/**
 	 * Checks if the ImageJ "Results" table contains valid data. If the
 	 * "Results" table is not open or is empty, the user is prompted with
@@ -757,50 +767,182 @@ public class Utils implements PlugIn {
 	 *
 	 */
 	public static ResultsTable getResultsTable() {
-		ResultsTable rt = ResultsTable.getResultsTable();
-		final boolean[] thirdAction = { false };
-		if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0) {
-			final GenericDialog gd = new GenericDialog("No Data in Results Table");
-			gd.addMessage("Import new file, or try to retrieve data from clipboard?");
-			gd.enableYesNoCancel("Import file", "Read clipboard");
-			gd.addHelp("");
-			gd.setHelpLabel("Use demo data");
-			gd.addDialogListener(new ij.gui.DialogListener() {
-				public boolean dialogItemChanged(final GenericDialog gd, final java.awt.AWTEvent e) {
-					if (e != null && e.toString().contains("demo")) {
-						gd.dispose();
-						thirdAction[0] = true;
-					}
-					return true;
+		try {
+			return getTable(true, null);
+		} catch (Exception ignored) { // useful for IJM calls
+			return null;
+		}
+	}
+	public static ResultsTable getTable(final boolean displayInResults, WindowListener listener) {
+
+		ResultsTable rt = null;
+		TextWindow rtWindow = null;
+		final ArrayList<ResultsTable> tables = new ArrayList<ResultsTable>();
+		final ArrayList<String> tableTitles = new ArrayList<String>();
+
+		final Frame[] windows = WindowManager.getNonImageWindows();
+		for (final Frame w : windows) {
+			if (w instanceof TextWindow) {
+				rtWindow = (TextWindow) w;
+				rt = ((TextWindow) w).getTextPanel().getResultsTable();
+				if (rt != null) {
+					if (displayInResults && rt == ResultsTable.getResultsTable())
+						continue;
+					tables.add(rt);
+					tableTitles.add(rtWindow.getTitle());
 				}
-			});
-			gd.hideCancelButton();
-			gd.showDialog();
-			if (gd.wasCanceled()) {
-				return null;
-			} else if (gd.wasOKed()) {
-				Opener.openResultsTable("");
-			} else if (thirdAction[0]) {
-				loadDemoResults();
-			} else {
-				if (fileExists(new File(getDataAnalysisDir() + "Clipboard_to_Results.py")))
-					IJ.run("Clipboard to Results");
 			}
 		}
-		rt = ResultsTable.getResultsTable();
-		if (ResultsTable.getResultsWindow() == null || rt.getCounter() == 0)
+
+		final boolean noTablesOpened = tableTitles.isEmpty();
+
+		// Append options for external sources
+		tableTitles.add("External file...");
+		tableTitles.add("Clipboard");
+		tableTitles.add("Demo sample of Gaussian values");
+
+		// Make prompt as intuitive as possible
+		String gdTitle = "Choose Source of Tabular Data";
+		String subtitle = "Use tabular data from:";
+		if (displayInResults) {
+			if (validResultsTable()) {
+				gdTitle = "Transfer Data to Results Table";
+			} else {
+				gdTitle = "No Data in Results Table";
+			}
+			subtitle = "Replace values in \"Results\" table with data from:";
+		}
+
+		// Build prompt
+		final GenericDialog gd = new GenericDialog(gdTitle);
+		final int cols = (tableTitles.size() < 18) ? 1 : 2;
+		final int rows = (tableTitles.size() % cols > 0) ? tableTitles.size() / cols + 1 : tableTitles.size() / cols;
+		gd.addRadioButtonGroup(subtitle, tableTitles.toArray(new String[tableTitles.size()]), rows, cols,
+				tableTitles.get(0));
+		// gd.hideCancelButton();
+		gd.showDialog();
+
+		if (gd.wasCanceled()) {
+			return null;
+
+		} else if (gd.wasOKed()) {
+
+			final String choice = gd.getNextRadioButton();
+			String rtTitle;
+
+			if (choice.equals("External file...")) {
+	
+				rtTitle = (displayInResults) ? "Results" : null;
+				rt = openAndDisplayTable("", rtTitle, listener, true);
+				if (rt == null) {
+					IJ.error("Chosen file is not a tab or comma delimited text file.");
+					return null;
+				}
+
+			// Clipboard
+			} else if (choice.equals("Clipboard")) {
+				final String clipboard = getClipboardText();
+				final String error = "Clipboard does not seem to contain valid data";
+				if (clipboard==null || clipboard.isEmpty()) {
+					IJ.error(error);
+					return null;
+				} else {
+					try {
+						final File temp = File.createTempFile("BARclipboard", ".txt");
+						temp.deleteOnExit();
+						final PrintStream out = new PrintStream(temp.getAbsolutePath());
+						out.println(clipboard);
+						out.close();
+						rtTitle = (displayInResults) ? "Results" : "Clipboard Data";
+						rt = openAndDisplayTable(temp.getAbsolutePath(), rtTitle, listener, true);
+						if (rt == null) {
+							IJ.error(error);
+							return null;
+						}
+					} catch (final IOException exc) {
+						IJ.error("Could not extract tabular data from clipboard.");
+						return null;
+					}
+				}
+
+			} else if (choice.equals("Demo sample of Gaussian values")) {
+
+				rt = generateGaussianData();
+				if (rt!=null) {
+					rtTitle = (displayInResults) ? "Results" : WindowManager.makeUniqueName("Gaussian Data");
+					rt.show(rtTitle);
+					rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
+					if (rtWindow != null && listener != null)
+						rtWindow.addWindowListener(listener);
+				}
+
+			// Any other ResultsTable in available TextWindows
+			} else if (!noTablesOpened) {
+
+				rt = tables.get(tableTitles.indexOf(choice));
+				if (displayInResults) {
+					rt.show("Results");
+					rtWindow = ResultsTable.getResultsWindow();
+				} else {
+					rtWindow = (TextWindow) WindowManager.getFrame(choice);
+				}
+				if (rtWindow != null && listener != null)
+					rtWindow.addWindowListener(listener);
+
+				// ??
+			} else
+				return null;
+		}
+
+		// Ensure nothing went awry when overriding the "Results" window
+		if (displayInResults && !validResultsTable())
 			rt = null;
+
 		return rt;
+
 	}
 
 	/**
 	 * Populates the ImageJ "Results" table with random, Gaussian ("normally")
 	 * distributed values. Useful for demonstrating/testing scripts that read
 	 * data from the "Results" table.
+	public static ResultsTable openAndDisplayTable(String path, final String title, WindowListener listener, boolean silent) {
+		String name = "";
+		if (path == null || path.isEmpty()) {
+			final OpenDialog od = new OpenDialog("Open Table...");
+			final String dir = od.getDirectory();
+			name = od.getFileName();
+			if (name == null)
+				return null;
+			else
+				path = dir + name;
+		}
+		ResultsTable rt = null;
+		try {
+			rt = ResultsTable.open(path);
+		} catch (final IOException exc) {
+			if (!silent)
+				IJ.handleException(exc);
+			return null;
+		}
+		if (rt.getCounter()==0)
+			return null; // nothing to be displayed
+		if (rt != null) {
+			rt.showRowNumbers(false);
+			String rtTitle = (title != null && !title.isEmpty()) ? title : name;
+			rtTitle = WindowManager.makeUniqueName(rtTitle);
+			rt.show(rtTitle);
+			final TextWindow rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
+			if (rtWindow != null && listener != null)
+				rtWindow.addWindowListener(listener);
+		}
+		return rt;
+	}
+
 	 *
 	 * @see #getResultsTable()
 	 */
-	public static void loadDemoResults() {
+	public static ResultsTable generateGaussianData() {
 		final ResultsTable rt = new ResultsTable();
 		final double[] m1MeanSD = { 200, 50 };
 		final double[] m2MeanSD = { 250, 50 };
@@ -826,7 +968,7 @@ public class Utils implements PlugIn {
 			rt.setValue("X", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
 			rt.setValue("Y", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
 		}
-		rt.show("Results");
+		return rt;
 	}
 
 }
