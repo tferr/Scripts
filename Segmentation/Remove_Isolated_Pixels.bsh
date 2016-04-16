@@ -1,11 +1,10 @@
+//@ImagePlus imp
 /* Remove_Isolated_Pixels.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Erodes isolated pixels from segmented images. neighborsCount specifies the
  * structures to be eliminated: =8: Isolated pixels; =7: Tips of 8-connected
  * 1-pixel-wide lines (including isolated pixels); =1: Classical erosion.
- *
- * TF, 2014.12
  */
 
 import ij.IJ;
@@ -14,10 +13,9 @@ import ij.ImageStack;
 import ij.process.ByteProcessor;
 
 neighborsCount = 8;
-
-imp = IJ.getImage();
 if (!imp.getProcessor().isBinary()) {
-	IJ.error("Binary image required."); return;
+	IJ.error("Binary image required.");
+	return;
 }
 
 stack = imp.getStack();
