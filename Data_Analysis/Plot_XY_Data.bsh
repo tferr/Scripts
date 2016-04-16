@@ -1,4 +1,4 @@
-/* Plot_Results.bsh
+/* Plot XY_Data.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Interactively creates a multi-series plot (XY with or without error bars,
