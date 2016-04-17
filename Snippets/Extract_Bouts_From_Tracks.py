@@ -131,8 +131,8 @@ def getColumn(table, heading):
     return table.getColumn(table.getColumnIndex(heading))
 
 try:
-    # Retrieve valid data from "Results" table
-    rt = Utils.getResultsTable();
+    # Retrieve valid data
+    rt = Utils.getTable();
     start = time.time()
 
     # Retrive x,y,t positions (all in unc. units)
