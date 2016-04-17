@@ -69,6 +69,7 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 
   1. (py) [Median Filter](./Snippets/README.md#median-filter)
   2. (py) [NN Distances](./Snippets/README.md#nn-distances)
+  3. (py) [Extract Bouts From Tracks](./Snippets/README.md#extract-bouts-from-tracks)
   3. [Batch Processors](./Snippets/README.md#batch-processors)
     1. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
     2. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
@@ -107,11 +108,10 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 
 
 # [Misc]
-  Scripts that were deemed unfit for distribution through the BAR update site:
+  Scripts that are not distributed through the BAR update site:
 
   1. [Capture Window](./misc/README.md#capture-window)
   2. [Clipboard to Results](./misc/README.md#clipboard-to-results)
-  3. [Extract Bouts From Tracks](./misc/README.md#extract-bouts-from-tracks)
 
 
 ## Help?

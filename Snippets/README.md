@@ -16,6 +16,12 @@ by BAR users. They are installed under `BAR>Snippets>`, a menu containing severa
 
 
 ##List of Snippets
+###[Extract Bouts From Tracks](./Extract_Bouts_From_Tracks.py)
+A Jython script that segregates videotracked paths (e.g., those obtained from
+[TrackMate](http://imagej.net/TrackMate)) into "Moving" and "Motionless" bouts
+according to predefined spatial and temporal constraints.
+([Download .py](./Extract_Bouts_From_Tracks.py?raw=true))
+
 ####[Median Filter](./Median_Filter.py)
 A [Python](#python) script that exemplifies how to perform a filtering operation.
 ([Download .py](./Median_Filter.py?raw=true))
