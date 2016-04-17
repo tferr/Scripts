@@ -67,13 +67,14 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Snippets]
   Example scripts (in several languages) to be used as scripting templates, including:
 
-  1. (py) [Median Filter](./Snippets/README.md#median-filter)
-  2. (py) [NN Distances](./Snippets/README.md#nn-distances)
-  3. (py) [Extract Bouts From Tracks](./Snippets/README.md#extract-bouts-from-tracks)
-  3. [Batch Processors](./Snippets/README.md#batch-processors)
+  1. (py) [Extract Bouts From Tracks](./Snippets/README.md#extract-bouts-from-tracks)
+  2. (groovy) [List BARs](./Snippets/README.md#list-bars)
+  3. (py) [Median Filter](./Snippets/README.md#median-filter)
+  4. (py) [NN Distances](./Snippets/README.md#nn-distances)
+  5. [Batch Processors](./Snippets/README.md#batch-processors)
     1. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
     2. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
-  4. (bsh) [Search BAR](./Snippets/README.md#search-bar)
+  6. (bsh) [Search BAR](./Snippets/README.md#search-bar)
 
 
 ## [lib]

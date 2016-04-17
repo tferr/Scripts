@@ -16,11 +16,15 @@ by BAR users. They are installed under `BAR>Snippets>`, a menu containing severa
 
 
 ##List of Snippets
-###[Extract Bouts From Tracks](./Extract_Bouts_From_Tracks.py)
+####[Extract Bouts From Tracks](./Extract_Bouts_From_Tracks.py)
 A Jython script that segregates videotracked paths (e.g., those obtained from
 [TrackMate](http://imagej.net/TrackMate)) into "Moving" and "Motionless" bouts
 according to predefined spatial and temporal constraints.
 ([Download .py](./Extract_Bouts_From_Tracks.py?raw=true))
+
+####[List BARs](./List_BARs.groovy)
+Retrieves a list of all scripts registered in the `BAR>` menu.
+([Download .groovy](./List_BARs.groovy?raw=true))
 
 ####[Median Filter](./Median_Filter.py)
 A [Python](#python) script that exemplifies how to perform a filtering operation.

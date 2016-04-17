@@ -51,7 +51,7 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
 
 
-###[Plot XY DATA](./Plot_XY_Data.bsh)
+###[Plot XY Data](./Plot_XY_Data.bsh)
 _The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
 without error bars), from ImageJ measurements or imported spreadsheet data. Multi-series vector
 field plots are also supported.
