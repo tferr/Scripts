@@ -51,7 +51,7 @@ import ij.text.TextWindow;
 public class Utils implements PlugIn {
 
 	/** The BAR version (as displayed in the BAR>About... dialog */
-	static final String VERSION = "1.1.7";
+	static final String VERSION = "1.1.8dev";
 
 	/** A reference to the build date */
 	public static final String BUILD_DATE = "2016";
