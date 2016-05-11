@@ -167,7 +167,7 @@ Maxime Pinchon,
 [Mark Hiner](https://github.com/hinerm),
 [Jerome Mutterer](https://github.com/mutterer),
 [Kota Miura](https://github.com/cmci),
-Nicolas Vanderesse,
+Nicolas Vanderesse, Peter J. Lee
 and [Jan Eglinger](https://github.com/imagejan).
 BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java) from Robert Harder and Nathan
 Blomquist. This project would not have been possible without the support of the outstanding

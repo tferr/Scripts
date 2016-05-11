@@ -4,9 +4,9 @@
  *
  * Colorizes ROIs by matching LUT indexes to measurements in the Results table. It is
  * complementary to the ParticleAnalyzer (Analyze>Analyze Particles...), generating
- * particle-size heat maps. Requires IJ 1.46h.
+ * particle-size heat maps. Requires IJ 1.47r.
  *
- * Tiago Ferreira, v.5.2 2015.08.13
+ * Tiago Ferreira, v.5.3 2016.05.10
  */
 
 
