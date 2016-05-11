@@ -11,7 +11,7 @@
 
 
 // assess required conditions before proceeding
-requires("1.46h");
+requires("1.47r");
 if (roiManager("count")==0 || nResults==0) {
     showMessageWithCancel("No images open or the ROI Manager is empty...\n"
         + "Run demo? (Results Table and ROI Manager will be cleared)");
@@ -36,8 +36,8 @@ setBatchMode(true);
   Dialog.create("ROI Color Coder: "+ getTitle);
     headings= split(String.getResultsHeadings);
     Dialog.addChoice("Measurement:", headings, "Area");
-    luts= getLutList();
-    Dialog.addChoice("LUT:", luts, luts[1]);
+    luts = getList("LUTs");
+    Dialog.addChoice("LUT:", luts);
     Dialog.setInsets(12, 0, 0);
     Dialog.addMessage("Contours:");
     Dialog.addNumber("Width:", 0, 0, 4, "pixels  (0 to fill ROIs)");
@@ -162,19 +162,6 @@ setBatchMode(true);
 
 setBatchMode("exit & display");
 
-
-function getLutList() {
-  luts= getFileList(getDirectory("luts"));
-  for (i=0, count=0; i<luts.length; i++)
-      if (endsWith(luts[i], ".lut"))
-          count++;
-  list= newArray(count+3);
-  list[0]= "Fire"; list[1]= "Ice"; list[2]= "Spectrum";
-  for (i=0, j=3; i<luts.length; i++)
-      if (endsWith(luts[i], ".lut"))
-          list[j++]= substring(luts[i], 0, lengthOf(luts[i])-4);
-  return list;
-}
 
 function loadLutColors(lut) {
   run(lut);
