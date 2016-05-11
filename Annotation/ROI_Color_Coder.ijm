@@ -144,7 +144,7 @@ setBatchMode(true);
       else if (values[i]>max)
           lutIndex= 255;
       else
-          lutIndex= round(values[i]*255/max);
+          lutIndex= round(255 * (values[i] - min) / (max - min));
       roiManager("select", i);
       if (stroke>0) {
           roiManager("Set Line Width", stroke);
