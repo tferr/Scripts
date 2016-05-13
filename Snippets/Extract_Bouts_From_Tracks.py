@@ -147,11 +147,12 @@ try:
     log("Tracks to be analyzed: ", n_tracks)
 except:
     IJ.error("Invalid Results Table")
+    raise Exception("Invalid Results Table")
 
 # Create "nan"-padded tables to hold results
 detail_rt = new_Table()
 
-# Extract indivifual tracks and determine the track with the
+# Extract individual tracks and determine the track with the
 # largest data (i.e., the one with the highest number of rows)
 track_row = 0
 max_track_row = 0
