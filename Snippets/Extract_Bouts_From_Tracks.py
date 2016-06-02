@@ -66,7 +66,7 @@ RESTING_FLAG, MOVING_FLAG = 0, 1
 
 
 import math, sys, time
-from ij import IJ, ImagePlus
+from ij import IJ, ImagePlus, Macro
 from ij.measure import ResultsTable as RT
 from ij.process import ImageProcessor
 from bar import Utils
@@ -147,7 +147,7 @@ try:
     log("Tracks to be analyzed: ", n_tracks)
 except:
     IJ.error("Invalid Results Table")
-    raise Exception("Invalid Results Table")
+    raise Exception(Macro.MACRO_CANCELED) # Do not show a stack trace
 
 # Create "nan"-padded tables to hold results
 detail_rt = new_Table()
