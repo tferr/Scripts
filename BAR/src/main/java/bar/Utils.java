@@ -23,8 +23,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import net.imagej.ui.swing.script.TextEditor;
 
@@ -50,11 +53,14 @@ import ij.text.TextWindow;
  */
 public class Utils implements PlugIn {
 
-	/** The BAR version (as displayed in the BAR>About... dialog */
-	static final String VERSION = "1.1.9dev";
+	/** The BAR version **/
+	public static String VERSION = version();
 
 	/** A reference to the build date */
-	public static final String BUILD_DATE = "2016";
+	public static String BUILD_DATE = buildDate();
+
+	/** A reference to the build year */
+	public static String BUILD_YEAR = buildYear();
 
 	/** The URL to BAR's wiki page */
 	static final String DOC_URL = "http://imagej.net/BAR";
@@ -124,6 +130,65 @@ public class Utils implements PlugIn {
 			}
 
 		}
+	}
+
+
+	/**
+	 * Retrieves BAR's version
+	 *
+	 * @return the version or a non-empty place holder string if version could
+	 *         not be retrieved.
+	 *
+	 */
+	private static String version() {
+		// http://blog.soebes.de/blog/2014/01/02/version-information-into-your-appas-with-maven/
+		if (VERSION == null) {
+			final Package pkg = Utils.class.getPackage();
+			if (pkg != null)
+				VERSION = pkg.getImplementationVersion();
+			if (VERSION == null)
+				VERSION = "X Dev";
+		}
+		return VERSION;
+	}
+
+	/**
+	 * Retrieves BAR's implementation date
+	 *
+	 * @return the implementation date or an empty strong if date could not be
+	 *         retrieved.
+	 */
+	private static String buildDate() {
+		// http://stackoverflow.com/questions/1272648/
+		if (BUILD_DATE == null) {
+			final Class<Utils> clazz = Utils.class;
+			final String className = clazz.getSimpleName() + ".class";
+			final String classPath = clazz.getResource(className).toString();
+			final String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
+					+ "/META-INF/MANIFEST.MF";
+			try {
+				final Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+				final Attributes attr = manifest.getMainAttributes();
+				BUILD_DATE = attr.getValue("Implementation-Date");
+				BUILD_DATE = BUILD_DATE.substring(0, BUILD_DATE.lastIndexOf("T"));
+			} catch (final Exception ignored) {
+				BUILD_DATE = "";
+			}
+		}
+		return BUILD_DATE;
+	}
+
+	/**
+	 * Retrieves BAR's implementation year.
+	 *
+	 * @return the implementation year or an empty string if date could not be
+	 *         retrieved.
+	 */
+	private static String buildYear() {
+		if (BUILD_DATE == null || BUILD_DATE.length() < 4)
+			return "";
+		else
+			return BUILD_DATE.substring(0, 4);
 	}
 
 	/**
@@ -309,7 +374,7 @@ public class Utils implements PlugIn {
 					final String dir = (files[0].isDirectory()) ? files[0]
 							.getCanonicalPath() : files[0].getParent();
 					if (dir == null) {
-						IJ.error("BAR " + getVersion(),
+						IJ.error("BAR " + VERSION,
 								"Error: Drag and Drop failed...");
 						return;
 					}
@@ -324,7 +389,7 @@ public class Utils implements PlugIn {
 					listDirectory(dir, xPos, yPos);
 
 				} catch (final Exception e) {
-					IJ.error("BAR " + getVersion(),
+					IJ.error("BAR " + VERSION,
 							"Error: Drag and Drop failed...");
 					return;
 				}
@@ -708,15 +773,6 @@ public class Utils implements PlugIn {
 	 */
 	public static String getSnippetsDir() {
 		return SNIPPETS_DIR;
-	}
-
-	/**
-	 * Returns the BAR version as displayed in the "About..." dialog
-	 *
-	 * @return the version of BAR
-	 */
-	public static String getVersion() {
-		return VERSION;
 	}
 
 	/**
