@@ -156,7 +156,7 @@ public class Help implements PlugIn {
 				+ "</head>"
 				+ "<div WIDTH=390>"
 				+ "<h3>BAR version "
-				+ Utils.getVersion()
+				+ Utils.VERSION + " " + Utils.BUILD_DATE
 				+ "</h3>"
 				+ "A curated collection of <i>Broadly Applicable Routines</i> for ImageJ"
 				+ "<h3>Author/Maintainer</h3>"
@@ -164,8 +164,8 @@ public class Help implements PlugIn {
 				+ "from <a href='https://github.com/tferr/Scripts#contributors'>many others</a>."
 				+ "<h3>Citation</h3>"
 				+ "<a href='http://dx.doi.org/10.5281/zenodo.28838'>"
-				+ "Tiago Ferreira et al (" + Utils.BUILD_DATE +"). Scripts: BAR "+ Utils.getVersion()
-				+". Zenodo. 10.5281/zenodo.28838</a>"
+				+ "Ferreira et al (" + Utils.BUILD_YEAR +")"
+				+ ". DOI: 10.5281/zenodo.28838</a>"
 				+ "<h3>Development</h3>"
 				+ "<a href='"+ Utils.getSourceURL() + "'>Source</a>" + inLineSpacer
 				+ "<a href='"+ Utils.getSourceURL() + "/releases'>Release History</a>" + inLineSpacer
