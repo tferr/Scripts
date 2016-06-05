@@ -1850,13 +1850,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				activateTable();
 			}
 
-		} else if (source == prompt) {
-
-			// Up or down arrows pressed in prompt: Move the focus to list
-			if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
-				activateTable();
-			}
-
 		} else if (source == table) {
 
 			// Focus in list and left arrow key: move up in directory hierarchy

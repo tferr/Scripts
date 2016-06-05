@@ -829,7 +829,7 @@ public class Utils implements PlugIn {
 	public static ResultsTable getResultsTable() {
 		try {
 			return getTable(true, null);
-		} catch (Exception ignored) { // useful for IJM calls
+		} catch (final Exception ignored) { // useful for IJM calls
 			return null;
 		}
 	}
@@ -876,7 +876,7 @@ public class Utils implements PlugIn {
 	 * @see #getResultsTable()
 	 * @see #getTable()
 	 */
-	public static ResultsTable getTable(final boolean displayInResults, WindowListener listener) {
+	public static ResultsTable getTable(final boolean displayInResults, final WindowListener listener) {
 
 		ResultsTable rt = null;
 		TextWindow rtWindow = null;
@@ -1029,7 +1029,7 @@ public class Utils implements PlugIn {
 	 * @see #getTable()
 	 * @see ij.io.Opener#openTable(String)
 	 */
-	public static ResultsTable openAndDisplayTable(String path, final String title, WindowListener listener, boolean silent) {
+	public static ResultsTable openAndDisplayTable(String path, final String title, final WindowListener listener, final boolean silent) {
 		String name = "";
 		if (path == null || path.isEmpty()) {
 			final OpenDialog od = new OpenDialog("Open Table...");
