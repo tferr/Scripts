@@ -286,7 +286,7 @@ DialogListener dl = new DialogListener() {
 				} else {
 					IJ.showMessage("Invalid data",
 						"Chosen column(s) do not seem to contain numeric data.");
-					return;
+					return false;
 				}
 				choices = gd.getChoices();
 				y1idx = (super.datasetCounter % (super.colChoices.length-1));
