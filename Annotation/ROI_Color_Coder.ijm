@@ -37,7 +37,7 @@ setBatchMode(true);
     headings= split(String.getResultsHeadings);
     Dialog.addChoice("Measurement:", headings, "Area");
     luts = getList("LUTs");
-    Dialog.addChoice("LUT:", luts);
+    Dialog.addChoice("LUT:", luts, "mpl-viridis");
     Dialog.setInsets(12, 0, 0);
     Dialog.addMessage("Contours:");
     Dialog.addNumber("Width:", 0, 0, 4, "pixels  (0 to fill ROIs)");
