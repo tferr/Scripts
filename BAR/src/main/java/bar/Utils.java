@@ -936,9 +936,10 @@ public class Utils implements PlugIn {
 			if (choice.equals("External file...")) {
 	
 				rtTitle = (displayInResults) ? "Results" : null;
-				rt = openAndDisplayTable("", rtTitle, listener, true);
-				if (rt == null) {
-					IJ.error("Chosen file is not a tab or comma delimited text file.");
+				try {
+					return openAndDisplayTable("", rtTitle, listener);
+				} catch (final IOException exc) {
+					IJ.error(exc.getMessage());
 					return null;
 				}
 
@@ -1029,36 +1030,53 @@ public class Utils implements PlugIn {
 	 * @see #getTable()
 	 * @see ij.io.Opener#openTable(String)
 	 */
-	public static ResultsTable openAndDisplayTable(String path, final String title, final WindowListener listener, final boolean silent) {
-		String name = "";
-		if (path == null || path.isEmpty()) {
-			final OpenDialog od = new OpenDialog("Open Table...");
-			final String dir = od.getDirectory();
-			name = od.getFileName();
-			if (name == null)
-				return null;
-			else
-				path = dir + name;
-		}
-		ResultsTable rt = null;
+	public static ResultsTable openAndDisplayTable(final String path, final String title, final WindowListener listener, final boolean silent) {
 		try {
-			rt = ResultsTable.open(path);
+			return openAndDisplayTable(path, title, listener);
 		} catch (final IOException exc) {
 			if (!silent)
 				IJ.handleException(exc);
 			return null;
 		}
-		if (rt.getCounter()==0)
-			return null; // nothing to be displayed
-		if (rt != null) {
-			rt.showRowNumbers(false);
-			String rtTitle = (title != null && !title.isEmpty()) ? title : name;
-			rtTitle = WindowManager.makeUniqueName(rtTitle);
-			rt.show(rtTitle);
-			final TextWindow rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
-			if (rtWindow != null && listener != null)
-				rtWindow.addWindowListener(listener);
-		}
+		
+	}
+
+	/**
+	 * Opens a tab or comma delimited text file.
+	 *
+	 * @param path
+	 *            The absolute pathname string of the file. A file open dialog
+	 *            is displayed if path is {@code null} or an empty string.
+	 * @param title
+	 *            The title of the window in which data is displayed. The
+	 *            filename is used if title is null or an empty string. To avoid
+	 *            windows with duplicated titles, title is made unique by
+	 *            {@link ij.WindowManager WindowManager} .
+	 * @param listener
+	 *            The {@link java.awt.event.WindowListener WindowListener} to be
+	 *            added to the window containing data if retrieval was
+	 *            successful. It is ignored when {@code null}.
+	 * @throws IOException
+	 *             if file could not be opened
+	 * @return A reference to the opened {@code ResultsTable} or {@code null} if
+	 *         table was empty.
+	 *
+	 * @see #getTable()
+	 * @see ij.io.Opener#openTable(String)
+	 */
+	public static ResultsTable openAndDisplayTable(final String path, final String title, final WindowListener listener)
+			throws IOException {
+		ResultsTable rt = null;
+		rt = ResultsTable.open(path);
+		if (rt == null || rt.getCounter() == 0) // nothing to be displayed
+			return null;
+		rt.showRowNumbers(false);
+		String rtTitle = (title != null && !title.isEmpty()) ? title : OpenDialog.getLastName();
+		rtTitle = WindowManager.makeUniqueName(rtTitle);
+		rt.show(rtTitle);
+		final TextWindow rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
+		if (rtWindow != null && listener != null)
+		rtWindow.addWindowListener(listener);
 		return rt;
 	}
 
