@@ -1,11 +1,11 @@
 #!/bin/bash
 ## IJ BAR: https://github.com/tferr/Scripts#scripts
 ## Symlinks files in the repository to a Fiji installation
-## TF 2015.01
+## TF 201606
 
 ## Source and destination paths
     SRC_DIR=`dirname $(pwd -P)`
-    FIJI_HOME="/Applications/Fiji/Fiji.app"
+    FIJI_HOME="/Applications/IJ/FijiDev.app"
     BAR_DIR="$FIJI_HOME/plugins/Scripts/BAR"
 
 ## Symlink lib/ files
@@ -28,11 +28,6 @@
     mkdir -p $DIR
     ln -fs $SRC_DIR/Data_Analysis/* $DIR
 
-## Symlink Morphometry/ files
-    DIR="$BAR_DIR/Morphometry"
-    mkdir -p $DIR
-    ln -fs $SRC_DIR/Morphometry/* $DIR
-
 ## Symlink Segmentation/ files
     DIR="$BAR_DIR/Segmentation"
     mkdir -p $DIR
@@ -43,6 +38,11 @@
     mkdir -p $DIR
     ln -fs $SRC_DIR/Snippets/* $DIR
 
+## Symlink Snippets/ files
+    DIR="$BAR_DIR/lib"
+    mkdir -p $DIR
+    ln -fs $SRC_DIR/lib/* $DIR
+
 ## Symlink macro tools
     DIR="$FIJI_HOME/macros/tools"
     mkdir -p $DIR
@@ -52,6 +52,3 @@
     DIR="$FIJI_HOME/macros/toolsets"
     mkdir -p $DIR
     ln -fs $SRC_DIR/Tools/Toolsets/*.ijm $DIR
-
-## 8. Symlink compiled .jar
-    ln -fs $SRC_DIR/BAR/target/*.jar $FIJI_HOME/plugins/
