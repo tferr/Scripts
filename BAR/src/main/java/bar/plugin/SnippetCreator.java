@@ -223,6 +223,9 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		sb.append("sys.path.append(barUtils.getLibDir())\n");
 		sb.append("import BARlib as lib\n");
 		sb.append("\n");
+		sb.append("# Ignore pre-existing binaries of the lib\n");
+		sb.append("barUtils.zapCompiledLibs()\n");
+		sb.append("\n");
 		sb.append("# Confirm availability of BARlib\n");
 		sb.append("lib.confirmLoading()\n");
 		return sb.toString();
