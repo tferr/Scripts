@@ -558,6 +558,38 @@ public class Utils implements PlugIn {
 	}
 
 	/**
+	 * Removes {@code $py.class}, {@code .class}, {@code .pyc} and {@code .pyo}
+	 * files from the "lib" directory of BAR.
+	 *
+	 * @see #getLibDir()
+	 * @see #zapCompiledLibs(File)
+	 */
+	public static void zapCompiledLibs() {
+		zapCompiledFiles(new File(LIB_DIR));
+	}
+
+	/**
+	 * Removes {@code $py.class}, {@code .class}, {@code .pyc} and {@code .pyo}
+	 * files from the specified directory.
+	 *
+	 * @param directory
+	 *            the directory to be cleansed
+	 *
+	 * @see #zapCompiledLibs()
+	 */
+	public static void zapCompiledFiles(final File directory) {
+		if (directory.exists()) {
+			final File[] files = directory.listFiles();
+			for (final File f : files) {
+				if (f.getName().endsWith(".class") || f.getName().endsWith(".pyc") || f.getName().endsWith(".pyo"))
+					if (!f.delete()) {
+						IJ.log("Could not delete " + f.getName());
+					}
+			}
+		}
+	}
+
+	/**
 	 * Opens the specified file in the "lib" directory of BAR. No tests
 	 * assessing the existence of the specified file are performed.
 	 *
