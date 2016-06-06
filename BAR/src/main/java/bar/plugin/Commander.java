@@ -1664,6 +1664,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		prompt.setForeground(Color.BLACK);
 		statusBar.setForeground(Color.DARK_GRAY);
 
+		boolean openFlag = false;
 		final int hits = filenames.size();
 		if (hits == 0) {
 			error("No matches found...");
@@ -1673,9 +1674,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				log("<html>Press &crarr; to return to parent</html>");
 			else if (isFolder(selectedItem))
 				log("<html>Press &crarr; to expand</html>");
-			else if (isOpenable(selectedItem))
+			else if (isOpenable(selectedItem)) {
+				openFlag = true;
 				log("<html>Press &crarr; to open</html>");
-			else
+			} else
 				log("File cannot be opened...");
 		} else {
 			if (truncatedList)
@@ -1683,6 +1685,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			else
 				log(String.valueOf(hits) + " items");
 		}
+		if (openButton!=null)
+			openButton.setEnabled(openFlag);
 	}
 
 	/** Toggles "Favorites", "Reveal Path", "Print Current List", etc. */
@@ -1795,8 +1799,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	public void valueChanged(final ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 			return;
-		setSelectedItem(table.getSelectedRow());
-		openButton.setEnabled(isOpenable(selectedItem));
+		final int item = table.getSelectedRow();
+		setSelectedItem(item);
+		openButton.setEnabled(item!=-1 && isOpenable(selectedItem));
 	}
 
 	/* (non-Javadoc)
