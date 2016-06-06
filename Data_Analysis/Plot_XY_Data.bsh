@@ -193,7 +193,7 @@ void promptForData() {
 
 		// Replace data source only if it is valid
 		newRt = getTableWithListener();
-		if (newRT != null)
+		if (newRT != void && newRT != null)
 			super.rt = newRt;
 		promptForData();
 		// Re-displaying the prompt is problematic when recording macros
