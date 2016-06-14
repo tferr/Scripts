@@ -12,7 +12,14 @@
 # Then, call functions as usual:
 #    lib.confirmLoading()
 #
-
+# NB: Jython modules will be compiled when loaded. Compiled files are static and
+# will not be recompiled automatically when the respective source is modified.
+# If you change this file (BARlib.py), you'll have to delete the respective binary
+#(BARlib$py.class) to force a new compilation. You can do so, using:
+#
+#    barUtils.zapCompiledLibs()
+#
+# (See BAR API ("BAR>About BAR...") for more details)
 
 ##### Utilities #####
 def confirmLoading():
