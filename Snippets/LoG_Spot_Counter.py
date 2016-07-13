@@ -140,7 +140,7 @@ else:
 
 # Ch2 detection. NB: GUI accepts diameter not radius
 logger("Processing Ch2...")
-settings.detectorFactory = LogDetectorFactory()
+settings = trackmate.getSettings()
 settings.detectorSettings = {
     'DO_SUBPIXEL_LOCALIZATION' : False,
     'RADIUS' : radius_ch2,
@@ -148,7 +148,6 @@ settings.detectorSettings = {
     'THRESHOLD' : threshold_ch2,
     'DO_MEDIAN_FILTERING' : True,
 }
-trackmate = TrackMate(settings)
 if trackmate.execDetection():
     spots_ch2 = extractCounts(trackmate, "PLA", "small")
 else:
