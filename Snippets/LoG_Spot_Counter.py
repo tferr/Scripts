@@ -3,8 +3,10 @@
 # @LogService logsvc
 # @Double(label="Ch1 detector radius",value=3.750) radius_ch1
 # @Double(label="Ch1 detector threshold",value=2.500) threshold_ch1
+# @ColorRGB(label="Ch1 counter color",value="magenta") color_ch1
 # @Double(label="Ch2 detector radius",value=0.6505) radius_ch2
 # @Double(label="Ch2 detector threshold",value=150) threshold_ch2
+# @ColorRGB(label="Ch2 counter color",value="yellow") color_ch2
 # @Boolean(label="Run silently",value=false) silent
 
 # LoG_Spot_Counter.py
@@ -19,6 +21,10 @@ from ij.measure import Calibration, ResultsTable as RT
 from java.awt import Color
 
 
+def ColorRGBtoColor(color):
+    """Converts a org.scijava.util.ColorRGB into a java.awt.Color"""
+    return Color(color.getRed(), color.getGreen(), color.getBlue())
+
 def extractCounts(trackmate, ch_id, roi_type = "large"):
     """Adds spots to the image Overlay and counts to the ResultsTable.
        Returns the total number of spots
@@ -30,14 +36,14 @@ def extractCounts(trackmate, ch_id, roi_type = "large"):
     spots = model.getSpots()
     count = spots.getNSpots(False)
     if count > 0:
-    	logger("Rendering overlay")
+        logger("Rendering overlay")
         roi = spotCollectionToROI(spots, False)
         if "large" in roi_type:
-            roi.setStrokeColor(Color.MAGENTA)
+            roi.setStrokeColor(ColorRGBtoColor(color_ch1))
             roi.setPointType(3)
             roi.setSize(4)
         else:
-            roi.setStrokeColor(Color.YELLOW)
+            roi.setStrokeColor(ColorRGBtoColor(color_ch2))
             roi.setPointType(2)
             roi.setSize(1)
         overlay.add(roi, ch_id)
