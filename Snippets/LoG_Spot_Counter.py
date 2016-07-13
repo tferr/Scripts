@@ -72,7 +72,9 @@ def projectionImage(imp):
     zp.setStartSlice(1);
     zp.setStopSlice(imp.getNSlices());
     zp.doHyperStackProjection(True)
-    return zp.getProjection()
+    mip_imp = zp.getProjection()
+    mip_imp.setCalibration(imp.getCalibration())
+    return mip_imp
 
 def spotCollectionToROI(spotCollection, visibleSpotsOnly):
     """Converts a trackmate.SpotCollection to a MultiPoint ROI"""
