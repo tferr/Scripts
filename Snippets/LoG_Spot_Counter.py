@@ -14,10 +14,9 @@
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
 from fiji.plugin.trackmate.detection import LogDetectorFactory
-from ij.gui import Overlay
-from ij.measure import ResultsTable as RT
+from ij.gui import Overlay, PointRoi
+from ij.measure import Calibration, ResultsTable as RT
 from java.awt import Color
-import sys
 
 
 def extractCounts(trackmate, ch_id, roi_type = "large"):
@@ -47,15 +46,17 @@ def extractCounts(trackmate, ch_id, roi_type = "large"):
 
 def logger(message, isError = False, exit = False):
     """Logs message/error when in 'debug' mode aborting script if requested"""
-    from ij import Macro
-    from java.lang import RuntimeException
     global silent, logsvc
     if not silent:
         logsvc.error(message) if isError else logsvc.info(message)
-    if exit and silent: # stack trace ommited
-        raise RuntimeException(Macro.MACRO_CANCELED)
-    elif exit:
-        sys.exit(message)
+    if exit:
+        if silent: # stack trace ommited
+            from ij import Macro
+            from java.lang import RuntimeException
+            raise RuntimeException(Macro.MACRO_CANCELED)
+        elif exit:
+            import sys
+            sys.exit(message)
 
 def projectionImage(imp):
     """Returns the MIP of the specified ImagePlus (composite stack)"""
@@ -69,8 +70,6 @@ def projectionImage(imp):
 
 def spotCollectionToROI(spotCollection, visibleSpotsOnly):
     """Converts a trackmate.SpotCollection to a MultiPoint ROI"""
-    from ij.gui import PointRoi
-    from ij.measure import Calibration
     global imp
     roi = None
     cal = imp.getCalibration()
