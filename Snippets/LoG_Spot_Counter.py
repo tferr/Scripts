@@ -47,6 +47,7 @@ def extractCounts(trackmate, ch_id, roi_type = "large"):
             roi.setStrokeColor(ColorRGBtoColor(color_ch2))
             roi.setPointType(2)
             roi.setSize(1)
+        roi.setPosition(ch)
         overlay.add(roi, ch_id)
     table.addValue("# " + ch_id, count)
     return count
