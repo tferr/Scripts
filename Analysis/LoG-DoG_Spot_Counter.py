@@ -2,12 +2,12 @@
 # @ImagePlus imp
 # @LogService logsvc
 # @String(label="Ch1 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
-# @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",value=7.500,min=0.001) diameter_ch1
-# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",value=2.500) threshold_ch1
+# @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",value=7.200,min=0.001) diameter_ch1
+# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",value=3.500) threshold_ch1
 # @ColorRGB(label="Ch1 Marker color",value="magenta") color_ch1
 # @String(label="Ch2 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="DoG") detector_ch2
-# @Double(label="Ch2 Estimated spot size ",description="Estimated diameter in physical units",value=2.800,min=0.001) diameter_ch2
-# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",value=50) threshold_ch2
+# @Double(label="Ch2 Estimated spot size ",description="Estimated diameter in physical units",value=1.080,min=0.001) diameter_ch2
+# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",value=70.50) threshold_ch2
 # @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
 # @String(label="Group",description="Used to group data in Results table", value="Control image") group
 # @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
@@ -26,8 +26,8 @@ exemplifies how to script TrackMate[4].
 Tips:
  - Toggling Color mode ("Image>Color>Channels Tools...") allows you to display
    only the spots detected for the active channel
- - The "group" field can be used to generate grouped box plots of the data using
-   BAR>Data Analysis/Create Boxplot
+ - The "Group" field can be used to generate grouped box plots of the data using
+   BAR>Data Analysis>Create Boxplot
 
 TF 201607
 [1] http://imagej.net/TrackMate
