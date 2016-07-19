@@ -10,10 +10,18 @@
 # @String(label="Group",description="Used to group data in Results table", value="Control image") comment
 # @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
 
-# LoG_Spot_Counter.py
-# https://github.com/tferr/Scripts/
-# Python script that uses trackmate to count particles in a multichannel image
-# TF 201607
+'''
+LoG_Spot_Counter.py
+https://github.com/tferr/Scripts/
+
+Counts particles in a multichannel image using TrackMate[1]'s LoG (Laplacian of
+Gaussian) segmentation, optimized for particles between ~5 and ~20 pixels in
+diameter[2] (For more details: http://imagej.net/Scripting_TrackMate).
+
+TF 201607
+[1] http://imagej.net/TrackMate
+[2] http://imagej.net/Getting_started_with_TrackMate
+'''
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
 from fiji.plugin.trackmate.detection import DetectorKeys as DK, LogDetectorFactory
@@ -30,9 +38,13 @@ def ColorRGBtoColor(color):
     """Converts a org.scijava.util.ColorRGB into a java.awt.Color"""
     return Color(color.getRed(), color.getGreen(), color.getBlue())
 
-    """Adds spots to the image Overlay and counts to the ResultsTable.
-       Returns the total number of spots
 def extractCounts(model, ch, roi_type = "large"):
+    """
+    Adds detected spots to the image overlay and logs counts to Results table
+    :model:     The trackmate.Model
+    :ch:        The target channel
+    :roi_type:  A string describing how spot ROIs should be displayed
+    :return:    The n. of spots detected by trackmate.detection.LogDetector
     """
     if silent: # global variable
         model.setLogger(Logger.VOID_LOGGER)
@@ -71,7 +83,7 @@ def logger(message, isError = False, exit = False):
             sys.exit(message)
 
 def projectionImage(imp):
-    """Returns the MIP of the specified ImagePlus (composite stack)"""
+    """Returns the MIP of the specified ImagePlus (a composite stack)"""
     from ij.plugin import ZProjector
     zp = ZProjector(imp)
     zp.setMethod(ZProjector.MAX_METHOD)
@@ -83,7 +95,7 @@ def projectionImage(imp):
     return mip_imp
 
 def spotCollectionToROI(spotCollection, visibleSpotsOnly):
-    """Converts a trackmate.SpotCollection to a MultiPoint ROI"""
+    """Converts a trackmate.SpotCollection to a ij.gui.PointRoi"""
     global imp
     roi = None
     cal = imp.getCalibration()
@@ -138,7 +150,7 @@ table.addValue("Label", imp.getTitle())
 spots_ch1 = 0
 spots_ch2 = 0
 
-# Ch1 detection. NB: GUI accepts diameter not radius
+# Ch1 detection. NB: trackmate GUI accepts diameter not radius
 logger("Processing Ch1...")
 settings.detectorFactory = LogDetectorFactory()
 setDetectorSettings(settings, CHANNEL_1, radius_ch1, threshold_ch1)
@@ -148,7 +160,7 @@ if trackmate.execDetection():
 else:
     logger(str(trackmate.getErrorMessage()), True)
 
-# Ch2 detection. NB: GUI accepts diameter not radius
+# Ch2 detection. NB: trackmate GUI accepts diameter not radius
 logger("Processing Ch2...")
 settings = trackmate.getSettings()
 setDetectorSettings(settings, CHANNEL_2, radius_ch2, threshold_ch2)
