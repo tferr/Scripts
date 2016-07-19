@@ -30,16 +30,15 @@ def ColorRGBtoColor(color):
     """Converts a org.scijava.util.ColorRGB into a java.awt.Color"""
     return Color(color.getRed(), color.getGreen(), color.getBlue())
 
-def extractCounts(trackmate, ch_id, roi_type = "large"):
     """Adds spots to the image Overlay and counts to the ResultsTable.
        Returns the total number of spots
+def extractCounts(model, ch, roi_type = "large"):
     """
-    global silent, overlay, table
-    model = trackmate.model
-    if silent:
+    if silent: # global variable
         model.setLogger(Logger.VOID_LOGGER)
     spots = model.getSpots()
     count = spots.getNSpots(False)
+    ch_id = "Spots Ch" + str(ch)
     if count > 0:
         logger("Rendering overlay")
         roi = spotCollectionToROI(spots, False)
@@ -144,7 +143,7 @@ settings.detectorFactory = LogDetectorFactory()
 setDetectorSettings(settings, CHANNEL_1, radius_ch1, threshold_ch1)
 trackmate = TrackMate(settings)
 if trackmate.execDetection():
-    spots_ch1 = extractCounts(trackmate, "Nuclei", "large")
+    spots_ch1 = extractCounts(trackmate.model, CHANNEL_1)
 else:
     logger(str(trackmate.getErrorMessage()), True)
 
@@ -153,7 +152,7 @@ logger("Processing Ch2...")
 settings = trackmate.getSettings()
 setDetectorSettings(settings, CHANNEL_2, radius_ch2, threshold_ch2)
 if trackmate.execDetection():
-    spots_ch2 = extractCounts(trackmate, "PLA", "small")
+    spots_ch2 = extractCounts(trackmate.model, CHANNEL_2, "small")
 else:
     logger(str(trackmate.getErrorMessage()), True)
 
