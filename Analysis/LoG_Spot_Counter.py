@@ -1,9 +1,11 @@
 # @Dataset dataset
 # @ImagePlus imp
 # @LogService logsvc
+# @String(label="Ch1 detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
 # @Double(label="Ch1 detector radius",description="Estimated spot radius in physical units",value=3.750,min=0.001) radius_ch1
 # @Double(label="Ch1 detector threshold",description="Ignore spots with lower 'quality' than this",value=2.500) threshold_ch1
 # @ColorRGB(label="Ch1 counter color",value="magenta") color_ch1
+# @String(label="Ch2 detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="DoG") detector_ch2
 # @Double(label="Ch2 detector radius",description="Estimated spot radius in physical units",value=0.6505,min=0,001) radius_ch2
 # @Double(label="Ch2 detector threshold",description="Ignore spots with lower 'quality' than this",value=150) threshold_ch2
 # @ColorRGB(label="Ch2 counter color",value="yellow") color_ch2
@@ -24,7 +26,7 @@ TF 201607
 '''
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
-from fiji.plugin.trackmate.detection import DetectorKeys as DK, LogDetectorFactory
+from fiji.plugin.trackmate.detection import DetectorKeys as DK, LogDetectorFactory, DogDetectorFactory
 from ij.gui import Overlay, PointRoi
 from ij.measure import Calibration, ResultsTable as RT
 from java.awt import Color
@@ -152,7 +154,7 @@ spots_ch2 = 0
 
 # Ch1 detection. NB: trackmate GUI accepts diameter not radius
 logger("Processing Ch1...")
-settings.detectorFactory = LogDetectorFactory()
+settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch1 else DogDetectorFactory()
 setDetectorSettings(settings, CHANNEL_1, radius_ch1, threshold_ch1)
 trackmate = TrackMate(settings)
 if trackmate.execDetection():
@@ -163,6 +165,7 @@ else:
 # Ch2 detection. NB: trackmate GUI accepts diameter not radius
 logger("Processing Ch2...")
 settings = trackmate.getSettings()
+settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch2 else DogDetectorFactory()
 setDetectorSettings(settings, CHANNEL_2, radius_ch2, threshold_ch2)
 if trackmate.execDetection():
     spots_ch2 = extractCounts(trackmate.model, CHANNEL_2, "small")
