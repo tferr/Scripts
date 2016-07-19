@@ -16,10 +16,14 @@
 # TF 201607
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
-from fiji.plugin.trackmate.detection import LogDetectorFactory
+from fiji.plugin.trackmate.detection import DetectorKeys as DK, LogDetectorFactory
 from ij.gui import Overlay, PointRoi
 from ij.measure import Calibration, ResultsTable as RT
 from java.awt import Color
+
+
+CHANNEL_1 = 1 # Target channel for 1st spot detector
+CHANNEL_2 = 2 # Target channel for 2nd spot detector
 
 
 def ColorRGBtoColor(color):
@@ -92,6 +96,16 @@ def spotCollectionToROI(spotCollection, visibleSpotsOnly):
             roi.addPoint(x, y)
     return roi
 
+def setDetectorSettings(settings, channel, radius, threshold):
+    """Settings map for fiji.plugin.trackmate.detection.LogDetector"""
+    settings.detectorSettings = {
+        DK.KEY_DO_SUBPIXEL_LOCALIZATION : False,
+        DK.KEY_DO_MEDIAN_FILTERING : True,
+        DK.KEY_TARGET_CHANNEL : channel,
+        DK.KEY_RADIUS : radius,
+        DK.KEY_THRESHOLD : threshold,
+    }
+
 def validDataset(dataset):
     """Assess if dataset is a multichannel 2D/3D image)"""
     from net.imagej.axis import Axes
@@ -127,13 +141,7 @@ spots_ch2 = 0
 # Ch1 detection. NB: GUI accepts diameter not radius
 logger("Processing Ch1...")
 settings.detectorFactory = LogDetectorFactory()
-settings.detectorSettings = {
-    'DO_SUBPIXEL_LOCALIZATION' : False,
-    'RADIUS' : radius_ch1,
-    'TARGET_CHANNEL' : 1,
-    'THRESHOLD' : threshold_ch1,
-    'DO_MEDIAN_FILTERING' : True,
-}
+setDetectorSettings(settings, CHANNEL_1, radius_ch1, threshold_ch1)
 trackmate = TrackMate(settings)
 if trackmate.execDetection():
     spots_ch1 = extractCounts(trackmate, "Nuclei", "large")
@@ -143,13 +151,7 @@ else:
 # Ch2 detection. NB: GUI accepts diameter not radius
 logger("Processing Ch2...")
 settings = trackmate.getSettings()
-settings.detectorSettings = {
-    'DO_SUBPIXEL_LOCALIZATION' : False,
-    'RADIUS' : radius_ch2,
-    'TARGET_CHANNEL' : 2,
-    'THRESHOLD' : threshold_ch2,
-    'DO_MEDIAN_FILTERING' : True,
-}
+setDetectorSettings(settings, CHANNEL_2, radius_ch2, threshold_ch2)
 if trackmate.execDetection():
     spots_ch2 = extractCounts(trackmate, "PLA", "small")
 else:
