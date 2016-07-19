@@ -13,7 +13,7 @@
 # @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
 
 '''
-LoG_Spot_Counter.py
+LoG-DoG_Spot_Counter.py
 https://github.com/tferr/Scripts/
 
 Detects particles in a multichannel image using TrackMate[1]'s LoG/DoG (Laplacian/
