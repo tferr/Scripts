@@ -1,28 +1,39 @@
 # @Dataset dataset
 # @ImagePlus imp
 # @LogService logsvc
-# @String(label="Ch1 detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
-# @Double(label="Ch1 detector radius",description="Estimated spot radius in physical units",value=3.750,min=0.001) radius_ch1
-# @Double(label="Ch1 detector threshold",description="Ignore spots with lower 'quality' than this",value=2.500) threshold_ch1
-# @ColorRGB(label="Ch1 counter color",value="magenta") color_ch1
-# @String(label="Ch2 detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="DoG") detector_ch2
-# @Double(label="Ch2 detector radius",description="Estimated spot radius in physical units",value=0.6505,min=0,001) radius_ch2
-# @Double(label="Ch2 detector threshold",description="Ignore spots with lower 'quality' than this",value=150) threshold_ch2
-# @ColorRGB(label="Ch2 counter color",value="yellow") color_ch2
-# @String(label="Group",description="Used to group data in Results table", value="Control image") comment
+# @String(label="Ch1 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
+# @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",value=7.500,min=0.001) diameter_ch1
+# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",value=2.500) threshold_ch1
+# @ColorRGB(label="Ch1 Marker color",value="magenta") color_ch1
+# @String(label="Ch2 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="DoG") detector_ch2
+# @Double(label="Ch2 Estimated spot size ",description="Estimated diameter in physical units",value=2.800,min=0.001) diameter_ch2
+# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",value=50) threshold_ch2
+# @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
+# @String(label="Group",description="Used to group data in Results table", value="Control image") group
 # @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
 
 '''
 LoG_Spot_Counter.py
 https://github.com/tferr/Scripts/
 
-Counts particles in a multichannel image using TrackMate[1]'s LoG (Laplacian of
-Gaussian) segmentation, optimized for particles between ~5 and ~20 pixels in
-diameter[2] (For more details: http://imagej.net/Scripting_TrackMate).
+Detects particles in a multichannel image using TrackMate[1]'s LoG/DoG (Laplacian/
+Difference of Gaussian) segmentation[2,3]. Detected centroids are displayed in
+the non-destructive image overlay and total counts reported in the Results table.
+The script was written for counting PLA (Proximity ligation Assay) foci in tissue
+counterstained for DAPI and WGA, but can be applied to similar images. It also
+exemplifies how to script TrackMate[4].
+
+Tips:
+ - Toggling Color mode ("Image>Color>Channels Tools...") allows you to display
+   only the spots detected for the active channel
+ - The "group" field can be used to generate grouped box plots of the data using
+   BAR>Data Analysis/Create Boxplot
 
 TF 201607
 [1] http://imagej.net/TrackMate
 [2] http://imagej.net/Getting_started_with_TrackMate
+[3] http://imagej.net/TrackMate_Algorithms#Spot_detectors
+[4] http://imagej.net/Scripting_TrackMate
 '''
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
@@ -155,7 +166,7 @@ spots_ch2 = 0
 # Ch1 detection. NB: trackmate GUI accepts diameter not radius
 logger("Processing Ch1...")
 settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch1 else DogDetectorFactory()
-setDetectorSettings(settings, CHANNEL_1, radius_ch1, threshold_ch1)
+setDetectorSettings(settings, CHANNEL_1, diameter_ch1/2, threshold_ch1)
 trackmate = TrackMate(settings)
 if trackmate.execDetection():
     spots_ch1 = extractCounts(trackmate.model, CHANNEL_1)
@@ -166,7 +177,7 @@ else:
 logger("Processing Ch2...")
 settings = trackmate.getSettings()
 settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch2 else DogDetectorFactory()
-setDetectorSettings(settings, CHANNEL_2, radius_ch2, threshold_ch2)
+setDetectorSettings(settings, CHANNEL_2, diameter_ch2/2, threshold_ch2)
 if trackmate.execDetection():
     spots_ch2 = extractCounts(trackmate.model, CHANNEL_2, "small")
 else:
@@ -174,7 +185,7 @@ else:
 
 # Log ratios and remaining details
 table.addValue("Ratio", float('nan') if spots_ch1==0 else spots_ch2/float(spots_ch1))
-table.addValue("Comment", "" if not comment else comment)
+table.addValue("Group", group)
 
 # Display results
 imp.setOverlay(overlay)
