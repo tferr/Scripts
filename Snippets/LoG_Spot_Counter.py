@@ -88,8 +88,8 @@ def spotCollectionToROI(spotCollection, visibleSpotsOnly):
     roi = None
     cal = imp.getCalibration()
     for spot in spotCollection.iterable(visibleSpotsOnly):
-        x = cal.getRawX(spot.getFeature('POSITION_X'))
-        y = cal.getRawY(spot.getFeature('POSITION_Y'))
+        x = cal.getRawX(spot.getFeature(spot.POSITION_X))
+        y = cal.getRawY(spot.getFeature(spot.POSITION_Y))
         if roi is None:
             roi = PointRoi(x, y)
         else:
