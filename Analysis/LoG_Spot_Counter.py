@@ -146,7 +146,7 @@ overlay = Overlay()
 # Prepare Results table
 table = RT.getResultsTable()
 table.incrementCounter()
-table.addValue("Label", imp.getTitle())
+table.setLabel(imp.getTitle(), table.getCounter()-1)
 
 # Initialize counts
 spots_ch1 = 0
