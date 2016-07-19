@@ -8,6 +8,7 @@
 # @Double(label="Ch2 detector threshold",value=150) threshold_ch2
 # @ColorRGB(label="Ch2 counter color",value="yellow") color_ch2
 # @Boolean(label="Run silently",value=false) silent
+# @String(label="Group",description="Used to group data in Results table", value="Control image") comment
 
 # LoG_Spot_Counter.py
 # https://github.com/tferr/Scripts/
@@ -153,8 +154,9 @@ if trackmate.execDetection():
 else:
     logger(str(trackmate.getErrorMessage()), True)
 
-# Get ratios
+# Log ratios and remaining details
 table.addValue("Ratio", float('nan') if spots_ch1==0 else spots_ch2/float(spots_ch1))
+table.addValue("Comment", "" if not comment else comment)
 
 # Display results
 imp.setOverlay(overlay)
