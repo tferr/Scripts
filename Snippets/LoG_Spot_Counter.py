@@ -62,8 +62,9 @@ def logger(message, isError = False, exit = False):
         logsvc.error(message) if isError else logsvc.info(message)
     if exit:
         if silent: # stack trace ommited
-            from ij import Macro
+            from ij import IJ, Macro
             from java.lang import RuntimeException
+            IJ.showMessage(message)
             raise RuntimeException(Macro.MACRO_CANCELED)
         elif exit:
             import sys
