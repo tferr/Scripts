@@ -1,14 +1,14 @@
 # @Dataset dataset
 # @ImagePlus imp
 # @LogService logsvc
-# @Double(label="Ch1 detector radius",value=3.750) radius_ch1
-# @Double(label="Ch1 detector threshold",value=2.500) threshold_ch1
+# @Double(label="Ch1 detector radius",description="Estimated spot radius in physical units",value=3.750,min=0.001) radius_ch1
+# @Double(label="Ch1 detector threshold",description="Ignore spots with lower 'quality' than this",value=2.500) threshold_ch1
 # @ColorRGB(label="Ch1 counter color",value="magenta") color_ch1
-# @Double(label="Ch2 detector radius",value=0.6505) radius_ch2
-# @Double(label="Ch2 detector threshold",value=150) threshold_ch2
+# @Double(label="Ch2 detector radius",description="Estimated spot radius in physical units",value=0.6505,min=0,001) radius_ch2
+# @Double(label="Ch2 detector threshold",description="Ignore spots with lower 'quality' than this",value=150) threshold_ch2
 # @ColorRGB(label="Ch2 counter color",value="yellow") color_ch2
-# @Boolean(label="Run silently",value=false) silent
 # @String(label="Group",description="Used to group data in Results table", value="Control image") comment
+# @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
 
 # LoG_Spot_Counter.py
 # https://github.com/tferr/Scripts/
