@@ -86,14 +86,10 @@ def logger(message, isError = False, exit = False):
     if not silent:
         logsvc.error(message) if isError else logsvc.info(message)
     if exit:
-        if silent: # stack trace ommited
-            from ij import IJ, Macro
-            from java.lang import RuntimeException
-            IJ.showMessage(message)
-            raise RuntimeException(Macro.MACRO_CANCELED)
-        elif exit:
-            import sys
-            sys.exit(message)
+        from ij import IJ, Macro
+        from java.lang import RuntimeException
+        IJ.showMessage(message)
+        raise RuntimeError(Macro.MACRO_CANCELED if silent else message)
 
 def projectionImage(imp):
     """Returns the MIP of the specified ImagePlus (a composite stack)"""
