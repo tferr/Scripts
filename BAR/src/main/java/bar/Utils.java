@@ -885,6 +885,27 @@ public class Utils implements PlugIn {
 	}
 
 	/**
+	 * Returns the ResultsTable associated with the specified TextWindow.
+	 *
+	 * @param textWindowTitle
+	 *            The title of the {@code TextWindow} holding the
+	 *            {@code TextPanel} and associated {@code ResultsTable}
+	 *
+	 * @return The {@code ResultsTable} associated with the specified TextWindow
+	 *         title or {@code null} if no table exists.
+	 *
+	 * @see #getTable(boolean, WindowListener)
+	 * @see #getResultsTable()
+	 */
+	public static ResultsTable getTable(final String textWindowTitle) {
+		ResultsTable rt = null;
+		final TextWindow window = (TextWindow)WindowManager.getFrame(textWindowTitle);
+		if (window != null)
+			rt = window.getTextPanel().getResultsTable();
+		return rt;
+	}
+
+	/**
 	 * Prompts the user for tabular data, retrieved from several sources
 	 * including 1) Importing a new text/csv file; 2) Trying to import data from
 	 * the system clipboard; 3) Importing a demo dataset populated by random
