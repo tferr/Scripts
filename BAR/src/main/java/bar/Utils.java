@@ -562,7 +562,7 @@ public class Utils implements PlugIn {
 	 * files from the "lib" directory of BAR.
 	 *
 	 * @see #getLibDir()
-	 * @see #zapCompiledLibs(File)
+	 * @see #zapCompiledLibs()
 	 */
 	public static void zapCompiledLibs() {
 		zapCompiledFiles(new File(LIB_DIR));

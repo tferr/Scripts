@@ -851,8 +851,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * @param restore
 	 *            If true, the previous message displayed in the status bar is
 	 *            reinstated after the specified duration.
-	 * @see log
-	 * @see error
+	 * @see #log
+	 * @see #error
 	 */
 	void showStatus(final String msg, final long msecs, final boolean restore) {
 
@@ -890,8 +890,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * displayed for at least 4s. This is achieved through a timerTask that
 	 * keeps the freezeStatusBar flag set to true for five seconds.
 	 *
-	 * @see log
-	 * @see showStatus
+	 * @see #log
+	 * @see #showStatus
 	 */
 	void error(final String errorMsg) {
 		error(errorMsg, isConsoleMode());
@@ -905,8 +905,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 *            achieved through a timerTask that keeps the freezeStatusBar
 	 *            flag set to true for five seconds.
 	 *
-	 * @see log
-	 * @see showStatus
+	 * @see #log
+	 * @see #showStatus
 	 */
 	void error(final String errorMsg, final boolean persistent) {
 		statusBar.setForeground(Color.RED);
@@ -924,8 +924,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * (freezeStatusBar is false). Does nothing if freezeStatusBar is true
 	 * (an error is being displayed).
 	 * 
-	 * @see error
-	 * @see showStatus
+	 * @see #error
+	 * @see #showStatus
 	 */
 	void log(final String msg) {
 		if (!freezeStatusBar)
@@ -940,8 +940,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * 
 	 * @param msecs
 	 *            Duration (in milliseconds).
-	 * @see error
-	 * @see showStatus
+	 * @see #error
+	 * @see #showStatus
 	 */
 	void log(final String msg, final long msecs) {
 		if (!freezeStatusBar)
@@ -952,7 +952,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * Interprets console commands upon receiving the exit status from
 	 * execCommand
 	 *
-	 * @see execCommand
+	 * @see #execCommand
 	 */
 	void interpretCommand(final String cmd) {
 		if (cmd.isEmpty()) // just a spacer in command list
@@ -997,7 +997,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * null: Failed to retrieve a path.
 	 * non-null string: A successfully retrieved path
 	 *
-	 * @see interpretCommand
+	 * @see #interpretCommand
 	 */
 	String execCommand(final String cmd) {
 
@@ -2068,11 +2068,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		return null;
 	}
 
-	/**
-	 *  Implements ActionListeners for the 'history' dropdown menu.
-	 *
-	 * @see HistoryActionEvent
-	 */
+	/** Implements ActionListeners for the 'history' dropdown menu. */
 	private class HistoryActionListener implements ActionListener {
 
 		/* (non-Javadoc)
@@ -2096,11 +2092,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-	/**
-	 *  Implements ActionListeners for the "options" dropdown menu.
-	 *
-	 * @see OptionsActionEvent
-	 */
+	/** Implements ActionListeners for the "options" dropdown menu. */
 	private class OptionsActionListener implements ActionListener {
 
 		/* (non-Javadoc)
@@ -2131,11 +2123,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/**
-	 *  Implements ActionListeners for the "recent folders" menu.
-	 *
-	 * @see RecentActionEvent
-	 */
+	/** Implements ActionListeners for the "recent folders" menu. */
 	private class RecentActionListener implements ActionListener {
 
 		/* (non-Javadoc)
@@ -2395,7 +2383,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		 * are joint using {@link SavedSearch#delimiter}. This allows saved
 		 * Searches to be stored in a Preferences file.
 		 *
-		 * @see {@link #SavedSearch(String) }.
+		 * @see #SavedSearch(String)
 		 */
 		public String toPrefsString() {
 			final StringBuffer sb = new StringBuffer();
