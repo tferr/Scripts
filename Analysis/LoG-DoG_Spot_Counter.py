@@ -87,7 +87,6 @@ def logger(message, isError = False, exit = False):
         logsvc.error(message) if isError else logsvc.info(message)
     if exit:
         from ij import IJ, Macro
-        from java.lang import RuntimeException
         IJ.showMessage(message)
         raise RuntimeError(Macro.MACRO_CANCELED if silent else message)
 

@@ -13,7 +13,7 @@
 # copied to the clipboard
 
 
-import os, sys, tempfile
+import os, tempfile
 from bar import Utils as barUtils
 from ij import IJ
 from ij.plugin.filter import Analyzer
