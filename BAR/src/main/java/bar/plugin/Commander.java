@@ -216,6 +216,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Start Commander
 		new Thread() {
+			@Override
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(UIManager
@@ -223,6 +224,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				} catch (final Exception ignored) {
 				}
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						runInteractively();
 					}
@@ -433,6 +435,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Auto-scroll table using keystrokes
 		table.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyTyped(final KeyEvent evt) {
 				if (evt.isControlDown() || evt.isMetaDown())
 					return;
@@ -463,6 +466,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		listPane = new JScrollPane(table);
 		listPane.getViewport().setBackground(Color.WHITE); // http://stackoverflow.com/a/18362310
 		new FileDrop(listPane, new FileDrop.Listener() {
+			@Override
 			public void filesDropped(final java.io.File[] files) {
 				try {
 					final String dir = (files[0].isDirectory()) ? files[0]
@@ -647,6 +651,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final JMenu cm = new JMenu("Copy Path");
 		JMenuItem mi = new JMenuItem("Default Path");
 		mi.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				pathToClipboard("");
 			}
@@ -654,6 +659,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		cm.add(mi);
 		mi = new JMenuItem("Short Path");
 		mi.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				pathToClipboard("short");
 			}
@@ -661,6 +667,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		cm.add(mi);
 		mi = new JMenuItem("URL");
 		mi.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				pathToClipboard("url");
 			}
@@ -1202,6 +1209,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 
 		new Thread() {
+			@Override
 			public void run() {
 				if (!Utils.fileExists(path + filename)) {
 					error(filename + " unavailable...");
@@ -1808,6 +1816,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	/* KeyListener Methods */
+	@Override
 	public void keyPressed(final KeyEvent ke) {
 
 		final int key = ke.getKeyCode();
@@ -1895,12 +1904,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* (non-Javadoc)
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
+	@Override
 	public void keyReleased(final KeyEvent ke) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
+	@Override
 	public void keyTyped(final KeyEvent ke) {
 	}
 
@@ -1940,12 +1951,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseEntered(final MouseEvent e) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseExited(final MouseEvent e) {
 	}
 
@@ -1953,6 +1966,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
 	 */
 	/* WindowListener Methods */
+	@Override
 	public void windowClosing(final WindowEvent e) {
 		quit();
 	}
@@ -1960,6 +1974,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowActivated(final WindowEvent e) {
 		//if (IJ.isMacintosh() && frame!=null) {
 		//	IJ.wait(10);
@@ -1970,30 +1985,35 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowClosed(final WindowEvent e) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowDeactivated(final WindowEvent e) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowDeiconified(final WindowEvent e) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowIconified(final WindowEvent e) {
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public void windowOpened(final WindowEvent e) {
 	}
 
@@ -2009,6 +2029,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
 		 */
+		@Override
 		public boolean isCellEditable(final int row, final int column) {
 			return false;
 		}
@@ -2021,6 +2042,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.table.TableModel#getColumnCount()
 		 */
+		@Override
 		public int getColumnCount() {
 			return COLUMNS;
 		}
@@ -2028,6 +2050,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
 		 */
+		@Override
 		public String getColumnName(final int column) {
 			return path; // single column table
 		}
@@ -2035,6 +2058,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
+		@Override
 		public int getRowCount() {
 			return list.size();
 		}
@@ -2042,6 +2066,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
+		@Override
 		public Object getValueAt(final int row, final int column) {
 			if (row >= list.size())
 				return null;
@@ -2074,6 +2099,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
+		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final String cmd = e.getActionCommand();
 
@@ -2098,6 +2124,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
+		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
 			if (command.equals("Preferences...")) {
@@ -2129,6 +2156,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
+		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
 			if (command.startsWith("Clear")) {
@@ -2260,6 +2288,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		/* (non-Javadoc)
 		 * @see javax.swing.JTable#getScrollableTracksViewportWidth()
 		 */
+		@Override
 		public boolean getScrollableTracksViewportWidth() {
 			return trackViewportWidth;
 		}
@@ -2364,6 +2393,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 
 		/** Returns a readable representation of a SavedSearch */
+		@Override
 		public String toString() {
 			final StringBuffer sb = new StringBuffer();
 			sb.append("[").append(this.query).append("]");

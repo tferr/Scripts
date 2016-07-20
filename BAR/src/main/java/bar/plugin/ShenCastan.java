@@ -69,6 +69,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	}
 
 	/** Returns the flags declaring the type of supported images. */
+	@Override
 	public int setup(final String arg, final ImagePlus imp) {
 		Utils.shiftClickWarning();
 		this.imp = imp;
@@ -76,6 +77,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	}
 
 	/** Displays the dialog prompt. */
+	@Override
 	public int showDialog(final ImagePlus imp, final String command, final PlugInFilterRunner pfr) {
 		this.pfr = pfr;
 
@@ -109,6 +111,7 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	 * 
 	 * @return <code>true</code>, if user specified valid input values
 	 */
+	@Override
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		f = gd.getNextNumber();
 		if (f < 0) f = 0d;
@@ -124,11 +127,13 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 	/* (non-Javadoc)
 	 * @see ij.plugin.filter.ExtendedPlugInFilter#setNPasses(int)
 	 */
+	@Override
 	public void setNPasses(final int nPasses) {}
 
 	/* (non-Javadoc)
 	 * @see ij.plugin.filter.PlugInFilter#run(ij.process.ImageProcessor)
 	 */
+	@Override
 	public void run(final ImageProcessor ip) {
 		if (canceled)
 			return;

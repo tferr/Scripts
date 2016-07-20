@@ -311,6 +311,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @see ij.gui.DialogListener#dialogItemChanged(ij.gui.GenericDialog,
 	 * java.awt.AWTEvent)
 	 */
+	@Override
 	public boolean dialogItemChanged(final GenericDialog gd, final AWTEvent e) {
 		final Object source = (e == null) ? null : e.getSource();
 		final Vector<?> choices = gd.getChoices();

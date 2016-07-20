@@ -78,6 +78,7 @@ public class Help implements PlugIn {
 	 * @param arg
 	 *            ignored (Otherwise specified in plugins.config).
 	 */
+	@Override
 	public void run(final String arg) {
 
 		Utils.shiftClickWarning();
@@ -90,6 +91,7 @@ public class Help implements PlugIn {
 			} catch (final Exception ignored) {
 			}
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					displayGUI();
 				}
@@ -105,10 +107,12 @@ public class Help implements PlugIn {
 
 		frame = new JFrame(FRAME_TITLE);
 		frame.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(final WindowEvent we) {
 				quit();
 			}
 
+			@Override
 			public void windowActivated(final WindowEvent we) {
 				if (IJ.isMacintosh() && frame != null) {
 					IJ.wait(10);
@@ -122,6 +126,7 @@ public class Help implements PlugIn {
 				KeyEvent.VK_ESCAPE, 0);
 		@SuppressWarnings("serial")
 		final Action escapeAction = new AbstractAction() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				quit();
 			}
@@ -180,6 +185,7 @@ public class Help implements PlugIn {
 
 		// Make URLs browsable
 		htmlPane.addHyperlinkListener(new HyperlinkListener() {
+			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
 					try {
@@ -218,6 +224,7 @@ public class Help implements PlugIn {
 		button = plainButton("Open BAR Directory");
 		buttonPanel.add(button);
 		button.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Utils.revealFile(Utils.getBARDir());
 			}
@@ -225,6 +232,7 @@ public class Help implements PlugIn {
 		button = plainButton("Check for Updates...");
 		buttonPanel.add(button);
 		button.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				quit();
 				IJ.doCommand("Update Fiji");
@@ -268,6 +276,7 @@ public class Help implements PlugIn {
 		button.setMaximumSize(new Dimension(Integer.MAX_VALUE, button
 				.getMinimumSize().height));
 		button.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
 					BrowserLauncher.openURL(URL);
@@ -308,6 +317,7 @@ public class Help implements PlugIn {
 		// Invert colors
 		final JMenuItem iItem = new JMenuItem("Invert Colors");
 		iItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final Color bColor = pane.getBackground();
 				final Color fColor = pane.getForeground();

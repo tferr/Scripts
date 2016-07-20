@@ -369,6 +369,7 @@ public class Utils implements PlugIn {
 
 		// Implement drag and drop support. Consider only first file dropped
 		new FileDrop(tw, new FileDrop.Listener() {
+			@Override
 			public void filesDropped(final java.io.File[] files) {
 				try {
 					final String dir = (files[0].isDirectory()) ? files[0]
