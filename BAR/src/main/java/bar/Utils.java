@@ -893,7 +893,7 @@ public class Utils implements PlugIn {
 	 *            {@code TextPanel} and associated {@code ResultsTable}
 	 *
 	 * @return The {@code ResultsTable} associated with the specified TextWindow
-	 *         title or {@code null} if no table exists.
+	 *         title or an empty {@code ResultsTable} if no table exists.
 	 *
 	 * @see #getTable(boolean, WindowListener)
 	 * @see #getResultsTable()
@@ -903,6 +903,8 @@ public class Utils implements PlugIn {
 		final TextWindow window = (TextWindow)WindowManager.getFrame(textWindowTitle);
 		if (window != null)
 			rt = window.getTextPanel().getResultsTable();
+		if (rt == null)
+			rt = new ResultsTable();
 		return rt;
 	}
 
