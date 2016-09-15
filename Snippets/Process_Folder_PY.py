@@ -1,3 +1,7 @@
+# @File(label="Input directory", style="directory") src_dir
+# @File(label="Output directory",style="directory") out_dir
+# @String(label="Process filenames containing",description="Clear for no filtering",value=".tif") filenameFilter
+
 # Process_Folder_PY.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
@@ -6,9 +10,9 @@
 # command Process>Batch>Macro).
 #
 # It is composed of two functions:
-#   1. getFileList(<directory>):
+#   1. getFileList(<directory>, <filteringString>):
 #      Retrieves the recursive list of files in <directory>, excluding all files
-#      that do not have specified extension(s)
+#      whose filenames that do not contain <filteringString>
 #   2. myRoutines(<image>):
 #      Container function that holds the image processing routines to be applied
 #      to individual files
@@ -24,22 +28,20 @@
 
 import csv, os
 from ij import IJ, ImagePlus
-from ij.io import DirectoryChooser
 from ij.measure import ResultsTable
 from bar import Utils
 
 
 # Returns a list containing the file paths in the specified directory
 # path. The list is recursive (includes subdirectories) and will only
-# include files matching the specified extensions.
-def getFileList(directory):
-    extensions = (".tif", ".stk", ".oib")
+# include files whose filename contains the specified string.
+def getFileList(directory, filteringString):
     files = []
     for (dirpath, dirnames, filenames) in os.walk(directory):
-        if OUT_SUBDIR in dirnames: # Ignore destination directory
+        if out_dir in dirnames: # Ignore destination directory
             dirnames.remove(OUT_SUBDIR)
         for f in filenames:
-            if f.endswith(extensions):
+            if filteringString in f:
                 files.append(os.path.join(dirpath, f))
     return files
 
@@ -51,19 +53,17 @@ def myRoutines(image):
     import uuid
     image.setTitle( str(uuid.uuid4()) )
 
-# Define the name of the output subdirectory
-OUT_SUBDIR = "_Processed"
 
-# Retrieve input directory
-src_dir = DirectoryChooser("Choose input directory").getDirectory()
+# Define directories as strings
+src_dir = str(src_dir)
+out_dir = str(out_dir)
 
 # Retrieve list of filtered files
-files = getFileList(str(src_dir));
+files = getFileList(src_dir, filenameFilter);
 
 if files:
 
-    # Define output directory and create it if needed
-    out_dir = src_dir + OUT_SUBDIR + os.sep
+    # Create output directory if needed
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 

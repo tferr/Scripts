@@ -1,3 +1,8 @@
+//@String(label="Search query",columns="25") searchString
+//@boolean(label="Search file contents", value="true") searchContents
+//@boolean(label="Ignore case", value="true") caseInsensitive
+
+
 /* Search_Snippets.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
@@ -15,13 +20,10 @@
  */
 
 import ij.IJ;
-import ij.gui.GenericDialog;
 import bar.Utils;
 
 
 /* Options */
-boolean searchContents = true;
-boolean caseInsensitive = true;
 String PATH = Utils.getBARDir();
 
 // Abort if BAR directory cannot be found
@@ -30,24 +32,12 @@ if (Utils.fileExists(PATH)) {
     // Get string from clipboard
     String searchString = Utils.getClipboardText();
 
-    // Build prompt
-    GenericDialog gd = new GenericDialog("Search BAR Directory");
-    gd.addStringField("_", searchString, 30);
-    gd.addCheckbox("Search contents", searchContents);
-    gd.addCheckbox("Ignore case", caseInsensitive);
-    gd.addHelp(Utils.getDocURL());
-    gd.showDialog();
-	if (gd.wasCanceled()) return;
-
-    // Retrieve options from prompt
-    searchString = gd.getNextString();
-    searchContents = gd.getNextBoolean();
-    caseInsensitive = gd.getNextBoolean();
-
     // Concatenate all options into a single string
     String options = "_=["+ searchString +"] ";
-    if (searchContents) options+= "search_contents ";
-    if (caseInsensitive) options+= "ignore ";
+    if (searchContents)
+    	options+= "search_contents ";
+    if (caseInsensitive)
+    	options+= "ignore ";
     options += "search=Choose... choose=["+ PATH +"]";
 
     // Pass the options string to Plugins>Utilies>Search...
