@@ -1,0 +1,175 @@
+/* Create_Boxplot.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Generates a polar plot from data in an ImageJ table using BAR[1] and JFreeChart[2].
+ * The plot can be exported as vector graphics.
+ *
+ * [1] http://tferr.github.io/Scripts/apidocs/
+ * [2] http://www.jfree.org/jfreechart/api/javadoc/
+ *
+ * Tiago Ferreira, v1.0.0 2016.09
+ */
+
+import bar.Utils;
+import bar.PlotUtils;
+import ij.IJ;
+import ij.WindowManager;
+import ij.gui.GUI;
+import ij.gui.NonBlockingGenericDialog;
+import ij.measure.ResultsTable;
+import ij.plugin.frame.PlugInFrame;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.PolarChartPanel;
+import org.jfree.chart.plot.PolarPlot;
+import org.jfree.chart.renderer.DefaultPolarItemRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+
+/**
+ * Retrieves a list of column choices for the specified ResultsTable.
+ * The "Label" column (containing non-numeric data) is excluded).
+ */
+String[] getColumnChoices(ResultsTable rt) {
+	n = rt.getLastColumn();
+	cChoices = new String[n+2];
+	for (int i=0; i<=n; i++)
+		cChoices[i] = rt.getColumnHeading(i);
+	cChoices[n+1] = "*None*";
+	return cChoices;
+}
+	
+/**
+ * Retrieves data to be ploted from user
+ * 
+ * @param rt	the ResulstTable containing input data
+ * @return	the Plotting data or null if rt is invalid or user dismisses prompt
+ */
+XYSeriesCollection getDataFromUser(ResultsTable rt) {
+
+	// Define column choices for drop-down menus
+	colChoices = getColumnChoices(rt);
+	if (colChoices.length<3)
+		return null;
+
+	// Prompt user for choices
+	gd = new NonBlockingGenericDialog("Polar Plot Builder");
+	noneChoice = colChoices.length-1;
+	nSeries = Math.min(5, (int)colChoices.length/2);
+	for (i=1; i<=nSeries; i++) {
+		gd.addChoice("Series_"+ i +"_Angle ", colChoices, colChoices[(i==1)?0:noneChoice]);
+		gd.addChoice("Series_"+ i +"_Radius", colChoices, colChoices[(i==1)?1:noneChoice]);
+		gd.addStringField("Series_"+ i +"_Label  ", "Series "+ i, 12);
+		gd.setInsets(15, 0, 0);
+	}
+	gd.addMessage("Once data is plotted, right-click on graph\n"
+				+ "canvas to customize axes and export plot");
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return null;
+
+	// Populate XYSeriesCollection (We'll allow an
+	sCollection = new XYSeriesCollection();
+	for (i=1; i<=nSeries; i++) {
+		thetaCol = gd.getNextChoiceIndex();
+		radiusCol = gd.getNextChoiceIndex();
+		label = gd.getNextString();
+		if (thetaCol!=noneChoice && radiusCol!=noneChoice) {
+			XYSeries series = new XYSeries(label);
+			for (row=0; row<rt.getCounter(); row++) {
+				theta = rt.getValueAsDouble(thetaCol, row);
+				radius = rt.getValueAsDouble(radiusCol, row);
+				if (theta!=Double.NaN && radius!=Double.NaN)
+					series.add(theta, radius, false);
+			}
+			try {
+				sCollection.addSeries(series);
+			} catch (java.lang.IllegalArgumentException e) {
+				IJ.showMessage(e.getMessage());
+			}
+		}
+	}
+	return sCollection;
+}
+
+/**
+ * Registers the plotting frame in WindowManager, reusing any
+ * pre-existing ones displayed from previous runs of the script
+ */
+PlugInFrame getFrame(String title) {
+	PlugInFrame frame;
+	if (WindowManager.getWindow(title)==null) {
+		frame = new PlugInFrame(title);
+		WindowManager.addWindow(frame);
+	} else {
+		frame = WindowManager.getFrame(title);
+		frame.removeAll();
+	}
+	return frame;
+}
+
+// Retrieve a valid dataset from user
+rt = Utils.getTable();
+if (rt==null)
+	return;
+dataset = getDataFromUser(rt);
+if (dataset == null || dataset.getSeriesCount()<1)
+	return;
+
+// Create plot
+chart = ChartFactory.createPolarChart(null, // chart title
+			dataset, // the dataset
+			(dataset.getSeriesCount()>1), // legend required?
+			true, // tooltips required?
+			false); // URLs required?
+
+// Tweak: Make plot look like an ij.gui.Plot
+plot = chart.getPlot();
+renderer = plot.getRenderer();
+plot.setBackgroundPaint(java.awt.Color.WHITE);
+plot.setOutlineVisible(false);
+if (chart.getLegend()!=null)
+	chart.getLegend().setFrame(org.jfree.chart.block.BlockBorder.NONE);
+if (plot.isAngleGridlinesVisible())
+	plot.setAngleGridlinePaint(java.awt.Color.BLACK);
+if (plot.isRadiusGridlinesVisible())
+	plot.setRadiusGridlinePaint(java.awt.Color.LIGHT_GRAY);
+
+// Tweak: Ensure chart is always drawn and not scaled to avoid rendering artifacts
+cp = new PolarChartPanel(chart);
+cp.setMinimumDrawWidth(0);
+cp.setMaximumDrawWidth(Integer.MAX_VALUE);
+cp.setMinimumDrawHeight(0);
+cp.setMaximumDrawHeight(Integer.MAX_VALUE);
+
+// Tweak: Support mouse wheel
+cp.setMouseWheelEnabled(true);
+
+// Tweak: Add right-click options for SVG and PDF export
+menu = cp.getPopupMenu();
+menu.addSeparator();
+mi = new JMenuItem("Export as PDF...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsPDF(chart, cp.getBounds());
+	}
+});
+menu.add(mi);
+mi = new JMenuItem("Export as SVG...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsSVG(chart, cp.getBounds());
+	}
+});
+menu.add(mi);
+
+// Display plot in IJ
+frame = getFrame("Polar Plot");
+frame.add(cp);
+frame.pack();
+GUI.center(frame);
+frame.setVisible(true);
