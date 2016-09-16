@@ -9,7 +9,7 @@
  * [1] http://tferr.github.io/Scripts/apidocs/
  * [2] http://www.jfree.org/jfreechart/api/javadoc/
  *
- * Tiago Ferreira, v1.0.0 2016.09
+ * Tiago Ferreira, v1.0.2 2016.09
  */
 
 import bar.Utils;
@@ -178,12 +178,14 @@ mi.addActionListener(new ActionListener() {
 		gd.addCheckbox("Connect first and last points", renderer.getConnectFirstAndLastPoint());
 		gd.addCheckbox("Display shapes", renderer.getShapesVisible());
 		gd.addCheckbox("Draw outlines when filling series", renderer.getDrawOutlineWhenFilled());
+		gd.addCheckbox("Angles in counterclockwise direction", plot.isCounterClockwise());
 		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
 		gd.showDialog();
 		if (gd.wasOKed()) {
 			renderer.setConnectFirstAndLastPoint(gd.getNextBoolean());
 			renderer.setShapesVisible(gd.getNextBoolean());
 			renderer.setDrawOutlineWhenFilled(gd.getNextBoolean());
+			plot.setCounterClockwise(gd.getNextBoolean());
 		}
 	}
 });
