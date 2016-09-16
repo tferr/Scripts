@@ -86,7 +86,7 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 			for (row=0; row<rt.getCounter(); row++) {
 				theta = rt.getValueAsDouble(thetaCol, row);
 				radius = rt.getValueAsDouble(radiusCol, row);
-				if (theta!=Double.NaN && radius!=Double.NaN)
+				if (theta==null || radius==null || Double.isNaN(theta) || Double.isNaN(radius))
 					series.add(theta, radius, false);
 			}
 			try {
