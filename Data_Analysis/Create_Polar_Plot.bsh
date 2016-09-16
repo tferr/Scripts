@@ -1,3 +1,5 @@
+// @LogService logsvc
+
 /* Create_Boxplot.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
@@ -83,18 +85,25 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 		label = gd.getNextString();
 		if (thetaCol!=noneChoice && radiusCol!=noneChoice) {
 			XYSeries series = new XYSeries(label);
+			invalidRows = 0;
 			for (row=0; row<rt.getCounter(); row++) {
 				theta = rt.getValueAsDouble(thetaCol, row);
 				radius = rt.getValueAsDouble(radiusCol, row);
 				if (theta==null || radius==null || Double.isNaN(theta) || Double.isNaN(radius))
+					invalidRows++;
+				else
 					series.add(theta, radius, false);
 			}
 			try {
 				sCollection.addSeries(series);
 			} catch (java.lang.IllegalArgumentException e) {
-				IJ.showMessage(e.getMessage());
+				logsvc.error("[Polar Plot] " + e.getMessage());
 			}
+			if (invalidRows>0)
+				logsvc.info("[Polar Plot] "+ label + ": Ignored " + invalidRows + " row(s) containing invalid data");
 			renderer.setSeriesFilled(i-1, gd.getNextBoolean());
+		} else {
+			logsvc.info("[Polar Plot] Skipping "+ label + " as requested by user");
 		}
 	}
 	return sCollection;
@@ -120,11 +129,14 @@ PlugInFrame getFrame(String title) {
 rt = Utils.getTable();
 if (rt==null)
 	return;
-
 renderer = new DefaultPolarItemRenderer();
 dataset = getDataFromUser(rt, renderer);
-if (dataset == null || dataset.getSeriesCount()<1)
+if (dataset == null)
 	return;
+if (dataset.getSeriesCount()<1) {
+	logsvc.info("[Polar Plot] No data to be plotted. Please revise input choices.");
+	return;
+}
 
 // Create plot
 chart = ChartFactory.createPolarChart(null, // chart title
