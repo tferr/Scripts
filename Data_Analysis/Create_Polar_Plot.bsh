@@ -44,9 +44,10 @@ String[] getColumnChoices(ResultsTable rt) {
 }
 	
 /**
- * Retrieves data to be ploted from user
+ * Retrieves data to be ploted from user.
  * 
  * @param rt	the ResulstTable containing input data
+ * @param renderer	the PolarPlot rendererer used to customize plotted series
  * @return	the Plotting data or null if rt is invalid or user dismisses prompt
  */
 XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer renderer) {
@@ -61,11 +62,11 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 	noneChoice = colChoices.length-1;
 	nSeries = Math.min(4, (int)colChoices.length/2);
 	for (i=1; i<=nSeries; i++) {
-		gd.addChoice("Series_"+ i +"_Angle ", colChoices, colChoices[(i==1)?0:noneChoice]);
-		gd.addChoice("Series_"+ i +"_Radius", colChoices, colChoices[(i==1)?1:noneChoice]);
-		gd.addStringField("Series_"+ i +"_Label  ", "Series "+ i, 12);
+		gd.addChoice("Series_"+ i +"_Angles", colChoices, colChoices[(i==1)?0:noneChoice]);
+		gd.addChoice("Series_"+ i +"_Radii", colChoices, colChoices[(i==1)?1:noneChoice]);
+		gd.addStringField("Series_"+ i +"_Label", "Series "+ i, 12);
 		gd.setInsets(0, 0, 15);
-		gd.addCheckbox("Fill_series_"+ i, false);
+		gd.addCheckbox("Fill_series_"+ i + " curve", false);
 	}
 	gd.setInsets(0,0,0);
 	gd.addMessage("Once data is plotted, right-click on the graph\n"
@@ -74,7 +75,7 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 	if (gd.wasCanceled())
 		return null;
 
-	// Populate XYSeriesCollection (We'll allow an
+	// Populate XYSeriesCollection with table's data
 	sCollection = new XYSeriesCollection();
 	for (i=1; i<=nSeries; i++) {
 		thetaCol = gd.getNextChoiceIndex();
