@@ -21,7 +21,6 @@ import ij.measure.ResultsTable;
 import ij.plugin.frame.PlugInFrame;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.PolarChartPanel;
 import org.jfree.chart.plot.PolarPlot;
@@ -60,7 +59,7 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 	// Prompt user for choices
 	gd = new NonBlockingGenericDialog("Polar Plot Builder");
 	noneChoice = colChoices.length-1;
-	nSeries = Math.min(5, (int)colChoices.length/2);
+	nSeries = Math.min(4, (int)colChoices.length/2);
 	for (i=1; i<=nSeries; i++) {
 		gd.addChoice("Series_"+ i +"_Angle ", colChoices, colChoices[(i==1)?0:noneChoice]);
 		gd.addChoice("Series_"+ i +"_Radius", colChoices, colChoices[(i==1)?1:noneChoice]);
@@ -68,8 +67,9 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 		gd.setInsets(0, 0, 15);
 		gd.addCheckbox("Fill_series_"+ i, false);
 	}
-	gd.addMessage("Once data is plotted, right-click on graph\n"
-				+ "canvas to customize axes and export plot");
+	gd.setInsets(0,0,0);
+	gd.addMessage("Once data is plotted, right-click on the graph\n"
+				+ "canvas for customization and export options.");
 	gd.showDialog();
 	if (gd.wasCanceled())
 		return null;
