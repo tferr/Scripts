@@ -15,6 +15,7 @@ import bar.PlotUtils;
 import ij.IJ;
 import ij.WindowManager;
 import ij.gui.GUI;
+import ij.gui.GenericDialog;
 import ij.gui.NonBlockingGenericDialog;
 import ij.measure.ResultsTable;
 import ij.plugin.frame.PlugInFrame;
@@ -49,7 +50,7 @@ String[] getColumnChoices(ResultsTable rt) {
  * @param rt	the ResulstTable containing input data
  * @return	the Plotting data or null if rt is invalid or user dismisses prompt
  */
-XYSeriesCollection getDataFromUser(ResultsTable rt) {
+XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer renderer) {
 
 	// Define column choices for drop-down menus
 	colChoices = getColumnChoices(rt);
@@ -64,7 +65,8 @@ XYSeriesCollection getDataFromUser(ResultsTable rt) {
 		gd.addChoice("Series_"+ i +"_Angle ", colChoices, colChoices[(i==1)?0:noneChoice]);
 		gd.addChoice("Series_"+ i +"_Radius", colChoices, colChoices[(i==1)?1:noneChoice]);
 		gd.addStringField("Series_"+ i +"_Label  ", "Series "+ i, 12);
-		gd.setInsets(15, 0, 0);
+		gd.setInsets(0, 0, 15);
+		gd.addCheckbox("Fill_series_"+ i, false);
 	}
 	gd.addMessage("Once data is plotted, right-click on graph\n"
 				+ "canvas to customize axes and export plot");
@@ -91,6 +93,7 @@ XYSeriesCollection getDataFromUser(ResultsTable rt) {
 			} catch (java.lang.IllegalArgumentException e) {
 				IJ.showMessage(e.getMessage());
 			}
+			renderer.setSeriesFilled(i-1, gd.getNextBoolean());
 		}
 	}
 	return sCollection;
@@ -116,7 +119,9 @@ PlugInFrame getFrame(String title) {
 rt = Utils.getTable();
 if (rt==null)
 	return;
-dataset = getDataFromUser(rt);
+
+renderer = new DefaultPolarItemRenderer();
+dataset = getDataFromUser(rt, renderer);
 if (dataset == null || dataset.getSeriesCount()<1)
 	return;
 
@@ -127,9 +132,11 @@ chart = ChartFactory.createPolarChart(null, // chart title
 			true, // tooltips required?
 			false); // URLs required?
 
+// Apply rendering customizations
+plot = (PolarPlot)chart.getPlot();
+plot.setRenderer(renderer);
+
 // Tweak: Make plot look like an ij.gui.Plot
-plot = chart.getPlot();
-renderer = plot.getRenderer();
 plot.setBackgroundPaint(java.awt.Color.WHITE);
 plot.setOutlineVisible(false);
 if (chart.getLegend()!=null)
@@ -149,8 +156,27 @@ cp.setMaximumDrawHeight(Integer.MAX_VALUE);
 // Tweak: Support mouse wheel
 cp.setMouseWheelEnabled(true);
 
-// Tweak: Add right-click options for SVG and PDF export
+// Tweak: Add a right-click entry for rendering options
 menu = cp.getPopupMenu();
+mi = new JMenuItem("Rendering Options....");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		gd = new GenericDialog("Rendering Options", frame);
+		gd.addCheckbox("Connect first and last points", renderer.getConnectFirstAndLastPoint());
+		gd.addCheckbox("Display shapes", renderer.getShapesVisible());
+		gd.addCheckbox("Draw outlines when filling series", renderer.getDrawOutlineWhenFilled());
+		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
+		gd.showDialog();
+		if (gd.wasOKed()) {
+			renderer.setConnectFirstAndLastPoint(gd.getNextBoolean());
+			renderer.setShapesVisible(gd.getNextBoolean());
+			renderer.setDrawOutlineWhenFilled(gd.getNextBoolean());
+		}
+	}
+});
+menu.add(mi,0);
+
+// Tweak: Add right-click options for SVG and PDF export
 menu.addSeparator();
 mi = new JMenuItem("Export as PDF...");
 mi.addActionListener(new ActionListener() {
