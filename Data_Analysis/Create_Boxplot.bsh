@@ -209,6 +209,7 @@ mi.addActionListener(new ActionListener() {
 		gd.addCheckbox("Colored whiskers", !renderer.getUseOutlinePaintForWhiskers());
 		gd.addCheckbox("Display mean", renderer.isMeanVisible());
 		gd.addCheckbox("Display median", renderer.isMedianVisible());
+		gd.addCheckbox("Toggle legend of grouped data", false);
 		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
 		gd.showDialog();
 		if (gd.wasOKed()) {
@@ -216,6 +217,8 @@ mi.addActionListener(new ActionListener() {
 			renderer.setUseOutlinePaintForWhiskers(!gd.getNextBoolean());
 			renderer.setMeanVisible(gd.getNextBoolean());
 			renderer.setMedianVisible(gd.getNextBoolean());
+			if (chart.getLegend()!=null && gd.getNextBoolean())
+				chart.getLegend().setVisible(!chart.getLegend().isVisible());
 		}
 	}
 });

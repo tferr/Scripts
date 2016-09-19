@@ -179,6 +179,7 @@ mi.addActionListener(new ActionListener() {
 		gd.addCheckbox("Display shapes", renderer.getShapesVisible());
 		gd.addCheckbox("Draw outlines when filling series", renderer.getDrawOutlineWhenFilled());
 		gd.addCheckbox("Angles in counterclockwise direction", plot.isCounterClockwise());
+		gd.addCheckbox("Toggle legend (multi-series data)", false);
 		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
 		gd.showDialog();
 		if (gd.wasOKed()) {
@@ -186,6 +187,8 @@ mi.addActionListener(new ActionListener() {
 			renderer.setShapesVisible(gd.getNextBoolean());
 			renderer.setDrawOutlineWhenFilled(gd.getNextBoolean());
 			plot.setCounterClockwise(gd.getNextBoolean());
+			if (chart.getLegend()!=null && gd.getNextBoolean())
+				chart.getLegend().setVisible(!chart.getLegend().isVisible());
 		}
 	}
 });
