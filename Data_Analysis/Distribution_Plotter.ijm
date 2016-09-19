@@ -2,11 +2,11 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
- * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.48q.
+ * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.49t.
  * Distribution tables can be accessed through the 'List' button of the plot window:
  * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
- * TF, 2016.04 Use new BAR API. Fix exception when ignoring zero values.
+ * TF, 2016.09
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
@@ -98,15 +98,12 @@ drawLabel();
 Plot.add("dots", bins, freqs);
 Plot.setLineWidth(2);
 drawHistogramBars("blue", "cyan");
-drawNormalCurve(mean, stdDev, "black");
-Plot.setColor("red");
+drawNormalCurve(mean, stdDev, "blue");
+Plot.setColor("black");
 Plot.add("line", values, cumFreq);
 Plot.setLineWidth(1);
-if (nBins<20) {
-	drawHistogramLabels("blue"); Plot.show;
-} else {
-	Plot.show; drawRotatedHistogramLabels("blue", 11);
-}
+drawHistogramLabels("blue", 13-(0.05*nBins));
+Plot.show();
 
 
 function drawHistogramBars(lineColor, fillColor) {
@@ -127,8 +124,9 @@ function drawHistogramBars(lineColor, fillColor) {
 	}
 }
 
-function drawHistogramLabels(color) {
+function drawHistogramLabels(color, fontSize) {
 	Plot.setColor(color);
+	Plot.setFontSize(fontSize);
 	Plot.setJustification("center");
 	for (i=0; i<bins.length; i++) {
 		xpos = (binWidth/2+bins[i]-plotXmin)/(plotXmax-plotXmin);
@@ -158,7 +156,8 @@ function drawLabel() {
 	Plot.addText("Median: "+ d2s(getMedian(),2), col2, row2);
 	Plot.addText("Bins: "+ nBins, col2, row3);
 	Plot.addText("Bin width: "+ d2s(binWidth,2), col2, row4);
-	if (countInvalid!=0) Plot.addText("Ignored entries: "+ countInvalid, col3, row1);
+	if (countInvalid!=0)
+		Plot.addText("Ignored entries: "+ countInvalid, col3, row1);
 }
 
 function drawNormalCurve(mu, sigma, color) {
@@ -171,25 +170,6 @@ function drawNormalCurve(mu, sigma, color) {
 		y = scale * ( (1/(sigma*sqrt(2*PI))) * ( exp( -(((x-mu)*(x-mu))/((2*sigma*sigma))) ) ));
 		Plot.drawLine(x, y, x, y);
 	}
-}
-
-function drawRotatedHistogramLabels(color, fontSize) {
-	setColor(color);
-	setFont("SansSerif", fontSize);
-	xshift = fontSize/4;
-	for (i=0; i<bins.length; i++) {
-		xpos = min + binWidth/2 + binWidth*i;
-		ypos = plotYmax * histScale * freqs[i] / histMax;;
-		toUnscaled(xpos, ypos);
-		if (yAxis==tabChoices[0])
-			label = freqs[i];
-		else if (yAxis==tabChoices[1])
-			label = d2s(freqs[i], 1);
-		else if (yAxis==tabChoices[2])
-			label = substring(d2s(freqs[i], 2), 1);
-		Overlay.drawString(label, xshift+xpos, ypos, 90);
-	}
-	Overlay.show();
 }
 
 function getBinStarts(n, width, startValue) {
