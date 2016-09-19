@@ -37,10 +37,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-/** Checks if an object remains undefined */
-boolean unset(Object o) {
-	return o==void || o ==null;
-}
 
 /** Prompts user to specify which ResultsTable columns to use as input */
 boolean setupDataset(ResultsTable rt) {
@@ -48,7 +44,7 @@ boolean setupDataset(ResultsTable rt) {
 	// Extract column headings w/ numeric data (ignore "Label" column, if present)
 	headings = rt.getHeadings();
 	numIdx = 0;
-	if (!unset(rt.getLabel(0)) || headings[0].equals("Label"))
+	if (rt.getLabel(0)==null || headings[0].equals("Label"))
 		numIdx = 1;
 	numHeadings = Arrays.copyOfRange(headings, numIdx, headings.length);
 	numItems = headings.length - numIdx;
@@ -148,7 +144,7 @@ chart = ChartFactory.createBoxAndWhiskerChart(
 );
 
 // Tweak: Register frame in WindowManager and reuse it as needed
-if (unset(WindowManager.getWindow(TITLE))) {
+if (WindowManager.getWindow(TITLE)==null) {
 	super.frame = new PlugInFrame(TITLE);
 	WindowManager.addWindow(frame);
 } else {
@@ -166,7 +162,7 @@ renderer.setUseOutlinePaintForWhiskers(true);
 renderer.setMaximumBarWidth(0.40);
 if (singleSeries)
 	renderer.setSeriesPaint(0, Color.LIGHT_GRAY);
-if (!unset(chart.getLegend()))
+if (chart.getLegend()!=null)
 	chart.getLegend().setFrame(org.jfree.chart.block.BlockBorder.NONE);
 
 // Tweak: Resize ChartPanel. Tilt to landscape when plotting large datasets
