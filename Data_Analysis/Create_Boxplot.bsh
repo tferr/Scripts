@@ -32,6 +32,7 @@ import ij.plugin.frame.PlugInFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -59,11 +60,13 @@ boolean setupDataset(ResultsTable rt) {
 	seriesList = new ArrayList(Arrays.asList(headings));
 	seriesList.add(0, "*None*");
 	gd.addChoice("Group data by:", seriesList.toArray(new String[numItems+1]), null);
+	gd.setInsets(0, 0, 0);
+	gd.addMessage("Once data is plotted, right-click on the graph\n"
+				+ "canvas for customization and export options.");
 	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Data_Analysis#create-boxplot");
 	gd.showDialog();
 	if (gd.wasCanceled())
 		return false;
-	IJ.showStatus("Building Plot...");
 
 	// Retrieve options from prompt
 	for (i=0; i<numItems; i++)
@@ -158,7 +161,6 @@ renderer = plot.getRenderer();
 plot.setBackgroundPaint(java.awt.Color.WHITE);
 plot.setRangeGridlinePaint(java.awt.Color.LIGHT_GRAY);
 plot.setOutlineVisible(false);
-renderer.setUseOutlinePaintForWhiskers(true);
 renderer.setMaximumBarWidth(0.40);
 if (singleSeries)
 	renderer.setSeriesPaint(0, Color.LIGHT_GRAY);
@@ -196,6 +198,28 @@ cp.addMouseMotionListener(new MouseAdapter() {
 		IJ.showStatus(IJ.d2s(pPos,3) +"... Mouse over datasets for details | Right-click for options...");
 	}
 });
+
+// Tweak: Add a right-click entry for rendering options
+menu = cp.getPopupMenu();
+mi = new JMenuItem("Rendering Options....");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		gd = new GenericDialog("Rendering Options", frame);
+		gd.addCheckbox("Fill boxes", renderer.getFillBox());
+		gd.addCheckbox("Colored whiskers", !renderer.getUseOutlinePaintForWhiskers());
+		gd.addCheckbox("Display mean", renderer.isMeanVisible());
+		gd.addCheckbox("Display median", renderer.isMedianVisible());
+		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
+		gd.showDialog();
+		if (gd.wasOKed()) {
+			renderer.setFillBox(gd.getNextBoolean());
+			renderer.setUseOutlinePaintForWhiskers(!gd.getNextBoolean());
+			renderer.setMeanVisible(gd.getNextBoolean());
+			renderer.setMedianVisible(gd.getNextBoolean());
+		}
+	}
+});
+menu.add(mi,0);
 
 // Tweak: Add right-click options for SVG and PDF export
 menu = cp.getPopupMenu();
