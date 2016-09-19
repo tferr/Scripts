@@ -59,10 +59,11 @@ XYSeriesCollection getDataFromUser(ResultsTable rt, DefaultPolarItemRenderer ren
 	if (colChoices.length<3)
 		return null;
 
-	// Prompt user for choices
+	// Prompt user for choices. Screen height is really the only restriction
+	// to the n. of series to be defined in the prompt
 	gd = new NonBlockingGenericDialog("Polar Plot Builder");
 	noneChoice = colChoices.length-1;
-	nSeries = Math.min(4, (int)colChoices.length/2);
+	nSeries = Math.min(4, noneChoice-1);
 	for (i=1; i<=nSeries; i++) {
 		gd.addChoice("Series_"+ i +"_Angles", colChoices, colChoices[(i==1)?0:noneChoice]);
 		gd.addChoice("Series_"+ i +"_Radii", colChoices, colChoices[(i==1)?1:noneChoice]);
