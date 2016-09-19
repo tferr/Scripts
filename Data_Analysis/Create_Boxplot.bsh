@@ -1,13 +1,13 @@
 /* Create_Boxplot.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Displays a box-and-whisker plot from data in the IJ Results table using BAR and the
- * JFreeChart library, bundled with Fiji. The displayed plot is highly customized to
- * exemplify JFreeChart[1] scripting and how to integrate JFreeChart graphs in ImageJ.
- * It also exemplifies how to use BAR to export JFreeCharts as vector graphics.
+ * Displays a box-and-whisker plot from tabular data using BAR and JFreeChart[1], bundled
+ * with Fiji. It exemplifies JFreeChart scripting and how to integrate JFreeChart graphs
+ * in ImageJ workflows. It also exemplifies how to use BAR[2] to export JFreeCharts as
+ * vector graphics.
  *
  * NB: Data can be split into series. In addition to Minimum--[Q1|Median|Q3]--Maximum
- * and Average (filled ellipses), other properties are also plotted, as per [2]:
+ * and Average (filled ellipses), other properties are also plotted, as per [3]:
  *   - Outliers (presence highlighted by open ellipses), values outside the 'regular
  *     range' defined as:
  *         Q1 - 2.0*IQR > Lower Outliers < Q1 - 1.5*IQR
@@ -17,9 +17,10 @@
  *         Upper Far-outs > Q3 + 2.0*IQR
  *
  * [1] http://www.jfree.org/jfreechart/api/javadoc/
- * [2] http://www.jfree.org/jfreechart/api/javadoc/src-html/org/jfree/data/statistics/BoxAndWhiskerCalculator.html
+ * [2] http://tferr.github.io/Scripts/apidocs/
+ * [3] http://www.jfree.org/jfreechart/api/javadoc/src-html/org/jfree/data/statistics/BoxAndWhiskerCalculator.html
  *
- * Tiago Ferreira, v1.0.2 2016.03
+ * Tiago Ferreira, v1.0.3 2016.09
  */
 
 import bar.Utils;
