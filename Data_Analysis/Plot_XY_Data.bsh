@@ -193,7 +193,7 @@ void promptForData() {
 
 		// Replace data source only if it is valid
 		newRt = getTableWithListener();
-		if (newRT != void && newRT != null)
+		if (newRT != null)
 			super.rt = newRt;
 		promptForData();
 		// Re-displaying the prompt is problematic when recording macros
@@ -445,5 +445,5 @@ Font font = null;			// The custom plot font (Advanced Options prompt)
 
 // After setting-up everything, we try retrieve valid data
 // from an opened ResultsTable and display the prompt
-super.rt = getTableWithListener();
+rt = getTableWithListener();
 promptForData();
