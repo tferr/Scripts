@@ -20,14 +20,15 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
   1. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
-  1. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
+  2. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
   3. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
-  2. (bsh) [Create Boxplot](./Data_Analysis/README.md#create-boxplot)
+  1. (bsh) [Create Boxplot](./Data_Analysis/README.md#create-boxplot)
+  2. (bsh) [Create Polar Plot](./Data_Analysis/README.md#create-polar-plot)
   3. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
   4. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
   5. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)

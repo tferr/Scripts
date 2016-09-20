@@ -2,12 +2,11 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Interactively creates a multi-series plot (XY with or without error bars,
- * and vector fields) from ImageJ measurements or imported spreadsheet data.
+ * and vector fields) from ImageJ tables, clipboard or imported spreadsheet data.
  *
- * Requires BAR_-X.X.X.jar. To use it without BAR append the getResultsTable()
- * method in bar.Utils to this file, replacing its calls accordingly.
+ * Requires BAR_-1.0.X.jar.
  *
- * TF, v2016.04
+ * TF, v2016.09
  */
 
 import bar.Utils;
@@ -192,10 +191,11 @@ void promptForData() {
 	} else { // "Reload" button pressed
 
 		// Replace data source only if it is valid
-		newRt = getTableWithListener();
-		if (newRT != null)
+		newRt = Utils.getTable();//getTableWithListener();
+		if (newRT!=null && newRT!=void) //Somehow we must check for void here???????
 			super.rt = newRt;
 		promptForData();
+			
 		// Re-displaying the prompt is problematic when recording macros
 		// due to duplicated keywords. So, we'll reset the recording
 		if (Recorder.record)

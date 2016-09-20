@@ -3,24 +3,35 @@
 [BARs][Home] related to analysis of non-image numerical data.
 
 ###[Create Boxplot](./Create_Boxplot.bsh)
-Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in the ImageJ
-Results table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
-Data can be split into groups and plot can be exported as vector graphics (publication-quality). It
-exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
+Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in an ImageJ
+table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
+Data can be split into groups and plot can be exported as vector graphics. It exemplifies how to
+use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
 [PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
 ([Download .bsh](./Create_Boxplot.bsh?raw=true))
 
 ![boxplot](../images/box-plot-demo.png)
 
-See also [Clipboard to Results](#clipboard-to-results), [Plot Results](#plot-results),
+See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
+###[Create Polar Plot](./Create_Polar_Plot.bsh)
+Generates a polar plot from data in an ImageJ table using the [JFreeChart](http://www.jfree.org/jfreechart/)
+library, bundled with Fiji. Plot can be customized and exported as vector graphics. It
+exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
+[PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
+([Download .bsh](./Create_Polar_Plot.bsh?raw=true))
+
+![polar plot](../images/polar-plot-demo.png)
+
+See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
+ [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
-Plots relative and cumulative frequencies on a double Y-axis graph of a measured parameter.
-Detailed functionality: 1) Retrieves relative and cumulative frequencies; 2) Fits a Normal
-distribution to histogram of relative frequencies; 3) Offers several methods to determine the
-optimal number of histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
+Plots relative and cumulative frequencies of a measured parameter. Detailed functionality:
+1) Retrieves relative and cumulative frequencies; 2) Fits a Normal distribution to histogram
+of relative frequencies; 3) Offers several methods to determine the optimal number of
+histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
 _Analyze>Distribution..._) and  Freedman–Diaconis'.
 
 ([Download .ijm](./Distribution_Plotter.ijm?raw=true))
@@ -53,11 +64,14 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
 
 ###[Plot XY Data](./Plot_XY_Data.bsh)
 _The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
-without error bars), from ImageJ measurements or imported spreadsheet data. Multi-series vector
-field plots are also supported.
+without error bars), from ImageJ measurements, plugin tables or imported spreadsheet data.
+Multi-series vector field plots are also supported.
 ([Download .bsh](./Plot_XY_Data.bsh?raw=true))
 
-See also [Create Boxplot](#create-boxplot)
+![plot builder](../images/plotbuilder-demo.png)
+
+
+See also [Create Boxplot](#create-boxplot), [Create Polar Plot](#create-polar-plot)
 
 
 ##See Also
