@@ -331,7 +331,7 @@ public static void showOptions(Frame parentFrame) {
 	ogd.enableYesNoCancel("Apply", "Start New Plot");
 	ogd.hideCancelButton();
 	ogd.showDialog();
-	if (ogd.wasOKed()) {
+	if (ogd.wasCanceled()) {
 		return;
 	} else if (ogd.wasOKed()) {
 		super.font = new Font(FONTS[ogd.getNextChoiceIndex()], Font.PLAIN, ij.gui.PlotWindow.fontSize);
