@@ -191,11 +191,11 @@ void promptForData() {
 	} else { // "Reload" button pressed
 
 		// Replace data source only if it is valid
-		newRt = Utils.getTable();//getTableWithListener();
+		newRt = getTableWithListener();
 		if (newRT!=null && newRT!=void) //Somehow we must check for void here???????
 			super.rt = newRt;
 		promptForData();
-			
+
 		// Re-displaying the prompt is problematic when recording macros
 		// due to duplicated keywords. So, we'll reset the recording
 		if (Recorder.record)
