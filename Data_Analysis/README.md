@@ -8,7 +8,6 @@ table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled 
 Data can be split into groups and plot can be exported as vector graphics. It exemplifies how to
 use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
 [PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
-([Download .bsh](./Create_Boxplot.bsh?raw=true))
 
 ![boxplot](../images/box-plot-demo.png)
 
@@ -20,7 +19,6 @@ Generates a polar plot from data in an ImageJ table using the [JFreeChart](http:
 library, bundled with Fiji. Plot can be customized and exported as vector graphics. It
 exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
 [PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
-([Download .bsh](./Create_Polar_Plot.bsh?raw=true))
 
 ![polar plot](../images/polar-plot-demo.png)
 
@@ -33,8 +31,6 @@ Plots relative and cumulative frequencies of a measured parameter. Detailed func
 of relative frequencies; 3) Offers several methods to determine the optimal number of
 histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
 _Analyze>Distribution..._) and  Freedman–Diaconis'.
-
-([Download .ijm](./Distribution_Plotter.ijm?raw=true))
 ([Documentation page][DP page])
 
 [![][DP image]][DP page]
@@ -43,8 +39,6 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
 ###[Find Peaks](./Find_Peaks.bsh)
    Retrieves local maxima and minima from an ImageJ plot, allowing several filtering
    options such as: 1) Peak amplitude; 2) Peak height and 3) Peak width.
-
-   ([Download .bsh](./Find_Peaks.bsh?raw=true))
    ([Documentation page][FP page])
 
    [![][FP image]][FP page]
@@ -57,7 +51,6 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    Requires the apache commons math library, distributed with Fiji. Non-Fiji users that do
    not have it installed are provided with a direct download link that will install all
    required dependencies.
-   ([Download .bsh](./Fit_Polynomial.bsh?raw=true))
 
    [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
 
@@ -66,7 +59,6 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
 _The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
 without error bars), from ImageJ measurements, plugin tables or imported spreadsheet data.
 Multi-series vector field plots are also supported.
-([Download .bsh](./Plot_XY_Data.bsh?raw=true))
 
 ![plot builder](../images/plotbuilder-demo.png)
 

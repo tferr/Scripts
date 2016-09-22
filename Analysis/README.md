@@ -10,7 +10,6 @@ See also: [Data Analysis]
    features a _Live mode_, guesses displayed lookup tables and ignores disabled channels, i.e.,
    those deselected in the "Channels" widget (which can be called by pressing `Z`, the shortcut for
    _Image> Color> Channels Tool_).
-   ([Download .bsh](./Multichannel_Plot_Profile.bsh?raw=true))
 
 ![multichannel profiler demo](../images/multichannel-profiler-demo.gif)
 
@@ -36,7 +35,6 @@ See also: [Data Analysis]
    Extends the built-in command _Image>Stack>Plot Z-axis Profile_ to multichannel (composite) images,
    while providing extra functionality such as Z-averaging (3D timelapses images), choice of
    statistic to be plotted and ability to trigger custom routines while in live mode.
-   ([Download .bsh](./Multichannel_ZT-axis_Profile.bsh?raw=true))
 
    Notes:
 
@@ -51,7 +49,6 @@ See also: [Data Analysis]
    A BeanShell script that extends the built-in command _Analyze> Plot Profile_ by plotting a simple
    [moving average](http://en.wikipedia.org/wiki/Moving_average) of profiled data. It inherits most
    features of [Multichannel Plot Profile](#multichannel-plot-profile).
-   ([Download .bsh](./Smoothed_Plot_Profile.bsh?raw=true))
 
 ![smoothed plot profile](../images/smoothed-plot-profile.png)
 

@@ -20,20 +20,16 @@ by BAR users. They are installed under `BAR>Snippets>`, a menu containing severa
 A Jython script that segregates videotracked paths (e.g., those obtained from
 [TrackMate](http://imagej.net/TrackMate)) into "Moving" and "Motionless" bouts
 according to predefined spatial and temporal constraints.
-([Download .py](./Extract_Bouts_From_Tracks.py?raw=true))
 
 ####[List BARs](./List_BARs.groovy)
 Retrieves a list of all scripts registered in the `BAR>` menu.
-([Download .groovy](./List_BARs.groovy?raw=true))
 
 ####[Median Filter](./Median_Filter.py)
 A [Python](#python) script that exemplifies how to perform a filtering operation.
-([Download .py](./Median_Filter.py?raw=true))
 
 ####[NN Distances](./NN_Distances.py)
 A [Python](#python) script that calculates nearest neighbor distances from a 2D/3D list of centroid
 coordinates.
-([Download .py](./NN_Distances.py?raw=true))
 
 ####[Batch Processors](http://imagej.net/BAR#Batch_Processors)
 These are scripts written in different languages that batch process images in a more customizable
@@ -54,17 +50,14 @@ are sensitive to user interpretation.
 #####[Process Folder IJM](./Process_Folder_IJM.ijm)
 A batch processor written in the [IJ macro language](#imagej-macro-language).
 ([Walkthrough](http://imagej.net/BAR#IJ_Macro_Language))
-([Download .ijm](./Process_Folder_IJM.ijm?raw=true))
 
 #####[Process Folder PY](./Process_Folder_PY.py)
 A batch processor written in [Python](#python).
 ([Walkthrough](http://imagej.net/BAR#Python))
-([Download .py](./Process_Folder_PY.py?raw=true))
 
 
 ####[Search BAR](./Search_BAR.bsh)
    A BeanShell script that searches for content in this directory.
-   ([Download .bsh](./Search_BAR.bsh?raw=true))
 
 ##Useful Resources
 

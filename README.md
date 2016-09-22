@@ -10,8 +10,7 @@ Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R
 sciences.
 
 The easiest way is to install these scripts is to use [Fiji](http://imagej.net/Fiji) and subscribe to the
-[BAR update site](http://imagej.net/List_of_update_sites). Alternatively, you can navigate the collection
-using the sections below, and download individual routines as needed.
+[BAR update site](http://imagej.net/List_of_update_sites).
 For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation) or the
 [BAR API](http://tferr.github.io/Scripts/apidocs/).
 

@@ -7,7 +7,6 @@
    but extending projected views to the entire volume rather than displaying single slices. Empty
    spaces in the image canvas will be painted with background color (frame around the Color Picker
    Tool in the ImageJ toolbar).
-   ([Download .ijm](./Combine_Orthogonal_Views.ijm?raw=true))
 
 ![combine orthogonal views](../images/combine-orthogonal-views.png)
 
@@ -16,13 +15,11 @@
    Produces cumulative projections using ImageJ's built-in projector (_Image>Stacks>Z Project..._).
    An immediate application of these progressive projections is the display of trailing paths of
    moving particles in timelapse experiments.
-   ([Download .bsh](./Cumulative_Z-Project.bsh?raw=true))
 
 ###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
    generating particle-size heat maps. More information can be found on its initial
    [documentation page][RCC page], that has yet to be transferred to [imagej.net](http://imagej.net/).
-   ([Download .ijm](./ROI_Color_Coder.ijm?raw=true))
 
    ![ROI Color Coder Output](../images/roi-color-coder.png)
 

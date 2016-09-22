@@ -5,13 +5,11 @@ This directories contain miscellaneous scripts that are not included in the main
 ###[Capture Window](./CaptureWindow.ijm)
 A Mac-specific macro that calls the _Grab.app_ (part of the Mac OS) to capture
 a snapshot of an ImageJ window.
-([Download .ijm](./CaptureWindow.ijm?raw=true))
 
 ###[Clipboard to Results](./Clipboard_to_Results.py)
    Imports numeric values (delimiter-separated values), copied to the clipboard into the
    _Results_ table. It was of utility prior to BAR v1.1.7, when BARs that analyzed tabular
    data could only read values from the main IJ "Results" table.
-   ([Download .py](./Clipboard_to_Results.py?raw=true))
 
 
 
