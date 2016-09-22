@@ -9,6 +9,9 @@
    Tool in the ImageJ toolbar).
    ([Download .ijm](./Combine_Orthogonal_Views.ijm?raw=true))
 
+![combine orthogonal views](../images/combine-orthogonal-views.png)
+
+
 ###[Cumulative Z-Project](./Cumulative_Z-Project.bsh)
    Produces cumulative projections using ImageJ's built-in projector (_Image>Stacks>Z Project..._).
    An immediate application of these progressive projections is the display of trailing paths of
@@ -17,16 +20,16 @@
 
 ###[ROI Color Coder](./ROI_Color_Coder.ijm)
    Colorizes ROI Manager selections by matching measurements to a lookup table (LUT),
-   generating particle-size heat maps.
+   generating particle-size heat maps. More information can be found on its initial
+   [documentation page][RCC page], that has yet to be transferred to [imagej.net](http://imagej.net/).
    ([Download .ijm](./ROI_Color_Coder.ijm?raw=true))
-   ([Documentation page][RCC page])
 
-   [![][RCC image]][RCC page]
+   ![ROI Color Coder Output](../images/roi-color-coder.png)
+
 
    See Also [Calibration Menu](../Tools/README.md#calibration-menu)
 
 [RCC page]: http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder
-[RCC image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:roicolorcoderoutput.png
 
 
 

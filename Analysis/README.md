@@ -53,6 +53,9 @@ See also: [Data Analysis]
    features of [Multichannel Plot Profile](#multichannel-plot-profile).
    ([Download .bsh](./Smoothed_Plot_Profile.bsh?raw=true))
 
+![smoothed plot profile](../images/smoothed-plot-profile.png)
+
+
    Notes:
 
    * In _Live mode_, and with profiled image as the frontmost window, press press `Control` to
