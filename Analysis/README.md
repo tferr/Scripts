@@ -12,6 +12,8 @@ See also: [Data Analysis]
    _Image> Color> Channels Tool_).
    ([Download .bsh](./Multichannel_Plot_Profile.bsh?raw=true))
 
+![multichannel profiler demo](../images/multichannel-profiler-demo.gif)
+
    Notes:
 
    * Y-axis upper limit is set by the active channel. If a profile from a brighter channel appears
