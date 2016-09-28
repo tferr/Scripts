@@ -1,8 +1,11 @@
+//@LogService log
+
 /* Fit_Polynomial.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Implements polynomial fitting in ImageJ using the apache commons math library.
- * 2016.03, Tiago Ferreira
+ * Implements polynomial fitting in ImageJ using the apache commons math library, bundled
+ * with Fiji.
+ * 2016.09, Tiago Ferreira
  *
  * N.B.: CurveFitter will be deprecated after commons-math3.3. It should be replaced by
  *       AbstractCurveFitter once Fiji adopts it.
@@ -37,11 +40,9 @@ int defDegree = 12;		// the default polynomial degree
 try {
 	Class.forName("org.apache.commons.math3.analysis.polynomials.PolynomialFunction");
 } catch( ClassNotFoundException e ) {
-	String URL = "http://jenkins.imagej.net/job/Stable-Fiji/ws/Fiji.app/jars/commons-math3-3.4.1.jar";
-	IJ.log("\n**** Fit Polynomial Error: Required library not found:\n"+ e +"\n \n"
-		+ "The apache commons math library must be installed in the plugins folder.\n"
-		+ "Please install it in plugins/jars/ by double-clicking on the link below:\n"+ URL);
-	IJ.error("Dependencies missing! Check the Log window for details.");
+	log.error("Fit Polynomial\n"+ e);
+	log.info("Visit http://forum.imagej.net/ to report a bug or file an issue at "+ bar.Utils.getSourceURL());
+	IJ.error("Dependencies missing! Check Console for details.");
 	return;
 }
 
@@ -315,14 +316,14 @@ try {
 } catch (Exception e) {
 
 	int errD = (guess) ? curDegree : defDegree;
+	log.error("Exception when parsing data from "+ plotTitle +"\n"+ e);
+	if (guess)
+		log.info("Polynomial of 'best fit' before exception: "+ getDegreeString(bestDegree));
+	else
+		log.info("Specified polynomial: "+ getDegreeString(defDegree));
 	IJ.error("Optimizer failed when dealing with a polynomial of degree\n"
 		+ errD +" ["+ nPoints +" data points] and will now terminate (see console\n"
 		+ "for details)... Perhaps settings should be revised?" );
-	IJ.log("\n*** Exception when parsing data from "+ plotTitle +":\n"+ e);
-	if (guess)
-		IJ.log(">>> Polynomial of 'best fit' until exception: "+ getDegreeString(bestDegree));
-	else
-		IJ.log(">>> Specified polynomial: "+ getDegreeString(defDegree));
 	return;
 
 }
