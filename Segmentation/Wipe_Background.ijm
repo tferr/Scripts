@@ -10,8 +10,6 @@
  * if the goal was to deal exclusively with 2D/3D images
  */
 
-// Set requirements
-requires("1.49t");
 getThreshold(lower, upper);
 if (lower==-1 && upper==-1)
 	exit("A thresholded image is required but none was found.");
@@ -105,16 +103,12 @@ if (maskID!=imgID && max>0) {
 		}
 	}
 
-	// Perform the filtering
+	// Perform filtering. maskID is discarded when batchMode macro exits
 	if (scope==optnsB[0])
 		imageCalculator("Multiply stack", imgID, maskID);
 	else
 		imageCalculator("Multiply", imgID, maskID);
 
-	// Ensure mask is not displayed (for whatever reason hyperstacks
-	// seem to escape batchMode (at least with 1J 1.49t, Java 1.6)
-	selectImage(maskID);
-	close();
 } else {
 
 	showStatus("No particles detected!");
@@ -126,7 +120,6 @@ Stack.setPosition(channel, activeSlice, frame);
 if (areaRoi && (wholeImg || isHyper))
 	run("Restore Selection");
 setThreshold(lower, upper);
-updateDisplay();
 
 
 function helpMsg() {
@@ -134,15 +127,15 @@ function helpMsg() {
 	+ '<div WIDTH=420>'
 	+ 'Since bitmap objects are discretised into a regular lattice of pixels, '
 	+ 'circularity is highly affected by the particle size and may not be '
-	+ 'valid for very small sizes. Here are some calculations using IJ 1.49t: '
+	+ 'valid for very small sizes. Here are some calculations: '
 	+ '<table align="center">'
 	+ '  <tr>'
 	+ '    <th>Particle size (pixels)</th>'
-	+ '    <th>Circularity range</th>'
+	+ '    <th>Possible circularity values</th>'
 	+ '  </tr>'
 	+ '  <tr align="center">'
 	+ '    <td>1</td>'
-	+ '    <td>Always 1</td>'
+	+ '    <td>1 exclusively</td>'
 	+ '  </tr>'
 	+ '  <tr align="center">'
 	+ '    <td>2</td>'
@@ -169,7 +162,7 @@ function helpMsg() {
 	+ '    <td>0.02&mdash;1</td>'
 	+ '  </tr>'
 	+ '</table>'
-	+ 'This means that e.g., if you set <i>Size</i> to <tt>&le;4</tt> and '
+	+ 'This means that e.g., if you set <i>Size</i> to <tt>0-4<</tt> and '
 	+ '<i>Circularity</i> to <tt>0.0-0.3</tt> no filtering operation will '
 	+ 'be performed because it is not possible to fullfill both conditions. '
 	+ 'You can read more about shape descriptors on the '
