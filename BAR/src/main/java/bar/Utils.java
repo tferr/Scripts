@@ -187,8 +187,7 @@ public class Utils implements PlugIn {
 	private static String buildYear() {
 		if (BUILD_DATE == null || BUILD_DATE.length() < 4)
 			return "";
-		else
-			return BUILD_DATE.substring(0, 4);
+		return BUILD_DATE.substring(0, 4);
 	}
 
 	/**
@@ -266,12 +265,11 @@ public class Utils implements PlugIn {
 		int position = -1;
 		if (menu==null) {
 			return null;
-		} else {
-			for (int i=0; i<menu.getItemCount(); i++) {
-				if (menu.getItem(i).getLabel().equals(label)) {
-					position = i;
-					break;
-				}
+		}
+		for (int i=0; i<menu.getItemCount(); i++) {
+			if (menu.getItem(i).getLabel().equals(label)) {
+				position = i;
+				break;
 			}
 		}
 		return position;
@@ -342,8 +340,7 @@ public class Utils implements PlugIn {
 			public boolean accept(final File f) {
 				if (f.isHidden() || f.getName().equals("Thumbs.db"))
 					return false;
-				else
-					return true;
+				return true;
 			}
 		};
 
@@ -842,14 +839,10 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Prompts the user for tabular data, retrieved from several sources
-	 * including 1) Importing a new text/csv file; 2) Trying to import data from
-	 * the system clipboard; 3) Importing a demo dataset populated by random
-	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable ResultsTable}
-	 * currently opened by ImageJ. Data is displayed in the "Results" window.
-	 * This method is thought for IJ macros, since the IJ macro language can
-	 * only interact with the "Results" window. Note that any previous data in
-	 * the "Results" window will be lost.
+	 * Variant of {@link #getTable(boolean, WindowListener)} that displays data
+	 * in the "Results" window. This method is thought for IJ macros, since the
+	 * IJ macro language can only interact with the "Results" window. Note that
+	 * any previous data in the "Results" window will be lost.
 	 *
 	 * @return A reference to the populated {@code ResultsTable} in the
 	 *         "Results" window or {@code null} if chosen source did not contain
@@ -868,12 +861,8 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Prompts the user for tabular data, retrieved from several sources
-	 * including 1) Importing a new text/csv file; 2) Trying to import data from
-	 * the system clipboard; 3) Importing a demo dataset populated by random
-	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable}
-	 * currently opened by ImageJ. For 1) and 2) data is displayed in a new,
-	 * dedicated window,
+	 * Variant of {@link #getTable(boolean, WindowListener)} that ignores
+	 * WindowListeners.
 	 * 
 	 * @return A reference to the chosen {@code ResultsTable} or {@code null} if
 	 *         chosen source did not contain valid data
