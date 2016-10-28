@@ -16,6 +16,7 @@ import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.WindowListener;
@@ -34,9 +35,12 @@ import net.imagej.ui.swing.script.TextEditor;
 import org.scijava.Context;
 
 import ij.IJ;
+import ij.ImagePlus;
 import ij.Menus;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
+import ij.gui.ImageWindow;
+import ij.gui.PlotWindow;
 import ij.io.OpenDialog;
 import ij.measure.ResultsTable;
 import ij.plugin.MacroInstaller;
@@ -901,20 +905,23 @@ public class Utils implements PlugIn {
 	 * Prompts the user for tabular data, retrieved from several sources
 	 * including 1) Importing a new text/csv file; 2) Trying to import data from
 	 * the system clipboard; 3) Importing a demo dataset populated by random
-	 * (Gaussian) values; or 4) any other {@link ij.measure.ResultsTable
-	 * ResultsTable} currently opened by ImageJ.
-	 * 
+	 * (Gaussian) values; 4) the {@link ResultsTable} of any {@link TextWindow}
+	 * or a {@link PlotWindow} currently being displayed in ImageJ. For 1) and
+	 * 2) data is displayed in a new TextWindow.
+	 *
 	 * @param displayInResults
-	 *            If true chosen data is displayed in the "Results" window.
-	 *            Useful, since macros (and several plugins) can only work with
-	 *            the "Results" window. Note that any previous data in the
-	 *            "Results" window will be lost. If false chosen data is
-	 *            displayed on a dedicated window.
+	 *            If {@code true} chosen data is displayed in the "Results"
+	 *            window. Useful, since macros (and several plugins) can only
+	 *            work with the "Results" window. Note that any previous data in
+	 *            the "Results" window will be lost. If {@code false} chosen
+	 *            data is displayed on a dedicated window.
 	 *
 	 * @param listener
-	 *            The {@link java.awt.event.WindowListener WindowListener} to be
-	 *            added to the window containing data if retrieval was
-	 *            successful. It is ignored when null.
+	 *            The {@link WindowListener} to be added to the window
+	 *            containing data (if retrieval was successful. It is ignored
+	 *            when null. Note that the window containing the data can either
+	 *            be a {@link TextWindow} or a {@link PlotWindow}
+	 *
 	 * @return A reference to the chosen {@code ResultsTable} or {@code null} if
 	 *         chosen source did not contain valid data
 	 *
@@ -924,14 +931,16 @@ public class Utils implements PlugIn {
 	public static ResultsTable getTable(final boolean displayInResults, final WindowListener listener) {
 
 		ResultsTable rt = null;
-		TextWindow rtWindow = null;
-		final ArrayList<ResultsTable> tables = new ArrayList<ResultsTable>();
-		final ArrayList<String> tableTitles = new ArrayList<String>();
+		final ArrayList<ResultsTable> tables = new ArrayList<>();
+		final ArrayList<String> tableTitles = new ArrayList<>();
 
+		// Retrieve tables from all available TextWindows
 		final Frame[] windows = WindowManager.getNonImageWindows();
 		for (final Frame w : windows) {
+			if (w == null)
+				continue;
 			if (w instanceof TextWindow) {
-				rtWindow = (TextWindow) w;
+				final TextWindow rtWindow = (TextWindow) w;
 				rt = ((TextWindow) w).getTextPanel().getResultsTable();
 				if (rt != null) {
 					if (displayInResults && rt == ResultsTable.getResultsTable())
@@ -942,6 +951,25 @@ public class Utils implements PlugIn {
 			}
 		}
 
+		// Retrieve tables from all available PlotWindows
+		final int[] ids = WindowManager.getIDList();
+		if (ids != null) {
+			for (final int id : ids) {
+				final ImagePlus pImp = WindowManager.getImage(id);
+				if (pImp == null)
+					continue;
+				final ImageWindow pWin = pImp.getWindow();
+				if (pWin == null)
+					continue;
+				if (pWin instanceof PlotWindow) {
+					rt = ((PlotWindow) pWin).getResultsTable();
+					if (rt != null) {
+						tables.add(rt);
+						tableTitles.add(pWin.getTitle());
+					}
+				}
+			}
+		}
 		final boolean noTablesOpened = tableTitles.isEmpty();
 
 		// Append options for external sources
@@ -950,7 +978,7 @@ public class Utils implements PlugIn {
 		tableTitles.add("Demo sample of Gaussian values");
 
 		// Make prompt as intuitive as possible
-		String gdTitle = "Choose Source of Tabular Data";
+		String gdTitle = "Choose Data Source";
 		String subtitle = "Use tabular data from:";
 		if (displayInResults) {
 			if (validResultsTable()) {
@@ -969,17 +997,17 @@ public class Utils implements PlugIn {
 				tableTitles.get(0));
 		// gd.hideCancelButton();
 		gd.showDialog();
-
-		if (gd.wasCanceled()) {
+		if (gd.wasCanceled())
 			return null;
 
-		} else if (gd.wasOKed()) {
+		if (gd.wasOKed()) {
 
 			final String choice = gd.getNextRadioButton();
 			String rtTitle;
+			Window win = null;
 
 			if (choice.equals("External file...")) {
-	
+
 				rtTitle = (displayInResults) ? "Results" : null;
 				try {
 					return openAndDisplayTable("", rtTitle, listener);
@@ -988,59 +1016,61 @@ public class Utils implements PlugIn {
 					return null;
 				}
 
-			// Clipboard
+				// Clipboard
 			} else if (choice.equals("Clipboard")) {
 				final String clipboard = getClipboardText();
 				final String error = "Clipboard does not seem to contain valid data";
-				if (clipboard==null || clipboard.isEmpty()) {
+				if (clipboard == null || clipboard.isEmpty()) {
 					IJ.error(error);
 					return null;
-				} else {
-					try {
-						final File temp = File.createTempFile("BARclipboard", ".txt");
-						temp.deleteOnExit();
-						final PrintStream out = new PrintStream(temp.getAbsolutePath());
+				}
+				try {
+					final File temp = File.createTempFile("BARclipboard", ".txt");
+					temp.deleteOnExit();
+					try (PrintStream out = new PrintStream(temp.getAbsolutePath())) {
 						out.println(clipboard);
 						out.close();
-						rtTitle = (displayInResults) ? "Results" : "Clipboard Data";
-						rt = openAndDisplayTable(temp.getAbsolutePath(), rtTitle, listener, true);
-						if (rt == null) {
-							IJ.error(error);
-							return null;
-						}
-					} catch (final IOException exc) {
-						IJ.error("Could not extract tabular data from clipboard.");
+					} catch (final Exception exc) {
+						IJ.error("Could not extract data from clipboard.");
 						return null;
 					}
+					rtTitle = (displayInResults) ? "Results" : "Clipboard Data";
+					rt = openAndDisplayTable(temp.getAbsolutePath(), rtTitle, listener, true);
+					if (rt == null) {
+						IJ.error(error);
+						return null;
+					}
+				} catch (final IOException exc) {
+					IJ.error("Could not extract data from clipboard.");
+					return null;
 				}
 
 			} else if (choice.equals("Demo sample of Gaussian values")) {
 
 				rt = generateGaussianData();
-				if (rt!=null) {
+				if (rt != null) {
 					rtTitle = (displayInResults) ? "Results" : WindowManager.makeUniqueName("Gaussian Data");
 					rt.show(rtTitle);
-					rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
-					if (rtWindow != null && listener != null)
-						rtWindow.addWindowListener(listener);
+					win = WindowManager.getFrame(rtTitle);
 				}
 
-			// Any other ResultsTable in available TextWindows
+				// Any other ResultsTable in available TextWindows/PlotWindows
 			} else if (!noTablesOpened) {
 
 				rt = tables.get(tableTitles.indexOf(choice));
 				if (displayInResults) {
 					rt.show("Results");
-					rtWindow = ResultsTable.getResultsWindow();
+					win = ResultsTable.getResultsWindow();
 				} else {
-					rtWindow = (TextWindow) WindowManager.getFrame(choice);
+					win = WindowManager.getFrame(choice);
 				}
-				if (rtWindow != null && listener != null)
-					rtWindow.addWindowListener(listener);
 
 				// ??
 			} else
 				return null;
+
+			if (win != null && listener != null)
+				win.addWindowListener(listener);
 		}
 
 		// Ensure nothing went awry when overriding the "Results" window
