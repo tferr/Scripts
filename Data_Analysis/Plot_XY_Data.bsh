@@ -2,11 +2,13 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Interactively creates a multi-series plot (XY with or without error bars,
- * and vector fields) from ImageJ tables, clipboard or imported spreadsheet data.
+ * and vector fields) from existing ImageJ tables, series of existing ImageJ
+ * Plots, the system clipboard or imported spreadsheet data. Mix and match
+ * of multiple data sources is possible.
  *
  * Requires BAR_-1.0.X.jar.
  *
- * TF, v2016.09
+ * TF, v2016.11
  */
 
 import bar.Utils;
@@ -367,16 +369,19 @@ WindowFocusListener WListener = new WindowFocusListener() {
 };
 
 /**
- * Inner class scripting java.awt.WindowAdapter, the adapter that
- * receives window events. We'll use it to keep track of which windows
- * have been closed, so that main prompt can be updated accordingly.
+ * Inner classes scripting java.awt.WindowAdapter, We'll use them to
+ * keep track of which windows have been closed, so that main prompt
+ * can be updated accordingly.
  */
-WindowAdapter WinAdapter = new WindowAdapter() {
+WindowAdapter rtListener = new WindowAdapter() {
 	public void windowClosed(WindowEvent e) {
-		if (e.getSource() instanceof ij.text.TextWindow) // ResultsTable
-			super.rtClosed = true;
-		else // Plot Window
-			super.pwClosed = true;
+		super.rtClosed = true;
+		updateDatasetButton();
+	}
+};
+WindowAdapter plotListener = new WindowAdapter() {
+	public void windowClosed(WindowEvent e) {
+		super.pwClosed = true;
 		updateDatasetButton();
 	}
 };
@@ -390,7 +395,7 @@ PlotWindow PWindowWithListener(Plot plot) {
 	if (plot!=null) {
 		super.pwClosed = false;
 		pw = plot.show();
-		pw.addWindowListener(WinAdapter);
+		pw.addWindowListener(plotListener);
 	}
 	return pw;
 }
@@ -401,7 +406,7 @@ PlotWindow PWindowWithListener(Plot plot) {
  */
 ResultsTable getTableWithListener() {
 	ResultsTable rt = null;
-	rt = Utils.getTable(false, WinAdapter);
+	rt = Utils.getTable(false, rtListener);
 	if (rt!=null)
 		super.rtClosed = false;
 	return rt;
@@ -416,7 +421,7 @@ void updateDatasetButton() {
 		if (super.pwClosed)
 			super.datasetButton.setLabel("Reopen Closed Plot");
 		else if (super.rtClosed)
-			super.datasetButton.setLabel("Table Closed...");
+			super.datasetButton.setLabel("Source of Data Closed...");
 		else
 			super.datasetButton.setLabel("Add Dataset "+ (super.datasetCounter+1));
 		super.datasetButton.setEnabled(!super.rtClosed || super.pwClosed);
