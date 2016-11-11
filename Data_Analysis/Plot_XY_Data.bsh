@@ -194,7 +194,7 @@ void promptForData() {
 
 		// Replace data source only if it is valid
 		newRt = getTableWithListener();
-		if (newRT!=null && newRT!=void) //Somehow we must check for void here???????
+		if (newRt!=null && newRt!=void) //Somehow we must check for void here???????
 			super.rt = newRt;
 		promptForData();
 
