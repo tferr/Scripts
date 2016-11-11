@@ -128,7 +128,7 @@ public class InteractivePlotter implements PlugIn {
 	 * {@link #promptListener}. Plot is created if it does not exist, i.e., if
 	 * the method has not been called before.
 	 */
-	void addDataset(final String datasetLabel, final double[] x1, final double[] y1, final double[] x2,
+	private void addDataset(final String datasetLabel, final double[] x1, final double[] y1, final double[] x2,
 			final double[] y2, final boolean vectorField) {
 
 		final boolean newPlot = plot == null;
@@ -175,7 +175,7 @@ public class InteractivePlotter implements PlugIn {
 	 * Generates abscissae from row numbers of the specified ResultsTable.
 	 * Useful for datasets in which only Y-values need to be plotted.
 	 */
-	double[] generateX(final ResultsTable table) {
+	private double[] generateX(final ResultsTable table) {
 		final int size = table.getCounter();
 		final double[] incX = new double[size];
 		for (int i = 0; i < size; i++)
@@ -753,7 +753,7 @@ public class InteractivePlotter implements PlugIn {
 	}
 
 	/** Returns the ResultsTable to be used as data input. */
-	ResultsTable getTable() {
+	private ResultsTable getTable() {
 		return Utils.getTable(prompt, false, rt == null, null);
 	}
 
