@@ -218,7 +218,6 @@ public class InteractivePlotter implements PlugIn {
 				}
 			}
 		}
-		return;
 	}
 
 	/**
@@ -298,7 +297,7 @@ public class InteractivePlotter implements PlugIn {
 
 		// This method is invoked by the GenericDialog upon changes
 		@Override
-		public boolean dialogItemChanged(final GenericDialog ignored, final java.awt.AWTEvent e) {
+		public boolean dialogItemChanged(final GenericDialog ignored, final AWTEvent e) {
 
 			if (e != null && e.toString().contains("Options...")) {
 				updateOptionsMenu();
