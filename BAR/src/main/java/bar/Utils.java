@@ -1091,15 +1091,15 @@ public class Utils implements PlugIn {
 	 *            The title of the window in which data is displayed. The
 	 *            filename is used if title is null or an empty string. To avoid
 	 *            windows with duplicated titles, title is made unique by
-	 *            {@link ij.WindowManager WindowManager} .
+	 *            {@link WindowManager}.
 	 * @param listener
-	 *            The {@link java.awt.event.WindowListener WindowListener} to be
-	 *            added to the window containing data if retrieval was
-	 *            successful. It is ignored when {@code null}.
+	 *            The {@link WindowListener} to be added to the window
+	 *            containing data if retrieval was successful. It is ignored
+	 *            when {@code null}.
 	 * @param silent
-	 *            If {@code true}, I/O exceptions are silently ignored.
+	 *            If {@code true} I/O exceptions are silently ignored.
 	 *
-	 * @return A reference to the opened {@code ResultsTable} or {@code null} if
+	 * @return A reference to the opened {link ResultsTable} or {@code null} if
 	 *         file could not be open.
 	 *
 	 * @see #getTable()
@@ -1126,14 +1126,14 @@ public class Utils implements PlugIn {
 	 *            The title of the window in which data is displayed. The
 	 *            filename is used if title is null or an empty string. To avoid
 	 *            windows with duplicated titles, title is made unique by
-	 *            {@link ij.WindowManager WindowManager} .
+	 *            {@link WindowManager} .
 	 * @param listener
-	 *            The {@link java.awt.event.WindowListener WindowListener} to be
+	 *            The {@link WindowListener} to be
 	 *            added to the window containing data if retrieval was
 	 *            successful. It is ignored when {@code null}.
 	 * @throws IOException
 	 *             if file could not be opened
-	 * @return A reference to the opened {@code ResultsTable} or {@code null} if
+	 * @return A reference to the opened {link ResultsTable} or {@code null} if
 	 *         table was empty.
 	 *
 	 * @see #getTable()
@@ -1151,15 +1151,15 @@ public class Utils implements PlugIn {
 		rt.show(rtTitle);
 		final TextWindow rtWindow = (TextWindow) WindowManager.getFrame(rtTitle);
 		if (rtWindow != null && listener != null)
-		rtWindow.addWindowListener(listener);
+			rtWindow.addWindowListener(listener);
 		return rt;
 	}
 
 	/**
-	 * Returns a {@link ij.measure.ResultsTable ResultsTable} containing
+	 * Returns a {@link ResultsTable} containing
 	 * Gaussian ("normally") distributed values without displaying it.
 	 *
-	 * @return the {@code ResultsTable} containing the demo data
+	 * @return the {link ResultsTable} containing the demo data
 	 *
 	 * @see #getTable(boolean, WindowListener)
 	 * @see #getTable()
