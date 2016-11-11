@@ -10,6 +10,7 @@
  */
 package bar;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.Menu;
@@ -929,6 +930,10 @@ public class Utils implements PlugIn {
 	 * @see #getTable()
 	 */
 	public static ResultsTable getTable(final boolean displayInResults, final WindowListener listener) {
+		return getTable(null, displayInResults, true, listener);
+	}
+
+	public static ResultsTable getTable(final Component relativeComponent, final boolean displayInResults, final boolean offerSampleChoice, final WindowListener listener) {
 
 		ResultsTable rt = null;
 		final ArrayList<ResultsTable> tables = new ArrayList<>();
@@ -975,7 +980,8 @@ public class Utils implements PlugIn {
 		// Append options for external sources
 		tableTitles.add("External file...");
 		tableTitles.add("Clipboard");
-		tableTitles.add("Demo sample of Gaussian values");
+		if (offerSampleChoice)
+			tableTitles.add("Demo sample of Gaussian values");
 
 		// Make prompt as intuitive as possible
 		String gdTitle = "Choose Data Source";
@@ -996,6 +1002,8 @@ public class Utils implements PlugIn {
 		gd.addRadioButtonGroup(subtitle, tableTitles.toArray(new String[tableTitles.size()]), rows, cols,
 				tableTitles.get(0));
 		// gd.hideCancelButton();
+		if (relativeComponent!=null)
+			gd.setLocationRelativeTo(relativeComponent);
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return null;
