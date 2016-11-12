@@ -12,12 +12,16 @@ package bar.plugin;
 
 import java.awt.AWTEvent;
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Checkbox;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -242,7 +246,7 @@ public class InteractivePlotter implements PlugIn {
 		prompt.addRadioButtonGroup("Color:", Colors.colors, 5, 2, dColor);
 
 		// Add the "Add Dataset" button to the dialog
-		datasetButton = new Button("       Add Series " + String.valueOf(datasetCounter + 1) + "       ");
+		datasetButton = largeButton();
 		datasetButton.addActionListener(prompt);
 		final Panel buttonPanel = new Panel();
 		buttonPanel.add(datasetButton);
@@ -370,7 +374,7 @@ public class InteractivePlotter implements PlugIn {
 					// Plot data
 					if (validData) {
 						addDataset(datasetLabel, x1, y1, x2, x2, vectorData);
-						datasetButton.setLabel("Add Series " + (datasetCounter + 1));
+						updateDatasetButton();
 
 					} else {
 						showMessage("Invalid data", "Chosen column(s) do not seem to contain numeric data.");
@@ -789,6 +793,16 @@ public class InteractivePlotter implements PlugIn {
 			datasetButton.setLabel("Reopen Closed Plot");
 		else
 			datasetButton.setLabel("Add Series " + (datasetCounter + 1));
+	}
+
+	private Button largeButton() {
+		final String expandedLabel = "     ADD SERIES 100000000     ";
+		final Font font = new Font("SansSerif", Font.PLAIN, 12);
+		final FontMetrics fm = new Canvas().getFontMetrics(font);
+		final int width = fm.stringWidth(expandedLabel);
+		final Button button = new Button(expandedLabel);
+		button.setPreferredSize(new Dimension(width, 2*fm.getHeight()));
+		return button;
 	}
 
 	/** Creates the options menu */
