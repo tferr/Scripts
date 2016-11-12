@@ -14,7 +14,7 @@ Resources listed in [Snippets](https://github.com/tferr/Scripts/tree/master/Snip
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets

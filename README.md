@@ -26,13 +26,12 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Data Analysis]
   Operations related to statistics, profiles, histograms and curve fitting.
 
-  1. (bsh) [Create Boxplot](./Data_Analysis/README.md#create-boxplot)
-  2. (bsh) [Create Polar Plot](./Data_Analysis/README.md#create-polar-plot)
-  3. (ijm) [Distribution Plotter](./Data_Analysis/README.md#distribution-plotter)
-  4. (bsh) [Find Peaks](./Data_Analysis/README.md#find-peaks)
-  5. (bsh) [Fit Polynomial](./Data_Analysis/README.md#fit-polynomial)
-  6. (bsh) [Plot XY Data](./Data_Analysis/README.md#plot-xy-data)
-
+  1. (bsh) [Create Boxplot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-boxplot)
+  2. (bsh) [Create Polar Plot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-polar-plot)
+  3. (ijm) [Distribution Plotter](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#distribution-plotter)
+  4. (bsh) [Find Peaks](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#find-peaks)
+  5. (bsh) [Fit Polynomial](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#fit-polynomial)
+  6. (java) [Interactive Plotting](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#interactive-plotting)
 
 ## [Image Annotation][Annotation]
   Aiders for the annotation of scientific images.
@@ -181,7 +180,7 @@ Blomquist. This project would not have been possible without the support of the 
 |:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
 
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets

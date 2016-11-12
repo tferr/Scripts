@@ -7,9 +7,10 @@ Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from d
 table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
 Data can be split into groups and plot can be exported as vector graphics. It exemplifies how to
 use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
-[PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
+[PlotUtils](../../../../java/bar/PlotUtils.java)) to script JFreeChart.
 
-![boxplot](../images/box-plot-demo.png)
+
+![boxplot](../../../../../../../images/box-plot-demo.png)
 
 See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
@@ -20,7 +21,7 @@ library, bundled with Fiji. Plot can be customized and exported as vector graphi
 exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
 [PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
 
-![polar plot](../images/polar-plot-demo.png)
+![polar plot](../../../../../../../images/polar-plot-demo.png)
 
 See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
@@ -55,12 +56,12 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
 
 
-###[Plot XY Data](./Plot_XY_Data.bsh)
+###[Interactive Plotting](../../../../java/bar/plugin/InteractivePlotter.java)
 _The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
 without error bars), from ImageJ measurements, plugin tables or imported spreadsheet data.
 Multi-series vector field plots are also supported.
 
-![plot builder](../images/plotbuilder-demo.png)
+![plot builder](../../../../../../../images/plotbuilder-demo.png)
 
 
 See also [Create Boxplot](#create-boxplot), [Create Polar Plot](#create-polar-plot)
@@ -83,7 +84,7 @@ See also [Create Boxplot](#create-boxplot), [Create Polar Plot](#create-polar-pl
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/Data_Analysis#data-analysis
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/Annotation#annotation
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/Segmentation#segmentation
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
