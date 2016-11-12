@@ -12,7 +12,7 @@ use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
 
 ![boxplot](../../../../../../../images/box-plot-demo.png)
 
-See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
+See also [Interactive Plotting](#interactive-plotting),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
 ###[Create Polar Plot](./Create_Polar_Plot.bsh)
@@ -23,7 +23,7 @@ exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (n
 
 ![polar plot](../../../../../../../images/polar-plot-demo.png)
 
-See also [Clipboard to Results](#clipboard-to-results), [Plot XY Data](#plot-xy-data),
+See also [Interactive Plotting](#interactive-plotting),
  [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
 ###[Distribution Plotter](./Distribution_Plotter.ijm)
