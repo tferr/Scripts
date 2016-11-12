@@ -34,7 +34,7 @@ histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
 _Analyze>Distribution..._) and  Freedman–Diaconis'.
 ([Documentation page][DP page])
 
-[![][DP image]][DP page]
+![distribution plotter](../../../../../../../images/distribution-plotter-demo.png)
 
 
 ###[Find Peaks](./Find_Peaks.bsh)
@@ -42,7 +42,7 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    options such as: 1) Peak amplitude; 2) Peak height and 3) Peak width.
    ([Documentation page][FP page])
 
-   [![][FP image]][FP page]
+   ![find peaks](../../../../../../../images/find-peaks-demo.png)
 
 
 ###[Fit Polynomial](./Fit_Polynomial.bsh)
@@ -53,7 +53,7 @@ _Analyze>Distribution..._) and  Freedman–Diaconis'.
    not have it installed are provided with a direct download link that will install all
    required dependencies.
 
-   [![][Poly image]](http://imagej.net/Sholl_Analysis#Complementary_Tools)
+   ![polynomial fitter](../../../../../../../images/animated-poly-fit.gif)
 
 
 ###[Interactive Plotting](../../../../java/bar/plugin/InteractivePlotter.java)
@@ -71,11 +71,6 @@ See also [Create Boxplot](#create-boxplot), [Create Polar Plot](#create-polar-pl
 
 * [Analysis], BARs that complement built-in commands in the ImageJ `Analyze>` menu.
 
-[DP page]: http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter
-[DP image]: http://imagejdocu.tudor.lu/lib/exe/fetch.php?cache=&media=macro:distributionplotterdemo.png
-[FP page]: http://imagej.net/Find_Peaks
-[FP image]: http://imagej.net/_images/a/a1/FindPeaksSnapshot.png
-[Poly image]: http://imagej.net/_images/f/f0/AnimatedPolyFit.gif
 
 
 
