@@ -97,12 +97,9 @@ public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 		gd.addDialogListener(this);
 		gd.addHelp(msg);
 		gd.showDialog();
-		if (gd != null && gd.wasCanceled())
+		if (gd.wasCanceled() || !dialogItemChanged(gd, null)) // read parameters
 			return DONE;
-		if (!dialogItemChanged(gd, null)) // read parameters
-			return DONE;
-		else
-			return IJ.setupDialog(imp, flags);
+		return IJ.setupDialog(imp, flags);
 	}
 
 	/**

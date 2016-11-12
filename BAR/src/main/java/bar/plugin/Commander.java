@@ -63,6 +63,7 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
@@ -573,11 +574,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 						tf.setForeground(Color.BLACK);
 						buttons[0].setLabel("    Set Path    ");
 						return true;
-					} else {
-						tf.setForeground(Color.RED);
-						buttons[0].setLabel("Invalid Path");
-						return false;
 					}
+					tf.setForeground(Color.RED);
+					buttons[0].setLabel("Invalid Path");
+					return false;
 				}
 			});
 			gd.showDialog();
@@ -804,23 +804,22 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		if (recentPaths.size() == 0) {
 			recentMenu.setEnabled(false);
 			return;
-		} else {
-			recentMenu.setEnabled(true);
-			recentMenu.removeAll();
-			final RecentActionListener al = new RecentActionListener();
-			JMenuItem mi;
-			for (final String r : recentPaths) {
-				final String entry = new File(r).getName();
-				mi = new JMenuItem(entry.isEmpty() ? File.separator : entry);
-				mi.setActionCommand(r);
-				mi.addActionListener(al);
-				recentMenu.add(mi);
-			}
-			recentMenu.addSeparator();
-			mi = new JMenuItem("Clear Menu");
+		}
+		recentMenu.setEnabled(true);
+		recentMenu.removeAll();
+		final RecentActionListener al = new RecentActionListener();
+		JMenuItem mi;
+		for (final String r : recentPaths) {
+			final String entry = new File(r).getName();
+			mi = new JMenuItem(entry.isEmpty() ? File.separator : entry);
+			mi.setActionCommand(r);
 			mi.addActionListener(al);
 			recentMenu.add(mi);
 		}
+		recentMenu.addSeparator();
+		mi = new JMenuItem("Clear Menu");
+		mi.addActionListener(al);
+		recentMenu.add(mi);
 	}
 
 	/** Displays History Menu */
@@ -2348,7 +2347,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				final boolean hasFocus, final int row, final int col) {
 			final JLabel lbl = (JLabel) renderer.getTableCellRendererComponent(
 					table, value, isSelected, hasFocus, row, col);
-			lbl.setHorizontalAlignment(JLabel.LEFT);
+			lbl.setHorizontalAlignment(SwingConstants.LEFT);
 			lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
 			return lbl;
 		}
