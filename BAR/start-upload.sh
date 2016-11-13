@@ -2,7 +2,7 @@
 ## IJ BAR: https://github.com/tferr/Scripts#scripts
 ## Places scripts (symlinks) and latest jars in a local Fiji installation
 ## so that the ImageJ updater can upload all files to the BAR Update site
-## TF 201607
+## TF 201611
 
 ## Source and destination paths
 PROJECT_DIR=`dirname $(pwd -P)`
@@ -10,7 +10,7 @@ FIJI_DIR="/Applications/IJ/FijiUploadToBAR.app"
 FIJI_BAR_DIR="$FIJI_DIR/plugins/Scripts/BAR"
 
 ## Symlink files to be placed under BAR> submenus
-for subdir in Analysis Annotation Data_Analysis lib Segmentation Snippets; do
+for subdir in Analysis Annotation lib Segmentation Snippets; do
     dir="$PROJECT_DIR/$subdir"
     echo "Symlinking "$dir
     ln -fs $dir $FIJI_BAR_DIR
