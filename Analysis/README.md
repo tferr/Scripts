@@ -4,6 +4,10 @@
 
 See also: [Data Analysis]
 
+###[LoG-DoG Spot Counter](./LoG-DoG_Spot_Counter.py)
+   Detects particles in a multichannel image using [TrackMate](http://imagej.net/TrackMate)'s
+   LoG/DoG (Laplacian/Difference of Gaussian) segmentation
+
 
 ###[Multichannel Plot Profile](./Multichannel_Plot_Profile.bsh)
    Extends the built-in command _Analyze> Plot Profile_ to multichannel (composite) images. It

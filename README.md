@@ -17,9 +17,10 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Analysis]
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
-  1. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
-  2. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
-  3. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
+  1. (py) [LoG-DoG Spot Counter](./Analysis/README.md#log-dog-spot-counter)
+  2. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
+  3. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
+  4. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]
