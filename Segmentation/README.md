@@ -42,8 +42,8 @@ three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initi
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis

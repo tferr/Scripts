@@ -26,8 +26,8 @@ java plugins This directory contains the source code (a
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis

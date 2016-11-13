@@ -45,8 +45,8 @@ Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu wh
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins] | [lib] | [Snippets] | [IJ] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:---------:|:-----:|:----------:|:----:|
+| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
+|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
 [Analysis]: https://github.com/tferr/Scripts/tree/master/Analysis#analysis
