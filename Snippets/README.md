@@ -60,32 +60,10 @@ A batch processor written in [Python](#python).
    A BeanShell script that searches for content in this directory.
 
 ##Useful Resources
-
-####Scripting additions
  - [lib]
-
-####BeanShell
- - [BAR Tutorials](./Tutorials/#tutorials)
- - [Official documentation](http://www.beanshell.org/manual/contents.html)
-
-####ImageJ Macro Language
- - [Introduction into Macro Programming](http://imagej.net/Introduction_into_Macro_Programming)
- - [Built-in macro functions](http://imagej.nih.gov/ij/developer/macro/functions.html)
- - [IJ1 developer resources](http://imagej.nih.gov/ij/developer/index.html)
- - [IJ1 macro repository](http://imagej.nih.gov/ij/macros/)
- - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Templates_ menu
-
-####Python
- - [BAR Tutorials](./Tutorials/#tutorials)
- - [Fiji documentation](http://imagej.net/Jython_Scripting)
- - [Image Processing and Analysis @EMBL](http://cmci.embl.de/documents/120206pyip_cooking/python_imagej_cookbook)
- - [IJ1 examples](http://imagej.nih.gov/ij/macros/python/)
- - [Python documentation](https://www.python.org/doc/)
- - [Jython documentation](http://www.jython.org/docs/)
- - [Python Central](http://www.pythoncentral.io)
- - [The Hitchhiker’s Guide to Python](http://docs.python-guide.org/en/latest/)
- - Fiji examples in `Fiji.app/plugins/Examples/` and Editor's _Templates_ menu
-
+ - [BeanShell BAR Tutorials](./Tutorials/#tutorials)
+ - [Python BAR Tutorials](./Tutorials/#tutorials)
+ - [ImageJ Scripting Page](http://imagej.net/Scripting)
 
 
 
