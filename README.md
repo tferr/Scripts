@@ -9,10 +9,9 @@ Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R
 [ImageJ](http://imagej.net/), the de facto standard in scientific image processing in the life
 sciences.
 
-The easiest way is to install these scripts is to use [Fiji](http://imagej.net/Fiji) and subscribe to the
+To install BAR, download the latest version of [Fiji](http://imagej.net/Fiji) and subscribe to the
 [BAR update site](http://imagej.net/List_of_update_sites).
-For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation) or the
-[BAR API](http://tferr.github.io/Scripts/apidocs/).
+For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation).
 
 
 ## [Analysis]
@@ -99,16 +98,22 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   ([Documentation page](http://imagej.net/BAR#Commander))
 
 
-## [Plugins]
-  Maven project implementing the backbone of BAR, including several [Java plugins](./BAR/README.md#bar-plugins),
-  the structure of the [BAR menu](./BAR/README.md#bar-menu) and the BAR API. While BAR is mainly a
-  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#bar-plugins) have started to
+## [Java Classes]
+  Maven project implementing the backbone of BAR, including several [plugins](./BAR/README.md#plugins),
+  [utilities](./BAR/README.md#utilities), [External Ops](./BAR/README.md#external-ops),the structure
+  of the BAR menu and the [BAR API](http://tferr.github.io/Scripts/apidocs/). While BAR is mainly a
+  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#plugins) have started to
   explore some of the scripting capabilities of [ImageJ2](http://imagej.net/ImageJ2).
 
-  - [List of Java plugins](./BAR/README.md#list-of-java-plugins)
 
+## Tutorials
+  1. [Introduction to Scripting](./Snippets/Tutorials/README.md#tutorials) Tutorials used
+     in the workshop [Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
+     at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
+  1. [External Ops](./BAR/README.md#external-ops): Tutorial exemplifying how to provide
+     [ops](http://imagej.net/ImageJ_Ops).
 
-# [Misc]
+## [Misc]
   Scripts that are not distributed through the BAR update site:
 
   1. [Capture Window](./misc/README.md#capture-window)

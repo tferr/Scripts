@@ -18,7 +18,8 @@ java plugins This directory contains the source code (a
   1. [PlotUtils](./src/main/java/bar/Utils.java), class providing utility methods that improve ImageJ's plotting capabilities
 
 ### External Ops
-  1. Classes exemplifying how to [add new ops](http://imagej.net/Adding_new_ops) outside the core imagej-ops project.
+  1. Classes exemplifying how to provide [external ops](./EXTERNAL_OPS.md) outside the core imagej-ops project.
+     This work is explained in more detail on the [ImageJ website](http://imagej.net/Adding_new_ops).
 
 ###Notes
    - Files are uploaded to the BAR [update site](http://sites.imagej.net/Tiago/) manually,
