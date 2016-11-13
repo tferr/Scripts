@@ -120,7 +120,7 @@ public class InteractivePlotter implements PlugIn {
 					+ " instead\n");
 		}
 
-		rt = getTable();
+		rt = Utils.getTable(null, false, rt == null, null);
 		if (rt != null)
 			showDialog();
 
