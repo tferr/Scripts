@@ -2,7 +2,7 @@ import os, java.io.File
 from ij import IJ
 from bar import Utils
 from org.scijava import Context
-from net.imagej.ui.swing.script import TextEditor
+from org.scijava.ui.swing.script import TextEditor
 
 # Specify the directory containing the files to be opened
 dir = Utils.getSnippetsDir() + "Tutorials" + os.sep
