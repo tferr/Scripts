@@ -37,6 +37,8 @@ import java.util.Vector;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import bar.Utils;
 import ij.IJ;
@@ -108,6 +110,7 @@ public class InteractivePlotter implements PlugIn {
 	@Override
 	public synchronized void run(final String arg) {
 
+		Utils.shiftClickWarning();
 		if (prompt != null && prompt.isVisible()) {
 			prompt.toFront();
 			return;
@@ -304,7 +307,12 @@ public class InteractivePlotter implements PlugIn {
 
 			if (e != null && e.toString().contains("Options...")) {
 				updateOptionsMenu();
-				optionsMenu.show((Button) e.getSource(), 0, 0);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						optionsMenu.show((Button) e.getSource(), 0, 0);
+					}
+				});
 				return true;
 			}
 
@@ -806,6 +814,11 @@ public class InteractivePlotter implements PlugIn {
 
 	/** Creates the options menu */
 	private JPopupMenu createOptionsMenu() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (final Exception ignored) {
+			// keep whatever look and feel is available
+		}
 		final JPopupMenu popup = new JPopupMenu();
 		final JMenuItem changeDataJMI = new JMenuItem("Change Input Data...");
 		changeDataJMI.addActionListener(new ActionListener() {
