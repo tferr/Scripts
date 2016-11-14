@@ -31,8 +31,7 @@ import java.util.Random;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import net.imagej.ui.swing.script.TextEditor;
-
+import org.scijava.ui.swing.script.TextEditor;
 import org.scijava.Context;
 
 import ij.IJ;

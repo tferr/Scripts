@@ -78,6 +78,18 @@
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-svggen</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-ui-swing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>script-editor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
+		</dependency>
 </dependencies>
 
 <build>
