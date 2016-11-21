@@ -52,6 +52,7 @@ from java.awt import Color
 from ij import IJ, ImagePlus
 from ij.gui import Overlay, PointRoi
 from ij.measure import Calibration, ResultsTable
+from bar import Utils
 
 
 def colorRGBtoColor(colorRGB):
@@ -177,7 +178,7 @@ def main():
 
     # Prepare overlay and Results table
     overlay = getOverlay(image)
-    table = ResultsTable.getResultsTable()
+    table = Utils.getTable("LoG-DoG Spots")
     table.incrementCounter()
     table.setLabel(image.getTitle(), table.getCounter()-1)
 
@@ -201,7 +202,7 @@ def main():
     table.addValue("Ratio Ch%d/Ch%d" % (channel_1, channel_2),
             (float('nan') if spots_ch1 == 0 else spots_ch2 / float(spots_ch1)))
     table.addValue("Group", group)
-    table.show("Results")
+    table.show("LoG-DoG Spots")
     lservice.info("Analysis concluded")
 
 
