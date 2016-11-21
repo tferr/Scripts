@@ -1,18 +1,18 @@
-# @Integer(label="First channel (Ch1)", description="Target channel of first detector",value="1") channel_1
+# @Integer(label="First channel (Ch1)", description="Target channel of first detector",min=1,max=10,style="scroll bar",value="1") channel_1
 # @String(label="Ch1 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch1
 # @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=100,style="scroll bar",value=7.200) diameter_ch1
-# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=3.5) threshold_ch1
+# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",min=1,max=100,style="scroll bar",value=3.5) threshold_ch1
 # @ColorRGB(label="Ch1 Marker color",value="magenta") color_ch1
 
 # @String(value=" ", visibility="MESSAGE") spacer
-# @Integer(label="Second channel (Ch2)", description="Target channel of second detector, if present",value="2") channel_2
+# @Integer(label="Second channel (Ch2)", description="Target channel of second detector, if present",min=2,max=10,style="scroll bar",value="2") channel_2
 # @String(label="Ch2 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch2
 # @Double(label="Ch2 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=1000,style="scroll bar",value=1.080) diameter_ch2
-# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=70.5) threshold_ch2
+# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored",min=1,max=100,style="scroll bar",value=70.5) threshold_ch2
 # @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
 
 # @String(value=" ", visibility="MESSAGE") spacer
-# @String(label="Image group",description="Used to group data in Results table", value="Control image") group
+# @String(label="Analysis label",description="Used to group data in Results table", value="Control image") group
 # @Boolean(label="3D stacks: Analyze projection", value=false) project_image
 # @Boolean(label="Display console log", value=false) open_console
 
