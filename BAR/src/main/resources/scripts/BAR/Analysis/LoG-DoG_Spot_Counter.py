@@ -49,7 +49,7 @@ from fiji.plugin.trackmate.detection import DetectorKeys as DK, \
     LogDetectorFactory, DogDetectorFactory
 from org.scijava.util import ColorRGB
 from java.awt import Color
-from ij import ImagePlus
+from ij import IJ, ImagePlus
 from ij.gui import Overlay, PointRoi
 from ij.measure import Calibration, ResultsTable
 
@@ -156,6 +156,9 @@ def projectionImage(imp):
 
 def main():
 
+    image = IJ.getImage()  # ???This is to solve a mysterious UnboundLocalError:
+                           # local variable 'image' referenced before assignment
+                           # Script parameter @ImagePlus not being recognized???
 
     n_channels = image.getNChannels()
     if channel_1  > n_channels and channel_2  > n_channels:
