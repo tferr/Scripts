@@ -96,7 +96,7 @@ boolean showDialog(ImagePlus imp) {
 	gd.addSlider("Start slice:", startSlice, stopSlice, startSlice);
 	gd.addSlider("Stop slice:", startSlice, stopSlice, stopSlice);
 	gd.addChoice("Projection type:", ZProjector.METHODS, ZProjector.METHODS[method]);
-	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Annotation#cumulative-z-project");
+	gd.addHelp("https://github.com/tferr/Scripts#image-annotation");
 	gd.showDialog();
 	if (gd.wasCanceled())
 		return false;

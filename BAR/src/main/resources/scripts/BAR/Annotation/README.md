@@ -8,7 +8,7 @@
    spaces in the image canvas will be painted with background color (frame around the Color Picker
    Tool in the ImageJ toolbar).
 
-![combine orthogonal views](../../../../../images/combine-orthogonal-views.png)
+![combine orthogonal views](../../../../../../../images/combine-orthogonal-views.png)
 
 
 ###[Cumulative Z-Project](./Cumulative_Z-Project.bsh)
@@ -21,7 +21,7 @@
    generating particle-size heat maps. More information can be found on its initial
    [documentation page][RCC page], that has yet to be transferred to [imagej.net](http://imagej.net/).
 
-   ![ROI Color Coder Output](../images/roi-color-coder.png)
+   ![ROI Color Coder Output](../../../../../../../images/roi-color-coder.png)
 
 
    See Also [Calibration Menu](../Tools/README.md#calibration-menu)

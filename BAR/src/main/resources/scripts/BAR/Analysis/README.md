@@ -15,7 +15,7 @@ See also: [Data Analysis]
    those deselected in the "Channels" widget (which can be called by pressing `Z`, the shortcut for
    _Image> Color> Channels Tool_).
 
-![multichannel profiler demo](../images/multichannel-profiler-demo.gif)
+![multichannel profiler demo](../../../../../../../images/multichannel-profiler-demo.gif)
 
    Notes:
 
@@ -54,7 +54,7 @@ See also: [Data Analysis]
    [moving average](http://en.wikipedia.org/wiki/Moving_average) of profiled data. It inherits most
    features of [Multichannel Plot Profile](#multichannel-plot-profile).
 
-![smoothed plot profile](../images/smoothed-plot-profile.png)
+![smoothed plot profile](../../../../../../../images/smoothed-plot-profile.png)
 
 
    Notes:
