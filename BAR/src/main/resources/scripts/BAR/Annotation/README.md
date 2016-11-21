@@ -8,7 +8,7 @@
    spaces in the image canvas will be painted with background color (frame around the Color Picker
    Tool in the ImageJ toolbar).
 
-![combine orthogonal views](../images/combine-orthogonal-views.png)
+![combine orthogonal views](../../../../../images/combine-orthogonal-views.png)
 
 
 ###[Cumulative Z-Project](./Cumulative_Z-Project.bsh)
