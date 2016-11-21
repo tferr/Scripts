@@ -309,10 +309,10 @@ This is an easy way to provide a starting point for development using your Ops.
 |:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
 
 [Home]: https://github.com/tferr/Scripts#ij-bar
-[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis/Analysis#analysis
-[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation/Annotation#annotation
+[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis#analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation#annotation
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
-[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation/Segmentation#segmentation
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation#segmentation
 [Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
 [Java Classes]: https://github.com/tferr/Scripts/tree/master/BAR#java-classes
 [lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
