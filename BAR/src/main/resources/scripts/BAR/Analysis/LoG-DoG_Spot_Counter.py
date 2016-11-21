@@ -1,12 +1,16 @@
-# @String(label="Ch1 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
-# @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",value=7.200,min=0.001) diameter_ch1
-# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",value=3.500) threshold_ch1
+# @String(label="Ch1 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch1
+# @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=100,style="scroll bar",value=7.200) diameter_ch1
+# @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=3.5) threshold_ch1
 # @ColorRGB(label="Ch1 Marker color",value="magenta") color_ch1
-# @String(label="Ch2 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="DoG") detector_ch2
-# @Double(label="Ch2 Estimated spot size ",description="Estimated diameter in physical units",value=1.080,min=0.001) diameter_ch2
-# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",value=70.50) threshold_ch2
+
+# @String(value=" ", visibility="MESSAGE") spacer
+# @String(label="Ch2 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch2
+# @Double(label="Ch2 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=1000,style="scroll bar",value=1.080) diameter_ch2
+# @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=70.5) threshold_ch2
 # @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
-# @String(label="Group",description="Used to group data in Results table", value="Control image") group
+
+# @String(value=" ", visibility="MESSAGE") spacer
+# @String(label="Image group",description="Used to group data in Results table", value="Control image") group
 # @Boolean(label="3D stacks: Analyze projection", value=false) project_image
 # @Boolean(label="Display console log", value=false) open_console
 
@@ -18,24 +22,24 @@
 LoG-DoG_Spot_Counter.py
 https://github.com/tferr/Scripts/
 
-Detects particles in a multichannel image using TrackMate[1]'s LoG/DoG (Laplacian/
-Difference of Gaussian) segmentation[2,3]. Detected centroids are displayed in
-the non-destructive image overlay and total counts reported in the Results table.
-The script was written for counting PLA (Proximity ligation Assay) foci in tissue
-counterstained for DAPI and WGA, but can be applied to similar images. It also
-exemplifies how to script TrackMate[4].
+Detects particles in a multichannel image using TrackMate LoG/DoG (Laplacian/
+Difference of Gaussian) segmentation[1,2]. Detected centroids are displayed in
+the non-destructive image overlay and total counts shown in the Results table.
+The script was written for counting PLA (Proximity ligation Assay) foci in
+tissue counterstained for DAPI and WGA, but can be applied to similar images.
+It also exemplifies how to script TrackMate[3].
 
-Tips:
- - Toggling Color mode ("Image>Color>Channels Tools...") allows you to display
+NB:
+ - If an area ROI exists, it will be used to confine detection
+ - Toggling Color mode ('Image>Color>Channels Tools...') allows you to display
    only the spots detected for the active channel
- - The "Group" field can be used to generate grouped box plots of the data using
-   BAR>Data Analysis>Create Boxplot
+ - The 'Group' field can be used to generate box plots of the data using 'BAR>
+   Data Analysis>Create Boxplot'
 
-TF 201607
+TF 201611
 [1] http://imagej.net/TrackMate
-[2] http://imagej.net/Getting_started_with_TrackMate
-[3] http://imagej.net/TrackMate_Algorithms#Spot_detectors
-[4] http://imagej.net/Scripting_TrackMate
+[2] http://imagej.net/TrackMate_Algorithms#Spot_detectors
+[3] http://imagej.net/Scripting_TrackMate
 '''
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
