@@ -21,7 +21,9 @@
    generating particle-size heat maps. More information can be found on its initial
    [documentation page][RCC page], that has yet to be transferred to [imagej.net](http://imagej.net/).
 
-   ![ROI Color Coder Output](../../../../../../../images/roi-color-coder.png)
+   ![ROI Color Coder Output](../../../../../../../images/roi-color-coder-demo.png)
+   ![ROI Color Coder Output](../../../../../../../images/roi-color-coder-prompt.png)
+
 
 
    See Also [Calibration Menu](../Tools/README.md#calibration-menu)
