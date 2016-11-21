@@ -194,7 +194,7 @@ def main():
     lservice.info("Displaying spot ROIs and results...")
     image.setOverlay(overlay)
     table.addValue("# " + "Spots Ch%d" % channel_1, spots_ch1)
-    table.addValue("# " + "Spots Ch%d" % channel_2, spots_ch2)
+    table.addValue("# " + "Spots  Ch%d" % channel_2, spots_ch2)
     table.addValue("Ratio Ch%d/Ch%d" % (channel_1, channel_2),
             (float('nan') if spots_ch1 == 0 else spots_ch2 / float(spots_ch1)))
     table.addValue("Group", group)
