@@ -64,7 +64,7 @@ boolean setupDataset(ResultsTable rt) {
 	gd.setInsets(0, 0, 0);
 	gd.addMessage("Once data is plotted, right-click on the graph\n"
 				+ "canvas for customization and export options.");
-	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Data_Analysis#create-boxplot");
+	gd.addHelp("https://github.com/tferr/Scripts/tree/master#data-analysis");
 	gd.showDialog();
 	if (gd.wasCanceled())
 		return false;
