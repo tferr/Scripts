@@ -1,9 +1,11 @@
+# @Integer(label="First channel (Ch1)", description="Target channel of first detector",value="1") channel_1
 # @String(label="Ch1 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch1
 # @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=100,style="scroll bar",value=7.200) diameter_ch1
 # @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=3.5) threshold_ch1
 # @ColorRGB(label="Ch1 Marker color",value="magenta") color_ch1
 
 # @String(value=" ", visibility="MESSAGE") spacer
+# @Integer(label="Second channel (Ch2)", description="Target channel of second detector, if present",value="2") channel_2
 # @String(label="Ch2 Detector", description="Detection algorithm", choices={"LoG", "DoG"}, style="radioButtonHorizontal") detector_ch2
 # @Double(label="Ch2 Estimated spot size",description="Estimated diameter in physical units",min=0.001,max=1000,style="scroll bar",value=1.080) diameter_ch2
 # @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",min=1,max=100,style="scroll bar",value=70.5) threshold_ch2
@@ -50,10 +52,6 @@ from java.awt import Color
 from ij import ImagePlus
 from ij.gui import Overlay, PointRoi
 from ij.measure import Calibration, ResultsTable
-
-
-CHANNEL_1 = 1  # Target channel for 1st spot detector
-CHANNEL_2 = 2  # Target channel for 2nd spot detector
 
 
 def colorRGBtoColor(colorRGB):
@@ -155,8 +153,13 @@ def projectionImage(imp):
 
 def main():
 
-    if image.getNChannels() <= 1 and image.getNFrames() > 1:
-        error("Invalid Dataset: Multichannel image required")
+    if image.getNFrames() > 1:
+        error("Invalid Dataset: Time-lapse images not supported")
+        return
+
+    n_channels = image.getNChannels()
+    if channel_1  > n_channels and channel_2  > n_channels:
+        error("Image does not contain specified channel(s)")
         return
 
     if open_console:
@@ -176,20 +179,24 @@ def main():
     table.setLabel(image.getTitle(), table.getCounter()-1)
 
     # Perform detection
-    lservice.info("Processing Ch1...")
-    spots_ch1 = getSpots(image, CHANNEL_1, detector_ch1, diameter_ch1/2,
-                         threshold_ch1, overlay, "large", color_ch1)
-    lservice.info("Processing Ch2...")
-    spots_ch2 = getSpots(image, CHANNEL_2, detector_ch2, diameter_ch2/2,
-                         threshold_ch2, overlay, "small", color_ch2)
+    spots_ch1 = spots_ch2 = float('nan')
+    if channel_1 <= n_channels:
+        lservice.info("Processing Ch%d" % channel_1)
+        spots_ch1 = getSpots(image, channel_1, detector_ch1, diameter_ch1/2,
+                             threshold_ch1, overlay, "large", color_ch1)
+
+    if channel_2 <= n_channels:
+        lservice.info("Processing Ch%d" % channel_2)
+        spots_ch2 = getSpots(image, channel_2, detector_ch2, diameter_ch2/2,
+                             threshold_ch2, overlay, "small", color_ch2)
 
     # Show results
     lservice.info("Displaying spot ROIs and results...")
     image.setOverlay(overlay)
-    table.addValue("# " + "Spots Ch%d" % CHANNEL_1, spots_ch1)
-    table.addValue("# " + "Spots Ch%d" % CHANNEL_2, spots_ch2)
-    table.addValue("Ratio", (float('nan') if spots_ch1 == 0 else
-                             spots_ch2 / float(spots_ch1)))
+    table.addValue("# " + "Spots Ch%d" % channel_1, spots_ch1)
+    table.addValue("# " + "Spots Ch%d" % channel_2, spots_ch2)
+    table.addValue("Ratio Ch%d/Ch%d" % (channel_1, channel_2),
+            (float('nan') if spots_ch1 == 0 else spots_ch2 / float(spots_ch1)))
     table.addValue("Group", group)
     table.show("Results")
     lservice.info("Analysis concluded")
