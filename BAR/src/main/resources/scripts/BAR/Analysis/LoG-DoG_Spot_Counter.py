@@ -69,10 +69,9 @@ def error(msg):
 def getOverlay(imp):
     """ Returns an image overlay cleansed of spot ROIs from previous runs """
     overlay = imp.getOverlay()
-    n_rois = overlay.size()
-    if overlay is None or n_rois == 0:
+    if overlay is None:
         return Overlay()
-    for i in range(0, n_rois):
+    for i in range(0, overlay.size()):
         roi_name = overlay.get(i).getName()
         if roi_name is not None and "Spots" in roi_name:
             overlay.remove(i)
