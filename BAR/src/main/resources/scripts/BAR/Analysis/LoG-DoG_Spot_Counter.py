@@ -1,5 +1,3 @@
-# @ImagePlus imp
-# @LogService logsvc
 # @String(label="Ch1 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
 # @Double(label="Ch1 Estimated spot size",description="Estimated diameter in physical units",value=7.200,min=0.001) diameter_ch1
 # @Double(label="Ch1 Quality cutoff",description="Spots with lower quality than this are ignored",value=3.500) threshold_ch1
@@ -9,7 +7,11 @@
 # @Double(label="Ch2 Quality cutoff",description="Spots with lower quality than this are ignored' than this",value=70.50) threshold_ch2
 # @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
 # @String(label="Group",description="Used to group data in Results table", value="Control image") group
-# @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
+# @Boolean(label="3D stacks: Analyze projection", value=false) project_image
+# @Boolean(label="Display console log", value=false) open_console
+
+# @ImagePlus image
+# @LogService lservice
 # @UIService uiservice
 
 '''
@@ -37,19 +39,22 @@ TF 201607
 '''
 
 from fiji.plugin.trackmate import Model, Logger, Settings, TrackMate
-from fiji.plugin.trackmate.detection import DetectorKeys as DK, LogDetectorFactory, DogDetectorFactory
-from ij.gui import Overlay, PointRoi
-from ij.measure import Calibration, ResultsTable as RT
+from fiji.plugin.trackmate.detection import DetectorKeys as DK, \
+    LogDetectorFactory, DogDetectorFactory
+from org.scijava.util import ColorRGB
 from java.awt import Color
+from ij import ImagePlus
+from ij.gui import Overlay, PointRoi
+from ij.measure import Calibration, ResultsTable
 
 
-CHANNEL_1 = 1 # Target channel for 1st spot detector
-CHANNEL_2 = 2 # Target channel for 2nd spot detector
+CHANNEL_1 = 1  # Target channel for 1st spot detector
+CHANNEL_2 = 2  # Target channel for 2nd spot detector
 
 
-def ColorRGBtoColor(color):
+def colorRGBtoColor(colorRGB):
     """Converts a org.scijava.util.ColorRGB into a java.awt.Color"""
-    return Color(color.getRed(), color.getGreen(), color.getBlue())
+    return Color(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue())
 
 
 def error(msg):
@@ -57,13 +62,6 @@ def error(msg):
     uiservice.showDialog(msg, "Error")
 
 
-def extractCounts(model, ch, roi_type = "large"):
-    """
-    Adds detected spots to the image overlay and logs counts to Results table
-    :model:     The trackmate.Model
-    :ch:        The target channel
-    :roi_type:  A string describing how spot ROIs should be displayed
-    :return:    The n. of spots detected by trackmate.detection.LogDetector
 def getOverlay(imp):
     """ Returns an image overlay cleansed of spot ROIs from previous runs """
     overlay = imp.getOverlay()
@@ -77,26 +75,61 @@ def getOverlay(imp):
     return overlay
 
 
+def getSpots(imp, channel, detector_type, radius, threshold, overlay,
+             roi_type="large", roi_color=ColorRGB("blue")):
+    """ Performs the detection, adding spots to the image overlay
+    :imp:           The image (ImagePlus) being analyzed
+    :channel:       The target channel
+    :detector_type: A string describing the detector: "LoG" or "DoG"
+    :radius:        Spot radius (NB: trackmate GUI accepts diameter)
+    :threshold:     Quality cutoff value
+    :overlay:       The image overlay to store spot (MultiPoint) ROIs
+    :roi_type:      A string describing how spot ROIs should be displayed
+    :returns:       The n. of detected spots
     """
-    if silent: # global variable
-        model.setLogger(Logger.VOID_LOGGER)
+    settings = Settings()
+    settings.setFrom(imp)
+    settings.detectorFactory = (LogDetectorFactory() if "LoG" in detector_type
+                                else DogDetectorFactory())
+    settings.detectorSettings = {
+        DK.KEY_DO_SUBPIXEL_LOCALIZATION: False,
+        DK.KEY_DO_MEDIAN_FILTERING: True,
+        DK.KEY_TARGET_CHANNEL: channel,
+        DK.KEY_RADIUS: radius,
+        DK.KEY_THRESHOLD: threshold,
+    }
+    trackmate = TrackMate(settings)
+    if not trackmate.execDetection():
+        lservice.error(str(trackmate.getErrorMessage()))
+        return 0
+    model = trackmate.model
     spots = model.getSpots()
     count = spots.getNSpots(False)
-    ch_id = "Spots Ch" + str(ch)
+    ch_id = "Spots Ch%d" % channel
     if count > 0:
-        logger("Rendering overlay")
-        roi = spotCollectionToROI(spots, False)
+        roi = None
+        cal = imp.getCalibration()
+        for spot in spots.iterable(False):
+            x = cal.getRawX(spot.getFeature(spot.POSITION_X))
+            y = cal.getRawY(spot.getFeature(spot.POSITION_Y))
+            z = spot.getFeature(spot.POSITION_Z)
+            if z == 0 or not cal.pixelDepth or cal.pixelDepth == 0:
+                z = 1
+            else:
+                z = int(z // cal.pixelDepth)
+            imp.setPosition(channel, z, 1)
+            if roi is None:
+                roi = PointRoi(int(x), int(y), imp)
+            else:
+                roi.addPoint(imp, x, y)
+        roi.setStrokeColor(colorRGBtoColor(roi_color))
         if "large" in roi_type:
-            roi.setStrokeColor(ColorRGBtoColor(color_ch1))
             roi.setPointType(3)
             roi.setSize(4)
         else:
-            roi.setStrokeColor(ColorRGBtoColor(color_ch2))
             roi.setPointType(2)
             roi.setSize(1)
-        roi.setPosition(ch)
         overlay.add(roi, ch_id)
-    table.addValue("# " + ch_id, count)
     return count
 
 
@@ -116,81 +149,48 @@ def projectionImage(imp):
         mip_imp.restoreRoi()
     return mip_imp
 
-def spotCollectionToROI(spotCollection, visibleSpotsOnly):
-    """Converts a trackmate.SpotCollection to a ij.gui.PointRoi"""
-    global imp
-    roi = None
-    cal = imp.getCalibration()
-    for spot in spotCollection.iterable(visibleSpotsOnly):
-        x = cal.getRawX(spot.getFeature(spot.POSITION_X))
-        y = cal.getRawY(spot.getFeature(spot.POSITION_Y))
-        if roi is None:
-            roi = PointRoi(x, y)
-        else:
-            roi.addPoint(x, y)
-    return roi
 
-def setDetectorSettings(settings, channel, radius, threshold):
-    """Settings map for fiji.plugin.trackmate.detection.LogDetector"""
-    settings.detectorSettings = {
-        DK.KEY_DO_SUBPIXEL_LOCALIZATION : False,
-        DK.KEY_DO_MEDIAN_FILTERING : True,
-        DK.KEY_TARGET_CHANNEL : channel,
-        DK.KEY_RADIUS : radius,
-        DK.KEY_THRESHOLD : threshold,
-    }
+def main():
+
+    if image.getNChannels() <= 1 and image.getNFrames() > 1:
+        error("Invalid Dataset: Multichannel image required")
+        return
+
+    if open_console:
+        uiservice.getDefaultUI().getConsolePane().show()
+    lservice.info("Analyzing " + image.getTitle())
+
+    # 2D / 3D analysis?
+    if project_image and image.getNSlices() > 1:
+        lservice.info("Retrieving MIP")
+        image = projectionImage(image)
+        image.show()
+
+    # Prepare overlay and Results table
+    overlay = getOverlay(image)
+    table = ResultsTable.getResultsTable()
+    table.incrementCounter()
+    table.setLabel(image.getTitle(), table.getCounter()-1)
+
+    # Perform detection
+    lservice.info("Processing Ch1...")
+    spots_ch1 = getSpots(image, CHANNEL_1, detector_ch1, diameter_ch1/2,
+                         threshold_ch1, overlay, "large", color_ch1)
+    lservice.info("Processing Ch2...")
+    spots_ch2 = getSpots(image, CHANNEL_2, detector_ch2, diameter_ch2/2,
+                         threshold_ch2, overlay, "small", color_ch2)
+
+    # Show results
+    lservice.info("Displaying spot ROIs and results...")
+    image.setOverlay(overlay)
+    table.addValue("# " + "Spots Ch%d" % CHANNEL_1, spots_ch1)
+    table.addValue("# " + "Spots Ch%d" % CHANNEL_2, spots_ch2)
+    table.addValue("Ratio", (float('nan') if spots_ch1 == 0 else
+                             spots_ch2 / float(spots_ch1)))
+    table.addValue("Group", group)
+    table.show("Results")
+    lservice.info("Analysis concluded")
 
 
-#Validate image. Ensure it has no ROIs. Project it as needed
-if not validDataset(dataset):
-    logger("Invalid Dataset: Dimensions are not suitable", True, True)
-else:
-    logger("Analyzing " + imp.getTitle())
-if (imp.getNSlices()>1):
-    logger("Retrieving MIP")
-    imp = projectionImage(imp)
-    imp.show();
-imp.killRoi()
-
-# Initalize Settings and Overlay
-settings = Settings()
-settings.setFrom(imp)
-overlay = Overlay()
-
-# Prepare Results table
-table = RT.getResultsTable()
-table.incrementCounter()
-table.setLabel(imp.getTitle(), table.getCounter()-1)
-
-# Initialize counts
-spots_ch1 = 0
-spots_ch2 = 0
-
-# Ch1 detection. NB: trackmate GUI accepts diameter not radius
-logger("Processing Ch1...")
-settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch1 else DogDetectorFactory()
-setDetectorSettings(settings, CHANNEL_1, diameter_ch1/2, threshold_ch1)
-trackmate = TrackMate(settings)
-if trackmate.execDetection():
-    spots_ch1 = extractCounts(trackmate.model, CHANNEL_1)
-else:
-    logger(str(trackmate.getErrorMessage()), True)
-
-# Ch2 detection. NB: trackmate GUI accepts diameter not radius
-logger("Processing Ch2...")
-settings = trackmate.getSettings()
-settings.detectorFactory = LogDetectorFactory() if "LoG" in detector_ch2 else DogDetectorFactory()
-setDetectorSettings(settings, CHANNEL_2, diameter_ch2/2, threshold_ch2)
-if trackmate.execDetection():
-    spots_ch2 = extractCounts(trackmate.model, CHANNEL_2, "small")
-else:
-    logger(str(trackmate.getErrorMessage()), True)
-
-# Log ratios and remaining details
-table.addValue("Ratio", float('nan') if spots_ch1==0 else spots_ch2/float(spots_ch1))
-table.addValue("Group", group)
-
-# Display results
-imp.setOverlay(overlay)
-table.show("Results")
-logger("Concluded analysis")
+if __name__ == '__main__':
+    main()
