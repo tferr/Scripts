@@ -93,13 +93,17 @@ def logger(message, isError = False, exit = False):
 def projectionImage(imp):
     """Returns the MIP of the specified ImagePlus (a composite stack)"""
     from ij.plugin import ZProjector
+    roi_exists = imp.getRoi() is not None
+    imp.deleteRoi()
     zp = ZProjector(imp)
     zp.setMethod(ZProjector.MAX_METHOD)
-    zp.setStartSlice(1);
-    zp.setStopSlice(imp.getNSlices());
+    zp.setStartSlice(1)
+    zp.setStopSlice(imp.getNSlices())
     zp.doHyperStackProjection(True)
     mip_imp = zp.getProjection()
     mip_imp.setCalibration(imp.getCalibration())
+    if roi_exists:
+        mip_imp.restoreRoi()
     return mip_imp
 
 def spotCollectionToROI(spotCollection, visibleSpotsOnly):
