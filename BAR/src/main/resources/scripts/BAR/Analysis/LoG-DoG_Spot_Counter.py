@@ -11,6 +11,7 @@
 # @ColorRGB(label="Ch2 Marker color",value="yellow") color_ch2
 # @String(label="Group",description="Used to group data in Results table", value="Control image") group
 # @Boolean(label="Run silently",description="Disable debug mode?",value=true) silent
+# @UIService uiservice
 
 '''
 LoG-DoG_Spot_Counter.py
@@ -50,6 +51,12 @@ CHANNEL_2 = 2 # Target channel for 2nd spot detector
 def ColorRGBtoColor(color):
     """Converts a org.scijava.util.ColorRGB into a java.awt.Color"""
     return Color(color.getRed(), color.getGreen(), color.getBlue())
+
+
+def error(msg):
+    """ Displays an error message """
+    uiservice.showDialog(msg, "Error")
+
 
 def extractCounts(model, ch, roi_type = "large"):
     """
