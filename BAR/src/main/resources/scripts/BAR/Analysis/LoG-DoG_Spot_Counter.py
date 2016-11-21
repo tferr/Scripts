@@ -1,4 +1,3 @@
-# @Dataset dataset
 # @ImagePlus imp
 # @LogService logsvc
 # @String(label="Ch1 Detector",description="Detection algorithm",choices={"LoG", "DoG"}, value="LoG") detector_ch1
@@ -100,15 +99,6 @@ def getOverlay(imp):
     table.addValue("# " + ch_id, count)
     return count
 
-def logger(message, isError = False, exit = False):
-    """Logs message/error when in 'debug' mode aborting script if requested"""
-    global silent, logsvc
-    if not silent:
-        logsvc.error(message) if isError else logsvc.info(message)
-    if exit:
-        from ij import IJ, Macro
-        IJ.showMessage(message)
-        raise RuntimeError(Macro.MACRO_CANCELED if silent else message)
 
 def projectionImage(imp):
     """Returns the MIP of the specified ImagePlus (a composite stack)"""
@@ -150,12 +140,6 @@ def setDetectorSettings(settings, channel, radius, threshold):
         DK.KEY_THRESHOLD : threshold,
     }
 
-def validDataset(dataset):
-    """Assess if dataset is a multichannel 2D/3D image)"""
-    from net.imagej.axis import Axes
-    c = dataset.dimension(dataset.dimensionIndex(Axes.CHANNEL))
-    t = dataset.dimension(dataset.dimensionIndex(Axes.TIME))
-    return c > 1 and t <= 1
 
 #Validate image. Ensure it has no ROIs. Project it as needed
 if not validDataset(dataset):
