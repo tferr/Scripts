@@ -110,6 +110,9 @@ def getSpots(imp, channel, detector_type, radius, threshold, overlay,
     if count > 0:
         roi = None
         cal = imp.getCalibration()
+        t_pos = imp.getT()
+        if (t_pos > 1):
+            lservice.warn("Only frame %d was considered..." % t_pos)
         for spot in spots.iterable(False):
             x = cal.getRawX(spot.getFeature(spot.POSITION_X))
             y = cal.getRawY(spot.getFeature(spot.POSITION_Y))
@@ -118,7 +121,7 @@ def getSpots(imp, channel, detector_type, radius, threshold, overlay,
                 z = 1
             else:
                 z = int(z // cal.pixelDepth)
-            imp.setPosition(channel, z, 1)
+            imp.setPosition(channel, z, t_pos)
             if roi is None:
                 roi = PointRoi(int(x), int(y), imp)
             else:
@@ -153,9 +156,6 @@ def projectionImage(imp):
 
 def main():
 
-    if image.getNFrames() > 1:
-        error("Invalid Dataset: Time-lapse images not supported")
-        return
 
     n_channels = image.getNChannels()
     if channel_1  > n_channels and channel_2  > n_channels:
