@@ -58,6 +58,20 @@ def extractCounts(model, ch, roi_type = "large"):
     :ch:        The target channel
     :roi_type:  A string describing how spot ROIs should be displayed
     :return:    The n. of spots detected by trackmate.detection.LogDetector
+def getOverlay(imp):
+    """ Returns an image overlay cleansed of spot ROIs from previous runs """
+    overlay = imp.getOverlay()
+    n_rois = overlay.size()
+    if overlay is None or n_rois == 0:
+        return Overlay()
+    for i in range(0, n_rois):
+        if r
+        roi_name = overlay.get(i).getName()
+        if roi_name is not None and "Spots" in roi_name:
+            overlay.remove(i)
+    return overlay
+
+
     """
     if silent: # global variable
         model.setLogger(Logger.VOID_LOGGER)
