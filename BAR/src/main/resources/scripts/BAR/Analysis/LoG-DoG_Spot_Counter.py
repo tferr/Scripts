@@ -69,7 +69,7 @@ def getOverlay(imp):
     overlay = imp.getOverlay()
     if overlay is None:
         return Overlay()
-    for i in range(0, overlay.size()):
+    for i in range(0, overlay.size()-1):
         roi_name = overlay.get(i).getName()
         if roi_name is not None and "Spots" in roi_name:
             overlay.remove(i)
