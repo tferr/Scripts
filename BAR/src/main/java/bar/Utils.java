@@ -843,22 +843,26 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Variant of {@link #getTable(boolean, WindowListener)} that displays data
-	 * in the "Results" window. This method is thought for IJ macros, since the
-	 * IJ macro language can only interact with the "Results" window. Note that
-	 * any previous data in the "Results" window will be lost.
+	 * Returns a reference to the default IJ Results table. It the Results table
+	 * is not displayed or is empty, prompts the user for data to populate it
+	 * (by using {@link #getTable(boolean, WindowListener)} to display data in
+	 * the "Results" window). This method is thought for IJ macros, since the IJ
+	 * macro language can only interact with the "Results" window. Note that any
+	 * previous data in the "Results" window will be lost.
 	 *
 	 * @return A reference to the populated {@code ResultsTable} in the
 	 *         "Results" window or {@code null} if chosen source did not contain
 	 *         valid data. Note that the IJ1 macro interpreter converts all
 	 *         returned objects into their String values
 	 *
-	 * @see #getTable(boolean, WindowListener)
 	 * @see #getTable()
 	 */
 	public static ResultsTable getResultsTable() {
 		try {
-			return getTable(true, null);
+			ResultsTable table = ResultsTable.getResultsTable();
+			if (table == null || table.getCounter() == 0)
+				table = getTable(true, null);
+			return table;
 		} catch (final Exception ignored) { // useful for IJM calls
 			return null;
 		}
