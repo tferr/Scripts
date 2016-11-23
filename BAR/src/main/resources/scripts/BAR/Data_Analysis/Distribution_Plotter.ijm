@@ -2,7 +2,10 @@
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
- * curve (normal distribution) is fitted to the histogram. Requires at least IJ 1.49t.
+ * curve (normal distribution) is fitted to the histogram. Can be called from other
+ * scripts, e.g.:
+ * IJ.runMacroFile(path/to/this/file, "Area|Relative frequency (%)|Sturges");
+ *
  * Distribution tables can be accessed through the 'List' button of the plot window:
  * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
@@ -79,7 +82,7 @@ Array.getStatistics(freqs, histMin, histMax);
 plotXmin = min - binWidth;
 plotXmax = max + binWidth;
 
-Plot.create(parameter +" Distribution", parameter, yAxis);
+Plot.create("Histograms for "+ parameter, parameter, yAxis);
 Plot.setFrameSize(plotSize, plotSize);
 Plot.setLimits(plotXmin, plotXmax, 0, plotYmax);
 drawLabel();
@@ -95,7 +98,7 @@ Plot.show();
 
 
 function readSettingsFromArg(argString) {
-	args = split(argString);
+	args = split(argString, "|");
 	if (args.length<1)
 		return false;
 	parameter = args[0];
