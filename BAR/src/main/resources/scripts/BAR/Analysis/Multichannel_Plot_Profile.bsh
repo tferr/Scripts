@@ -1,3 +1,4 @@
+//@ImagePlus imp
 /*
  * Multichannel_Plot_Profile.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
@@ -17,7 +18,6 @@ import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.WindowManager;
 import ij.gui.Plot;
 import ij.gui.ProfilePlot;
 import ij.gui.Roi;
@@ -30,7 +30,7 @@ pixelUnits = false; // Set to true to ignore the image's spatial calibration
 /* Returns the ProfilePlot for the active c,z,t position */
 ProfilePlot getProfilePlot() {
 	roi = imp.getRoi();
-	if (roi==void || roi==null || invalidRoi(roi))
+	if (roi==null || invalidRoi(roi))
 		return null;
 	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
 	return new ProfilePlot(imp, averageHorizontally);
@@ -39,8 +39,8 @@ ProfilePlot getProfilePlot() {
 /* Returns the multichannel Plot for the active z,t position */
 Plot getPlot() {
 	p = getProfilePlot();
-	n = (p==void || p== null) ? 0 : p.getProfile().length;
-	if (p==void || p==null || n==0)
+	n = (p==null) ? 0 : p.getProfile().length;
+	if (p==null || n==0)
 		return null;
 	xvalues = assignXvalues(n);
 
@@ -73,7 +73,7 @@ double[] assignXvalues(size) {
 
 /* Checks if roi is of the right type */
 boolean invalidRoi(roi) {
-	return (roi==void || roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
+	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
 }
 
 /* Checks if all requirements are met */
@@ -107,8 +107,7 @@ ImagePlus getSourceImage() {
 
 
 
-imp = WindowManager.getCurrentImage();
-if (invalidRequirements(imp==void?null:imp)) // can't pass an undefined variable to a method
+if (invalidRequirements(imp))
 	return;
 if (IJ.altKeyDown())
 	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
@@ -116,7 +115,7 @@ if (IJ.altKeyDown())
 ci = (CompositeImage)imp;
 cal = getSpatialCalibration(imp);
 plot = getPlot();
-if (plot==void || plot==null)
+if (plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();
