@@ -1,3 +1,6 @@
+#@Context context
+#@UIService uiService
+
 # NN_Distances.py
 # IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
 #
@@ -11,6 +14,15 @@ import math, sys
 from ij import IJ
 from bar import Utils
 import ij.measure.ResultsTable as RT
+
+
+def plot_distributions():
+	from bar import Runner
+	runner = Runner(context)
+	runner.runIJ1Macro("Data_Analysis/Distribution_Plotter.ijm", "NN distance")
+	if not runner.scriptLoaded():
+		uiService.showDialog("Distribution of NN distances not plotted.\nCheck console for details", "Error")
+
 
 # Specify column headings listing x,y,z positions
 xHeading, yHeading, zHeading = "X", "Y", "Z"
@@ -55,14 +67,7 @@ if not None in (x, y):
     rt.showRowNumbers(True)
     rt.show("Results")
 
-    # Plot distributions if Distribution Plotter is installed. An
-    # alternative approach to verify cmdName availability would be:
-    #     from ij import Menus
-    #     if cmdName in Menus.getCommands().keySet().toArray():
-    cmdName = "Distribution Plotter"
-    cmdFile = Utils.getDataAnalysisDir() + "Distribution_Plotter.ijm"
-    if Utils.fileExists(cmdFile):
-        IJ.run(cmdName, "parameter=[NN distance]")
+    plot_distributions()
 
 else:
     IJ.error("Invalid Results Table","Data for X,Y positions not found.")
