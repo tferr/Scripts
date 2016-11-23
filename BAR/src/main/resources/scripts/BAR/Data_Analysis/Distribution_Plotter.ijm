@@ -163,12 +163,12 @@ function drawHistogramLabels(color, fontSize) {
 	for (i=0; i<bins.length; i++) {
 		xpos = (binWidth/2+bins[i]-plotXmin)/(plotXmax-plotXmin);
 		ypos = 1-(histScale * freqs[i] / histMax);
-		if (yAxis==tabChoices[0])
-			label = freqs[i];
-		else if (yAxis==tabChoices[1])
+		if (yAxis==tabChoices[1])
 			label = d2s(freqs[i], 1);
 		else if (yAxis==tabChoices[2])
 			label = substring(d2s(freqs[i], 2), 1);
+		else
+			label = freqs[i];
 		Plot.addText(label, xpos, ypos);
 	}
 }
