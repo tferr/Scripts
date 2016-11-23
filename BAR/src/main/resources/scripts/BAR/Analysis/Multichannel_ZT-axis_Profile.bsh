@@ -1,3 +1,10 @@
+//@ImagePlus imp
+//@String(label="Vertical y-axis", choices={"Mean", "Max", "Min", "StdDev"}, value="Mean") yOption
+//@Boolean(label="Average Z-dimension in time profiles", value=true) averageZ
+//@Boolean(label="X-axis uses calibrated distances", value=true) calibratedX
+//@UIService uiservice
+//@Context context
+
 /*
  * Multichannel_ZT-axis_Profile.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
@@ -12,8 +19,6 @@
  *  - With hyperstacks, intensities can be averaged across Z-slices at each time point
  *  - Limits of Y-axis are set to include data from all visible channels
  */
-
-import bar.Utils;
 
 import ij.CompositeImage;
 import ij.IJ;
@@ -37,15 +42,6 @@ import java.util.Arrays;
 /* Options for Plot's y-axis values */
 String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
 
-/* Default choice for y-axis value */
-String yOption = yOptions[0];
-
-/* Default choice for calibrated x-axis */
-boolean calibratedX = true;
-
-/* Default choice for Z-slice averaging */
-boolean averageZ = true;
-
 /* Allow Ctrl triggering of <tt>customRoutine</tt> when in live mode? */
 boolean allowRoutine = true;
 
@@ -61,33 +57,19 @@ boolean allowRoutine = true;
  * languages.
  */
 void customRoutine(double[] values) {
+	import bar.Runner;
 	rt = ResultsTable.getResultsTable();
-	if (rt == void || rt == null || rt.getCounter() == 0)
+	if (rt == null || rt.getCounter() == 0)
 		rt = new ResultsTable();
+	rt.setNaNEmptyCells(true);
 	colHeading = "ActiveProfile";
 	for (i=0; i<values.length; i++)
 		rt.setValue(colHeading, i, values[i]);
-	for (i=values.length-1; i<rt.getCounter(); i++)
-		rt.setValue(colHeading, i, Double.NaN);
 	rt.show("Results");
-	IJ.run("Distribution Plotter", "parameter="+ colHeading +" automatic=Freedman-Diaconis");
-}
-
-/* Prompts user for settings. Returns false if user aborted prompt otherwise true. */
-boolean showOptions() {
-	GenericDialog gd = new GenericDialog("Multichannel Z/T-axis Profile");
-	gd.addRadioButtonGroup("Vertical y-axis:", super.yOptions, 1, 4, super.yOption);
-	gd.setInsets(5, 20, 0);
-	gd.addCheckbox("Average Z-dimension in time profiles", super.averageZ);
-	gd.setInsets(20, 10, 0);
-	gd.addMessage("Horizontal x-axis:");
-	gd.addCheckbox("Calibrated units", super.calibratedX);;
-	gd.addHelp("https://github.com/tferr/Scripts/tree/master/Analysis#multichannel-zt-axis-profile");
-	gd.showDialog();
-	super.yOption = gd.getNextRadioButton();
-	super.averageZ = gd.getNextBoolean();
-	super.calibratedX = gd.getNextBoolean();
-	return !gd.wasCanceled();
+	runner = new Runner(context);
+	runner.runIJ1Macro("Data_Analysis/Distribution_Plotter.ijm", colHeading);
+	if (!runner.scriptLoaded())
+		uiService.showDialog("Profile distributions not plotted.\nCheck console for details", "Error");
 }
 
 /*
@@ -290,23 +272,15 @@ ImagePlus getSourceImage() {
 
 
 // Retrieve input image and ensure it is a valid stack
-ImagePlus imp = WindowManager.getCurrentImage();
-if (imp==void || imp==null) {
-	IJ.error("Z/T-stack required but none was found.");
-	return;
-}
 int stackSize = imp.getStackSize();
 if(stackSize==1 || imp.getNChannels()==stackSize) {
-	IJ.error("Z/T-stack required but none was found.");
+	uiservice.showDialog("Z/T-stack required but none was found.", "Error");
 	return;
 }
-// Retrieve options from user
-if (!showOptions())
-	return;
 
 boolean firstRun = true;
 Plot plot = getPlot();
-if (plot==void || plot==null)
+if (plot==null)
 	return;
 plot.setPlotMaker(this);
 plot.show();
