@@ -6,11 +6,16 @@
  * Distribution tables can be accessed through the 'List' button of the plot window:
  * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
- * TF, 2016.09
+ * TF, 2016.11
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
 histScale = 0.77;   // Height of modal class relatively to axis of cumulative frequencies
+
+
+var tabChoices = newArray('Number of values', 'Relative frequency (%)', 'Relative frequency (fractions)');
+var binChoices = newArray("Square-root", "Sturges", "Scott (IJ's default)", "Freedman-Diaconis", "Specify manually below:");
+var parameter, yAxis, autoBin, userBins, ignoreZeros;
 
 
 if (nResults==0 || !isOpen("Results")) {
@@ -19,25 +24,8 @@ if (nResults==0 || !isOpen("Results")) {
 }
 
 resCount = nResults;
-tabChoices = newArray('Number of values', 'Relative frequency (%)', 'Relative frequency (fractions)');
-binChoices = newArray("Square-root", "Sturges", "Scott (IJ's default)", "Freedman-Diaconis", "Specify manually below:");
-Dialog.create('Distribution Plotter');
-	prmtrs = getParameters();
-	Dialog.addChoice("Parameter:", prmtrs);
-	Dialog.addChoice('Tabulate:', tabChoices);
-	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
-	Dialog.addSlider("Bins:", 2, resCount, sqrt(resCount));
-	Dialog.addCheckbox("Ignore zeros (NB: NaN values are always ignored)", false);
-	Dialog.addMessage("       "+ resCount +" data points in the Results Table...");
-	Dialog.addHelp("https://github.com/tferr/Scripts/tree/master#data-analysis");
-Dialog.show;
-	parameter = Dialog.getChoice;
-	yAxis = Dialog.getChoice;
-	autoBin = Dialog.getRadioButton;
-	userBins = Dialog.getNumber;
-	if (isNaN(userBins)) userBins = 2;
-	userBins = maxOf(2, minOf(userBins, resCount));
-	ignoreZeros = Dialog.getCheckbox;
+if (!readSettingsFromArg(getArgument()))
+	getSettingsFromUser(resCount);
 
 for (i=0, countInvalid=0; i<resCount; i++) {
 	value = getResult(parameter, i);
@@ -105,6 +93,47 @@ Plot.setLineWidth(1);
 drawHistogramLabels("blue", 13-(0.05*nBins));
 Plot.show();
 
+
+function readSettingsFromArg(argString) {
+	args = split(argString);
+	if (args.length<1)
+		return false;
+	parameter = args[0];
+	yAxis = tabChoices[0];
+	if (args.length>1)
+		yAxis = args[1];
+	autoBin = binChoices[3];
+	if (args.length>2)
+		autoBin = args[2];
+	userBins = 2;
+	if (args.length>3)
+		userBins = parseInt(args[3]);
+	ignoreZeros = false;
+	if (args.length>4)
+		userBins = args[4];
+	return true;
+}
+
+function getSettingsFromUser(nValues) {
+	Dialog.create('Distribution Plotter');
+	prmtrs = getParameters();
+	Dialog.addChoice("Parameter:", prmtrs);
+	Dialog.addChoice('Tabulate:', tabChoices);
+	Dialog.addRadioButtonGroup("Automatic binning:", binChoices, 3, 2, binChoices[3]);
+	Dialog.addSlider("Bins:", 2, nValues, sqrt(nValues));
+	Dialog.addCheckbox("Ignore zeros (NB: NaN values are always ignored)", false);
+	Dialog.addMessage("       "+ nValues +" data points in the Results Table...");
+	Dialog.addHelp("https://github.com/tferr/Scripts/tree/master#data-analysis");
+	Dialog.show;
+	parameter = Dialog.getChoice;
+	yAxis = Dialog.getChoice;
+	autoBin = Dialog.getRadioButton;
+	userBins = Dialog.getNumber;
+	if (isNaN(userBins))
+		userBins = 2;
+	userBins = maxOf(2, minOf(userBins, resCount));
+	ignoreZeros = Dialog.getCheckbox;
+}
 
 function drawHistogramBars(lineColor, fillColor) {
 	drawingStep = plotYmax/plotSize;
