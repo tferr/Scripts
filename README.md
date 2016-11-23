@@ -103,8 +103,8 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   Maven project implementing the backbone of BAR, including several [plugins](./BAR/README.md#plugins),
   [utilities](./BAR/README.md#utilities), [External Ops](./BAR/README.md#external-ops),the structure
   of the BAR menu and the [BAR API](http://tferr.github.io/Scripts/apidocs/). While BAR is mainly a
-  suite of ImageJ1 add-ons, some of the [BAR plugins](./BAR/README.md#plugins) have started to
-  explore some of the scripting capabilities of [ImageJ2](http://imagej.net/ImageJ2).
+  suite of ImageJ1 add-ons, some [BAR plugins](./BAR/README.md#plugins) explore the scripting
+  capabilities of [ImageJ2](http://imagej.net/ImageJ2).
 
 
 ## Tutorials

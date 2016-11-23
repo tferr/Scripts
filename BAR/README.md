@@ -16,6 +16,7 @@ java plugins This directory contains the source code (a
 ### Utilities
   1. [Utils](./src/main/java/bar/Utils.java), class providing convenience methods to script ImageJ
   1. [PlotUtils](./src/main/java/bar/Utils.java), class providing utility methods that improve ImageJ's plotting capabilities
+  1. [Runner](./src/main/java/bar/Runner.java), providing convenience methods to run scripts loaded from JAR files
 
 ### External Ops
   1. Classes exemplifying how to provide [external ops](./EXTERNAL_OPS.md) outside the core imagej-ops project.
