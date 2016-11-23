@@ -185,8 +185,8 @@ public class Runner {
 	}
 
 	/**
-	 * Legacy method that supports IJ1 macros that do not use script parameters
-	 * ported from {@link Macro_Runner#runMacroFromJar(String, String)}.
+	 * Legacy method that supports IJ1 macros that do not use script parameters.
+	 * Ported from {@link Macro_Runner#runMacroFromJar(String, String)}.
 	 *
 	 * @param path
 	 *            the path to the IJ1 macro in the BAR file relative to
@@ -238,7 +238,9 @@ public class Runner {
 	}
 
 	/**
-	 * return {@code true} if the {@link LogService} is not logging errors
+	 * return {@code true} if the {@link LogService} is not logging errors. Note
+	 * that passing invalid parameters to scripts may still trigger Console
+	 * warnings.
 	 */
 	public Boolean isSilent() {
 		return silent;
@@ -248,7 +250,9 @@ public class Runner {
 	 * Should {@link LogService} display errors?
 	 *
 	 * @param silent
-	 *            if {@code true} errors are ignored silently
+	 *            if {@code true} errors are ignored silently. Note that passing
+	 *            invalid parameters to scripts may still trigger Console
+	 *            warnings.
 	 */
 	public void setSilent(final Boolean silent) {
 		this.silent = silent;
