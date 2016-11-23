@@ -49,8 +49,8 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   3. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#clear-thresholded-pixels)
   4. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#remove-isolated-pixels)
   5. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
-  6. (ijm) [Threshold From Background](./Segmentation/README.md#threshold-from-background)
-  7. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)
+  6. (ijm) [Threshold From Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#threshold-from-background)
+  7. (ijm) [Wipe Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#wipe-background)
 
 
 ## [Tools and Toolsets][Tools]
