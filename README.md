@@ -17,10 +17,10 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Analysis]
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
-  1. (py) [LoG-DoG Spot Counter](./Analysis/README.md#log-dog-spot-counter)
-  2. (bsh) [Multichannel Plot Profile](./Analysis/README.md#multichannel-plot-profile)
-  3. (bsh) [Multichannel ZT-axis Profile](./Analysis/README.md#multichannel-zt-axis-profile)
-  4. (bsh) [Smoothed Plot Profile](./Analysis/README.md#smoothed-plot-profile)
+  1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#log-dog-spot-counter)
+  2. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
+  3. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
+  4. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]
@@ -36,18 +36,18 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 ## [Image Annotation][Annotation]
   Aiders for the annotation of scientific images.
 
-  1. (ijm) [Combine Orthogonal Views](./Annotation/README.md#combine-orthogonal-views)
-  2. (bsh) [Cumulative Z-Project](./Annotation/README.md#cumulative-z-project)
-  3. (ijm) [ROI Color Coder](./Annotation/README.md#roi-color-coder)
+  1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#combine-orthogonal-views)
+  2. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#cumulative-z-project)
+  3. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder)
 
 
 ## [Image Segmentation][Segmentation]
   Routines for partitioning images into analyzable parts.
 
-  1. (java) [Shen-Castan Edge Detector](./Segmentation/README.md#shen-castan-edge-detector)
-  2. (ijm) [Apply Threshold To ROI](./Segmentation/README.md#apply-threshold-to-roi)
-  3. (ijm) [Clear Thresholded Pixels](./Segmentation/README.md#clear-thresholded-pixels)
-  4. (bsh) [Remove Isolated Pixels](./Segmentation/README.md#remove-isolated-pixels)
+  1. (java) [Shen-Castan Edge Detector](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#shen-castan-edge-detector)
+  2. (ijm) [Apply Threshold To ROI](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#apply-threshold-to-roi)
+  3. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#clear-thresholded-pixels)
+  4. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#remove-isolated-pixels)
   5. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
   6. (ijm) [Threshold From Background](./Segmentation/README.md#threshold-from-background)
   7. (ijm) [Wipe Background](./Segmentation/README.md#wipe-background)

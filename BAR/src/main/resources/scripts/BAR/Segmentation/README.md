@@ -36,8 +36,8 @@ three slices in the stack; 3) Run _Image>Color>Stack to RGB_ to obtain the initi
 ###[Wipe Background](./Wipe_Background.ijm)
    Clears thresholded particles of defined circularity & size within the active ROI.
 
-###[Segment Profile Tool](../Tools/README.md#segment-profile)
-   Described in [Tools](../Tools/README.md#segment-profile).
+###[Segment Profile Tool](../../../../../../../Tools/README.md#segment-profile)
+   Described in [Tools].
 
 
 

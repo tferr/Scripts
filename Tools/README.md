@@ -19,7 +19,7 @@ files manually.
 ###[Segment Profile](./Segment_Profile.ijm)<a name="segment-profile-tool"></a>
    Extracts the segments within a straight line that are above a cutoff threshold.
 
-   (See also [Image Segmentation](../Segmentation/README.md#segmentation))
+   See also [Segmentation]
 
 
 ###[Shortcuts Menu](./Shortcuts_Menu.ijm)
@@ -34,7 +34,7 @@ Toolsets replace the user's toolbar and are listed in the toolbar's ">>" menu wh
    Renames selections stored in the ROI Manager.
    ([Documentation page](http://imagej.net/plugins/roi-manager-tools))
 
-   See also [Image Annotation](../Annotation/README.md#annotation)
+   See also [Annotation]
 
 
 ###[Toolset Creator](./Toolsets/Toolset%20Creator.ijm)
