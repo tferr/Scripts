@@ -1,3 +1,6 @@
+//@ImagePlus imp
+//@UIService uiservice
+
 /*
  * Cumulative_Z-Project.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
@@ -20,23 +23,10 @@ import ij.process.ImageProcessor;
 
 int startSlice = 1, stopSlice = 1;
 int method = ZProjector.MAX_METHOD;
-ImagePlus imp;
+
 
 void run(String arg) {
-	imp = WindowManager.getCurrentImage();
-	if (invalidImage(imp)) {
-		String sample = "http://samples.fiji.sc/FakeTracks.tif";
-		if (IJ.showMessageWithCancel("Invalid image",
-				"A stack is required but none was found.\nOpen sample image from fiji.sc?")) {
-			imp = new ImagePlus(sample);
-			if (invalidImage(imp)) {
-				IJ.error("Error:\n\"" + sample + "\" could not be retrieved.");
-				return;
-			}
-			imp.show();
-		} else
-			return;
-	}
+
 	if (imp.isComposite()) {
 		if (IJ.showMessageWithCancel("Convert to RGB?",
 				"Multichannel images must be first converted to RGB.\nConvert?")) {
@@ -106,4 +96,8 @@ boolean showDialog(ImagePlus imp) {
 	return true;
 }
 
-run("");
+if (invalidImage(imp))
+	uiservice.showDialog("A 3D image stack is required but none was found",
+		"Error: Cannot process 2D images");
+else
+	run("");
