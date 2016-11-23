@@ -747,32 +747,6 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to {@code BAR/Analysis/}.
-	 *
-	 * @return the absolute path to the "Analysis" directory
-	 */
-	public static String getAnalysisDir() {
-		return BAR_DIR + "Analysis" + File.separator;
-	}
-
-	/**
-	 * Returns the path to {@code BAR/Annotation/}.
-	 *
-	 * @return the absolute path to the "Annotation" directory
-	 */
-	public static String getAnnotationDir() {
-		return BAR_DIR + "Annotation" + File.separator;
-	}
-
-	/**
-	 * Returns the path to {@code BAR/Data_Analysis/}.
-	 *
-	 * @return the absolute path to the "Data_Analysis" directory
-	 */
-	public static String getDataAnalysisDir() {
-		return BAR_DIR + "Data_Analysis" + File.separator;
-	}
-
 	/**
 	 * Returns the path to {@code BAR/lib/}.
 	 *
