@@ -6,7 +6,7 @@ at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_20
 They can be accessed from ImageJ using `BAR> Snippets> Tutorials`
 
 ##See also
-Resources listed in [Snippets](https://github.com/tferr/Scripts/tree/master/Snippets#useful-resources)
+Resources listed in [Snippets]
 
 
 | [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
