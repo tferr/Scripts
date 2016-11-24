@@ -1,0 +1,10 @@
+//@Context context
+//@UIService uiService
+
+import bar.BARRunner;
+
+runner = new BARRunner(context);
+runner.setSilent(true);
+runner.runScript("Data_Analysis", "Distribution_Plotter2.ijm");
+if (!runner.getStatus())
+	uiService.showDialog("Script did not execute. Check console for details", "Error");

@@ -1,0 +1,250 @@
+/* Create_Boxplot.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Displays a box-and-whisker plot from tabular data using BAR and JFreeChart[1], bundled
+ * with Fiji. It exemplifies JFreeChart scripting and how to integrate JFreeChart graphs
+ * in ImageJ workflows. It also exemplifies how to use BAR[2] to export JFreeCharts as
+ * vector graphics.
+ *
+ * NB: Data can be split into series. In addition to Minimum--[Q1|Median|Q3]--Maximum
+ * and Average (filled ellipses), other properties are also plotted, as per [3]:
+ *   - Outliers (presence highlighted by open ellipses), values outside the 'regular
+ *     range' defined as:
+ *         Q1 - 2.0*IQR > Lower Outliers < Q1 - 1.5*IQR
+ *         Q3 + 1.5*IQR > Higher Outliers < Q3 + 2.0*IQR
+ *   - Far-outs (presence highlighted by open triangles), extreme values defined as:
+ *         Lower Far-outs < Q1 - 2.0*IQR
+ *         Upper Far-outs > Q3 + 2.0*IQR
+ *
+ * [1] http://www.jfree.org/jfreechart/api/javadoc/
+ * [2] http://tferr.github.io/Scripts/apidocs/
+ * [3] http://www.jfree.org/jfreechart/api/javadoc/src-html/org/jfree/data/statistics/BoxAndWhiskerCalculator.html
+ *
+ * Tiago Ferreira, v1.0.3 2016.09
+ */
+
+import bar.Utils;
+import bar.PlotUtils;
+import ij.IJ;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.measure.ResultsTable;
+import ij.plugin.frame.PlugInFrame;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+
+/** Prompts user to specify which ResultsTable columns to use as input */
+boolean setupDataset(ResultsTable rt) {
+
+	// Extract column headings w/ numeric data (ignore "Label" column, if present)
+	headings = rt.getHeadings();
+	numIdx = 0;
+	if (rt.getLabel(0)==null || headings[0].equals("Label"))
+		numIdx = 1;
+	numHeadings = Arrays.copyOfRange(headings, numIdx, headings.length);
+	numItems = headings.length - numIdx;
+	numChoices = new boolean[numItems];
+
+	gd = new GenericDialog("Boxplot Builder");
+	cols = (numItems<6) ? 1 : 3;
+	rows = (numItems%cols>0) ? numItems/cols+1 : numItems/cols;
+	gd.addCheckboxGroup(rows, cols, numHeadings, numChoices, new String[]{"Measurements:"});
+	gd.setInsets(0, 0, 20);
+	gd.addCheckbox("Plot_all (Select all measurements)", false);
+	seriesList = new ArrayList(Arrays.asList(headings));
+	seriesList.add(0, "*None*");
+	gd.addChoice("Group data by:", seriesList.toArray(new String[numItems+1]), null);
+	gd.setInsets(0, 0, 0);
+	gd.addMessage("Once data is plotted, right-click on the graph\n"
+				+ "canvas for customization and export options.");
+	gd.addHelp("https://github.com/tferr/Scripts/tree/master#data-analysis");
+	gd.showDialog();
+	if (gd.wasCanceled())
+		return false;
+
+	// Retrieve options from prompt
+	for (i=0; i<numItems; i++)
+		numChoices[i] = gd.getNextBoolean();
+	plotAll = gd.getNextBoolean();
+	super.sColumn = seriesList.get(gd.getNextChoiceIndex());
+
+	// Specify categories. "Label" column is not taken into account
+	for (i=0; i<numItems; i++)
+		if (numChoices[i] || plotAll)
+			super.categories.add(numHeadings[i]);
+
+	// Determine if data has to be split and specify series. The "Label" columnn (first
+	// non-numeric column in ResultsTable) is special because it is accessed using
+	// dedicated methods even when its heading has been renamed (at least with IJ1.45a)
+	super.singleSeries = super.sColumn.equals("*None*");
+	super.sColIsLabel = !super.singleSeries &&
+		(super.sColumn.equals("Label") || rt.getColumnIndex(super.sColumn)==rt.COLUMN_NOT_FOUND);
+	if (super.singleSeries)
+		super.series.add("");
+	else if (super.sColIsLabel) {
+		for (i=0; i<rt.getCounter(); i++)
+			super.series.add(rt.getLabel(i));
+	} else for (i=0; i<rt.getCounter(); i++)
+		super.series.add(rt.getStringValue(super.sColumn, i));
+
+	return true;
+}
+
+/** Assesses if the specified row of <tt>sColumn</tt> equals the specified string */
+boolean rowMatches(int row, String s) {
+	if (super.singleSeries)
+		return true;
+	else if (super.sColIsLabel)
+		return super.rt.getLabel(row).equals(s);
+	else
+		return super.rt.getStringValue(super.sColumn, row).equals(s);
+}
+
+
+ArrayList categories = new ArrayList();	// Holds categories list
+HashSet series = new HashSet();	// Holds series list (unique items)
+String sColumn = "Label";		// Heading of column defining groups (series)
+boolean sColIsLabel = true;		// Flag tracking if sColumn is the "Label" column
+boolean singleSeries = false;	// Flag tracking if multiple groups (series) exist
+PlugInFrame frame;				// Frame displaying the analysis
+String TITLE = "Box Plot";		// Frame title
+
+// Retrieve valid data
+rt = Utils.getTable();
+if (rt==void || rt==null)
+	return;
+
+// Prepare dataset: Specify categories and series
+if (!setupDataset(rt))
+	return;
+dataset = new DefaultBoxAndWhiskerCategoryDataset();
+
+// Assemble dataset: Populate lists
+n = rt.getCounter();
+for (s : series) {
+	for (c : categories) {
+		values = new ArrayList();
+		for (row=0; row<n; row++)
+			if (rowMatches(row, s))
+				values.add(rt.getValue(c, row));
+		dataset.add(values, s, c);
+	}
+}
+
+// Create JFreeChart. Analysis is now complete
+chart = ChartFactory.createBoxAndWhiskerChart(
+	null, // chart title
+	null, // Category axis label
+	null, // Numeric axis label
+	dataset, // The BoxAndWhiskerCategoryDataset
+	!singleSeries // Flag controlling legend display
+);
+
+// Tweak: Register frame in WindowManager and reuse it as needed
+if (WindowManager.getWindow(TITLE)==null) {
+	super.frame = new PlugInFrame(TITLE);
+	WindowManager.addWindow(frame);
+} else {
+	super.frame = WindowManager.getFrame(TITLE);
+	super.frame.removeAll();
+}
+
+// Tweak: Render plot mimicking look and feel of ij.gui.Plot
+plot = chart.getPlot();
+renderer = plot.getRenderer();
+plot.setBackgroundPaint(java.awt.Color.WHITE);
+plot.setRangeGridlinePaint(java.awt.Color.LIGHT_GRAY);
+plot.setOutlineVisible(false);
+renderer.setMaximumBarWidth(0.40);
+if (singleSeries)
+	renderer.setSeriesPaint(0, Color.LIGHT_GRAY);
+if (chart.getLegend()!=null)
+	chart.getLegend().setFrame(org.jfree.chart.block.BlockBorder.NONE);
+
+// Tweak: Resize ChartPanel. Tilt to landscape when plotting large datasets
+cp = new ChartPanel(chart);
+nItems = series.size() * categories.size();
+width = Math.min(100 + nItems * 50, 600);
+height = width * 4 / 3;
+if (nItems>10) {
+	plot.setOrientation(PlotOrientation.HORIZONTAL);
+	cp.setPreferredSize(new java.awt.Dimension(height, width));
+} else
+	cp.setPreferredSize(new java.awt.Dimension(width, height));
+
+// Tweak: Ensure chart is always drawn and not scaled to avoid rendering artifacts
+cp.setMinimumDrawWidth(0);
+cp.setMaximumDrawWidth(Integer.MAX_VALUE);
+cp.setMinimumDrawHeight(0);
+cp.setMaximumDrawHeight(Integer.MAX_VALUE);
+
+// Tweak: Make JTooltips displaying computed data less transient
+cp.setDismissDelay(5 * cp.getDismissDelay());
+
+// Tweak: Support mouse wheel and provide feedback in IJ while navigating ChartPanel
+cp.setMouseWheelEnabled(true);
+cp.addMouseMotionListener(new MouseAdapter() {
+	public void mouseMoved(MouseEvent me) {
+		p = me.getPoint();
+		plotArea = cp.getScreenDataArea();
+		sPos = (plot.getOrientation()==PlotOrientation.VERTICAL) ? p.getY() : p.getX();
+		pPos = plot.getRangeAxis().java2DToValue(sPos, plotArea, plot.getRangeAxisEdge());
+		IJ.showStatus(IJ.d2s(pPos,3) +"... Mouse over datasets for details | Right-click for options...");
+	}
+});
+
+// Tweak: Add a right-click entry for rendering options
+menu = cp.getPopupMenu();
+mi = new JMenuItem("Rendering Options....");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		gd = new GenericDialog("Rendering Options", frame);
+		gd.addCheckbox("Fill boxes", renderer.getFillBox());
+		gd.addCheckbox("Colored whiskers", !renderer.getUseOutlinePaintForWhiskers());
+		gd.addCheckbox("Display mean", renderer.isMeanVisible());
+		gd.addCheckbox("Display median", renderer.isMedianVisible());
+		gd.addCheckbox("Toggle legend of grouped data", false);
+		gd.setLocation(frame.getX()+frame.getWidth()/2, frame.getY()+frame.getHeight()/2);
+		gd.showDialog();
+		if (gd.wasOKed()) {
+			renderer.setFillBox(gd.getNextBoolean());
+			renderer.setUseOutlinePaintForWhiskers(!gd.getNextBoolean());
+			renderer.setMeanVisible(gd.getNextBoolean());
+			renderer.setMedianVisible(gd.getNextBoolean());
+			if (chart.getLegend()!=null && gd.getNextBoolean())
+				chart.getLegend().setVisible(!chart.getLegend().isVisible());
+		}
+	}
+});
+menu.add(mi,0);
+
+// Tweak: Add right-click options for SVG and PDF export
+menu = cp.getPopupMenu();
+menu.addSeparator();
+mi = new JMenuItem("Export as PDF...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsPDF(chart, cp.getBounds());
+	}
+});
+menu.add(mi);
+mi = new JMenuItem("Export as SVG...");
+mi.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		PlotUtils.exportChartAsSVG(chart, cp.getBounds());
+	}
+});
+menu.add(mi);
+
+// Display analysis
+super.frame.add(cp);
+super.frame.pack();
+ij.gui.GUI.center(super.frame);
+super.frame.setVisible(true);

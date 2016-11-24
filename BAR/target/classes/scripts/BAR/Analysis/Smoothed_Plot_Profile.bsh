@@ -1,0 +1,150 @@
+/*
+ * Smoothed_Plot_Profile.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * BeanShell script that extends the Analyze>Plot Profile by plotting a simple moving average of
+ * profiled data. It also exemplifies how to use BAR libs[1]: The simple moving average calculation
+ * is performed by getSimpleMovingAverage(), loaded from BARlib.bsh.
+ *
+ * NB: In 'Live' mode and with profiled image as the frontmost window, press 'Control' to readjust
+ * the number of data points to be used in the moving average calculation.
+ *
+ * [1] https://github.com/tferr/Scripts/tree/master/lib#lib
+ */
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.WindowManager;
+import ij.gui.Plot;
+import ij.gui.ProfilePlot;
+import ij.gui.Roi;
+import ij.measure.Calibration;
+
+import java.awt.event.KeyEvent;
+
+/* Ignore the image's spatial calibration? */
+boolean pixelUnits = false;
+
+/* Default size for moving average (SMA) window */
+int window = 4;
+
+/* Allow interactive refinement of SMA window? */
+boolean interactive = true;
+
+ImagePlus imp;		// The image being analyzed
+Calibration cal;	// The image's calibration
+Roi roi;			// The ROI being profiled
+Plot plot;			// The analysis plot
+boolean firstRun;	// Flag monitoring first run
+
+
+/* Returns the ProfilePlot for the active slice */
+ProfilePlot getProfilePlot() {
+	roi = imp.getRoi();
+	if (roi==void || roi==null || invalidRoi(roi))
+		return null;
+	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
+	return new ProfilePlot(imp, averageHorizontally);
+}
+
+/* Returns the Plot for the active image/slice */
+Plot getPlot() {
+	p = getProfilePlot();
+	if (p==null) return null;
+
+	//Define sampled data
+	rawYvalues = getProfilePlot().getProfile();
+	xvalues = assignXvalues(rawYvalues.length);
+
+	// Get new window and generate smoothed data
+	if (!firstRun && super.interactive && IJ.controlKeyDown()) {
+		IJ.setKeyUp(KeyEvent.VK_CONTROL);
+		newWindow = getWindow();
+		if (newWindow!=IJ.CANCELED) window = newWindow;
+	}
+	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, window);
+	//avgYvalues = super.lib.getGaussian(xvalues, rawYvalues);
+
+	// Prepare plot
+	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
+	plot.setLimits(xvalues[0], xvalues[xvalues.length-1], p.getMin(), p.getMax());
+	label = (super.interactive) ? "In live mode, press 'Ctrl' to adjust " : "";
+	plot.addLabel(0, 0, label + "moving avg. window:  "+ window);
+
+	// Plot data
+	plot.setColor(Color.BLUE);
+	plot.addPoints(xvalues, rawYvalues, Plot.LINE);
+	plot.setColor(Color.RED);
+	plot.addPoints(xvalues, avgYvalues, Plot.LINE);
+
+	return plot;
+}
+
+/* Returns X positions in calibrated increments */
+double[] assignXvalues(size) {
+	xvalues = new double[size];
+	for (i=0; i<size; i++)
+		xvalues[i] = i * (cal.pixelWidth + cal.pixelHeight)/2;
+	return xvalues;
+}
+
+/* Returns the moving average window */
+int getWindow() {
+	return (int)IJ.getNumber("Moving average window:", window);
+}
+
+/* Checks if active roi is of the right type */
+boolean invalidRoi(roi) {
+	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
+}
+
+/* Returns the spatial calibration of the image */
+Calibration getSpatialCalibration() {
+	if (pixelUnits) {
+		cal = new Calibration();
+		cal.pixelWidth = 1.0;
+		cal.pixelHeight = 1.0;
+		cal.setUnit("pixel");
+	} else
+		cal = imp.getCalibration();
+	return cal;
+}
+
+/* PlotMaker interface */
+ImagePlus getSourceImage() {
+	return imp;
+}
+
+
+// Get image to be profiled. Do not proceed if active ROI cannot be profiled
+imp = WindowManager.getCurrentImage();
+if (imp==void || imp==null) {
+	IJ.noImage();
+	return;
+}
+if (invalidRoi(imp.getRoi())) {
+	IJ.error("Smoothed Profiler", "Line or rectangular ROI required.");
+	return;
+}
+
+// Ask user for moving avg. window
+if (super.interactive) {
+	window = getWindow();
+	if (window==IJ.CANCELED) return;
+}
+
+// Load BAR/lib/BARlib.bsh
+addClassPath(bar.Utils.getBARDir());
+importCommands("lib/");
+BARlib();
+lib = new BARlib();
+
+firstRun = true;
+cal = getSpatialCalibration();
+plot = getPlot();
+if (plot==null) return;
+plot.setPlotMaker(this);
+plot.show();
+firstRun = false;
+return;

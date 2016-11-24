@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<javadocOptions>
+  <docletArtifacts>
+    <docletArtifact />
+  </docletArtifacts>
+  <tagletArtifacts>
+    <tagletArtifact />
+  </tagletArtifacts>
+  <links>
+    <link>http://javadoc.imagej.net/Java/</link>
+    <link>http://javadoc.imagej.net/ImageJ/</link>
+    <link>http://javadoc.imagej.net/ImgLib2/</link>
+    <link>http://javadoc.imagej.net/SCIFIO/</link>
+    <link>http://javadoc.imagej.net/SciJava/</link>
+    <link>http://javadoc.imagej.net/Fiji/</link>
+    <link>http://javadoc.imagej.net/ImageJ1/</link>
+    <link>http://javadoc.imagej.net/Bio-Formats/</link>
+    <link>http://javadoc.imagej.net/MPI-CBG/</link>
+    <link>http://javadoc.imagej.net/Icy/</link>
+    <link>http://javadoc.imagej.net/KNIME/</link>
+    <link>http://javadoc.imagej.net/OMERO/</link>
+    <link>http://javadoc.imagej.net/MiToBo/</link>
+    <link>http://javadoc.imagej.net/Java3D/</link>
+    <link>http://javadoc.imagej.net/Pivot/</link>
+    <link>http://javadoc.imagej.net/Eclipse/</link>
+    <link>http://javadoc.imagej.net/Javassist/</link>
+    <link>http://javadoc.imagej.net/JHotDraw/</link>
+  </links>
+  <javadocResourcesDirectory>src/main/javadoc</javadocResourcesDirectory>
+</javadocOptions>

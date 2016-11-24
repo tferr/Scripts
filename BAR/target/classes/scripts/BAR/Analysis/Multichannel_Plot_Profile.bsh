@@ -1,0 +1,122 @@
+//@ImagePlus imp
+/*
+ * Multichannel_Plot_Profile.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * BeanShell script that extends the Analyze>Plot Profile to multichannel (composite) images. It
+ * features a "live" option, guesses displayed lookup tables and ignores disabled channels (i.e.,
+ * those deselected in the "Channels" widget (which can be called by pressing "Z", the shortcut for
+ * "Image>Color>Channels Tool"). Similarly to the built-in Analyze>Plot Profile, Y-axis limits are
+ * always set by the active channel.
+ *
+ * This builds upon Jerome Mutterer's take on a remarkably succinct script using bit-twiddling to
+ * detect displayed LUTs (discussed here: https://github.com/tferr/Scripts/issues/6).
+ *
+ */
+
+import ij.CompositeImage;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.Plot;
+import ij.gui.ProfilePlot;
+import ij.gui.Roi;
+import ij.measure.Calibration;
+import java.util.Arrays;
+
+
+pixelUnits = false; // Set to true to ignore the image's spatial calibration
+
+/* Returns the ProfilePlot for the active c,z,t position */
+ProfilePlot getProfilePlot() {
+	roi = imp.getRoi();
+	if (roi==null || invalidRoi(roi))
+		return null;
+	averageHorizontally = Prefs.verticalProfile || IJ.altKeyDown();
+	return new ProfilePlot(imp, averageHorizontally);
+}
+
+/* Returns the multichannel Plot for the active z,t position */
+Plot getPlot() {
+	p = getProfilePlot();
+	n = (p==null) ? 0 : p.getProfile().length;
+	if (p==null || n==0)
+		return null;
+	xvalues = assignXvalues(n);
+
+	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
+	plot.setLimits(xvalues[0], xvalues[n-1], p.getMin(), p.getMax());
+
+	states = ci.getActiveChannels();
+	c = imp.getC(); z = imp.getZ(); t = imp.getT();
+	for (ch=1; ch<=imp.getNChannels(); ch++) {
+		if (states[ch-1]) {
+			imp.setPositionWithoutUpdate(ch, z, t);
+			plot.setColor(ci.getChannelColor());
+			yvalues = getProfilePlot().getProfile();
+			n = Math.min(xvalues.length, yvalues.length);
+			plot.addPoints(Arrays.copyOf(xvalues,n), Arrays.copyOf(yvalues,n), Plot.LINE);
+		}
+	}
+	imp.setPositionWithoutUpdate(c, z, t);
+
+	return plot;
+}
+
+/* Returns positions in calibrated increments */
+double[] assignXvalues(size) {
+	xvalues = new double[size];
+	for (i=0; i<size; i++)
+		xvalues[i] = i * (cal.pixelWidth + cal.pixelHeight)/2;
+	return xvalues;
+}
+
+/* Checks if roi is of the right type */
+boolean invalidRoi(roi) {
+	return (roi==null || !(roi.isLine()||roi.getType()==Roi.RECTANGLE));
+}
+
+/* Checks if all requirements are met */
+boolean invalidRequirements(ImagePlus imp) {
+	errorMsg = "";
+	if (imp==null || imp!=null && !imp.isComposite())
+		errorMsg += "\nError: Multichannel image required.";
+	if (imp==null || imp!=null && invalidRoi(imp.getRoi()))
+		errorMsg += "\nError: Line or rectangular ROI required.";
+	invalid = !errorMsg.equals("");
+	if (invalid) IJ.error("Multichannel Profiler", errorMsg);
+	return invalid;
+}
+
+/* Returns the spatial calibration of the profile */
+Calibration getSpatialCalibration(ImagePlus imp) {
+	if (super.pixelUnits) {
+		cal = new Calibration();
+		cal.pixelWidth = 1.0;
+		cal.pixelHeight = 1.0;
+		cal.setUnit("pixel");
+	} else
+		cal = imp.getCalibration();
+	return cal;
+}
+
+/* PlotMaker interface */
+ImagePlus getSourceImage() {
+	return imp;
+}
+
+
+
+if (invalidRequirements(imp))
+	return;
+if (IJ.altKeyDown())
+	pixelUnits = IJ.showMessageWithCancel("Ignore spatial units?",
+				"Ignore spatial calibration and\nuse pixel distances instead?");
+ci = (CompositeImage)imp;
+cal = getSpatialCalibration(imp);
+plot = getPlot();
+if (plot==null)
+	return;
+plot.setPlotMaker(this);
+plot.show();
+return;

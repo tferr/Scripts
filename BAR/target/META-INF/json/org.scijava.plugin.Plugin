@@ -1,0 +1,1 @@
+{"class":"classes.bar.BAR","values":{"type":"net.imagej.ops.Namespace"}}{"class":"classes.bar.BARService","values":{"type":"org.scijava.service.Service"}}{"class":"classes.bar.DefaultGCD","values":{"attrs":[{"name":"aliases","value":"bar.gcf"}],"name":"bar.gcd","type":"bar.BAR$GCD"}}{"class":"classes.bar.Runner","values":{"type":"org.scijava.command.Command"}}
