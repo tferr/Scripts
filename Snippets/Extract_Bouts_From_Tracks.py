@@ -115,8 +115,7 @@ def colorizeFlag(movement_flag):
     return raster_flag_color
 
 def paintNaNpixels(ip, value):
-    """Replaces NaN pixels in the specified ImageProcessor with
-    the specified value"""
+    """Replaces NaN pixels in the specified ImageProcessor with the specified value"""
     for y in xrange(ip.getHeight()):
         for x in xrange(ip.getWidth()):
             if not isNumber(ip.getPixelValue(x,y)):
@@ -131,301 +130,303 @@ def getColumn(table, heading):
     """Convenience function to retrieve a ResultsTable column from its heading string"""
     return table.getColumn(table.getColumnIndex(heading))
 
-try:
-    # Retrieve valid data
-    rt = Utils.getTable();
-    start = time.time()
+def main():
+    try:
+        # Retrieve valid data
+        rt = Utils.getTable();
+        start = time.time()
 
-    # Retrive x,y,t positions (all in unc. units)
-    x = getColumn(rt, X_POS_HEADING)
-    y = getColumn(rt, Y_POS_HEADING)
-    t = getColumn(rt, T_POS_HEADING)
+        # Retrive x,y,t positions (all in unc. units)
+        x = getColumn(rt, X_POS_HEADING)
+        y = getColumn(rt, Y_POS_HEADING)
+        t = getColumn(rt, T_POS_HEADING)
 
-    # Retrieve the total n. of tracks
-    track_ids = getColumn(rt, ID_HEADING)
-    track_ids = [int(i) for i in track_ids]
-    n_tracks = track_ids[-1]
-    log("Tracks to be analyzed: ", n_tracks)
-except:
-    IJ.error("Invalid Results Table")
-    raise RuntimeException(Macro.MACRO_CANCELED) # Do not show a stack trace
+        # Retrieve the total n. of tracks
+        track_ids = getColumn(rt, ID_HEADING)
+        track_ids = [int(i) for i in track_ids]
+        n_tracks = track_ids[-1]
+        log("Tracks to be analyzed: ", n_tracks)
+    except:
+        IJ.error("Invalid Results Table")
+        return
 
+    # Create "nan"-padded tables to hold results
+    detail_rt = new_Table()
 
-# Create "nan"-padded tables to hold results
-detail_rt = new_Table()
+    # Extract individual tracks and determine the track with the
+    # largest data (i.e., the one with the highest number of rows)
+    track_row = 0
+    max_track_row = 0
+    for i in range(0, rt.getCounter()-1):
 
-# Extract individual tracks and determine the track with the
-# largest data (i.e., the one with the highest number of rows)
-track_row = 0
-max_track_row = 0
-for i in range(0, rt.getCounter()-1):
+        track_label = str(track_ids[i])
+        if (track_ids[i]==track_ids[i+1]):
+            dx = (x[i+1]-x[i])**2
+            dy = (y[i+1]-y[1])**2
+            dt = t[i+1]-t[i]
+            dis = math.sqrt(dx+dy)
+            vel = dis/dt
+            if (track_row>max_track_row):
+                max_track_row = track_row
 
-    track_label = str(track_ids[i])
-    if (track_ids[i]==track_ids[i+1]):
-        dx = (x[i+1]-x[i])**2
-        dy = (y[i+1]-y[1])**2
-        dt = t[i+1]-t[i]
-        dis = math.sqrt(dx+dy)
-        vel = dis/dt
-        if (track_row>max_track_row):
-            max_track_row = track_row
-
-        # Log to "detailed" table
-        if (i<=max_track_row):
-            detail_rt.incrementCounter()
-        detail_rt.setValue("Dis_" + track_label, track_row, dis)
-        detail_rt.setValue("Vel_" + track_label, track_row, vel)
-        detail_rt.setValue("Dur_" + track_label, track_row, dt)
-        detail_rt.setValue("Flag_" + track_label, track_row,
-            RESTING_FLAG if vel < restingVelocity else MOVING_FLAG)
-        track_row += 1
-    else:
-        # Analyzed track just ended: Reset loop variables and create column
-        # to hold bout flags
-        track_row = 0
-        detail_rt.setValue("BoutFlag_" + track_label, 0, float("nan"))
-        detail_rt.setValue("Mov_Dur_" + track_label, 0, float("nan"))
-        detail_rt.setValue("Rest_Dur_" + track_label, 0, float("nan"))
-        log("Extracting track ", track_label)
-
-
-listOfRasterPaths = [] # List holding raster tracks
-
-# Loop through individual tracks and tag each datapoint (i.e., each row)
-for track in range(0, n_tracks):
-
-    durHeading = "Dur_" + str(track)
-    fFlagHeading = "Flag_" + str(track)
-    bFlagHeading = "BoutFlag_" + str(track)
-    mDurHeading = "Mov_Dur_" + str(track)
-    rDurHeading = "Rest_Dur_" + str(track)
-
-    durations  = getColumn(detail_rt, durHeading)
-    fFlags = getColumn(detail_rt, fFlagHeading)
-    bFlags = getColumn(detail_rt, bFlagHeading)
-    nDataPoints = findLastNonNumberIdx(durations) + 1
-
-    log("Tagging track ", track, ": ", nDataPoints , " positions")
-    for row in range(0, nDataPoints):
-
-        # Define the boundaries of the moving window. "Stopping flags"
-        # within this window will be monitoried to define a motionless bout
-        # NB: Boundaries are defined from the rows of the input table. This
-        # works only when the time elapsed betwen two rows is a single frame.
-        # So we'll have to monitor the actual time that has elapsed within the
-        # bounderies of the window
-        lower_bound = max(0, row - neighborhood + 1)
-        upper_bound = min(nDataPoints, row+neighborhood)
-        sum_of_flags = 0
-        sum_of_frames = 0
-        neighborhood_sum = upper_bound - lower_bound
-
-        for i in xrange(lower_bound, upper_bound):
-            if isNumber(durations[i]) and isNumber(fFlags[i]):
-                sum_of_flags += (fFlags[i] * durations[i])
-                sum_of_frames += durations[i]
-            if sum_of_frames >= neighborhood_sum:
-                break
-
-        # Assign this tracked point to its bout
-        moving_bout_duration = float("nan")
-        resting_bout_duration = float("nan")
-        bout_flag = float("nan")
-        if sum_of_flags >= neighborhood_sum:
-            bout_flag = MOVING_FLAG
-            moving_bout_duration = durations[row]
+            # Log to "detailed" table
+            if (i<=max_track_row):
+                detail_rt.incrementCounter()
+            detail_rt.setValue("Dis_" + track_label, track_row, dis)
+            detail_rt.setValue("Vel_" + track_label, track_row, vel)
+            detail_rt.setValue("Dur_" + track_label, track_row, dt)
+            detail_rt.setValue("Flag_" + track_label, track_row,
+                RESTING_FLAG if vel < restingVelocity else MOVING_FLAG)
+            track_row += 1
         else:
-            bout_flag = RESTING_FLAG
-            resting_bout_duration = durations[row]
-        detail_rt.setValue(bFlagHeading, row, bout_flag)
-        detail_rt.setValue(mDurHeading, row, moving_bout_duration)
-        detail_rt.setValue(rDurHeading, row, resting_bout_duration)
-
-    if generateRasterTracks:
-        # Generate raster column if path is long enough
-        if nDataPoints > shortestRasterTrack:
-
-            # Retrieve updated column of bout flags
-            bFlags = getColumn(detail_rt, bFlagHeading)
-
-            # Generate raster column (motion-flags temporally aligned, all 1
-            # frame apart) until the path duration reaches the maximum limit
-            keepGrowingRasterPath = True
-            for idx, duration in enumerate(durations):
-                if (keepGrowingRasterPath):
-                    flag = bFlags[idx]
-                    for insertIdx in range(1, int(duration)):
-                        if (len(bFlags)==longestRasterTrack):
-                            keepGrowingRasterPath = False
-                            break
-                        bFlags.insert(idx+insertIdx, flag)
-
-            # Store only lists without NaN values
-            listOfRasterPaths.append(bFlags[:findLastNonNumberIdx(bFlags)])
-
-    # Allow analysis to be interrupted
-    if IJ.escapePressed():
-        break
-
-# Display table. Displaying it now may ensure all tracks are padded with "NaN"
-if (displayDetailedTable):
-    detail_rt.show("Track_Details["+ str(restingVelocity) +"-"+ str(neighborhood) +"]")
+            # Analyzed track just ended: Reset loop variables and create column
+            # to hold bout flags
+            track_row = 0
+            detail_rt.setValue("BoutFlag_" + track_label, 0, float("nan"))
+            detail_rt.setValue("Mov_Dur_" + track_label, 0, float("nan"))
+            detail_rt.setValue("Rest_Dur_" + track_label, 0, float("nan"))
+            log("Extracting track ", track_label)
 
 
-# Now that all paths are contained in listOfRasterPaths. Sort them by length of track
-listOfRasterPaths = sorted(listOfRasterPaths, key = len)
+    listOfRasterPaths = [] # List holding raster tracks
 
-# Create Image of analysis. We'll create it from a ResultsTable. It would be much
-# more efficient to generate a text image directly, but this allows the table to be
-# processed elsewhere if needed. In IJ1, column headings of a ResultsTable must be
-# unique, so we will use distinct identifiers
-if generateRasterTracks:
-    raster_rt = new_Table()
-    log('Tracks to be rendered:', len(listOfRasterPaths))
-    for rasterPath in xrange(len(listOfRasterPaths)):
+    # Loop through individual tracks and tag each datapoint (i.e., each row)
+    for track in range(0, n_tracks):
 
-        log("Rendering track ", rasterPath)
-        for row, raster_flag in enumerate(listOfRasterPaths[rasterPath]):
+        durHeading = "Dur_" + str(track)
+        fFlagHeading = "Flag_" + str(track)
+        bFlagHeading = "BoutFlag_" + str(track)
+        mDurHeading = "Mov_Dur_" + str(track)
+        rDurHeading = "Rest_Dur_" + str(track)
 
-            if not isNumber(raster_flag):
-                break
-            if (row>raster_rt.getCounter()-1):
-                raster_rt.incrementCounter()
+        durations  = getColumn(detail_rt, durHeading)
+        fFlags = getColumn(detail_rt, fFlagHeading)
+        bFlags = getColumn(detail_rt, bFlagHeading)
+        nDataPoints = findLastNonNumberIdx(durations) + 1
 
-            # Create upper border: 1 px-wide
-            bColor = borderColor if isNumber(raster_flag) else backgroundColor
-            raster_rt.setValue("Delim1_" + str(rasterPath), row, bColor)
+        log("Tagging track ", track, ": ", nDataPoints , " positions")
+        for row in range(0, nDataPoints):
 
-            # Create raster path: 18 px wide
-            raster_flag_color = colorizeFlag(raster_flag)
-            for i in 'abcdefghijklmnopq':
-                raster_rt.setValue("Raster_" + str(rasterPath) + str(i), row, raster_flag_color)
+            # Define the boundaries of the moving window. "Stopping flags"
+            # within this window will be monitoried to define a motionless bout
+            # NB: Boundaries are defined from the rows of the input table. This
+            # works only when the time elapsed betwen two rows is a single frame.
+            # So we'll have to monitor the actual time that has elapsed within the
+            # bounderies of the window
+            lower_bound = max(0, row - neighborhood + 1)
+            upper_bound = min(nDataPoints, row+neighborhood)
+            sum_of_flags = 0
+            sum_of_frames = 0
+            neighborhood_sum = upper_bound - lower_bound
 
-            # Create lower border: 1 px-wide
-            raster_rt.setValue("Delim2_" + str(rasterPath), row, bColor)
+            for i in xrange(lower_bound, upper_bound):
+                if isNumber(durations[i]) and isNumber(fFlags[i]):
+                    sum_of_flags += (fFlags[i] * durations[i])
+                    sum_of_frames += durations[i]
+                if sum_of_frames >= neighborhood_sum:
+                    break
 
-            # Append padding space between tracks: 10px wide
-            for j in 'abcdefghij':
-                raster_rt.setValue("Space_" + str(rasterPath) + str(j), row, backgroundColor)
+            # Assign this tracked point to its bout
+            moving_bout_duration = float("nan")
+            resting_bout_duration = float("nan")
+            bout_flag = float("nan")
+            if sum_of_flags >= neighborhood_sum:
+                bout_flag = MOVING_FLAG
+                moving_bout_duration = durations[row]
+            else:
+                bout_flag = RESTING_FLAG
+                resting_bout_duration = durations[row]
+            detail_rt.setValue(bFlagHeading, row, bout_flag)
+            detail_rt.setValue(mDurHeading, row, moving_bout_duration)
+            detail_rt.setValue(rDurHeading, row, resting_bout_duration)
+
+        if generateRasterTracks:
+            # Generate raster column if path is long enough
+            if nDataPoints > shortestRasterTrack:
+
+                # Retrieve updated column of bout flags
+                bFlags = getColumn(detail_rt, bFlagHeading)
+
+                # Generate raster column (motion-flags temporally aligned, all 1
+                # frame apart) until the path duration reaches the maximum limit
+                keepGrowingRasterPath = True
+                for idx, duration in enumerate(durations):
+                    if (keepGrowingRasterPath):
+                        flag = bFlags[idx]
+                        for insertIdx in range(1, int(duration)):
+                            if (len(bFlags)==longestRasterTrack):
+                                keepGrowingRasterPath = False
+                                break
+                            bFlags.insert(idx+insertIdx, flag)
+
+                # Store only lists without NaN values
+                listOfRasterPaths.append(bFlags[:findLastNonNumberIdx(bFlags)])
 
         # Allow analysis to be interrupted
         if IJ.escapePressed():
             break
 
-    # Display table of rasterized tracks
-    if displayRasterTable:
-        raster_rt.show("RasterTracks["+ str(restingVelocity) +"-"+ str(neighborhood ) +"]")
-
-    # Display image of rasterized tracks
-    ip = raster_rt.getTableAsImage().rotateLeft()
-    paintNaNpixels(ip, backgroundColor)
-    ip = ip.convertToByte(False)
-    imp = ImagePlus("RasterTracks["+ str(restingVelocity) +"-"+ str(neighborhood ) +"]", ip)
-    imp.show()
-
-    ## Add scale-bar for time
-    IJ.run(imp, "Set Scale...", "distance=1 known="+ str(frameCal[0]) +" unit="+ frameCal[1]);
-    IJ.run(imp, "Scale Bar...", "width=10 color=Black location=[Lower Right] overlay");
+    # Display table. Displaying it now may ensure all tracks are padded with "NaN"
+    if (displayDetailedTable):
+        detail_rt.show("Track_Details["+ str(restingVelocity) +"-"+ str(neighborhood) +"]")
 
 
-# Loop through individual tracks and extract some basic statistics. Most of these parameters
-# are already retrieved by Trackmate. We calculate them here just for convenience
-track_ids = []      # List holding the track identifier
-sum_distances = []  # List holding the track's total distance
-sum_durations = []  # List holding the track's total duration
-max_speeds = []     # List holding the track's Max speed
-min_speeds = []     # List holding the track's Min speed
-sum_n_rests = []    # List holding the number of resting bouts in each track
-sum_n_moves = []    # List holding the number of moving bouts in each track
-sum_dur_rests = []  # List holding the total resting time of each tracked object
-sum_dur_moves = []  # List holding the total moving time of each tracked object
+    # Now that all paths are contained in listOfRasterPaths. Sort them by length of track
+    listOfRasterPaths = sorted(listOfRasterPaths, key = len)
+
+    # Create Image of analysis. We'll create it from a ResultsTable. It would be much
+    # more efficient to generate a text image directly, but this allows the table to be
+    # processed elsewhere if needed. In IJ1, column headings of a ResultsTable must be
+    # unique, so we will use distinct identifiers
+    if generateRasterTracks:
+        raster_rt = new_Table()
+        log('Tracks to be rendered:', len(listOfRasterPaths))
+        for rasterPath in xrange(len(listOfRasterPaths)):
+
+            log("Rendering track ", rasterPath)
+            for row, raster_flag in enumerate(listOfRasterPaths[rasterPath]):
+
+                if not isNumber(raster_flag):
+                    break
+                if (row>raster_rt.getCounter()-1):
+                    raster_rt.incrementCounter()
+
+                # Create upper border: 1 px-wide
+                bColor = borderColor if isNumber(raster_flag) else backgroundColor
+                raster_rt.setValue("Delim1_" + str(rasterPath), row, bColor)
+
+                # Create raster path: 18 px wide
+                raster_flag_color = colorizeFlag(raster_flag)
+                for i in 'abcdefghijklmnopq':
+                    raster_rt.setValue("Raster_" + str(rasterPath) + str(i), row, raster_flag_color)
+
+                # Create lower border: 1 px-wide
+                raster_rt.setValue("Delim2_" + str(rasterPath), row, bColor)
+
+                # Append padding space between tracks: 10px wide
+                for j in 'abcdefghij':
+                    raster_rt.setValue("Space_" + str(rasterPath) + str(j), row, backgroundColor)
+
+            # Allow analysis to be interrupted
+            if IJ.escapePressed():
+                break
+
+        # Display table of rasterized tracks
+        if displayRasterTable:
+            raster_rt.show("RasterTracks["+ str(restingVelocity) +"-"+ str(neighborhood ) +"]")
+
+        # Display image of rasterized tracks
+        ip = raster_rt.getTableAsImage().rotateLeft()
+        paintNaNpixels(ip, backgroundColor)
+        ip = ip.convertToByte(False)
+        imp = ImagePlus("RasterTracks["+ str(restingVelocity) +"-"+ str(neighborhood ) +"]", ip)
+        imp.show()
+
+        ## Add scale-bar for time
+        IJ.run(imp, "Set Scale...", "distance=1 known="+ str(frameCal[0]) +" unit="+ frameCal[1]);
+        IJ.run(imp, "Scale Bar...", "width=10 color=Black location=[Lower Right] overlay");
 
 
-log("Logging Summaries...")
-summary_rt = new_Table()
-for track in range(0, n_tracks):
+    # Loop through individual tracks and extract some basic statistics. Most of these parameters
+    # are already retrieved by Trackmate. We calculate them here just for convenience
+    track_ids = []      # List holding the track identifier
+    sum_distances = []  # List holding the track's total distance
+    sum_durations = []  # List holding the track's total duration
+    max_speeds = []     # List holding the track's Max speed
+    min_speeds = []     # List holding the track's Min speed
+    sum_n_rests = []    # List holding the number of resting bouts in each track
+    sum_n_moves = []    # List holding the number of moving bouts in each track
+    sum_dur_rests = []  # List holding the total resting time of each tracked object
+    sum_dur_moves = []  # List holding the total moving time of each tracked object
 
-    # Retrieve and store the track identifier
-    track_id = str(track)
-    track_ids.insert(track, "Track_"+track_id)
 
-    # Retrive tracking data
-    distances = getColumn(detail_rt, "Dis_" + track_id)
-    durations = getColumn(detail_rt, "Dur_" + track_id)
-    velocities = getColumn(detail_rt, "Vel_" + track_id)
-    mov_durations = getColumn(detail_rt, "Mov_Dur_" + track_id)
-    rest_durations = getColumn(detail_rt, "Rest_Dur_" + track_id)
+    log("Logging Summaries...")
+    summary_rt = new_Table()
+    for track in range(0, n_tracks):
 
-    # Reset stats for this track
-    track_sum_dis = 0
-    track_sum_dur = 0
-    track_max_vel = 0
-    track_min_vel = sys.maxint
-    track_sum_move = 0
-    track_sum_rest = 0
-    track_n_moves  = 0
-    track_n_rests  = 0
+        # Retrieve and store the track identifier
+        track_id = str(track)
+        track_ids.insert(track, "Track_"+track_id)
 
-    # Compute basic stats and store them in dedicated lists
-    nDataPoints = findLastNonNumberIdx(distances) + 1
-    for row in xrange(nDataPoints):
-        track_sum_dis += distances[row]
-        track_sum_dur += durations[row]
-        if (velocities[row]>track_max_vel):
-            track_max_vel = velocities[row]
-        if (velocities[row]<track_min_vel):
-            track_min_vel = velocities[row]
-        if isNumber(mov_durations[row]):
-            track_sum_move += mov_durations[row]
-        if isNumber(rest_durations[row]):
-            track_sum_rest += rest_durations[row]
+        # Retrive tracking data
+        distances = getColumn(detail_rt, "Dis_" + track_id)
+        durations = getColumn(detail_rt, "Dur_" + track_id)
+        velocities = getColumn(detail_rt, "Vel_" + track_id)
+        mov_durations = getColumn(detail_rt, "Mov_Dur_" + track_id)
+        rest_durations = getColumn(detail_rt, "Rest_Dur_" + track_id)
 
-    sum_distances.insert(track, track_sum_dis)
-    sum_durations.insert(track, track_sum_dur)
-    max_speeds.insert(track, track_max_vel)
-    min_speeds.insert(track, track_min_vel)
-    sum_dur_moves.insert(track, track_sum_move)
-    sum_dur_rests.insert(track, track_sum_rest)
+        # Reset stats for this track
+        track_sum_dis = 0
+        track_sum_dur = 0
+        track_max_vel = 0
+        track_min_vel = sys.maxint
+        track_sum_move = 0
+        track_sum_rest = 0
+        track_n_moves  = 0
+        track_n_rests  = 0
 
-    # Assess the number of moving/resting bouts in this track
-    for row in xrange(nDataPoints-1):
-        if isNumber(mov_durations[row]) and not isNumber(mov_durations[row+1]):
+        # Compute basic stats and store them in dedicated lists
+        nDataPoints = findLastNonNumberIdx(distances) + 1
+        for row in xrange(nDataPoints):
+            track_sum_dis += distances[row]
+            track_sum_dur += durations[row]
+            if (velocities[row]>track_max_vel):
+                track_max_vel = velocities[row]
+            if (velocities[row]<track_min_vel):
+                track_min_vel = velocities[row]
+            if isNumber(mov_durations[row]):
+                track_sum_move += mov_durations[row]
+            if isNumber(rest_durations[row]):
+                track_sum_rest += rest_durations[row]
+
+        sum_distances.insert(track, track_sum_dis)
+        sum_durations.insert(track, track_sum_dur)
+        max_speeds.insert(track, track_max_vel)
+        min_speeds.insert(track, track_min_vel)
+        sum_dur_moves.insert(track, track_sum_move)
+        sum_dur_rests.insert(track, track_sum_rest)
+
+        # Assess the number of moving/resting bouts in this track
+        for row in xrange(nDataPoints-1):
+            if isNumber(mov_durations[row]) and not isNumber(mov_durations[row+1]):
+                track_n_moves += 1
+            if isNumber(rest_durations[row]) and not isNumber(rest_durations[row+1]):
+                track_n_rests += 1
+
+        # Predict cases in which bouts lasted entire track duration
+        if track_n_moves==0 and track_sum_dur==track_sum_move:
             track_n_moves += 1
-        if isNumber(rest_durations[row]) and not isNumber(rest_durations[row+1]):
+        if track_n_rests==0 and track_sum_dur==track_sum_rest:
             track_n_rests += 1
 
-    # Predict cases in which bouts lasted entire track duration
-    if track_n_moves==0 and track_sum_dur==track_sum_move:
-        track_n_moves += 1
-    if track_n_rests==0 and track_sum_dur==track_sum_rest:
-        track_n_rests += 1
+        sum_n_moves.insert(track, track_n_moves)
+        sum_n_rests.insert(track, track_n_rests)
 
-    sum_n_moves.insert(track, track_n_moves)
-    sum_n_rests.insert(track, track_n_rests)
+    # Log summary data
+    for i in range(0, n_tracks):
 
-# Log summary data
-for i in range(0, n_tracks):
+        # Ignore tracks shorter than neighborhood
+        if hideShortTracks and sum_durations[i]<neighborhood:
+            continue
 
-    # Ignore tracks shorter than neighborhood
-    if hideShortTracks and sum_durations[i]<neighborhood:
-        continue
+        row = summary_rt.getCounter()
+        summary_rt.incrementCounter()
+        summary_rt.setLabel(track_ids[i], row)
+        summary_rt.setValue("Total dx", row, sum_distances[i])
+        summary_rt.setValue("Duration", row, sum_durations[i])
+        summary_rt.setValue("Max speed", row, max_speeds[i])
+        summary_rt.setValue("Min speed", row, min_speeds[i])
+        summary_rt.setValue("Moving dur", row, sum_dur_moves[i])
+        summary_rt.setValue("Resting dur", row, sum_dur_rests[i])
+        summary_rt.setValue("Resting %", row, 100 * sum_dur_rests[i] / sum_durations[i])
+        summary_rt.setValue("Moving bouts", row, sum_n_moves[i])
+        summary_rt.setValue("Resting bouts", row, sum_n_rests[i])
+        if sum_n_moves[i]!=0:
+            summary_rt.setValue("Avg moving bout dur", row, sum_dur_moves[i] / sum_n_moves[i])
+        if sum_n_rests[i]!=0:
+            summary_rt.setValue("Avg resting bout dur", row, sum_dur_rests[i] / sum_n_rests[i])
 
-    row = summary_rt.getCounter()
-    summary_rt.incrementCounter()
-    summary_rt.setLabel(track_ids[i], row)
-    summary_rt.setValue("Total dx", row, sum_distances[i])
-    summary_rt.setValue("Duration", row, sum_durations[i])
-    summary_rt.setValue("Max speed", row, max_speeds[i])
-    summary_rt.setValue("Min speed", row, min_speeds[i])
-    summary_rt.setValue("Moving dur", row, sum_dur_moves[i])
-    summary_rt.setValue("Resting dur", row, sum_dur_rests[i])
-    summary_rt.setValue("Resting %", row, 100 * sum_dur_rests[i] / sum_durations[i])
-    summary_rt.setValue("Moving bouts", row, sum_n_moves[i])
-    summary_rt.setValue("Resting bouts", row, sum_n_rests[i])
-    if sum_n_moves[i]!=0:
-        summary_rt.setValue("Avg moving bout dur", row, sum_dur_moves[i] / sum_n_moves[i])
-    if sum_n_rests[i]!=0:
-        summary_rt.setValue("Avg resting bout dur", row, sum_dur_rests[i] / sum_n_rests[i])
+    summary_rt.show("Track_Summaries["+ str(restingVelocity) +"-"+ str(neighborhood) +"]")
+    log("Finished: ", time.time()-start, " seconds")
 
-summary_rt.show("Track_Summaries["+ str(restingVelocity) +"-"+ str(neighborhood) +"]")
-log("Finished: ", time.time()-start, " seconds")
+main()
