@@ -1,5 +1,6 @@
 //@ImagePlus imp
 //@String(label="Vertical y-axis", choices={"Mean", "Max", "Min", "StdDev"}, value="Mean") yOption
+//@Boolean(label="Plot standard deviation", value=falso) errorBars
 //@Boolean(label="Average Z-dimension in time profiles", value=true) averageZ
 //@Boolean(label="X-axis uses calibrated distances", value=true) calibratedX
 //@Boolean(label="Allow custom routines in live mode", value=true) allowRoutine
@@ -40,6 +41,7 @@ import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 
 import bar.Runner;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /* Options for Plot's y-axis values */
 String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
@@ -115,19 +117,20 @@ Plot getPlot() {
 
 	// Use Z-slices as abscissae if no frames exist
 	boolean zProfile = (frames==1) ? true : false;
-	int divisor = frames;
 	if (zProfile) {
 		zStart = zEnd = 1;
-		frames = slices; divisor = 1;
+		frames = slices;
 	}
+
+	DescriptiveStatistics stats = new DescriptiveStatistics();
 
 	// Retrieve all the series to be plotted
 	double[][] data = new double[channels][frames];
+	double[][] err = new double[channels][frames];
 	for (int c=1; c<=channels; c++) {
 		if (!states[c-1])
 			continue;
 		for (int f=1; f<=frames; f++) {
-			double sum = 0.0d;
 			for (int z=zStart; z<=zEnd; z++) {
 				if (zProfile)
 					idx = imp.getStackIndex(c, f, z);
@@ -135,10 +138,11 @@ Plot getPlot() {
 					idx = imp.getStackIndex(c, z, f);
 				ImageProcessor ip = stack.getProcessor(idx);
 				ip.setRoi(roi);
-				ImageStatistics stats = ip.getStatistics();
-				sum += getIntensity(stats);
+				ImageStatistics iStats = ip.getStatistics();
+				stats.addValue(getIntensity(iStats));
 			}
-			data[c-1][f-1] = sum / divisor;
+			data[c-1][f-1] = stats.getMean();
+			err[c-1][f-1] = stats.getStandardDeviation();
 		}
 	}
 
@@ -177,10 +181,15 @@ Plot getPlot() {
 	for (int c=1; c<=channels; c++) {
 		if (states[c-1]) {
 			double[] yvalues = new double[frames];
-			for (int f=0; f<frames; f++)
+			double[] yerr = new double[frames];
+			for (int f=0; f<frames; f++) {
 				yvalues[f] = data[c-1][f];
+				yerr[f] = err[c-1][f];
+			}
 			plot.setColor(colors[c-1]);
 			plot.addPoints(xvalues, yvalues, Plot.LINE);
+			if (super.errorBars)
+				plot.addErrorBars(yerr);
 
 			// Run custom routine on data from active channel
 			if (!super.firstRun && c==imp.getC() && super.allowRoutine && IJ.controlKeyDown()) {
