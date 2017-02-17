@@ -165,23 +165,17 @@ public class Runner {
 	 *            see {@link ScriptService#run(String, Reader, boolean, Map)}
 	 */
 	public void runScript(final InputStream in, final String filename, final Map<String, Object> inputMap) {
-		try {
-			if (in == null) {
-				error("Could not find " + filename, IO_ERROR);
-				return;
-			}
-			final Reader reader = new InputStreamReader(in);
-			setLoaded(true);
-			final Future<ScriptModule> fsm = scriptService.run(filename, reader, true, inputMap);
-			if (fsm.isCancelled())
-				setStatus(WAS_CANCELED);
-			else if (fsm.isDone())
-				setStatus(WAS_DONE);
-		} catch (final IOException e) {
-			error("There was an error reading " + filename, IO_ERROR);
-		} catch (final ScriptException e) {
-			error("There was an error running " + filename + ": " + e.getMessage(), EXCEPTION);
+		if (in == null) {
+			error("Could not find " + filename, IO_ERROR);
+			return;
 		}
+		final Reader reader = new InputStreamReader(in);
+		setLoaded(true);
+		final Future<ScriptModule> fsm = scriptService.run(filename, reader, true, inputMap);
+		if (fsm.isCancelled())
+			setStatus(WAS_CANCELED);
+		else if (fsm.isDone())
+			setStatus(WAS_DONE);
 	}
 
 	/**
