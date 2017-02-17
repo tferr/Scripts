@@ -229,14 +229,16 @@ double[] get2DarrayMinMax(double[][] a) {
 
 /* Returns the ImageStatistics measure specified by the user */
 double getIntensity(ImageStatistics stats) {
-	if (super.yOption.equals(super.yOptions[0]))
-		return stats.mean;
-	else if (super.yOption.equals(super.yOptions[1]))
-		return stats.max;
-	else if (super.yOption.equals(super.yOptions[2]))
-		return stats.min;
-	else
-		return stats.stdDev;
+	switch (super.yOption) {
+		case super.yOptions[1]:
+			return stats.max;
+		case super.yOptions[2]:
+			return stats.min;
+		case super.yOptions[3]:
+			return stats.stdDev;
+		default:
+			return stats.mean;
+	}
 }
 
 /*
