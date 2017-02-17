@@ -39,6 +39,7 @@ import java.awt.Color;
 import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 
+import bar.Runner;
 
 /* Options for Plot's y-axis values */
 String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
@@ -55,7 +56,6 @@ String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
  * languages.
  */
 void customRoutine(double[] values) {
-	import bar.Runner;
 	rt = ResultsTable.getResultsTable();
 	if (rt == null || rt.getCounter() == 0)
 		rt = new ResultsTable();
