@@ -1,46 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-		http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-<parent>
-		<groupId>sc.fiji</groupId>
-		<artifactId>pom-fiji</artifactId>
-		<version>26.1.1</version>
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>13.2.1</version>
 		<relativePath />
 	</parent>
 
-<groupId>com.github.tferr</groupId>
-<artifactId>BAR_</artifactId>
-<version>1.1.12-SNAPSHOT</version>
+	<artifactId>BAR_</artifactId>
+	<version>1.1.12-SNAPSHOT</version>
 
-<name>BAR_.jar</name>
-<description>BAR: A curated collection of Broadly Applicable Routines for ImageJ.</description>
-<url>http://imagej.net/BAR</url>
+	<name>BAR</name>
+	<description>BAR: A curated collection of Broadly Applicable Routines for ImageJ.</description>
+	<url>http://imagej.net/BAR</url>
+	<inceptionYear>2014</inceptionYear>
+	<organization>
+		<name>Fiji</name>
+		<url>https://fiji.sc</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>GPL3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html/</url>
+		</license>
+	</licenses>
 
-<developers>
+	<developers>
 		<developer>
 			<id>tferr</id>
 			<name>Tiago Ferreira</name>
-			<email>tiagoalvespedrosa@gmail.com</email>
+			<url>https://imagej.net/User:Tiago</url>
 			<roles>
-				<role>architect</role>
+				<!-- see https://imagej.net/Team -->
+				<role>founder</role>
+				<role>lead</role>
 				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
 			<timezone>-5</timezone>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Mark Hiner</name>
+			<url>http://imagej.net/User:Hinerm</url>
+			<properties>
+				<id>hinerm</id>
+			</properties>
+		</contributor>
+		<contributor>
+			<name>Kota Miura</name>
+			<url>http://imagej.net/User:Miura</url>
+			<properties>
+				<id>cmci</id>
+			</properties>
+		</contributor>
+		<contributor>
+			<name>Jan Eglinger</name>
+			<url>http://imagej.net/User:Eglinger</url>
+			<properties>
+				<id>imagejan</id>
+			</properties>
+		</contributor>
+	</contributors>
 
-<scm>
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
 		<connection>scm:git:git://github.com/tferr/Scripts</connection>
 		<developerConnection>scm:git:git@github.com:tferr/Scripts</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/tferr/Scripts</url>
 	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/tferr/Scripts/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+		<url>http://jenkins.imagej.net/job/BAR/</url>
+	</ciManagement>
 
-<repositories>
+	<properties>
+		<license.licenseName>GPL_3</license.licenseName>
+		<license.copyrightOwners>Tiago Ferreira</license.copyrightOwners>
+		<delete.other.versions>true</delete.other.versions>
+		<enforcer.skip>true</enforcer.skip>
+	</properties>
+
+	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
 			<id>imagej.public</id>
@@ -48,7 +106,7 @@
 		</repository>
 	</repositories>
 
-<dependencies>
+	<dependencies>
 		<!-- ImageJ dependencies -->
 		<dependency>
 			<groupId>net.imagej</groupId>
@@ -98,9 +156,9 @@
 			<groupId>net.imagej</groupId>
 			<artifactId>imagej-legacy</artifactId>
 		</dependency>
-</dependencies>
+	</dependencies>
 
-<build>
+	<build>
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
@@ -129,26 +187,26 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass></mainClass>
+					<mainClass />
 				</configuration>
 			</plugin>
 			<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-javadoc-plugin</artifactId>
-			<version>2.10.3</version><!--$NO-MVN-MAN-VER$-->
-			<executions>
-				<execution>
-					<id>attach-javadocs</id>
-					<goals>
-						<goal>jar</goal>
-					</goals>
-				</execution>
-			</executions>
-			<!-- java 1.8-->
-			<configuration>
-				<additionalparam>-Xdoclint:none</additionalparam>
-			</configuration>
-		</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<!--$NO-MVN-MAN-VER$ -->
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<!-- java 1.8 -->
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
 		</plugins>
-</build>
+	</build>
 </project>
