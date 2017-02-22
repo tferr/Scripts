@@ -1,0 +1,73 @@
+/**
+ * BeanShell04.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * *************************************************
+ * 4. Methods and the super keyword
+ * *************************************************
+ */
+
+// BeanShell methods ("Java functions") are defined as
+// in Java, with return values specified by a <return>
+// statement. Bsh methods allow dynamic (loose) of both
+// arguments and return types. We will come back to this
+// in a second. Meanwhile, here is an example of a
+// method that takes no arguments:
+
+/** This method returns a string of today's date */
+today() {
+    import java.util.Date;	// http://javadoc.imagej.net/Java7/index.html?java/util/Date.html
+    date = new Date();
+    return date.toString();	// http://javadoc.imagej.net/Java7/index.html?java/lang/Object.html#toString--
+}
+
+print("Line 23: today() returned" + today());
+
+
+// A Method with arguments:
+/**
+ *  This method returns the smallest of two arguments, and is a
+ *  kludged assembly of Java.lang.Math.min(), see
+ *  http://javadoc.imagej.net/Java7/index.html?java/lang/Math.html
+ */
+minMethod(a, b) {
+	if (a < b) {
+		return a;
+	} else {
+		return b;
+	}
+}
+
+print("Line 40: " + minMethod(10,20) + "is smaller");
+
+
+// We can also specify argument and/or return types:
+/** This method sums only integers */
+int intSum(int a, int b) {
+	return a + b;
+}
+
+print("Line 49: The sum of 2 integers: " + intSum(2,4) );
+
+// void methods do not return any value:
+void voidMethod() {
+	print("I return nothing. I just print stuff.");
+}
+print("Line 55: " + voidMethod());
+
+
+// Now let's have a look at "Global variables":
+// It is possible to explicitly refer to a declared variable
+// (or method) defined outside the scope of a method using
+// the <super> keyword, similarly to Python's <global>
+// keyword (Python04.py tutorial). Example:
+int variable = 2;
+myMethod() {
+	int variable = 40;
+	print("Line 66: Inside the method, variable= " + variable);
+	print("Line 67: Outside the method, variable= " + super.variable);
+	// Note that this would not work for loosely declared variables
+	// What happens when one does not specify the variable data type?
+}
+myMethod();
+
+// To know more: http://www.beanshell.org/manual/

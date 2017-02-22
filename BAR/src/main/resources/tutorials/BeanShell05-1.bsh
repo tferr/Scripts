@@ -1,0 +1,25 @@
+/**
+ * BeanShell05-1.bsh
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * *************************************************
+ * 5.1 Scripting using BAR libs I
+ * *************************************************
+ */
+
+// BAR libs (stored in the /BAR/lib/ directory) are
+// centralized libraries (BeanShell, IJM and Python,
+// etc.) that can be shared across files.
+// "BAR>Snippets>New Snippet..." exemplifies how to
+// use the main BeanShell lib distributed with BAR.
+//
+// Let's create a new snippet and run "BAR>lib>Reveal
+// /lib" so that we can browse lib files. If you press
+// <<Run>>, I'll run the commands for you:
+
+import ij.IJ;
+IJ.run("Reveal /lib", "");
+IJ.run("New Snippet...");
+
+
+// Further reading:
+// BAR>lib>lib Help... and http://imagej.net/BAR#BAR_lib
