@@ -459,7 +459,6 @@ public class InteractivePlotter implements PlugIn {
 
 	private class PlotInstance {
 		private final PlotWindow plotWindow;
-		@SuppressWarnings({ "hiding" })
 		private Plot plot;
 		private String title;
 
@@ -808,7 +807,7 @@ public class InteractivePlotter implements PlugIn {
 		final FontMetrics fm = new Canvas().getFontMetrics(font);
 		final int width = fm.stringWidth(expandedLabel);
 		final Button button = new Button(expandedLabel);
-		button.setPreferredSize(new Dimension(width, 2*fm.getHeight()));
+		button.setPreferredSize(new Dimension(width, 2 * fm.getHeight()));
 		return button;
 	}
 

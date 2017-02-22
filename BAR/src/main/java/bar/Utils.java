@@ -136,7 +136,6 @@ public class Utils implements PlugIn {
 		}
 	}
 
-
 	/**
 	 * Retrieves BAR's version
 	 *

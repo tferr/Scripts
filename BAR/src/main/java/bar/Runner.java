@@ -7,8 +7,6 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import javax.script.ScriptException;
-
 import net.imagej.ImageJ;
 
 import org.scijava.Context;
@@ -192,13 +190,11 @@ public class Runner {
 	public void runIJ1Macro(final String path, final String arg) {
 		String macro = null;
 		try {
-			@SuppressWarnings("resource")
 			final InputStream is = Utils.class.getResourceAsStream("/scripts/BAR/" + path);
 			if (is == null) {
 				error("Could not find " + path, IO_ERROR);
 				return;
 			}
-			@SuppressWarnings("resource")
 			final InputStreamReader isr = new InputStreamReader(is);
 			setLoaded(true);
 			final StringBuffer sb = new StringBuffer();
