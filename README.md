@@ -108,7 +108,7 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 
 
 ## Tutorials
-  1. [Introduction to Scripting](./Snippets/Tutorials/README.md#tutorials) Tutorials used
+  1. [Introduction to Scripting](./BAR/src/main/resources/tutorials/README.md#tutorials) Tutorials used
      in the workshop [Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
      at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
   1. [External Ops](./BAR/README.md#external-ops): Tutorial exemplifying how to provide
