@@ -22,6 +22,7 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -59,6 +60,15 @@ public class Tutorials implements Command {
 			uiService.showDialog("Could not load tutorial files.", DialogPrompt.MessageType.ERROR_MESSAGE);
 			return;
 		}
+
+		// Ensure files are opened in the right order
+		urls.sort(new Comparator<URL>() {
+			@Override
+			public int compare(final URL u1, final URL u2) {
+				return u1.toString().compareTo(u2.toString());
+			}
+
+		});
 		final TextEditor editor = new TextEditor(context);
 		for (final URL url : urls) {
 			statusService.showStatus(urls.indexOf(url), urls.size(), "Opening tutorial files...");
