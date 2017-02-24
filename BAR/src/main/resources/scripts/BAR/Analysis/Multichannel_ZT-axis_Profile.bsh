@@ -1,6 +1,6 @@
 //@ImagePlus imp
 //@String(label="Vertical y-axis", choices={"Mean", "Max", "Min", "StdDev"}, value="Mean") yOption
-//@Boolean(label="Vertical error bars (StdDev)", value=falso) errorBars
+//@Boolean(label="Vertical error bars (StdDev)", value=false) errorBars
 //@Boolean(label="Average Z-dimension in time profiles", value=true) averageZ
 //@Boolean(label="X-axis uses calibrated distances", value=true) calibratedX
 //@Boolean(label="Allow custom routines in live mode", value=true) allowRoutine
