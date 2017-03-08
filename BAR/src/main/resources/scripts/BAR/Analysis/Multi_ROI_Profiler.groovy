@@ -1,10 +1,11 @@
-//@Integer(label="Channel",min=1,max=10,style="scroll bar",value="1") channel
-//@Boolean(label="Plot mean ± SE of plotted ROIs", value=false) plotMean
-//@Boolean(label="Average Z-dimension (if present)", value=true) averageZ
-//@Boolean(label="Use unique colors", value=false) uniqueColors
+//@String(value="This script plots the mean intensity of ROIs (of any type) over time.", visibility="MESSAGE") info
+//@Integer(label="Channel",min=1,max=10,style="scroll bar", description="Only intensities from this channel will be considered", value="1") channel
+//@Boolean(label="Plot mean ± SE of all ROIs", value=false) plotMean
+//@Boolean(label="Average Z-dimension (if present)", description="If unchecked, only the current Z-position is used", value=true) averageZ
+//@Boolean(label="Use unique colors", description="If unchecked, each ROI series is plotted in gray", value=false) uniqueColors
 //@String(value=" ", visibility="MESSAGE") spacer
-//@String(label="Plot only ROIs whose name contains", value="", description="<html>Only ROIs containing this string will be considered.<br>Leave blank to consider all ROIs.") filterROI
 //@String(label="ROIs source", choices={"ROI Manager", "Image Overlay"}) source
+//@String(label="Filter by name", value="", description="<html>Only ROIs containing this string will be considered.<br>Leave blank to consider all ROIs.") filter
 
 //@ImagePlus imp
 //@UIService uiservice
