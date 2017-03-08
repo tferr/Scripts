@@ -4,6 +4,7 @@
 //@Boolean(label="Use unique colors", value=false) uniqueColors
 //@String(value=" ", visibility="MESSAGE") spacer
 //@String(label="Plot only ROIs whose name contains", value="", description="<html>Only ROIs containing this string will be considered.<br>Leave blank to consider all ROIs.") filterROI
+//@String(label="ROIs source", choices={"ROI Manager", "Image Overlay"}) source
 
 //@ImagePlus imp
 //@UIService uiservice
@@ -67,6 +68,32 @@ def plotAverageOfAllSeries(plot) {
 
 def error(msg) {
     uiservice.showDialog(msg, "Error")
+}
+
+def getROIs(source, filterString) {
+    def rois = []
+    switch (source) {
+        case ~/.*[Oo]verlay$/:
+            overlay = imp.getOverlay()
+            if (overlay != null && overlay.size > 0)
+                rois = overlay.toArray()
+            break
+        default:
+            def rm = RoiManager.getInstance()
+            if (rm!=null && rm.getCount() > 0)
+                rois = rm.getRoisAsArray()
+            break
+    }
+    if (!filterString.isEmpty()) {
+        def excludedROIs = []
+        rois.each {
+            name = it.getName()
+            if (name!= null && !name.contains(filterString))
+                excludedROIs.add(it)
+        }
+        rois = rois - excludedROIs
+    }
+    return rois
 }
 
 
