@@ -12,9 +12,10 @@
 import ij.IJ;
 import ij.gui.Plot;
 import ij.measure.Measurements;
-import ij.process.ImageStatistics;
 import ij.plugin.frame.RoiManager;
+import ij.process.ImageStatistics;
 
+import fiji.plugin.trackmate.gui.GuiUtils;
 import org.scijava.util.Colors;
 import org.scijava.ui.awt.AWTColors;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -97,45 +98,36 @@ def getROIs(source, filterString) {
 }
 
 
-def rm = RoiManager.getInstance()
-if (rm==null && rm.getCount() == 0) {
-    error("The ROI Manager is empty")
+def rois = getROIs(source, filter)
+if (!rois) {
+    error("No ROIs in $source.\n(Or no matches for the specied filter '$filter')")
     return
 }
 
-cal = imp.getCalibration()
+GuiUtils.userCheckImpDimensions(imp)
 frames = imp.getNFrames()
-slices = imp.getNSlices()
-if (frames==1)
-    frames = slices
-
 if (frames == 1) {
     error("Time sequence (ImageStack) required.")
     return
 }
 
-zStart = zEnd = imp.getZ()
-if (averageZ) {
-	zStart = 1
-	zEnd = slices
-}
+zStart = (averageZ) ? 1 : imp.getZ()
+zEnd = (averageZ) ? imp.getNSlices() : imp.getZ()
+cal = imp.getCalibration()
 xvalues = (1..frames) as float[]
 
-def plot = new Plot("ROI Profiles " + imp.getTitle() + " Ch" + channel, "Time (frame n.)", "Mean")
-def rois = rm.getRoisAsArray()
-def colors = (uniqueColors) ? getUniqueColors(rm.getCount()) : [].withDefault {AWTColors.getColor(Colors.GRAY)}
+def plot = new Plot("ROI Profiles " + imp.getTitle()
+                + " Ch$channel", "Time (frame n.)", "Mean")
+def colors = (uniqueColors) ? getUniqueColors(rois.size())
+                : [].withDefault {AWTColors.getColor(Colors.GRAY)}
 
 rois.eachWithIndex { roi, idx ->
     def name = roi.getName()
-    def filter = !filterROI.isEmpty() && name != null
-    if (filter && name.contains(filterROI))
-        return // continue: exit from the closure
     plot.setColor(colors[idx])
-    plot.addPoints(xvalues, getROIMeanAcrossTime(roi) as float[], null, Plot.LINE, name)
+    plot.addPoints(xvalues, getROIMeanAcrossTime(roi) as float[], null,
+            Plot.LINE, name)
 }
 
-if (plot.getPlotObjectDesignations().length==0)
-    return
 if (plotMean)
     plotAverageOfAllSeries(plot)
 plot.setLimitsToFit(true)
