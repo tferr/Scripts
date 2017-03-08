@@ -10,6 +10,14 @@
 //@ImagePlus imp
 //@UIService uiservice
 
+/*
+ * Multi_ROI_Profiler.groovy
+ * IJ BAR: https://github.com/tferr/Scripts#scripts
+ *
+ * Groovy script that plots ROI intensities over time. Extends ROI Manager's
+ * Multi Plot command to multichannel images and ROIs of any type.
+ */
+
 import ij.IJ;
 import ij.gui.Plot;
 import ij.measure.Measurements;
@@ -101,7 +109,7 @@ def getROIs(source, filterString) {
 
 def rois = getROIs(source, filter)
 if (!rois) {
-    error("No ROIs in $source.\n(Or no matches for the specied filter '$filter')")
+    error("No ROIs in $source.\n(Or no matches for the specified filter '$filter')")
     return
 }
 

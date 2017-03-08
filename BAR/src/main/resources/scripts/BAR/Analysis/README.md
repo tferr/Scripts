@@ -8,6 +8,9 @@ See also: [Data Analysis]
    Detects particles in a multichannel image using [TrackMate](http://imagej.net/TrackMate)'s
    LoG/DoG (Laplacian/Difference of Gaussian) segmentation
 
+###[Multi ROI Profiler](./Multi_ROI_Profiler.groovy)
+   Groovy script that plots ROI intensities over time. Extends ROI Manager's
+   _Multi Plot_ command to multichannel images and ROIs of any type.
 
 ###[Multichannel Plot Profile](./Multichannel_Plot_Profile.bsh)
    Extends the built-in command _Analyze> Plot Profile_ to multichannel (composite) images. It

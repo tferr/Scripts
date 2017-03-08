@@ -18,9 +18,10 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
   1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#log-dog-spot-counter)
-  2. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
-  3. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
-  4. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
+  2. (groovy) [Multi ROI Profiler](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multi-roi-profiler)
+  3. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
+  4. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
+  5. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
 
 
 ## [Data Analysis]
@@ -109,7 +110,7 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
 
 ## Tutorials
   1. [Introduction to Scripting](./BAR/src/main/resources/tutorials/README.md#tutorials) Tutorials used
-     in the workshop [Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
+      in the workshop [Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
      at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
   1. [External Ops](./BAR/README.md#external-ops): Tutorial exemplifying how to provide
      [ops](http://imagej.net/ImageJ_Ops).
