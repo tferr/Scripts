@@ -116,7 +116,7 @@ Plot getPlot() {
 	}
 
 	// Use Z-slices as abscissae if no frames exist
-	boolean zProfile = (frames==1) ? true : false;
+	boolean zProfile = (frames==1);
 	if (zProfile) {
 		zStart = zEnd = 1;
 		frames = slices;
