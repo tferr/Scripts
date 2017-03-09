@@ -131,6 +131,7 @@ Plot getPlot() {
 		if (!states[c-1])
 			continue;
 		for (int f=1; f<=frames; f++) {
+			stats.clear();
 			for (int z=zStart; z<=zEnd; z++) {
 				if (zProfile)
 					idx = imp.getStackIndex(c, f, z);
