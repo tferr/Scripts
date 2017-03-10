@@ -59,7 +59,7 @@ setBatchMode(true);
     if (nROIs!=nRES)
         Dialog.addMessage(nROIs +" ROI(s) in Manager, "+ nRES +" rows in Results table:\n"
                 + abs(nROIs-nRES) +" item(s) will be ignored...");
-    Dialog.addHelp("http://imagejdocu.tudor.lu/doku.php?id=macro:roi_color_coder");
+    Dialog.addHelp("https://github.com/tferr/Scripts/blob/master/BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder");
   Dialog.show;
       parameter= Dialog.getChoice;
       lut= Dialog.getChoice;
