@@ -36,6 +36,8 @@ setBatchMode(true);
   Dialog.create("ROI Color Coder: "+ getTitle);
     headings= split(String.getResultsHeadings);
     Dialog.addChoice("Measurement:", headings, "Area");
+    Dialog.setInsets(0, 100, 12);
+    Dialog.addCheckbox("Log transform (base-10)", false);
     luts = getList("LUTs");
     Dialog.addChoice("LUT:", luts, "mpl-viridis");
     Dialog.setInsets(12, 0, 0);
@@ -62,6 +64,7 @@ setBatchMode(true);
     Dialog.addHelp("https://github.com/tferr/Scripts/blob/master/BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder");
   Dialog.show;
       parameter= Dialog.getChoice;
+      useLog = Dialog.getCheckbox;
       lut= Dialog.getChoice;
       stroke= Dialog.getNumber;
       alpha= pad(toHex(255*Dialog.getNumber/100));
@@ -85,8 +88,12 @@ setBatchMode(true);
 
 // get values for chosen parameter
   values= newArray(items);
-  for (i=0; i<items; i++)
-      values[i]= getResult(parameter,i);
+  for (i=0; i<items; i++) {
+      if (useLog)
+          values[i] = log(getResult(parameter,i)) / log(10);
+      else
+          values[i]= getResult(parameter,i);
+  }
   Array.getStatistics(values, minC, maxC);
   if (isNaN(min)) min= minC;
   if (isNaN(max)) max= maxC;
