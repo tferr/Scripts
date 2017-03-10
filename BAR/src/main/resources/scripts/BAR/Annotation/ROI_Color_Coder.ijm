@@ -6,7 +6,7 @@
  * complementary to the ParticleAnalyzer (Analyze>Analyze Particles...), generating
  * particle-size heat maps. Requires IJ 1.47r.
  *
- * Tiago Ferreira, v.5.3 2016.05.10
+ * Tiago Ferreira, v.5.4 2017.03.10
  */
 
 

@@ -746,7 +746,6 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	/**
 	 * Returns the path to {@code BAR/lib/}.
 	 *
 	 * @return the absolute path to the "lib" directory
