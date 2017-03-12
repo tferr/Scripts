@@ -107,6 +107,16 @@ def getROIs(source, filterString) {
     return rois
 }
 
+def validateImage(imp) {
+    overlay = imp.getOverlay()
+    roi = imp.getRoi()
+    GuiUtils.userCheckImpDimensions(imp)
+    if (overlay)
+        imp.setOverlay(overlay)
+    if (roi)
+        imp.setRoi(roi)
+}
+
 
 def rois = getROIs(source, filter)
 if (!rois) {
@@ -114,7 +124,7 @@ if (!rois) {
     return
 }
 
-GuiUtils.userCheckImpDimensions(imp)
+validateImage(imp)
 frames = imp.getNFrames()
 if (frames == 1) {
     error("Time sequence (ImageStack) required.")
