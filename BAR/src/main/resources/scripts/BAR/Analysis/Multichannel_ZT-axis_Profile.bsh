@@ -124,9 +124,11 @@ Plot getPlot() {
 
 	DescriptiveStatistics stats = new DescriptiveStatistics();
 
-	// Retrieve all the series to be plotted
+	// Retrieve all series to be plotted while calculating y-axis limits
 	double[][] data = new double[channels][frames];
 	double[][] err = new double[channels][frames];
+	double min = Double.MAX_VALUE;
+	double max = -Double.MAX_VALUE;
 	for (int c=1; c<=channels; c++) {
 		if (!states[c-1])
 			continue;
@@ -142,7 +144,12 @@ Plot getPlot() {
 				ImageStatistics iStats = ip.getStatistics();
 				stats.addValue(getIntensity(iStats));
 			}
-			data[c-1][f-1] = stats.getMean();
+			double value = stats.getMean();
+			if (value<min)
+				min = value;
+			if (value>max)
+				max = value;
+			data[c-1][f-1] = value;
 			err[c-1][f-1] = stats.getStandardDeviation();
 		}
 	}
@@ -175,9 +182,9 @@ Plot getPlot() {
 
 	// Build plot
 	Plot plot = new Plot("Z/T-axis Plot of "+ imp.getTitle(), xLabel, yLabel);
-	plot.setLimits(xvalues[0], xvalues[frames-1], ylimits[0], ylimits[1]);
 	label = (super.allowRoutine) ? "In live mode, press 'Ctrl' to run custom routine..." : "";
 	plot.addLabel(0, 0, label);
+	plot.setLimits(xvalues[0], xvalues[frames-1], min, max);
 
 	for (int c=1; c<=channels; c++) {
 		if (states[c-1]) {
@@ -216,23 +223,6 @@ Plot getPlot() {
 	super.firstRun = false;
 
 	return plot;
-}
-
-/* Returns {min, max} of a two-dimensional array */
-double[] get2DarrayMinMax(double[][] a) {
-	double min = Double.MAX_VALUE;
-	double max = -Double.MAX_VALUE;
-	double value;
-	for (int i = 0; i < a.length; i++) {
-		for (int j = 0; j < a[i].length; j++) {
-			value = a[i][j];
-			if (value<min)
-				min = value;
-			if (value>max)
-				max = value;
-		}
-	}
-	return new double[] {min, max};
 }
 
 /* Returns the ImageStatistics measure specified by the user */
