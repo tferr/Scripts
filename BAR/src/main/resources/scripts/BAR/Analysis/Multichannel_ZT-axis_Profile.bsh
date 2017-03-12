@@ -1,9 +1,10 @@
+//@String(label="Vertical y-axis", description="<html>Which intensities should be plotted?<br>(retrieved from active ROI or entire canvas if no ROI exists)", choices={"Mean", "Max", "Min", "StdDev"}, value="Mean") statsChoice
+//@Boolean(label="X-axis uses calibrated units", description="<html>E.g., <i>&mu;m</i> for distance or <i>&mu;s</i> for time", value=true) calibratedX
+//@String(visibility="MESSAGE",value=" ") SPACER
+//@String(label="Z-dimension in time series", description="Applies only to timelapses with a Z-dimension", choices={"Active plane", "Z average", "Z average ± StdDev"}, value="Active plane") zOption
+//@Boolean(label="Activate the Channels widget", description="<html>The Channel widget allows you to specify which channels to plot when in <i>Live mode</i>.<br>Does nothing if the widget is already open or only one channel is available", value=true) activateChannelWidget
+//@Boolean(label="Allow custom routines in live mode", description="<html>To define which routine to run open this script using<br>the 'Shift-trick', then modify <tt>customRoutine()</tt>", value=true) allowRoutine
 //@ImagePlus imp
-//@String(label="Vertical y-axis", choices={"Mean", "Max", "Min", "StdDev"}, value="Mean") yOption
-//@Boolean(label="Vertical error bars (StdDev)", value=false) errorBars
-//@Boolean(label="Average Z-dimension in time profiles", value=true) averageZ
-//@Boolean(label="X-axis uses calibrated distances", value=true) calibratedX
-//@Boolean(label="Allow custom routines in live mode", value=true) allowRoutine
 //@UIService uiservice
 //@Context context
 
@@ -15,11 +16,7 @@
  * It features a "live" option, guesses displayed lookup tables and ignores disabled channels (i.e.,
  * those deselected in the "Channels" widget (Image>Color>Channels Tool). It also allows users to
  * call other scripts in live mode (Have a look at customRoutine(double[] values) below).
- *
- * N.B.:
- *  - Intensities (mean, min, max stdDev) are retrieved from active ROI or entire canvas if no ROI exists
- *  - With hyperstacks, intensities can be averaged across Z-slices at each time point
- *  - Limits of Y-axis are set to include data from all visible channels
+ * Limits of Y-axis are set to include data from all visible channels
  */
 
 import ij.CompositeImage;
@@ -42,9 +39,6 @@ import java.util.Arrays;
 
 import bar.Runner;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-
-/* Options for Plot's y-axis values */
-String[] yOptions = new String[] {"Mean", "Max", "Min", "StdDev"};
 
 
 /* This method is called when the user presses Ctrl in live mode. It takes
@@ -108,8 +102,10 @@ Plot getPlot() {
 	}
 
 	// Define range of Z-dimension
+	boolean averageZ = super.zOption.contains("average");
+	boolean errorBars = super.zOption.contains("StdDev");
 	int zStart, zEnd;
-	if (super.averageZ) {
+	if (averageZ) {
 		zStart = 1; zEnd = slices;
 	} else {
 		zStart = zEnd = imp.getZ();
@@ -174,17 +170,14 @@ Plot getPlot() {
 			xvalues[i] = i + 1;
 	}
 
-	// Determine y-axis limits and label
-	double[] ylimits = get2DarrayMinMax(data);
-	String yLabel = super.yOption;
-	if (!zProfile)
-		yLabel += (averageZ) ? " (Z-axis avg)" : " (slice "+ imp.getZ().toString() +")";
-
 	// Build plot
+	String yLabel = super.statsChoice;
+	if (!zProfile)
+		yLabel += " ("+ super.zOption +")";
 	Plot plot = new Plot("Z/T-axis Plot of "+ imp.getTitle(), xLabel, yLabel);
-	label = (super.allowRoutine) ? "In live mode, press 'Ctrl' to run custom routine..." : "";
-	plot.addLabel(0, 0, label);
 	plot.setLimits(xvalues[0], xvalues[frames-1], min, max);
+	if (super.allowRoutine)
+		plot.addLabel(0, 0, "In live mode, press 'Ctrl' to run custom routine...");
 
 	for (int c=1; c<=channels; c++) {
 		if (states[c-1]) {
@@ -196,7 +189,7 @@ Plot getPlot() {
 			}
 			plot.setColor(colors[c-1].brighter(), colors[c-1].darker());
 			plot.addPoints(xvalues, yvalues, Plot.CONNECTED_CIRCLES);
-			if (super.errorBars)
+			if (errorBars)
 				plot.addErrorBars(yerr);
 
 			// Run custom routine on data from active channel
@@ -227,12 +220,12 @@ Plot getPlot() {
 
 /* Returns the ImageStatistics measure specified by the user */
 double getIntensity(ImageStatistics stats) {
-	switch (super.yOption) {
-		case super.yOptions[1]:
+	switch (super.statsChoice) {
+		case "Max":
 			return stats.max;
-		case super.yOptions[2]:
+		case "Min":
 			return stats.min;
-		case super.yOptions[3]:
+		case "StdDev":
 			return stats.stdDev;
 		default:
 			return stats.mean;
@@ -240,8 +233,8 @@ double getIntensity(ImageStatistics stats) {
 }
 
 /*
- * Returns the color associated with the specified LUT. See
- * ij.CompositeImage.getChannelColor()
+ * Returns the color associated with the specified LUT.
+ * See ij.CompositeImage.getChannelColor()
  */
 Color getLutColor(IndexColorModel cm) {
 	int index = cm.getMapSize() - 1;
@@ -282,6 +275,8 @@ boolean firstRun = true;
 Plot plot = getPlot();
 if (plot==null)
 	return;
+if (super.activateChannelWidget && imp.getNChannels() > 1)
+	IJ.run("Channels Tool...");
 plot.setPlotMaker(this);
 plot.show();
 return;
