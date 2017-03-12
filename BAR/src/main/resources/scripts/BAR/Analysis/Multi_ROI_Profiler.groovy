@@ -19,6 +19,7 @@
  */
 
 import ij.IJ;
+import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.measure.Measurements;
 import ij.plugin.frame.RoiManager;
@@ -85,7 +86,7 @@ def getROIs(source, filterString) {
     switch (source) {
         case ~/.*[Oo]verlay$/:
             overlay = imp.getOverlay()
-            if (overlay != null && overlay.size > 0)
+            if (overlay != null && overlay.size() > 0)
                 rois = overlay.toArray()
             break
         default:
