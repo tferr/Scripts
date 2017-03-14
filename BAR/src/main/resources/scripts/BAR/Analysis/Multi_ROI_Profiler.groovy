@@ -96,7 +96,7 @@ def getROIs(source, filterString) {
                 rois = rm.getRoisAsArray()
             break
     }
-    if (!filterString.isEmpty()) {
+    if (filterString && !filterString.trim().isEmpty()) {
         def excludedROIs = []
         rois.each {
             name = it.getName()
