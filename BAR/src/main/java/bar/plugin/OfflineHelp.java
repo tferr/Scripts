@@ -38,12 +38,6 @@ import org.scijava.ui.UIService;
 public class OfflineHelp implements Command {
 
 	@Parameter
-	private Context context;
-
-	@Parameter
-	private CommandService commandService;
-
-	@Parameter
 	private static DisplayService displayService;
 
 	@Parameter

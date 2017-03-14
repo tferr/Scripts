@@ -1,7 +1,7 @@
 //@String(value="This script plots the mean intensity of ROIs (of any type) over time.", visibility="MESSAGE") info
-//@Integer(label="Channel",min=1,max=10,style="scroll bar", description="Only intensities from this channel will be considered", value="1") channel
+//@Integer(label="Channel",min=1,max=10,style="scroll bar", description="With multichannel images only intensities from this channel are plotted", value="1") channel
 //@Boolean(label="Plot mean ± SE of all ROIs", value=false) plotMean
-//@Boolean(label="Average Z-dimension in time series", description="<html>Applies only to timelapses with a Z-dimension.<br>If unchecked, only the current Z-position of the time-lapse is used", value=true) averageZ
+//@Boolean(label="Average Z-dimension in time series", description="<html>If unchecked, only the current Z-position of the time-lapse is used.<br>Ignored when timelapse has no Z-dimension", value=true) averageZ
 //@Boolean(label="Use unique colors", description="If unchecked, each ROI series is plotted in gray", value=false) uniqueColors
 //@String(value=" ", visibility="MESSAGE") spacer
 //@String(label="ROIs source", choices={"ROI Manager", "Image Overlay"}) source
