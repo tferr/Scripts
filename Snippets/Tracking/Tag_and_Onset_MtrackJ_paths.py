@@ -20,21 +20,23 @@ from ij.measure import ResultsTable as RT
 import os, math
 
 
-""" How many consecutive path points should be used to define a bout? eg, a
+'''
+How many consecutive path points should be used to define a bout? eg, a
 BOUT_WINDOW of 2 means 4 consecutive tracking points (current position ± 2)
-"""
+'''
 BOUT_WINDOW = 2  # 4 consecutive tracking points
 
-""" Min. distance between consecutive track points that defines lingering. Any
-smaller distance than this value will be considered as 'lingering' if it lasts
-for the number of consecutive tracking points defined by BOUT_WINDOW
-"""
+'''
+Min. distance between consecutive track points that defines lingering. Any
+smaller distance than this value will be considered as 'lingering' if it
+lasts for the number of consecutive tracking points defined by BOUT_WINDOW
+'''
 MIN_D2P = math.sqrt(0.2116403 ** 2)  # diagonal of pixel size for full sensor CCD at 20X
 
-""" Default frame interval (in seconds). Ignored when auto-detection is active"""
+''' Default frame interval (seconds). Ignored when auto-detection is active'''
 DEF_FRAME_INTERVAL = 29.73
 
-""" Display progress and debug info to console? """
+''' Display progress and debug info to console? '''
 debug = True
 
 
@@ -69,7 +71,6 @@ def isNumber(a):
 
 
 def log(*arg):
-    global debug
     if (debug): lservice.info("%s" % ''.join(map(str, arg)))
 
 
@@ -148,7 +149,7 @@ def main():
             upper_bound = min(n_rows-1, row + BOUT_WINDOW)
             win_d2p = []
             for win_row in range(lower_bound, upper_bound):
-                win_d2p.append(d2p_rows[row])
+                win_d2p.append(d2p_rows[win_row])
 
             if sum(win_d2p) <= MIN_D2P * len(win_d2p):
                 rt.setValue("FLAG", row, 0)
