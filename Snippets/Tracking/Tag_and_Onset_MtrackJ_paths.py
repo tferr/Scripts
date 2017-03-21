@@ -1,5 +1,6 @@
 #@File(label="MtrackJ 'Points' table") table_file
-#@Boolean(label="Auto-detect frame interval", value=True) detect_frame_rate
+#@File(label="Image", description="used to detect frame interval") image_file
+#@String(label="Frame interval", choices={"From image","From input table","Use default"}) frame_rate_detection
 #@UIService uiservice
 #@LogService lservice
 
@@ -13,7 +14,7 @@ Parses MTrackJ's 'detailed' table and does two things:
 2) Creates a new table (on the same directory of parsed file) identifing
    the first 'non-lingering' time frame of a path.
 
-TF v1.0.0 2017.03.21
+TF v1.0.1 2017.03.21
 '''
 
 from ij.measure import ResultsTable as RT
@@ -79,14 +80,26 @@ def suffixed_path(filepath, suffix):
     return "{path}_{suffix}{ext}".format(path=n_path, suffix=suffix, ext=n_ext)
 
 
-def getFrameInterval(row_indices, id_rows, t_rows):
+def getFrameIntervalFromTable(row_indices, id_rows, t_rows):
     frame_interval = 99999999999999999
     for row, next_row in zip(row_indices, row_indices[1:]):
         if (id_rows[next_row] == id_rows[row]):
             t = t_rows[next_row] - t_rows[row]
             if t < frame_interval:
                 frame_interval = t
-    log("Detected frame rate: %s" % frame_interval)
+    log("Detected frame rate from table: %s" % frame_interval)
+    return frame_interval
+
+
+def getFrameIntervalFromImage(image_path):
+    from ij import IJ
+    from ij.measure import Calibration
+    imp = IJ.openImage(image_path)
+    cal = imp.getCalibration()
+    frame_interval = 'Na'
+    if cal:
+        frame_interval = cal.frameInterval
+        log("Detected frame rate: %s (%s)" % (frame_interval, image_path))
     return frame_interval
 
 
@@ -180,7 +193,11 @@ def main():
     onset_rt = RT()
     onset_rt.showRowNumbers(False)
 
-    frame_int = getFrameInterval(row_indices, track_id_rows, t_rows) if detect_frame_rate else DEF_FRAME_INTERVAL
+    frame_int = DEF_FRAME_INTERVAL
+    if "table" in frame_rate_detection:
+        frame_int = getFrameIntervalFromTable(row_indices, track_id_rows, t_rows)
+    elif "image" in frame_rate_detection:
+        frame_int = getFrameIntervalFromImage(image_file.getAbsolutePath())
 
     for track_id in track_ids:
 
