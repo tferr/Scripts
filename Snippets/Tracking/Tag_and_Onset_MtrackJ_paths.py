@@ -1,6 +1,6 @@
 #@File(label="MtrackJ 'Points' table") table_file
 #@File(label="Image", description="used to detect frame interval") image_file
-#@String(label="Frame interval", choices={"From image","From input table","Use default"}) frame_rate_detection
+#@String(label="Frame interval", choices={"From image","From input table","Default"}) frame_rate_detection
 #@UIService uiservice
 #@LogService lservice
 
@@ -14,7 +14,7 @@ Parses MTrackJ's 'detailed' table and does two things:
 2) Creates a new table (on the same directory of parsed file) identifing
    the first 'non-lingering' time frame of a path.
 
-TF v1.0.1 2017.03.21
+TF v1.0.2 2017.03.22
 '''
 
 from ij.measure import ResultsTable as RT
@@ -32,7 +32,7 @@ Min. distance between consecutive track points that defines lingering. Any
 smaller distance than this value will be considered as 'lingering' if it
 lasts for the number of consecutive tracking points defined by BOUT_WINDOW
 '''
-MIN_D2P = math.sqrt(0.2116403 ** 2)  # diagonal of pixel size for full sensor CCD at 20X
+MIN_D2P = math.sqrt(2 * (0.2116403 ** 2))  # diagonal of pixel size for full sensor CCD at 20X
 
 ''' Default frame interval (seconds). Ignored when auto-detection is active'''
 DEF_FRAME_INTERVAL = 29.73
@@ -81,7 +81,8 @@ def suffixed_path(filepath, suffix):
 
 
 def getFrameIntervalFromTable(row_indices, id_rows, t_rows):
-    frame_interval = 99999999999999999
+    import sys
+    frame_interval = sys.maxsize
     for row, next_row in zip(row_indices, row_indices[1:]):
         if (id_rows[next_row] == id_rows[row]):
             t = t_rows[next_row] - t_rows[row]
@@ -130,6 +131,9 @@ def main():
         uiservice.showDialog("Error: Some key columns were not found!", "Invalid Table?")
         return
 
+    log("Settings: BOUT_WINDOW= %s, MIN_D2P= %s, DEF_FRAME_INTERVAL= %s"
+            % (BOUT_WINDOW, '{0:.4f}'.format(MIN_D2P), DEF_FRAME_INTERVAL))
+
     # Store all data on dedicated lists
     track_id_rows = rt.getColumnAsDoubles(id_col)
     d2p_rows = rt.getColumnAsDoubles(d2p_col)
@@ -161,8 +165,8 @@ def main():
             lower_bound = max(0, row - BOUT_WINDOW + 1)
             upper_bound = min(n_rows-1, row + BOUT_WINDOW)
             win_d2p = []
-            for win_row in range(lower_bound, upper_bound):
-                win_d2p.append(d2p_rows[win_row])
+            for _ in range(lower_bound, upper_bound):
+                win_d2p.append(d2p_rows[row])
 
             if sum(win_d2p) <= MIN_D2P * len(win_d2p):
                 rt.setValue("FLAG", row, 0)
@@ -198,12 +202,14 @@ def main():
         frame_int = getFrameIntervalFromTable(row_indices, track_id_rows, t_rows)
     elif "image" in frame_rate_detection:
         frame_int = getFrameIntervalFromImage(image_file.getAbsolutePath())
+    else:
+        log("Using default frame rate")
 
     for track_id in track_ids:
 
-        for row, next_row in zip(row_indices, row_indices[1:]):
+        for prev_row, row in zip(row_indices, row_indices[1:]):
 
-            if track_id_rows[row] != track_id:
+            if not track_id in (track_id_rows[prev_row], track_id_rows[row]):
                 continue
 
             flag = rt.getValue("FLAG", row)
@@ -218,9 +224,12 @@ def main():
                 srow = onset_rt.getCounter()
                 onset_rt.incrementCounter()
                 onset_rt.setValue("TID", srow, track_id)
-                frame = int(t_rows[row]/frame_int) + 1
-                frange = "%s to %s" % (frame, (frame + 1))
-                onset_rt.setValue("1st non-lingering frame", srow, frange)
+                from_frame = int(t_rows[prev_row]/frame_int) + 1
+                to_frame = int(t_rows[row]/frame_int) + 1
+                onset_rt.setValue("First disp. [t]", srow,
+                    "%s to %s" % (t_rows[prev_row], t_rows[row]))
+                onset_rt.setValue("First disp. [frames]", srow,
+                    "%s to %s" % (from_frame, to_frame))
                 onset_rt.setValue("ManualTag", srow, "")
                 break
 
