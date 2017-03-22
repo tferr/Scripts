@@ -92,14 +92,14 @@ def getFrameIntervalFromTable(row_indices, id_rows, t_rows):
 
 
 def getFrameIntervalFromImage(image_path):
-    from ij import IJ
-    from ij.measure import Calibration
-    imp = IJ.openImage(image_path)
-    cal = imp.getCalibration()
-    frame_interval = 'Na'
-    if cal:
-        frame_interval = cal.frameInterval
-        log("Detected frame rate: %s (%s)" % (frame_interval, image_path))
+    from loci.formats import ImageReader
+    from loci.formats import MetadataTools
+    r = ImageReader()
+    meta = MetadataTools.createOMEXMLMetadata()
+    r.setMetadataStore(meta)
+    r.setId(image_path)
+    frame_interval = meta.getPixelsTimeIncrement(0).value()
+    log("Detected frame rate: %s (%s)" % (frame_interval, image_path))
     return frame_interval
 
 
