@@ -9,14 +9,11 @@
  * BeanShell script that instructs the built-in 'Search...' command (Plugins>Utilies>Search...) to
  * search inside plugins/BAR/ for clipboard contents.
  *
- * Requirements: Requires BAR_-XX.jar to be installed in the plugins folder of IJ
- *
  * NB: The 'Search' command is actually a macro[1]. This script would actually be simpler if itself
  * would have been written using the same ImageJ macro language. Writing it in BeanShell exemplifies
  * how different scripting languages can cooperate in ImageJ.
  *
  * [1] https://github.com/imagej/imagej1/blob/master/macros/Search.txt
- * Tiago Ferreira, 2014.10.27
  */
 
 import ij.IJ;
