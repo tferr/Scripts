@@ -5,7 +5,7 @@
 //@Boolean(label="Use unique colors", description="If unchecked, each ROI series is plotted in gray", value=false) uniqueColors
 //@String(value=" ", visibility="MESSAGE") spacer
 //@String(label="ROIs source", choices={"ROI Manager", "Image Overlay"}) source
-//@String(label="Filter by name", value="", description="<html>Only ROIs containing this string will be considered.<br>Leave blank to consider all ROIs.") filter
+//@String(label="Filter by name", value=" ", description="<html>Only ROIs containing this string will be considered.<br>Leave blank to consider all ROIs.") filter
 
 //@ImagePlus imp
 //@UIService uiservice
@@ -19,15 +19,12 @@
  * Multi Plot command to multichannel images and ROIs of any type.
  */
 
-import ij.IJ;
 import bar.BAR
 import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.measure.Measurements;
-import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
-
-import fiji.plugin.trackmate.gui.GuiUtils;
+import ij.plugin.frame.RoiManager;
 import org.scijava.util.Colors;
 import org.scijava.ui.awt.AWTColors;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -86,10 +83,6 @@ def plotAverageOfAllSeries(plot) {
     plot.addErrorBars(std as double[])
 }
 
-def error(msg) {
-    uiservice.showDialog(msg, "Error")
-}
-
 def getROIs(source, filterString) {
     def rois = []
     switch (source) {
@@ -117,9 +110,10 @@ def getROIs(source, filterString) {
 }
 
 
-def rois = getROIs(source, filter)
+rois = getROIs(source, filter)
 if (!rois) {
-    error("No ROIs in $source.\n(Or no matches for the specified filter '$filter')")
+    uiservice.showDialog("No ROIs in $source.\n(Or no matches for the specified filter '$filter')",
+    	"No ROIs Available")
     return
 }
 
