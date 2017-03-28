@@ -9,7 +9,7 @@ FIJI_DIR="/Applications/IJ/FijiUploadToBAR.app"
 FIJI_BAR_DIR="$FIJI_DIR/plugins/Scripts/BAR"
 
 ## Symlink files to be placed under BAR> submenus
-for subdir in lib Snippets; do
+for subdir in lib Snippets_and_Utils; do
     dir="$PROJECT_DIR/$subdir"
     echo "Symlinking "$dir
     ln -fs $dir $FIJI_BAR_DIR
