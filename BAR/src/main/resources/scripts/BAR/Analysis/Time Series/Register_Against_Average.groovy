@@ -1,42 +1,26 @@
 //@ImagePlus imp
 //@UIService uiservice
 
+import bar.BAR
 import ij.IJ
-import ij.ImagePlus
-import ij.plugin.ZProjector
-import fiji.plugin.trackmate.gui.GuiUtils
 
-def validateImp(imp) {
-    GuiUtils.userCheckImpDimensions(imp)
-    frames = imp.getNFrames()
-    valid = imp.getNFrames() > 1
-	if (!valid)
-    	uiservice.showDialog("Time sequence required", "Invalid image")
-    valid
+
+def loadLib(resourcePath) {
+	url = BAR.getClass().getResource(resourcePath)
+	gcl = new GroovyClassLoader()
+	cls = gcl.parseClass(new GroovyCodeSource(url))
+	(GroovyObject) cls.newInstance()
 }
 
-def proj(imp, method) {
-	def zp = new ZProjector(imp)
-	zp.setMethod(method)
-	zp.doProjection()
-	return zp.getProjection()
-}
-
-def projAVG(imp) {
-	proj(imp, ZProjector.AVG_METHOD)
-}
-
-
-if (!validateImp(imp))
+utils = loadLib("/scripts/Utils.groovy")
+if (!utils.isSingleChannelTimeseq(imp, uiservice))
 	return
 
-avg = projAVG(imp)
 stack = imp.getStack()
+avg = utils.projAVG(imp, 1, stack.getSize())
 stack.addSlice("AVG_ANCHOR", avg.getProcessor(), 0)
 imp.setSlice(1)
-for (method in ["Rigid Body", "Affine"]) {
+for (method in ["Rigid Body", "Affine"])
 	IJ.run(imp, "StackReg", "transformation=[$method]")
-}
 stack.deleteSlice(1)
 imp.setStack(stack)
-avg.show()
