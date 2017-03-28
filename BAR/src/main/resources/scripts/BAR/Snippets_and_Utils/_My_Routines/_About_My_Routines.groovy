@@ -1,0 +1,1 @@
+//@String(visibility="MESSAGE",value="<html>The <i>My Routines</i> directory is the place on your local installation where<br>you can save your own routines to be easily accessed through the BAR<br>menu hierachy. The directory is not managed by the BAR Update site.") MSG
