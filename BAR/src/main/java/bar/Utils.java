@@ -79,8 +79,8 @@ public class Utils implements PlugIn {
 	static final String BAR_DIR = IJ.getDirectory("plugins")
 			+ "Scripts" + File.separator + "BAR" + File.separator;
 
-	/** The absolute path to the /BAR/Snippets/ directory */
-	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
+	/** The absolute path to the /BAR/Snippets_and_Utils/ directory */
+	static final String SNIPPETS_DIR = BAR_DIR +"Snippets_and_Utils" + File.separator;
 
 	/** The absolute path to the /BAR/lib/ directory */
 	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
