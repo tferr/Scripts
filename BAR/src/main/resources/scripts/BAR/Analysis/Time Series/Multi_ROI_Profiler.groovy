@@ -20,6 +20,7 @@
  */
 
 import ij.IJ;
+import bar.BAR
 import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.measure.Measurements;
@@ -31,6 +32,13 @@ import org.scijava.util.Colors;
 import org.scijava.ui.awt.AWTColors;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
+
+def loadLib(resourcePath) {
+	url = BAR.getClass().getResource(resourcePath)
+	gcl = new GroovyClassLoader()
+	cls = gcl.parseClass(new GroovyCodeSource(url))
+	(GroovyObject) cls.newInstance()
+}
 
 def getUniqueColors(n) {
     def rgbColors = Colors.values().toArray()
@@ -108,16 +116,6 @@ def getROIs(source, filterString) {
     return rois
 }
 
-def validateImage(imp) {
-    overlay = imp.getOverlay()
-    roi = imp.getRoi()
-    GuiUtils.userCheckImpDimensions(imp)
-    if (overlay)
-        imp.setOverlay(overlay)
-    if (roi)
-        imp.setRoi(roi)
-}
-
 
 def rois = getROIs(source, filter)
 if (!rois) {
@@ -125,14 +123,13 @@ if (!rois) {
     return
 }
 
-validateImage(imp)
-frames = imp.getNFrames()
-if (frames == 1) {
-    error("Time sequence (ImageStack) required.")
-    return
-}
+utils = loadLib("/scripts/Utils.groovy")
+if (!utils.isTimeSeq(imp, uiservice))
+	return
 
 statusService.showStatus("Plotting ROIs...")
+
+frames = imp.getNFrames()
 zStart = (averageZ) ? 1 : imp.getZ()
 zEnd = (averageZ) ? imp.getNSlices() : imp.getZ()
 cal = imp.getCalibration()
