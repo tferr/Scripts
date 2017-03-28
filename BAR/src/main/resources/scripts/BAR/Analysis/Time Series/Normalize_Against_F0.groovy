@@ -1,6 +1,6 @@
 //@String(value="<html>This script normalizes the time-course of a fluorescent signal against<br>a resting state (F0), as required in, e.g., Calcium imaging experiments.<br>It does not correct for photobleaching.", visibility="MESSAGE") msg1
 //@String(label="Normalization:", choices={"F/F0", "Delta-F", "F-F0", "(F-F0)/F0", "All"}) output
-//@Integer(label="F0: Average of frames 1 to ", description="Target channel of first detector",min=1,value="10") f0end
+//@Integer(label="F0: Average of frames 1 to ",min=1,value="10") f0end
 //@ImagePlus imp
 //@UIService uiservice
 
