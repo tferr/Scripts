@@ -1,22 +1,17 @@
+#@String(value="<html>This script retrieves nearest neighbor distances from a 2D/3D list of centroid<br>coordinates, calling another script to plot frequencies of calculated distances.<br>You will be prompted for input data in the next dialog prompt.", visibility="MESSAGE") info
+#@String(label="Column heading for X-coordinates", description="Header of column containing X positions", value="X", required=true) xHeading
+#@String(label="Column heading for Y-coordinates", description="Header of column containing Y positions", value="Y", required=true) yHeading
+#@String(label="Column heading for Z-coordinates", description="Only required when retrieving 3D distances", value="Z", required=false) zHeading
 #@Context context
 #@UIService uiService
 #@LogService logService
 
 # NN_Distances.py
-# IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
-#
-# Calculates the closest pair of points from a 2D/3D list of centroid
-# coordinates (opened in the IJ 'Results' table), calling another BAR
-# script to plot the frequencies of nearest neighbor distances.
-#
-# TF 20150810
+# IJ BAR: https://github.com/tferr/Scripts/
 
 import math, sys
 from bar import Utils
 import ij.measure.ResultsTable as RT
-
-# Column headings listing x,y,z positions
-xHeading, yHeading, zHeading = "X", "Y", "Z"
 
 
 def plot_distributions():
@@ -29,7 +24,7 @@ def plot_distributions():
 
 
 def distance(x1, y1, z1, x2, y2, z2):
-    """ Retrieves the distances betwenn two points """
+    """ Retrieves the distances between two points """
     dx = (x1-x2)**2
     dy = (y1-y2)**2
     dz = (z1-z2)**2
@@ -69,12 +64,12 @@ def calcNNDistances(rt, x, y, z=None):
 
 
 def main():
-    rt = Utils.getResultsTable()
+    rt = Utils.getTable()
     if rt is None:
         return
     x, y, z = getXYZPositons(rt, xHeading, yHeading, zHeading)
     if not None in (x, y):
-        # Do the calculations and sisplay appended results
+        # Do the calculations and display appended results
         calcNNDistances(rt, x, y, z)
         rt.showRowNumbers(True)
         rt.show("Results")
