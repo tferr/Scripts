@@ -38,7 +38,7 @@ import org.scijava.ui.UIService;
 import org.scijava.ui.swing.script.TextEditor;
 
 /** Loads a new instance of the Script editor with jarified tutorial files */
-@Plugin(type = Command.class, headless = true, menuPath = "BAR > Snippets and Utils > Tutorials...")
+@Plugin(type = Command.class, headless = true, menuPath = "BAR > Utilities > Tutorials...")
 public class Tutorials implements Command {
 
 	@Parameter
