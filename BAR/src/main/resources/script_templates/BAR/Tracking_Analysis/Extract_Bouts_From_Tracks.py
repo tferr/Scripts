@@ -1,3 +1,7 @@
+from ij import IJ
+from java.awt.event import KeyEvent
+IJ.setKeyDown(KeyEvent.VK_SHIFT)
+
 # Extract_Bouts_From_Tracks.py
 # https://github.com/tferr/Scripts/
 #
