@@ -1,7 +1,7 @@
 #@String(value="<html>This script retrieves nearest neighbor distances from a 2D/3D list of centroid<br>coordinates, calling another script to plot frequencies of calculated distances.<br>You will be prompted for input data in the next dialog prompt.", visibility="MESSAGE") info
-#@String(label="Column heading for X-coordinates", description="Header of column containing X positions", value="X", required=true) xHeading
-#@String(label="Column heading for Y-coordinates", description="Header of column containing Y positions", value="Y", required=true) yHeading
-#@String(label="Column heading for Z-coordinates", description="Only required when retrieving 3D distances", value="Z", required=false) zHeading
+#@String(label="Column heading for X-coordinates", description="Header of column containing X positions. Case sensitive.", value="X", required=true) xHeading
+#@String(label="Column heading for Y-coordinates", description="Header of column containing Y positions. Case sensitive.", value="Y", required=true) yHeading
+#@String(label="Column heading for Z-coordinates", description="Only required when retrieving 3D distances. Case sensitive.", value="Z", required=false) zHeading
 #@Context context
 #@UIService uiService
 #@LogService logService
