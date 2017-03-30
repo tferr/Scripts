@@ -58,7 +58,7 @@ def getRoi(imp) {
 }
 
 
-utils = loadLib("/scripts/Utils.groovy")
+utils = loadLib("/scripts/BAR/Utils.groovy")
 if (!utils.isSingleChannelTimeseq(imp, uiservice))
 	return
 

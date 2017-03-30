@@ -61,7 +61,7 @@ void customRoutine(double[] values) {
 		rt.setValue(colHeading, i, values[i]);
 	rt.show("Results");
 	runner = new Runner(context);
-	runner.runIJ1Macro("Data_Analysis/Distribution_Plotter.ijm", colHeading);
+	runner.runIJ1Macro("BAR/Data_Analysis/Distribution_Plotter.ijm", colHeading);
 	if (!runner.scriptLoaded())
 		uiService.showDialog("Profile distributions not plotted.\nCheck console for details", "Error");
 }
