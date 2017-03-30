@@ -65,7 +65,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -141,8 +140,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 	private boolean freezeStatusBar = false;
 
 	/** Defaults */
-	private static final boolean DEF_CLOSE_ON_OPEN = false;
+	private static final boolean DEF_HIDE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
+	private static final boolean DEF_TOOLTIPS = true;
 	private static final int DEF_MAX_SIZE = 200;
 	private static final int DEF_FRAME_WIDTH = 250;
 	private static final int DEF_FRAME_HEIGHT = 450;
@@ -153,7 +153,7 @@ public class Commander implements Command, ActionListener, DocumentListener,
 	private String startupString;
 
 	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
-	private boolean closeOnOpen, ijmLegacy, caseSensitive, regex, wholeWord;
+	private boolean hideOnOpen, ijmLegacy, tooltips, caseSensitive, regex, wholeWord;
 	private String path;
 	private String matchingString = "";
 
@@ -252,8 +252,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 					frame.setLocation(DEF_FRAME_X, DEF_FRAME_Y);
 					frame.setSize(DEF_FRAME_WIDTH, DEF_FRAME_HEIGHT);
 					maxSize = DEF_MAX_SIZE;
-					closeOnOpen = DEF_CLOSE_ON_OPEN;
+					hideOnOpen = DEF_HIDE_ON_OPEN;
 					ijmLegacy = DEF_IJM_LEGACY;
+					tooltips = DEF_TOOLTIPS;
 					caseSensitive = wholeWord = regex = false;
 					path = DEF_PATH;
 					clearBookmarks();
@@ -274,8 +275,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 			frameWidth = prefs.getInt("cmder.frameWidth", DEF_FRAME_WIDTH);
 			frameHeight = prefs.getInt("cmder.frameHeight", DEF_FRAME_HEIGHT);
 			maxSize = prefs.getInt("cmder.maxSize", DEF_MAX_SIZE);
-			closeOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_CLOSE_ON_OPEN);
+			hideOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_HIDE_ON_OPEN);
 			ijmLegacy = prefs.getBoolean("cmder.ijmLegacy", DEF_IJM_LEGACY);
+			tooltips = prefs.getBoolean("cmder.tooltips", DEF_TOOLTIPS);
 			caseSensitive = prefs.getBoolean("cmder.caseSensitive", false);
 			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
 			regex = prefs.getBoolean("cmder.regex", false);
@@ -308,8 +310,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 			prefs.putInt("cmder.frameWidth", frame.getWidth());
 			prefs.putInt("cmder.frameHeight", frame.getHeight());
 			prefs.putInt("cmder.maxSize", maxSize);
-			prefs.putBoolean("cmder.closeOnOpen", closeOnOpen);
+			prefs.putBoolean("cmder.closeOnOpen", hideOnOpen);
 			prefs.putBoolean("cmder.ijmLegacy", ijmLegacy);
+			prefs.putBoolean("cmder.tooltips", tooltips);
 			prefs.putBoolean("cmder.caseSensitive", caseSensitive);
 			prefs.putBoolean("cmder.regex", regex);
 			prefs.putBoolean("cmder.wholeWord", wholeWord);
@@ -533,7 +536,8 @@ public class Commander implements Command, ActionListener, DocumentListener,
 
 		// Display commander
 		frame = new JFrame("BAR Commander");
-		setDefaultTooltips();
+		if (tooltips)
+			setDefaultTooltips();
 		frame.add(container);
 		frame.addWindowListener(this);
 		frame.pack();
@@ -1232,8 +1236,8 @@ public class Commander implements Command, ActionListener, DocumentListener,
 			}
 		}.start();
 
-		if (closeOnOpen)
-			quit();
+		if (hideOnOpen)
+			toggleVisibility();
 
 	}
 
@@ -1557,13 +1561,14 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		log("Prompting for options...");
 		final GenericDialog gd = new GenericDialog("Commander Preferences", frame);
 		gd.addNumericField("Maximum number of items in file list", maxSize, 0);
-		gd.addCheckbox("Close Commander after opening a file", closeOnOpen);
+		gd.addCheckbox("Hide Commander after opening a file", hideOnOpen);
 		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
+		gd.addCheckbox("Enable Tooltips (toggling requires a restart)", tooltips);
 		gd.addMessage("");
 		gd.addCheckbox("Clear Favorites", false);
 		gd.addCheckbox("Clear Recent folders", false);
 		gd.addCheckbox("Clear Saved searches", false);
-		gd.enableYesNoCancel("OK", "Restore Defaults");
+		gd.enableYesNoCancel("OK", "Defaults...");
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
@@ -1571,8 +1576,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 			return;
 		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
-			closeOnOpen = gd.getNextBoolean();
+			hideOnOpen = gd.getNextBoolean();
 			ijmLegacy = gd.getNextBoolean();
+			tooltips = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
 			if (gd.getNextBoolean())
@@ -1637,10 +1643,10 @@ public class Commander implements Command, ActionListener, DocumentListener,
 
 	/** Defines static tooltips for frame components */
 	void setDefaultTooltips() {
-		final ToolTipManager ttm = ToolTipManager.sharedInstance();
-		ttm.setInitialDelay(2 * ttm.getInitialDelay());
-		ttm.setReshowDelay(2 * ttm.getReshowDelay());
-		ttm.setDismissDelay(2 * ttm.getDismissDelay());
+//		final ToolTipManager ttm = ToolTipManager.sharedInstance();
+//		ttm.setInitialDelay(2 * ttm.getInitialDelay());
+//		ttm.setReshowDelay(2 * ttm.getReshowDelay());
+//		ttm.setDismissDelay(2 * ttm.getDismissDelay());
 		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
 		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
 				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
