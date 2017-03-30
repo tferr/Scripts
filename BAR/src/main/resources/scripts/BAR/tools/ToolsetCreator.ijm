@@ -8,10 +8,7 @@
 var maxTools= 10;
 
 macro "AutoRun"{
-    wait(15); run("Toolset Creator");
-}
 
-macro "Toolset Creator" {
     Dialog.create("Toolset Creator");
     msg = "This sequence of prompts will create a toolset grouping two types of\n"
         + "tools: Built-in tools (those listed at the bottom of the '>>' menu) and\n"
@@ -29,7 +26,7 @@ macro "Toolset Creator" {
     path= path + name + ".ijm";
     if (File.exists(path))
         showMessageWithCancel("Redesign previous toolset?","A file named \""+ name
-                             +".ijm\" already exists\nin ImageJ/macros/toolsets/. Overwrite?");
+                             +".ijm\" already exists. Overwrite\n<"+ path +"?");
     showStatus("Creating the toolset: An empty file will be created if you hit \"Cancel\"");
 
     for (i=0; i<nColors; i++) {
