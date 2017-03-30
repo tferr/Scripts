@@ -264,10 +264,10 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Saves and opens the snippet created by the prompt */
 	private void saveAndOpenSnippet() {
-		final String result = IJ.saveString(sContents, Utils.getSnippetsDir()
+		final String result = IJ.saveString(sContents, Utils.getMyRoutinesDir()
 				+ sFilename);
 		if (result == null) {
-			Utils.openScript(Utils.getSnippetsDir(), sFilename);
+			Utils.openScript(Utils.getMyRoutinesDir(), sFilename);
 		} else if (IJ.showMessageWithCancel("Snippet Creator",
 				"An error has occurred while saving the file.\n"
 						+ "Display snippet in the Log window?")) {
@@ -366,7 +366,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		}
 
 		// Adjust labels and fields
-		final File f = new File(Utils.getSnippetsDir() + sFilename);
+		final File f = new File(Utils.getMyRoutinesDir() + sFilename);
 		final boolean invalidName = invalidFilename(sFilename);
 		okButton.setLabel(f.exists() ? "Replace and Open" : " Create and Open ");
 		fField.setForeground((f.exists()||invalidName) ? Color.RED : Color.BLACK);
@@ -419,7 +419,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 			final java.awt.Point pos = list.getLocationOnScreen();
 			final int xPos = (int) pos.getX() + 10;
 			final int yPos = (int) pos.getY() + 10;
-			Utils.listDirectory(Utils.getSnippetsDir(), xPos, yPos);
+			Utils.listDirectory(Utils.getMyRoutinesDir(), xPos, yPos);
 			// gd.toFront();
 
 		} else if (source==paste) {

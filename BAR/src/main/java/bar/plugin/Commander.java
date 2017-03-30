@@ -167,7 +167,6 @@ public class Commander implements Command, ActionListener, DocumentListener,
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
 	private JMenu bookmarksMenu, recentMenu;
-
 	private ArrayList<String> filenames, bookmarks, recentPaths;
 	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
@@ -1085,8 +1084,8 @@ public class Commander implements Command, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory("imagej");
 		} else if (cmd.startsWith("tmp")) {
 			exitStatus = IJ.getDirectory("temp");
-		} else if (cmd.equals("snip")) {
-			exitStatus = Utils.getSnippetsDir();
+		} else if (cmd.equals("myr")) {
+			exitStatus = Utils.getMyRoutinesDir();
 		} else if (cmd.equals("lib")) {
 			exitStatus = Utils.getLibDir();
 		} else if (cmd.equals("samples")) {
@@ -1375,14 +1374,14 @@ public class Commander implements Command, ActionListener, DocumentListener,
 				"!scripts@<i>Scripts</i> directory",
 				spacer,
 				"!lib@Path to <i>BAR/lib/</i>",
-				"!snip@Path to <i>BAR/Snippets/</i>",
+				"!myr@Path to <i>BAR/My_Routines/</i>",
 				"!tmp@<i>Temporary</i> directory",
 				spacer,
 				"!bookmark@Add current path to Favorites",
 				"!info@Display info on current path",
 				"!ls@List (print) contents of current path",
 				"!help@Display built-in help",
-				"!options@Prompt for settings",
+				"!options@Prompt for settings/preferences",
 				"!refresh@Refresh (reload) list",
 				"!quit@Exit Commander"
 		};
@@ -1510,6 +1509,7 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		sb.append("  just by typing abbreviations of filenames. ");
 		sb.append("  It serves two purposes: 1) to expedite the opening of files and 2) to ");
 		sb.append("  produce filtered lists of directory contents.");
+		sb.append("  <b><span class='kb'>&thinsp;F1&thinsp;</span> is the system-wide shortcut to open/hide Commander</b>");
 		sb.append("  <br /> <br />");
 		sb.append("  <h4>Examples:</h4>");
 		sb.append("  <ol type='A'>");
@@ -1518,9 +1518,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		sb.append("        <li>Type: <span class='cnsl'>!luts</span> &mdash; Enter &mdash; ")
 				.append("<span class='srch'>glas</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
-		sb.append("    <li>Open <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></li>");
+		sb.append("    <li>Open <i>").append(Utils.getMyRoutinesDir()).append("Median_Filter.py:</i></li>");
 		sb.append("      <ol>");
-		sb.append("        <li>Type: <span class='cnsl'>!snip</span> &mdash; Enter &mdash; ")
+		sb.append("        <li>Type: <span class='cnsl'>!myr</span> &mdash; Enter &mdash; ")
 				.append("<span class='srch'>med</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
 		sb.append("    <li>List the contents of <i>").append(System.getProperty("user.home"))
@@ -1565,8 +1565,8 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
 		sb.append("    <dd>Checkboxes and buttons can also be controlled by pressing <span class='kb'>&thinsp;Alt&thinsp;</span> ")
 				.append("and the highlighted letter of their labels. E.g.: Pressing <span class='kb'>&thinsp;Alt+R&thinsp;</span> ")
-				.append("toggles the <i>Regex</i> checkbox.<br>A full list of shortcut keys is displayed when pausing the cursor ")
-				.append("over Commanders' components.</dd>");
+				.append("toggles the <i>Regex</i> checkbox.<br>When <i>Tooltips</i> are enabled, a full list of shortcut keys is ")
+				.append("displayed when pausing the cursor over Commanders' components.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
@@ -1690,7 +1690,7 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		prompt.setForeground(Color.BLUE);
 		statusBar.setForeground(Color.BLUE);
 
-		if (matchingString.equals(CONSOLE_TRIGGER)) {
+		if (isConsoleMode()) {
 			log("Console enabled...");
 			return;
 		}

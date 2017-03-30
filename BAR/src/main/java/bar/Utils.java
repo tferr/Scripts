@@ -37,6 +37,7 @@ import org.scijava.Context;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Menus;
+import ij.Prefs;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.gui.ImageWindow;
@@ -75,15 +76,15 @@ public class Utils implements PlugIn {
 	/** The URL to BAR's GitHub repository */
 	static final String API_URL = "http://tferr.github.io/Scripts/apidocs/";
 
-	/** The absolute path to the /BAR directory */
-	static final String BAR_DIR = IJ.getDirectory("plugins")
-			+ "Scripts" + File.separator + "BAR" + File.separator;
+	/** The absolute path to the /BAR directory prior to v2.0.0 */
+	private static final String OLD_BAR_DIR = IJ.getDirectory("plugins") + "Scripts" + File.separator + "BAR"
+			+ File.separator;
 
-	/** The absolute path to the /BAR/Snippets_and_Utils/ directory */
-	static final String SNIPPETS_DIR = BAR_DIR +"Snippets_and_Utils" + File.separator;
+	/** The absolute path to the /BAR directory */
+	private static final String BAR_DIR = Prefs.getImageJDir() + "scripts" + File.separator + "BAR" + File.separator;
 
 	/** The absolute path to the /BAR/lib/ directory */
-	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
+	static final String LIB_DIR = OLD_BAR_DIR + "lib" + File.separator;
 
 
 	/* (non-Javadoc)
@@ -98,13 +99,13 @@ public class Utils implements PlugIn {
 		if (args.length==1) return;
 
 		// Instructions related to snippets
-		if (args[0].equalsIgnoreCase("snippet")) {
+		if (args[0].equalsIgnoreCase("myroutine")) {
 
 			if (args[1].equalsIgnoreCase("list")) {
-				listDirectory(SNIPPETS_DIR);
+				listDirectory(getMyRoutinesDir());
 			} else if (args[1].equalsIgnoreCase("reveal")) {
-				revealFile(SNIPPETS_DIR);
-			} else //TODO implement a "reload snippets" command
+				revealFile(getMyRoutinesDir());
+			} else // TODO implement a "reload snippets" command
 				openSnippet(arg);
 
 		// Instructions related to Menu transfers
