@@ -1382,9 +1382,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	boolean match(final String string, final String pattern) {
 		if (emptyQuery(pattern)) {
 			return true;
-		} else if (regex) {
+		} else if (regex && !isConsoleMode()) {
 			return Pattern.compile(pattern).matcher(string).matches();
-		} else if (wholeWord) {
+		} else if (wholeWord && !isConsoleMode()) {
 			return Pattern.compile(".*\\b" + pattern + "\\b.*").matcher(string).matches();
 		} else {
 			return string.indexOf(pattern) >= 0;
@@ -1580,11 +1580,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	void updateList() {
 		if (isConsoleMode()) {
+			enableSearchCheckBoxes(false);
 			setCommandList();
 			if (!freezeStatusBar)
 				updateConsoleStatus();
 			setStatusTooltip("Double-click to reload console commands.");
 		} else {
+			enableSearchCheckBoxes(true);
 			setFileList();
 			if (filenames.size()==0 && matchingString.isEmpty()) {
 				filenames.add("..Folder is empty");
@@ -1647,6 +1649,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
 				+ "&ensp;" + metaKey + "+B&ensp;Activate file list<br>"
 				+ "&ensp;" + metaKey + "+L&ensp;Activate search field</html>");
+	}
+
+	void enableSearchCheckBoxes(final boolean enabled) {
+		regexCheckBox.setEnabled(enabled);
+		caseSensitiveCheckBox.setEnabled(enabled);
+		wholeWordCheckBox.setEnabled(enabled);
 	}
 
 	void updateConsoleStatus() {
