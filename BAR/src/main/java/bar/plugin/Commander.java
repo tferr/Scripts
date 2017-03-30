@@ -83,18 +83,22 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import net.imagej.ImageJ;
+
+import org.scijava.Priority;
+import org.scijava.command.Command;
+import org.scijava.plugin.Menu;
+import org.scijava.plugin.Plugin;
+
 import bar.FileDrop;
 import bar.Utils;
-import fiji.Debug;
 import fiji.util.gui.GenericDialogPlus;
 import ij.IJ;
-//import ij.Menus;
 import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.gui.ImageWindow;
 import ij.io.OpenDialog;
-import ij.plugin.PlugIn;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
 
@@ -114,7 +118,11 @@ import ij.text.TextWindow;
  * is implemented by {@link bar.FileDrop FileDrop} (<a
  * href="http://www.iharder.net/current/java/filedrop/">website</a>).
  */
-public class Commander implements PlugIn, ActionListener, DocumentListener,
+
+
+@Plugin(type = Command.class, priority = Priority.LOW_PRIORITY, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
+		@Menu(label = "BAR"), @Menu(label = "BAR Commander...", accelerator = "f1") })
+public class Commander implements Command, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
 
 	/** Default path to be listed at startup */
@@ -142,6 +150,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private static final int DEF_FRAME_Y = 0;
 
 	/** Parameters **/
+	private String startupString;
+
 	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
 	private boolean closeOnOpen, ijmLegacy, caseSensitive, regex, wholeWord;
 	private String path;
@@ -164,28 +174,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTableHeader tableHeader;
 	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
-	/**
-	 * Calls {@link fiji.Debug#runFilter(String, String, String)
-	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
-	 */
-	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
+	public Commander() {
+		this("");
+	}
 
-	/**
-	 * This method is called when the plugin is loaded. See
-	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it launches
-	 * Commander.
-	 * 
-	 * @param arg
-	 *            ignored (Otherwise specified in plugins.config).
-	 */
+	public Commander(String startupString) {
+		this.startupString = startupString;
+	}
+
+	public static void main(final String... args) {
+		final ImageJ ij = net.imagej.Main.launch(args);
+		ij.command().run(Commander.class, false);
+	}
+
 	@Override
-	public void run(final String arg) {
+	public void run() {
 
 		// Check if Commander is already running
-		if (WindowManager.getWindow("BAR Commander") != null) {
-			if (arg != null && !arg.isEmpty())
-				IJ.showStatus("In Commander, type <" + arg + "> to start browsing...");
-			IJ.selectWindow("BAR Commander");
+		if (frame != null) {
+			toggleVisibility();
 			return;
 		}
 
@@ -201,10 +208,10 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		loadPreferences();
 
 		// Check if a path has been specified in plugins.config
-		if ("!lib".equals(arg))
+		if ("!lib".equals(startupString))
 			path = Utils.getLibDir();
-		else if ("!snip".equals(arg))
-			path = Utils.getSnippetsDir();
+		else if ("!myr".equals(startupString))
+			path = Utils.getMyRoutinesDir();
 		// Try to retrieve a new directory if specified path is not valid
 		if (!Utils.fileExists(path)) {
 			path = IJ.getDirectory("Choose new directory");
@@ -1730,6 +1737,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		savePreferences();
 		WindowManager.removeWindow(frame);
 		frame.dispose();
+	}
+
+	void toggleVisibility() {
+		if (frame != null) {
+			frame.setVisible(!frame.isVisible());
+			frame.toFront();
+		}
 	}
 
 	void activateTable() {
