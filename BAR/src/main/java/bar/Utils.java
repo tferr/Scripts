@@ -546,17 +546,17 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Opens the specified file in the "Snippets" directory of BAR. No tests
+	 * Opens the specified file in the "My Routines" directory of BAR. No tests
 	 * assessing the existence of the specified file are performed.
 	 *
 	 * @param filename
 	 *            the filename of the script to be opened
 	 *
-	 * @see #getSnippetsDir()
+	 * @see #getMyRoutinesDir()
 	 * @see #openScript(String, String)
 	 */
 	public static void openSnippet(final String filename) {
-		openScript(SNIPPETS_DIR , filename);
+		openScript(getMyRoutinesDir(), filename);
 	}
 
 	/**
@@ -765,21 +765,26 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to {@code BAR/Segmentation/}.
+	 * Returns the path to {@code BAR/My_Routines/}, creating it .
 	 *
-	 * @return the absolute path to the "Segmentation" directory
+	 * @return the absolute path to the "My Routines" directory
 	 */
-	public static String getSegmentationDir() {
-		return BAR_DIR + "Segmentation" + File.separator;
+	public static String getMyRoutinesDir() {
+		final String path = BAR_DIR + "My_Routines" + File.separator;
+		try {
+			new File(path).mkdirs();
+		} catch (final Exception ignored) {
+			// ignoring any access restrictions to the file path
+		}
+		return path;
 	}
 
 	/**
-	 * Returns the path to {@code Bar/Snippets/}.
-	 *
-	 * @return the absolute path to the "Snippets" directory
+	 * @deprecated
 	 */
+	@Deprecated
 	public static String getSnippetsDir() {
-		return SNIPPETS_DIR;
+		return getMyRoutinesDir();
 	}
 
 	/**
