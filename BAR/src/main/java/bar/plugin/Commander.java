@@ -22,6 +22,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -157,7 +159,7 @@ public class Commander implements Command, ActionListener, DocumentListener,
 	private String path;
 	private String matchingString = "";
 
-	private JFrame frame;
+	private static JFrame frame;
 	private JTextField prompt;
 	private JCheckBox regexCheckBox, caseSensitiveCheckBox, wholeWordCheckBox;
 	private JScrollPane listPane;
@@ -536,6 +538,9 @@ public class Commander implements Command, ActionListener, DocumentListener,
 
 		// Display commander
 		frame = new JFrame("BAR Commander");
+		final KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		manager.addKeyEventDispatcher(new F1Dispatcher());
+
 		if (tooltips)
 			setDefaultTooltips();
 		frame.add(container);
@@ -547,6 +552,17 @@ public class Commander implements Command, ActionListener, DocumentListener,
 		//openButton.getRootPane().setDefaultButton(openButton);
 		prompt.requestFocusInWindow();
 		WindowManager.addWindow(frame);
+	}
+
+	private class F1Dispatcher implements KeyEventDispatcher {
+		@Override
+		public boolean dispatchKeyEvent(final KeyEvent e) {
+			if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
+				toggleVisibility();
+				return true;
+			}
+			return false;
+		}
 	}
 
 	/** Adds current path to "Favorites" menu */
