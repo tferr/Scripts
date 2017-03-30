@@ -60,7 +60,7 @@ public class Help implements PlugIn {
 
 	/** Parameters **/
 	private JFrame frame;
-	private static String FRAME_TITLE = "About BAR...";
+	private static String FRAME_TITLE = "About / Resources...";
 
 	/**
 	 * Calls {@link fiji.Debug#runFilter(String, String, String)
@@ -168,9 +168,9 @@ public class Help implements PlugIn {
 				+ "<a href='http://imagej.net/User:Tiago'>Tiago Ferreira</a> with vital contributions "
 				+ "from <a href='https://github.com/tferr/Scripts#contributors'>many others</a>."
 				+ "<h3>Citation</h3>"
-				+ "<a href='http://dx.doi.org/10.5281/zenodo.28838'>"
+				+ "<a href='https://zenodo.org/badge/latestdoi/8709403'>"
 				+ "Ferreira et al (" + Utils.BUILD_YEAR +")"
-				+ ". DOI: 10.5281/zenodo.28838</a>"
+				+ ". (Click for Zenodo DOI)</a>"
 				+ "<h3>Development</h3>"
 				+ "<a href='"+ Utils.getSourceURL() + "'>Source</a>" + inLineSpacer
 				+ "<a href='"+ Utils.getSourceURL() + "/releases'>Release History</a>" + inLineSpacer
@@ -221,12 +221,12 @@ public class Help implements PlugIn {
 
 
 		addHeaderLabel(buttonPanel, "Utilities:");
-		button = plainButton("Open BAR Directory");
+		button = plainButton("<html>Open <i>My Routines</i>");
 		buttonPanel.add(button);
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				Utils.revealFile(Utils.getBARDir());
+				Utils.revealFile(Utils.getMyRoutinesDir());
 			}
 		});
 		button = plainButton("Check for Updates...");
