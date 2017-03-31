@@ -4,7 +4,7 @@
 //@TextService textservice
 
 def cleanIdentifier = {
-    it.startsWith('script:') ? it - 'script:' : it
+    it = it.startsWith('script:') ? it - 'script:' : it
     it.replaceAll("_", " ")
 }
 
