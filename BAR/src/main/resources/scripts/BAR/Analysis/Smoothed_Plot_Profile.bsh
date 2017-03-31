@@ -1,15 +1,13 @@
+//@Integer(label="Simple Moving average (SMA) window", min=1, value=4) window
+//@Boolean(label="Ignore spatial calibration in X-axis", value=false) pixelUnits
 /*
  * Smoothed_Plot_Profile.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * BeanShell script that extends the Analyze>Plot Profile by plotting a simple moving average of
- * profiled data. It also exemplifies how to use BAR libs[1]: The simple moving average calculation
- * is performed by getSimpleMovingAverage(), loaded from BARlib.bsh.
- *
- * NB: In 'Live' mode and with profiled image as the frontmost window, press 'Control' to readjust
- * the number of data points to be used in the moving average calculation.
- *
- * [1] https://github.com/tferr/Scripts/tree/master/lib#lib
+ * BeanShell script extending IJ1's Analyze>Plot Profile by plotting a simple moving
+ * average of profiled data. In 'Live' mode and with profiled image as the frontmost
+ * window, press 'Control' to readjust the number of data points to be used in the
+ * moving average calculation.
  */
 
 import ij.IJ;
@@ -23,11 +21,6 @@ import ij.measure.Calibration;
 
 import java.awt.event.KeyEvent;
 
-/* Ignore the image's spatial calibration? */
-boolean pixelUnits = false;
-
-/* Default size for moving average (SMA) window */
-int window = 4;
 
 /* Allow interactive refinement of SMA window? */
 boolean interactive = true;
@@ -63,8 +56,7 @@ Plot getPlot() {
 		newWindow = getWindow();
 		if (newWindow!=IJ.CANCELED) window = newWindow;
 	}
-	avgYvalues = super.lib.getSimpleMovingAverage(rawYvalues, window);
-	//avgYvalues = super.lib.getGaussian(xvalues, rawYvalues);
+	avgYvalues = getSimpleMovingAverage(rawYvalues, window);
 
 	// Prepare plot
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
@@ -111,6 +103,21 @@ Calibration getSpatialCalibration() {
 	return cal;
 }
 
+/* Smooths 1D data Returns original data if window is not a positive integrer. */
+double[] getSimpleMovingAverage(double[] values, int window) {
+	if (window<1)
+		return values;
+	svalues = new double[values.length];
+	for (i=0; i<values.length; i++) {
+		svalues[i] = 0; n = 0;
+		for (j=Math.max(0, i-window); j<Math.min(values.length, i+window); j++) {
+			svalues[i] += values[j]; n++;
+		}
+		svalues[i] /= n;
+	}
+	return svalues;
+}
+
 /* PlotMaker interface */
 ImagePlus getSourceImage() {
 	return imp;
@@ -134,11 +141,6 @@ if (super.interactive) {
 	if (window==IJ.CANCELED) return;
 }
 
-// Load BAR/lib/BARlib.bsh
-addClassPath(bar.Utils.getBARDir());
-importCommands("lib/");
-BARlib();
-lib = new BARlib();
 
 firstRun = true;
 cal = getSpatialCalibration();
