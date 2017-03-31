@@ -84,7 +84,7 @@ public class Utils implements PlugIn {
 	private static final String BAR_DIR = Prefs.getImageJDir() + "scripts" + File.separator + "BAR" + File.separator;
 
 	/** The absolute path to the /BAR/lib/ directory */
-	static final String LIB_DIR = OLD_BAR_DIR + "lib" + File.separator;
+	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
 
 
 	/* (non-Javadoc)
