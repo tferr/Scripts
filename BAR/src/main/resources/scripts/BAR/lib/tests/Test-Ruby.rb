@@ -1,4 +1,4 @@
-# Test_Ruby.rb
+# Test-Ruby.rb
 # IJ BAR: https://github.com/tferr/Scripts#scripts
 #
 # Tests correct loading of BARlib

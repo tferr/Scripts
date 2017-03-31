@@ -1,4 +1,4 @@
-// Test_Groovy.groovy
+// Test-Groovy.groovy
 // IJ BAR: https://github.com/tferr/Scripts#scripts
 //
 // Tests correct loading of BARlib

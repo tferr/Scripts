@@ -1,4 +1,4 @@
-// Test_IJM.ijm
+// Test-IJM.ijm
 // IJ BAR: https://github.com/tferr/Scripts#scripts
 //
 // Tests correct loading of BARlib

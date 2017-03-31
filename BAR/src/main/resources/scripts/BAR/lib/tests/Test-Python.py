@@ -1,4 +1,4 @@
-# Test_Python.py
+# Test-Python.py
 # IJ BAR: https://github.com/tferr/Scripts#scripts
 #
 # Tests correct loading of BARlib
