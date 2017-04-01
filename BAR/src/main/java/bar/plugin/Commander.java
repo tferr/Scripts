@@ -121,7 +121,7 @@ import ij.text.TextWindow;
  */
 
 
-@Plugin(type = Command.class, priority = Priority.LOW_PRIORITY, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
+@Plugin(type = Command.class, priority = Priority.VERY_HIGH_PRIORITY, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
 		@Menu(label = "BAR"), @Menu(label = "BAR Commander...", accelerator = "f1") })
 public class Commander implements Command, ActionListener, DocumentListener,
 		KeyListener, ListSelectionListener, MouseListener, WindowListener {
