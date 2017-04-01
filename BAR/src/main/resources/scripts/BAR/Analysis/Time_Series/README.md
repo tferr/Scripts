@@ -1,9 +1,8 @@
-# Tools
-IJ macros that are installed in the ImageJ Toolbar. These are installed by means of other
-scripts and commands installed in the BAR menu hierarchy.
+# Time Series Scripts
 
-Single tools are appended to the IJ toolbar. Toolsets typically will replace existing
-tools in the toolbar.
+Scripts that deal with timelapse images. For scripts dealing with video-tracked data have
+a look at the scripts installed in the Script Editor [templates].
+[templates]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/script_templates
 
 
 

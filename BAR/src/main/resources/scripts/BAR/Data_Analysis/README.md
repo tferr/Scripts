@@ -1,89 +1,89 @@
 # Data Analysis
 
-[BARs][Home] related to analysis of non-image numerical data.
+BARs related to analysis of non-image numerical data.
 
-###[Create Boxplot](./Create_Boxplot.bsh)
-Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in an ImageJ
-table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji.
-Data can be split into groups and plot can be exported as vector graphics. It exemplifies how to
-use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
-[PlotUtils](../../../../java/bar/PlotUtils.java)) to script JFreeChart.
 
+## Create Boxplot
+Displays a [box-and-whisker](https://en.wikipedia.org/wiki/Box_plot) plot from data in an
+ImageJ table using the [JFreeChart](http://www.jfree.org/jfreechart/) library, bundled
+with Fiji. Data can be split into groups and plot can be exported as vector graphics.
 
 ![boxplot](../../../../../../../images/box-plot-demo.png)
 
-See also [Interactive Plotting](#interactive-plotting),
- [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
-###[Create Polar Plot](./Create_Polar_Plot.bsh)
-Generates a polar plot from data in an ImageJ table using the [JFreeChart](http://www.jfree.org/jfreechart/)
-library, bundled with Fiji. Plot can be customized and exported as vector graphics. It
-exemplifies how to use the BAR [API](http://tferr.github.io/Scripts/apidocs/) (namely
-[PlotUtils](../BAR/src/main/java/bar/PlotUtils.java)) to script JFreeChart.
+## Create Polar Plot
+Generates a polar plot from data in an ImageJ table using the
+[JFreeChart](http://www.jfree.org/jfreechart/) library, bundled with Fiji. plot can be
+exported as vector graphics.
 
 ![polar plot](../../../../../../../images/polar-plot-demo.png)
 
-See also [Interactive Plotting](#interactive-plotting),
- [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
 
-###[Distribution Plotter](./Distribution_Plotter.ijm)
+## Distribution Plotter
 Plots relative and cumulative frequencies of a measured parameter. Detailed functionality:
-1) Retrieves relative and cumulative frequencies; 2) Fits a Normal distribution to histogram
-of relative frequencies; 3) Offers several methods to determine the optimal number of
-histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
-_Analyze>Distribution..._) and  Freedman–Diaconis'.
-([Documentation page][DP page])
+1) Retrieves relative and cumulative frequencies; 2) Fits a Normal distribution to
+histogram of relative frequencies; 3) Offers several methods to determine the optimal
+number of histogram bins: Square root (used by e.g., M. Excel), Sturges', Scott's (used by
+`Analyze>Distribution...`) and  Freedman–Diaconis.
+More information can be found on its initial
+[documentation page](http://imagejdocu.tudor.lu/doku.php?id=macro:distribution_plotter),
+that has yet to be transferred to [imagej.net](http://imagej.net/).
 
 ![distribution plotter](../../../../../../../images/distribution-plotter-demo.png)
 
 
-###[Find Peaks](./Find_Peaks.bsh)
-   Retrieves local maxima and minima from an ImageJ plot, allowing several filtering
-   options such as: 1) Peak amplitude; 2) Peak height and 3) Peak width.
-   ([Documentation page][FP page])
+## Find Peaks
+Retrieves local maxima and minima from an ImageJ plot, allowing several filtering options
+such as: 1) Peak amplitude; 2) Peak height and 3) Peak width. More information can be
+found on its [documentation page](https://imagej.net/Find_Peaks)
 
-   ![find peaks](../../../../../../../images/find-peaks-demo.png)
-
-
-###[Fit Polynomial](./Fit_Polynomial.bsh)
-   Fits a polynomial function (of arbitrary degree) to sampled data from an ImageJ plot.
-   Features an heuristic algorithm for guessing a polynomial 'best fit'.
-
-   Requires the apache commons math library, distributed with Fiji. Non-Fiji users that do
-   not have it installed are provided with a direct download link that will install all
-   required dependencies.
-
-   ![polynomial fitter](../../../../../../../images/animated-poly-fit.gif)
+![find peaks](../../../../../../../images/find-peaks-demo.png)
 
 
-###[Interactive Plotting](../../../../java/bar/plugin/InteractivePlotter.java)
-_The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot (with or
-without error bars), from ImageJ measurements, plugin tables or imported spreadsheet data.
-Multi-series vector field plots are also supported.
+## Fit Polynomial
+Fits a polynomial function (of arbitrary degree) to sampled data from an ImageJ plot using
+[The Apache Commons Mathematics Library](http://commons.apache.org/proper/commons-math/)
+distributed with Fiji. Features an heuristic algorithm for guessing a polynomial of 'best
+fit'. It was first designed to complement the [Sholl Analysis](http://imagej.net/Sholl)
+plugin.
+
+![polynomial fitter](../../../../../../../images/animated-poly-fit.gif)
+
+
+## Interactive Plotting
+_The_ interactive plotting GUI for ImageJ. Interactively creates a multi-series XY plot
+(with or without error bars), from ImageJ measurements, plugin tables or imported
+spreadsheet data. Multi-series vector field plots are also supported.
 
 ![plot builder](../../../../../../../images/plotbuilder-demo.png)
 
 
-See also [Create Boxplot](#create-boxplot), [Create Polar Plot](#create-polar-plot)
+## NN Distances
+TBD
 
 
-##See Also
+## Notes
 
-* [Analysis], BARs that complement built-in commands in the ImageJ `Analyze>` menu.
+ * Most of these scripts use [PlotUtils](http://tferr.github.io/Scripts/apidocs/) to
+   script the [JFreeChart API](http://javadoc.imagej.net/JFreeChart/)
+ * Other BAR scripts dealing with data analysis can be accessed through the Script Editor
+   [templates] menu
+
+[templates]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/script_templates
 
 
 
+------
+| [Home] | [Analysis] | [Annotation] | [Data Analysis] | [lib] | [My Routines] | [Segmentation] | [Tools] | [Utilities] | [Wiki] |
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
+[Home]: https://github.com/tferr/Scripts
+[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis
+[lib]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/lib
+[My Routines]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/My_Routines
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation
+[Tools]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/tools
+[Utilities]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/Utilities
+[Wiki]: https://imagej.net/BAR
 
-[Home]: https://github.com/tferr/Scripts#ij-bar
-[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis#analysis
-[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation#annotation
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
-[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation#segmentation
-[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
-[Java Classes]: https://github.com/tferr/Scripts/tree/master/BAR#java-classes
-[lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
-[Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[IJ]: http://imagej.net/BAR

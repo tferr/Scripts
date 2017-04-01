@@ -1,9 +1,29 @@
-# Tools
-IJ macros that are installed in the ImageJ Toolbar. These are installed by means of other
-scripts and commands installed in the BAR menu hierarchy.
+# My Routines
 
-Single tools are appended to the IJ toolbar. Toolsets typically will replace existing
-tools in the toolbar.
+_My Routines_ is the place where users can save their own scripts to be easily accessed
+through the BAR menu hierarchy. More details are available on the [BAR wiki page][Wiki].
+The local _My Routines_ directory is not managed by the BAR Update site.
+
+The `BAR>My Routines>` a menu contains several convenient commands (themselves implemented
+as scripts), including:
+
+
+## Browse
+Points [Commander][Utilities] to the _My Routines_ directory and activates it
+
+
+## List
+Prints the contents of the _My Routines_ directory to a dedicated window. Files can then
+be opened in the Script Editor by double-click. This may be preferable to
+[Shift-clicking](http://imagej.net/BAR#OpeningBAR) the menu bar
+
+
+## Reveal Directory
+Opens _My Routines_ in the file browser of the operating system
+
+
+## Search Routines
+A script that searches for content in this directory.
 
 
 

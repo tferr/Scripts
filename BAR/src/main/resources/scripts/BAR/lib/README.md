@@ -1,18 +1,13 @@
-#lib
-The lib directory is a centralized repository of user-defined libraries that can be shared across
-files. These libraries serve as scripting additions to [Snippets] and other routines. The
-`BAR> Snippets> New Snippet...` command exemplifies how to use them.
+# lib
+The lib directory is a local centralized repository of user-defined libraries that can be
+shared across files. These libraries serve as scripting additions to user scripts
+(namely for [My Routines]).
 
-**Tip:** Type in `BARlib` in _BAR> Snippets> Search BAR_ to get the list of all the files using
-scripting additions.
-
-**See Also:** [Snippets], [BAR API](http://tferr.github.io/Scripts/apidocs/),
-[User documentation](http://imagej.net/BAR#lib)
+Use `BAR>My Routines>Install lib Files...` to populate your local lib directory. lib files
+are not synchronized with the BAR update site.
 
 
-##[BSH lib](./BARlib.bsh)
-BeanShell library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## BeanShell (BSH lib)
 
 ```java
 // Add BAR/lib to classpath and load BARlib.bsh
@@ -25,9 +20,7 @@ lib = new BARlib();
 lib.confirmLoading();
 ```
 
-##[CLJ lib](./BARlib.clj)
-Clojure library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## Clojure (CLJ lib)
 
 ```clojure
 ;; Load BARlib.clj
@@ -37,9 +30,7 @@ Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#sni
 (confirmLoading)
 ```
 
-##[GVY lib](./BARlib.groovy)
-Groovy library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## Groovy (GVY lib)
 
 ```groovy
 // Parse and load BARlib.groovy
@@ -52,9 +43,7 @@ lib = BARlib.newInstance()
 lib.confirmLoading()
 ```
 
-##[IJM lib](./BARlib.ijm)
-ImageJ Macro library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## ImageJ Macro Language (IJM lib)
 
 ```java
 // Load BARlib.ijm. NB: functions may only be available once
@@ -68,9 +57,7 @@ call('ij.macro.Interpreter.setAdditionalFunctions', libContents);
 confirmLoading();
 ```
 
-##[JS lib](./BARlib.js)
-JavaScript library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## JavaScript (JS lib)
 
 ```javascript
 // Load BARlib.js
@@ -82,9 +69,7 @@ lib = new BARlib();
 lib.confirmLoading();
 ```
 
-##[PY lib](./BARlib.py)
-Python (Jython) library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## Python (Jython) (PY lib)
 
 ```python
 # Load BARlib.py
@@ -97,9 +82,7 @@ import BARlib as lib
 lib.confirmLoading()
 ```
 
-##[RB lib](./BARlib.rb)
-Ruby (JRuby) library.
-Loading instructions (from _Snippets> [New Snippet...](../Snippets/README.md#snippets)_):
+## Ruby (JRuby) (RB lib)
 
 ```ruby
 # Load BARlib.rb
@@ -112,27 +95,26 @@ lib.confirmLoading
 ```
 
 
-##Notes
-* For more details on the methods provided by the
-  <tt>[bar.Utils](http://tferr.github.io/Scripts/apidocs/index.html?bar/Utils.html)</tt> class, have a look
-  at the [BAR API](http://tferr.github.io/Scripts/apidocs/)
-* Library filenames have no underscore and so are not registered in the `BAR>lib>` menu. To open lib
-  files from within ImageJ, use [Commander](../BAR/src/main/java/bar/plugin/Commander.java) via
-  _BAR> lib> Browse /lib_ (or type `!lib` in Commander's search prompt).
-* [lib tests](./tests/) can be used to debug libraries
+## Notes
+ * For more details on the methods provided `bar.Utils` have a look at the
+   [BAR API](http://tferr.github.io/Scripts/apidocs/)
+ * Library filenames have no underscore and so are not registered in the `BAR` menu
+   hierarchy.
+ * You can Browse the `lib` directory by typing <kbd>!lib</kbd> in Commander
+ * Use the provided test files to debug your customizations
 
 
 
-| [Home] | [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
-|:------:|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
+------
+| [Home] | [Analysis] | [Annotation] | [Data Analysis] | [lib] | [My Routines] | [Segmentation] | [Tools] | [Utilities] | [Wiki] |
 
-[Home]: https://github.com/tferr/Scripts#ij-bar
-[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis#analysis
-[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation#annotation
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
-[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation#segmentation
-[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
-[Java Classes]: https://github.com/tferr/Scripts/tree/master/BAR#java-classes
-[lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
-[Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[IJ]: http://imagej.net/BAR
+[Home]: https://github.com/tferr/Scripts
+[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis
+[lib]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/lib
+[My Routines]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/My_Routines
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation
+[Tools]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/tools
+[Utilities]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/Utilities
+[Wiki]: https://imagej.net/BAR
