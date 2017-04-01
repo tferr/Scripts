@@ -3,7 +3,8 @@
 Productivity tools.
 
 ## Commander
-BAR Commander is a neat keyboard-based file browser for ImageJ.
+BAR Commander is a neat keyboard-based file browser for ImageJ that can be triggered
+application-wide by pressing <kbd>F1</kbd>.
 Features include: drag-and-drop support, interaction with native file manager, regex
 filtering, built-in console for common operations, and ability to produces filtered lists
 of directory contents ([Documentation page](http://imagej.net/BAR#Commander)).
@@ -43,7 +44,7 @@ transferred to [imagej.net](http://imagej.net/).
 
 ## New Snippet
 A Java plugin implementing a convenient way to generate new scripts. The prompt features a
-drop-down menu containing source code that pre-loads scripting additions stored in [lib]
+drop-down menu containing source code that pre-loads scripting additions stored in [lib].
 
 [![SnippetCreator](http://imagej.net/_images/d/de/SnippetCreator.png)](http://imagej.net/BAR#Snippets)
 

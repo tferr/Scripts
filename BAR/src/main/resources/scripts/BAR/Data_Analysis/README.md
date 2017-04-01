@@ -59,7 +59,8 @@ spreadsheet data. Multi-series vector field plots are also supported.
 
 
 ## NN Distances
-TBD
+Retrieves nearest neighbor distances from a 2D/3D list of centroid coordinates, and plots
+the frequencies of calculated distances.
 
 
 ## Notes

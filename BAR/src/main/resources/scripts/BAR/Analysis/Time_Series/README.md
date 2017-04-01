@@ -1,7 +1,9 @@
 # Time Series Scripts
 
-Scripts that deal with timelapse images. For scripts dealing with video-tracked data have
-a look at the scripts installed in the Script Editor [templates].
+Scripts that deal with timelapse images including Calcium imaging experiments. For scripts
+dealing with video-tracked data have a look at the scripts installed in the Script Editor
+[templates].
+
 [templates]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/script_templates
 
 
