@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -23,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -46,45 +46,52 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultEditorKit;
 
-import bar.Utils;
-import fiji.Debug;
-import ij.IJ;
-import ij.ImageJ;
-import ij.Menus;
-import ij.WindowManager;
-import ij.plugin.BrowserLauncher;
-import ij.plugin.PlugIn;
+import net.imagej.ImageJ;
+import net.imagej.ui.swing.updater.ImageJUpdater;
 
-/** Implements the {@literal BAR>About BAR...} command */
-public class Help implements PlugIn {
+import org.scijava.app.StatusService;
+import org.scijava.command.Command;
+import org.scijava.command.CommandService;
+import org.scijava.platform.PlatformService;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.ui.UIService;
+
+import bar.Utils;
+
+
+/** Implements the {@literal About BAR...} command */
+@Plugin(type = Command.class, menuPath = "BAR > Help > About & Resources...")
+public class Help implements Command {
+
+	@Parameter
+	private static CommandService commandService;
+
+	@Parameter
+	private static StatusService statusService;
+
+	@Parameter
+	private static PlatformService platformService;
+
+	@Parameter
+	private static UIService uiService;
 
 	/** Parameters **/
-	private JFrame frame;
-	private static String FRAME_TITLE = "About / Resources...";
+	private static JFrame frame;
+	private static String FRAME_TITLE = "About BAR...";
 
-	/**
-	 * Calls {@link fiji.Debug#runFilter(String, String, String)
-	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
-	 */
-	public static void main(final String[] args) {
-		Debug.run(FRAME_TITLE, "");
+	public static void main(final String... args) throws Exception {
+		final ImageJ ij = net.imagej.Main.launch(args);
+		ij.command().run(Help.class, true);
 	}
 
-	/**
-	 * This method is called when the plugin is loaded. See
-	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it displays "About"
-	 * window.
-	 * 
-	 * @param arg
-	 *            ignored (Otherwise specified in plugins.config).
-	 */
 	@Override
-	public void run(final String arg) {
+	public void run() {
 
 		Utils.shiftClickWarning();
 
 		// Check if "About" window is already being displayed
-		if (WindowManager.getWindow(FRAME_TITLE) == null) {
+		if (frame == null) {
 			try {
 				UIManager.setLookAndFeel(UIManager
 						.getSystemLookAndFeelClassName());
@@ -97,7 +104,8 @@ public class Help implements PlugIn {
 				}
 			});
 		} else {
-			IJ.selectWindow(FRAME_TITLE);
+			frame.setVisible(true);
+			frame.toFront();
 		}
 
 	}
@@ -110,14 +118,6 @@ public class Help implements PlugIn {
 			@Override
 			public void windowClosing(final WindowEvent we) {
 				quit();
-			}
-
-			@Override
-			public void windowActivated(final WindowEvent we) {
-				if (IJ.isMacintosh() && frame != null) {
-					IJ.wait(10);
-					frame.setMenuBar(Menus.getMenuBar());
-				}
 			}
 		});
 
@@ -189,8 +189,9 @@ public class Help implements PlugIn {
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
 					try {
-						BrowserLauncher.openURL(e.getURL().toString());
+						platformService.open(e.getURL());
 					} catch (final IOException ignored) {
+						// ignored
 					}
 			}
 		});
@@ -235,25 +236,12 @@ public class Help implements PlugIn {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				quit();
-				IJ.doCommand("Update Fiji");
+				commandService.run(ImageJUpdater.class, true);
 			}
 		});
 		frame.add(buttonPanel, BorderLayout.WEST);
-
-		// Improve cross-platform rendering
-		final ImageJ ij = IJ.getInstance();
-		if (ij != null && !IJ.isMacOSX()) {
-			final Image img = ij.getIconImage();
-			if (img != null)
-				try {
-					frame.setIconImage(img);
-				} catch (final Exception ignored) {
-				}
-		}
-
 		frame.pack();
 		frame.setVisible(true);
-		WindowManager.addWindow(frame);
 
 	}
 
@@ -271,7 +259,7 @@ public class Help implements PlugIn {
 	 * Constructs a JButton with the specified label that opens the specified
 	 * URL in the user's Browser
 	 */
-	JButton URLButton(final String label, final String URL) {
+	JButton URLButton(final String label, final String url) {
 		final JButton button = new JButton(label);
 		button.setMaximumSize(new Dimension(Integer.MAX_VALUE, button
 				.getMinimumSize().height));
@@ -279,9 +267,9 @@ public class Help implements PlugIn {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
-					BrowserLauncher.openURL(URL);
-				} catch (final Exception localException) {
-					IJ.handleException(localException);
+					platformService.open(new URL(url));
+				} catch (final IOException exc) {
+					exc.printStackTrace();
 				}
 			}
 		});
@@ -354,10 +342,9 @@ public class Help implements PlugIn {
 		pane.setComponentPopupMenu(menu);
 	}
 
-	/** Disposes and unregisters main frame from WindowManager */
+	/** Custom instructions could go here */
 	void quit() {
 		frame.dispose();
-		WindowManager.removeWindow(frame);
 	}
 
 }
