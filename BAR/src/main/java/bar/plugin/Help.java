@@ -53,6 +53,7 @@ import org.scijava.app.StatusService;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
 import org.scijava.platform.PlatformService;
+import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
@@ -61,7 +62,8 @@ import bar.Utils;
 
 
 /** Implements the {@literal About BAR...} command */
-@Plugin(type = Command.class, menuPath = "BAR > Help > About & Resources...")
+@Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
+		@Menu(label = "About & Resources...") })
 public class Help implements Command {
 
 	@Parameter

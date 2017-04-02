@@ -121,10 +121,10 @@ import ij.text.TextWindow;
  */
 
 
-@Plugin(type = Command.class, priority = Priority.VERY_HIGH_PRIORITY, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
-		@Menu(label = "BAR"), @Menu(label = "BAR Commander...", accelerator = "f1") })
-public class Commander implements Command, ActionListener, DocumentListener,
-		KeyListener, ListSelectionListener, MouseListener, WindowListener {
+@Plugin(type = Command.class, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
+		@Menu(label = "BAR"), @Menu(label = "Commander...", weight = 0d, accelerator = "f1") })
+public class Commander implements Command, ActionListener, DocumentListener, KeyListener, ListSelectionListener,
+		MouseListener, WindowListener {
 
 	/** Default path to be listed at startup */
 	private static final String DEF_PATH = System.getProperty("user.home");

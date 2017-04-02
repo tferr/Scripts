@@ -24,6 +24,7 @@ import net.imagej.ImageJ;
 import org.scijava.app.StatusService;
 import org.scijava.command.Command;
 import org.scijava.display.DisplayService;
+import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.text.TextService;
@@ -32,6 +33,8 @@ import org.scijava.ui.UIService;
 
 /** Loads jarified markdown files (offline documentation of BAR) */
 @Plugin(type = Command.class, menuPath = "BAR > Help > Open Offline Help...")
+@Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
+		@Menu(label = "Offline Help...") })
 public class READMEReader implements Command {
 
 	@Parameter
