@@ -1,12 +1,5 @@
-# Tutorials
-
-These tutorials skim through the basics of BeanShell and Python scripting and were used in
-the workshop
-[Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
-at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
-
-They can be accessed from ImageJ using `BAR> Utilities> Offline Tutorials`
-
+# lib Tests
+These scripts test the successful loading of [lib] files once installed locally.
 
 
 ------

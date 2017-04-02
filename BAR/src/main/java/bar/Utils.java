@@ -37,6 +37,7 @@ import org.scijava.Context;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Menus;
+import ij.Prefs;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.gui.ImageWindow;
@@ -76,11 +77,7 @@ public class Utils implements PlugIn {
 	static final String API_URL = "http://tferr.github.io/Scripts/apidocs/";
 
 	/** The absolute path to the /BAR directory */
-	static final String BAR_DIR = IJ.getDirectory("plugins")
-			+ "Scripts" + File.separator + "BAR" + File.separator;
-
-	/** The absolute path to the /BAR/Snippets/ directory */
-	static final String SNIPPETS_DIR = BAR_DIR +"Snippets" + File.separator;
+	private static final String BAR_DIR = Prefs.getImageJDir() + "scripts" + File.separator + "BAR" + File.separator;
 
 	/** The absolute path to the /BAR/lib/ directory */
 	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
@@ -98,13 +95,13 @@ public class Utils implements PlugIn {
 		if (args.length==1) return;
 
 		// Instructions related to snippets
-		if (args[0].equalsIgnoreCase("snippet")) {
+		if (args[0].equalsIgnoreCase("myroutine")) {
 
 			if (args[1].equalsIgnoreCase("list")) {
-				listDirectory(SNIPPETS_DIR);
+				listDirectory(getMyRoutinesDir());
 			} else if (args[1].equalsIgnoreCase("reveal")) {
-				revealFile(SNIPPETS_DIR);
-			} else //TODO implement a "reload snippets" command
+				revealFile(getMyRoutinesDir());
+			} else // TODO implement a "reload snippets" command
 				openSnippet(arg);
 
 		// Instructions related to Menu transfers
@@ -545,17 +542,17 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Opens the specified file in the "Snippets" directory of BAR. No tests
+	 * Opens the specified file in the "My Routines" directory of BAR. No tests
 	 * assessing the existence of the specified file are performed.
 	 *
 	 * @param filename
 	 *            the filename of the script to be opened
 	 *
-	 * @see #getSnippetsDir()
+	 * @see #getMyRoutinesDir()
 	 * @see #openScript(String, String)
 	 */
 	public static void openSnippet(final String filename) {
-		openScript(SNIPPETS_DIR , filename);
+		openScript(getMyRoutinesDir(), filename);
 	}
 
 	/**
@@ -764,21 +761,26 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns the path to {@code BAR/Segmentation/}.
+	 * Returns the path to {@code BAR/My_Routines/}, creating it .
 	 *
-	 * @return the absolute path to the "Segmentation" directory
+	 * @return the absolute path to the "My Routines" directory
 	 */
-	public static String getSegmentationDir() {
-		return BAR_DIR + "Segmentation" + File.separator;
+	public static String getMyRoutinesDir() {
+		final String path = BAR_DIR + "My_Routines" + File.separator;
+		try {
+			new File(path).mkdirs();
+		} catch (final Exception ignored) {
+			// ignoring any access restrictions to the file path
+		}
+		return path;
 	}
 
 	/**
-	 * Returns the path to {@code Bar/Snippets/}.
-	 *
-	 * @return the absolute path to the "Snippets" directory
+	 * @deprecated
 	 */
+	@Deprecated
 	public static String getSnippetsDir() {
-		return SNIPPETS_DIR;
+		return getMyRoutinesDir();
 	}
 
 	/**

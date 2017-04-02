@@ -22,6 +22,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -65,7 +67,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -83,25 +84,28 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import net.imagej.ImageJ;
+
+import org.scijava.command.Command;
+import org.scijava.plugin.Menu;
+import org.scijava.plugin.Plugin;
+
 import bar.FileDrop;
 import bar.Utils;
-import fiji.Debug;
 import fiji.util.gui.GenericDialogPlus;
 import ij.IJ;
-//import ij.Menus;
 import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.gui.ImageWindow;
 import ij.io.OpenDialog;
-import ij.plugin.PlugIn;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
 
 /**
  * Implements a light-weight and fast keyboard-based file browser for ImageJ
- * ({@literal BAR>BAR Commander...} command). . A summary of features is listed on
- * the BAR <a href="http://imagej.net/BAR#Commander">documentation page</a>.
+ * ({@literal BAR>BAR Commander...} command). . A summary of features is listed
+ * on the BAR <a href="http://imagej.net/BAR#Commander">documentation page</a>.
  * <p>
  * Commander is modeled after <a href=
  * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/plugin/CommandFinder.java"
@@ -111,11 +115,14 @@ import ij.text.TextWindow;
  * Schindelin's <a href=
  * "https://github.com/fiji/Fiji_Plugins/blob/master/src/main/java/fiji/util/Recent_Commands.java"
  * >Recent_Commands plugin</a> and a bit of DOS nostalgia. Drag and drop support
- * is implemented by {@link bar.FileDrop FileDrop} (<a
- * href="http://www.iharder.net/current/java/filedrop/">website</a>).
+ * is implemented by {@link bar.FileDrop FileDrop}
+ * (<a href="http://www.iharder.net/current/java/filedrop/">website</a>).
  */
-public class Commander implements PlugIn, ActionListener, DocumentListener,
-		KeyListener, ListSelectionListener, MouseListener, WindowListener {
+
+@Plugin(type = Command.class, description = "A fast and lean keyboard-based file browser inspired by the Command Finder", headless = false, menu = {
+		@Menu(label = "BAR"), @Menu(label = "Commander...", weight = 0d, accelerator = "f1") })
+public class Commander implements Command, ActionListener, DocumentListener, KeyListener, ListSelectionListener,
+		MouseListener, WindowListener {
 
 	/** Default path to be listed at startup */
 	private static final String DEF_PATH = System.getProperty("user.home");
@@ -133,8 +140,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private boolean freezeStatusBar = false;
 
 	/** Defaults */
-	private static final boolean DEF_CLOSE_ON_OPEN = false;
+	private static final boolean DEF_HIDE_ON_OPEN = false;
 	private static final boolean DEF_IJM_LEGACY = false;
+	private static final boolean DEF_TOOLTIPS = true;
 	private static final int DEF_MAX_SIZE = 200;
 	private static final int DEF_FRAME_WIDTH = 250;
 	private static final int DEF_FRAME_HEIGHT = 450;
@@ -142,12 +150,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private static final int DEF_FRAME_Y = 0;
 
 	/** Parameters **/
+	private final String startupString;
+
 	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
-	private boolean closeOnOpen, ijmLegacy, caseSensitive, regex, wholeWord;
+	private boolean hideOnOpen, ijmLegacy, tooltips, caseSensitive, regex, wholeWord;
 	private String path;
 	private String matchingString = "";
 
-	private JFrame frame;
+	private static JFrame frame;
 	private JTextField prompt;
 	private JCheckBox regexCheckBox, caseSensitiveCheckBox, wholeWordCheckBox;
 	private JScrollPane listPane;
@@ -155,7 +165,6 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JButton historyButton, optionsButton, openButton, closeButton;
 	private JPopupMenu optionsMenu;
 	private JMenu bookmarksMenu, recentMenu;
-
 	private ArrayList<String> filenames, bookmarks, recentPaths;
 	private ArrayList<SavedSearch> prevSearches;
 	private String selectedItem;
@@ -164,28 +173,25 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	private JTableHeader tableHeader;
 	private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
-	/**
-	 * Calls {@link fiji.Debug#runFilter(String, String, String)
-	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
-	 */
-	public static void main(final String[] args) { Debug.run("BAR Commander...",""); }
+	public Commander() {
+		this("");
+	}
 
-	/**
-	 * This method is called when the plugin is loaded. See
-	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it launches
-	 * Commander.
-	 * 
-	 * @param arg
-	 *            ignored (Otherwise specified in plugins.config).
-	 */
+	public Commander(final String startupString) {
+		this.startupString = startupString;
+	}
+
+	public static void main(final String... args) {
+		final ImageJ ij = net.imagej.Main.launch(args);
+		ij.command().run(Commander.class, false);
+	}
+
 	@Override
-	public void run(final String arg) {
+	public void run() {
 
 		// Check if Commander is already running
-		if (WindowManager.getWindow("BAR Commander") != null) {
-			if (arg != null && !arg.isEmpty())
-				IJ.showStatus("In Commander, type <" + arg + "> to start browsing...");
-			IJ.selectWindow("BAR Commander");
+		if (frame != null) {
+			toggleVisibility();
 			return;
 		}
 
@@ -194,17 +200,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			clearPreferences();
 
 		// Initialize file list, favorites and history. Set defaults
-		filenames = new ArrayList<String>();
-		bookmarks = new ArrayList<String>();
-		recentPaths = new ArrayList<String>();
-		prevSearches = new ArrayList<SavedSearch>();
+		filenames = new ArrayList<>();
+		bookmarks = new ArrayList<>();
+		recentPaths = new ArrayList<>();
+		prevSearches = new ArrayList<>();
 		loadPreferences();
 
 		// Check if a path has been specified in plugins.config
-		if ("!lib".equals(arg))
+		if ("!lib".equals(startupString))
 			path = Utils.getLibDir();
-		else if ("!snip".equals(arg))
-			path = Utils.getSnippetsDir();
+		else if ("!myr".equals(startupString))
+			path = Utils.getMyRoutinesDir();
 		// Try to retrieve a new directory if specified path is not valid
 		if (!Utils.fileExists(path)) {
 			path = IJ.getDirectory("Choose new directory");
@@ -220,8 +226,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			@Override
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(UIManager
-							.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (final Exception ignored) {
 				}
 				SwingUtilities.invokeLater(new Runnable() {
@@ -237,16 +242,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	void clearPreferences() {
 		try {
-			if (IJ.showMessageWithCancel("Reset all options to defaults?", "Reset Commander preferences?\n"
-							+ "Bookmarks and previously saved searches will be forgotten.\n \n"
+			if (IJ.showMessageWithCancel("Reset all options to defaults?",
+					"Reset Commander preferences?\n" + "Bookmarks and previously saved searches will be forgotten.\n \n"
 							+ "(Preferences can be reset by holding \"Alt\" when starting Commander)")) {
 				prefs.clear();
 				if (frame != null) {
 					frame.setLocation(DEF_FRAME_X, DEF_FRAME_Y);
 					frame.setSize(DEF_FRAME_WIDTH, DEF_FRAME_HEIGHT);
 					maxSize = DEF_MAX_SIZE;
-					closeOnOpen = DEF_CLOSE_ON_OPEN;
+					hideOnOpen = DEF_HIDE_ON_OPEN;
 					ijmLegacy = DEF_IJM_LEGACY;
+					tooltips = DEF_TOOLTIPS;
 					caseSensitive = wholeWord = regex = false;
 					path = DEF_PATH;
 					clearBookmarks();
@@ -267,8 +273,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			frameWidth = prefs.getInt("cmder.frameWidth", DEF_FRAME_WIDTH);
 			frameHeight = prefs.getInt("cmder.frameHeight", DEF_FRAME_HEIGHT);
 			maxSize = prefs.getInt("cmder.maxSize", DEF_MAX_SIZE);
-			closeOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_CLOSE_ON_OPEN);
+			hideOnOpen = prefs.getBoolean("cmder.closeOnOpen", DEF_HIDE_ON_OPEN);
 			ijmLegacy = prefs.getBoolean("cmder.ijmLegacy", DEF_IJM_LEGACY);
+			tooltips = prefs.getBoolean("cmder.tooltips", DEF_TOOLTIPS);
 			caseSensitive = prefs.getBoolean("cmder.caseSensitive", false);
 			wholeWord = prefs.getBoolean("cmder.wholeWord", false);
 			regex = prefs.getBoolean("cmder.regex", false);
@@ -301,8 +308,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			prefs.putInt("cmder.frameWidth", frame.getWidth());
 			prefs.putInt("cmder.frameHeight", frame.getHeight());
 			prefs.putInt("cmder.maxSize", maxSize);
-			prefs.putBoolean("cmder.closeOnOpen", closeOnOpen);
+			prefs.putBoolean("cmder.closeOnOpen", hideOnOpen);
 			prefs.putBoolean("cmder.ijmLegacy", ijmLegacy);
+			prefs.putBoolean("cmder.tooltips", tooltips);
 			prefs.putBoolean("cmder.caseSensitive", caseSensitive);
 			prefs.putBoolean("cmder.regex", regex);
 			prefs.putBoolean("cmder.wholeWord", wholeWord);
@@ -342,7 +350,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final int cboxHeight = cboxFont.getSize();
 		final int cboxGap = caseSensitiveCheckBox.getIconTextGap();
 		caseSensitiveCheckBox.putClientProperty("JComponent.sizeVariant", "small");
-		caseSensitiveCheckBox.setIconTextGap(cboxGap-1);
+		caseSensitiveCheckBox.setIconTextGap(cboxGap - 1);
 		caseSensitiveCheckBox.setEnabled(!regex);
 		caseSensitiveCheckBox.addItemListener(new ItemListener() {
 			@Override
@@ -355,7 +363,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		wholeWordCheckBox = new JCheckBox("Whole word", wholeWord);
 		wholeWordCheckBox.putClientProperty("JComponent.sizeVariant", "small");
-		wholeWordCheckBox.setIconTextGap(cboxGap-1);
+		wholeWordCheckBox.setIconTextGap(cboxGap - 1);
 		wholeWordCheckBox.setEnabled(!regex);
 		wholeWordCheckBox.addItemListener(new ItemListener() {
 			@Override
@@ -368,7 +376,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		regexCheckBox = new JCheckBox("Regex", regex);
 		regexCheckBox.putClientProperty("JComponent.sizeVariant", "small");
-		regexCheckBox.setIconTextGap(cboxGap-1);
+		regexCheckBox.setIconTextGap(cboxGap - 1);
 		regexCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(final ItemEvent ie) {
@@ -385,7 +393,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 0, cboxHeight / 2, 0);
-		c.gridx = 0; c.gridy = 0;
+		c.gridx = 0;
+		c.gridy = 0;
 		cboxPanel.add(caseSensitiveCheckBox, c);
 		c.gridx++;
 		cboxPanel.add(wholeWordCheckBox, c);
@@ -393,7 +402,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		cboxPanel.add(regexCheckBox, c);
 
 		// Create the 'history' button and blend it with prompt
-		//final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
+		// final Icon icon = UIManager.getIcon("Table.descendingSortIcon");
 		prompt.setBorder(new EmptyBorder(4, 4, 4, 4));
 		prompt.setFont(prompt.getFont().deriveFont(15f));
 		historyButton = new JButton("<html>&hellip;</html>");
@@ -408,7 +417,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		promptPanel.add(prompt, BorderLayout.CENTER);
 		promptPanel.add(historyButton, BorderLayout.LINE_END);
 		promptPanel.setBackground(prompt.getBackground());
-		promptPanel.setBorder(prompt.getBorder() );
+		promptPanel.setBorder(prompt.getBorder());
 
 		// Place all search-related components into a final container
 		final JPanel searchPanel = new JPanel(new BorderLayout());
@@ -424,7 +433,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setRowSelectionAllowed(true);
 		table.setColumnSelectionAllowed(false);
-		//table.setAutoCreateRowSorter(true);
+		// table.setAutoCreateRowSorter(true);
 		table.setShowGrid(false);
 		table.setShowHorizontalLines(false);
 		table.setShowVerticalLines(false);
@@ -446,7 +455,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					return; // Ignore searches for non alpha-numeric characters
 				}
 				final int sRow = table.getSelectedRow();
-				for (int row = (sRow+1) % nRows; row != sRow; row = (row+1) % nRows) {
+				for (int row = (sRow + 1) % nRows; row != sRow; row = (row + 1) % nRows) {
 					final String rowData = tableModel.getValueAt(row, 0).toString();
 					final char rowCh = Character.toLowerCase(rowData.charAt(0));
 					if (ch == rowCh) {
@@ -463,15 +472,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		tableHeader.setDefaultRenderer(new HeaderRenderer(table));
 		tableHeader.addMouseListener(this);
 
-		// Allow folders to be dropped in file list. Consider only first item dropped
+		// Allow folders to be dropped in file list. Consider only first item
+		// dropped
 		listPane = new JScrollPane(table);
 		listPane.getViewport().setBackground(Color.WHITE); // http://stackoverflow.com/a/18362310
 		new FileDrop(listPane, new FileDrop.Listener() {
 			@Override
 			public void filesDropped(final java.io.File[] files) {
 				try {
-					final String dir = (files[0].isDirectory()) ? files[0]
-							.getCanonicalPath() : files[0].getParent();
+					final String dir = (files[0].isDirectory()) ? files[0].getCanonicalPath() : files[0].getParent();
 					if (dir == null) {
 						error("Drag and Drop failed...");
 						return;
@@ -526,16 +535,31 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		// Display commander
 		frame = new JFrame("BAR Commander");
-		setDefaultTooltips();
+		final KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		manager.addKeyEventDispatcher(new F1Dispatcher());
+
+		if (tooltips)
+			setDefaultTooltips();
 		frame.add(container);
 		frame.addWindowListener(this);
 		frame.pack();
 		frame.setSize(frameWidth, frameHeight);
 		frame.setLocation(frameX, frameY);
 		frame.setVisible(true);
-		//openButton.getRootPane().setDefaultButton(openButton);
+		// openButton.getRootPane().setDefaultButton(openButton);
 		prompt.requestFocusInWindow();
 		WindowManager.addWindow(frame);
+	}
+
+	private class F1Dispatcher implements KeyEventDispatcher {
+		@Override
+		public boolean dispatchKeyEvent(final KeyEvent e) {
+			if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
+				toggleVisibility();
+				return true;
+			}
+			return false;
+		}
 	}
 
 	/** Adds current path to "Favorites" menu */
@@ -543,9 +567,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		if (!bookmarks.contains(path)) {
 			bookmarks.add(path);
 			updateBookmarksMenu();
-			log("New bookmark: "+ path);
+			log("New bookmark: " + path);
 		} else
-			error("Already bookmarked "+ path);
+			error("Already bookmarked " + path);
 	}
 
 	/** Adds current path to "Recent" menu */
@@ -607,7 +631,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		if (Utils.fileExists(newDir))
 			setPath(newDir);
 		else
-			error("Path unavailable: "+ newDir);
+			error("Path unavailable: " + newDir);
 		resetFileList();
 	}
 
@@ -688,8 +712,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void pathToClipboard(final String type) {
 		String path = this.path;
-		if (!isConsoleMode() && table.getSelectedRow() > -1
-				&& !selectedItem.startsWith(".."))
+		if (!isConsoleMode() && table.getSelectedRow() > -1 && !selectedItem.startsWith(".."))
 			path += selectedItem;
 		try {
 			if (type.equals("url")) {
@@ -699,8 +722,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					path = path.substring(0, path.length() - 1);
 				if (IJ.isWindows()) {
 					final Runtime rt = Runtime.getRuntime();
-					final Process process = rt.exec("cmd /c for %I in (\""
-							+ path + "\") do @echo %~fsI");
+					final Process process = rt.exec("cmd /c for %I in (\"" + path + "\") do @echo %~fsI");
 					process.waitFor();
 					final java.io.InputStream is = process.getInputStream();
 					final java.util.Scanner s = new java.util.Scanner(is);
@@ -714,14 +736,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				}
 			}
 			final StringSelection stringSelection = new StringSelection(path);
-			final Clipboard cb = Toolkit.getDefaultToolkit()
-					.getSystemClipboard();
+			final Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 			cb.setContents(stringSelection, null);
 		} catch (final Exception e) {
 			IJ.handleException(e);
 		}
 		log("Path copied to clipboard...", 500);
-		//if(IJ.debugMode) IJ.log(path);
+		// if(IJ.debugMode) IJ.log(path);
 	}
 
 	/** Creates optionsMenu */
@@ -862,10 +883,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 */
 	void showStatus(final String msg, final long msecs, final boolean restore) {
 
-		//final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
-		//final int maxLength = msg.length() * FRAME_WIDTH / fm.stringWidth(msg);
-		//if (msg.length() > maxLength)
-		//	msg = msg.substring(0, maxLength - 3) + "...";
+		// final FontMetrics fm = statusBar.getFontMetrics(statusBar.getFont());
+		// final int maxLength = msg.length() * FRAME_WIDTH /
+		// fm.stringWidth(msg);
+		// if (msg.length() > maxLength)
+		// msg = msg.substring(0, maxLength - 3) + "...";
 
 		final String previousMsg = statusBar.getText();
 		statusBar.setText(msg);
@@ -927,9 +949,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/**
 	 * Displays an informational message if status bar is not "frozen"
-	 * (freezeStatusBar is false). Does nothing if freezeStatusBar is true
-	 * (an error is being displayed).
-	 * 
+	 * (freezeStatusBar is false). Does nothing if freezeStatusBar is true (an
+	 * error is being displayed).
+	 *
 	 * @see #error
 	 * @see #showStatus
 	 */
@@ -943,7 +965,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * specified amount of time) if status bar is not "frozen" (freezeStatusBar
 	 * is false). Does nothing if freezeStatusBar is true (an error is being
 	 * displayed).
-	 * 
+	 *
 	 * @param msecs
 	 *            Duration (in milliseconds).
 	 * @see #error
@@ -995,13 +1017,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-
 	/**
 	 * Executes console commands. Outputs one of the following exit status:
 	 * <p>
-	 * "0": Executed a a self-contained command that need no follow-up.
-	 * null: Failed to retrieve a path.
-	 * non-null string: A successfully retrieved path
+	 * "0": Executed a a self-contained command that need no follow-up. null:
+	 * Failed to retrieve a path. non-null string: A successfully retrieved path
 	 *
 	 * @see #interpretCommand
 	 */
@@ -1058,8 +1078,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			exitStatus = IJ.getDirectory("imagej");
 		} else if (cmd.startsWith("tmp")) {
 			exitStatus = IJ.getDirectory("temp");
-		} else if (cmd.equals("snip")) {
-			exitStatus = Utils.getSnippetsDir();
+		} else if (cmd.equals("myr")) {
+			exitStatus = Utils.getMyRoutinesDir();
 		} else if (cmd.equals("lib")) {
 			exitStatus = Utils.getLibDir();
 		} else if (cmd.equals("samples")) {
@@ -1081,10 +1101,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			resetFileList();
 			log("Dispaying info...");
 			final File f = new File(path);
-			final String writable = (f.canWrite()) ? "writable"
-					: "non writable";
-			final String bookmarked = (bookmarks.contains(path)) ? "bookmarked"
-					: "not bookmarked";
+			final String writable = (f.canWrite()) ? "writable" : "non writable";
+			final String bookmarked = (bookmarks.contains(path)) ? "bookmarked" : "not bookmarked";
 			int subfolders = 0;
 			for (final String item : filenames)
 				if (item.endsWith(File.separator))
@@ -1104,8 +1122,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			sb.append("</dd>");
 			sb.append("<dt>Listed contents:</dt>");
 			sb.append("<dd>");
-			sb.append(subfolders).append(" subfolder(s), ").append(files)
-					.append(" file(s)");
+			sb.append(subfolders).append(" subfolder(s), ").append(files).append(" file(s)");
 			sb.append("</dd>");
 			sb.append("<dt>Maximum list size:</dt>");
 			sb.append("<dd>");
@@ -1138,14 +1155,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	}
 
 	/**
-	 * Reloads an un-filtered list of current path displaying a 'blink
-	 * message' (visible only for ~half a second) in the status bar
+	 * Reloads an un-filtered list of current path displaying a 'blink message'
+	 * (visible only for ~half a second) in the status bar
 	 */
 	void resetFileList(final String blinkMsg) {
 		resetFileList();
 		log(blinkMsg, 500);
 	}
-
 
 	/** Enables/Disables console Mode */
 	void toggleConsoleMode() {
@@ -1225,15 +1241,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}.start();
 
-		if (closeOnOpen)
-			quit();
+		if (hideOnOpen)
+			toggleVisibility();
 
 	}
 
 	/** Checks if the specified filename contains a known script extension */
 	boolean isScript(final String file) {
-		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm",
-				".js", ".py", ".rb", ".java" };
+		final String[] EXTS = { ".txt", ".bsh", ".clj", ".groovy", ".ijm", ".js", ".py", ".rb", ".java" };
 		for (final String ext : EXTS)
 			if (file.endsWith(ext))
 				return true;
@@ -1276,10 +1291,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 
 		// Set TextWindow of filtered list
-		final SavedSearch search = new SavedSearch(matchingString,
-				caseSensitive, wholeWord, regex);
-		final TextWindow tw = new TextWindow(path + " " + search.toString(),
-				"", 550, 200);
+		final SavedSearch search = new SavedSearch(matchingString, caseSensitive, wholeWord, regex);
+		final TextWindow tw = new TextWindow(path + " " + search.toString(), "", 550, 200);
 		if (xPos > 0 && yPos > 0)
 			tw.setLocation(xPos, yPos);
 
@@ -1291,7 +1304,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		for (final String f : filenames)
 			tp.appendWithoutUpdate("" + IJ.pad(counter++, padDigits) + ": " + path + f);
 
-		// Hack: create an empty row as wide as heading to ensure heading is fully visible
+		// Hack: create an empty row as wide as heading to ensure heading is
+		// fully visible
 		final String spacer = "                                                              ";
 		tp.appendWithoutUpdate(spacer);
 
@@ -1307,11 +1321,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			final SavedSearch newEntry = new SavedSearch(query, caseSensitive, wholeWord, regex);
 			if (existringEntry == null) {
 				prevSearches.add(newEntry);
-				log("Saved query. " + String.valueOf(prevSearches.size())
-						+ " item(s) in history...");
+				log("Saved query. " + String.valueOf(prevSearches.size()) + " item(s) in history...");
 			} else {
-				prevSearches
-						.set(prevSearches.indexOf(existringEntry), newEntry);
+				prevSearches.set(prevSearches.indexOf(existringEntry), newEntry);
 				log("Saved query updated...");
 			}
 		}
@@ -1332,33 +1344,17 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Replaces file list with console commands */
 	void setCommandList() {
 		final String spacer = "<html><span style='color:white;'><b>!</b></span></html>";
-		final String cmds[] = {
-				"!..@Parent directory of current path",
-				"!cd@Change directory to specified path",
-				"!pwd@ImageJ <i>current</i> (working) directory",
-				"!imp@Directory of active image",
-				"!~@"+ System.getProperty("user.name") +"'s home directory",
-				"!goto@Choose new path in file manager",
-				spacer,
-				"!ij@<i>ImageJ</i> directory",
-				"!luts@<i>Lookup Tables</i> directory",
-				"!macros@<i>Macros</i> directory",
-				"!plugins@<i>Plugins</i> directory",
-				"!samples@Cached File&gt;Open Samples&gt;",
-				"!scripts@<i>Scripts</i> directory",
-				spacer,
-				"!lib@Path to <i>BAR/lib/</i>",
-				"!snip@Path to <i>BAR/Snippets/</i>",
-				"!tmp@<i>Temporary</i> directory",
-				spacer,
-				"!bookmark@Add current path to Favorites",
-				"!info@Display info on current path",
-				"!ls@List (print) contents of current path",
-				"!help@Display built-in help",
-				"!options@Prompt for settings",
-				"!refresh@Refresh (reload) list",
-				"!quit@Exit Commander"
-		};
+		final String cmds[] = { "!..@Parent directory of current path", "!cd@Change directory to specified path",
+				"!pwd@ImageJ <i>current</i> (working) directory", "!imp@Directory of active image",
+				"!~@" + System.getProperty("user.name") + "'s home directory", "!goto@Choose new path in file manager",
+				spacer, "!ij@<i>ImageJ</i> directory", "!luts@<i>Lookup Tables</i> directory",
+				"!macros@<i>Macros</i> directory", "!plugins@<i>Plugins</i> directory",
+				"!samples@Cached File&gt;Open Samples&gt;", "!scripts@<i>Scripts</i> directory", spacer,
+				"!lib@Path to <i>BAR/lib/</i>", "!myr@Path to <i>BAR/My_Routines/</i>",
+				"!tmp@<i>Temporary</i> directory", spacer, "!bookmark@Add current path to Favorites",
+				"!info@Display info on current path", "!ls@List (print) contents of current path",
+				"!help@Display built-in help", "!options@Prompt for settings/preferences",
+				"!refresh@Refresh (reload) list", "!quit@Exit Commander" };
 
 		truncatedList = false;
 		filenames.clear();
@@ -1369,22 +1365,24 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			if (match(getCaseSensitiveString(cmd), matchingCmd)) {
 				if (!cmd.equals(spacer)) {
 					final String[] items = cmd.split("@");
-					cmd = "<html><span style='color:blue;'>"
-							+ "<b>" + items[0] + "</b>"
-							+ "</span>&ensp;" + items[1] + "</html>";
+					cmd = "<html><span style='color:blue;'>" + "<b>" + items[0] + "</b>" + "</span>&ensp;" + items[1]
+							+ "</html>";
 				}
 				filenames.add(cmd);
 			}
 		}
 	}
 
-	/** Evaluates matches between string an pattern according to current search criteria */
+	/**
+	 * Evaluates matches between string an pattern according to current search
+	 * criteria
+	 */
 	boolean match(final String string, final String pattern) {
 		if (emptyQuery(pattern)) {
 			return true;
-		} else if (regex) {
+		} else if (regex && !isConsoleMode()) {
 			return Pattern.compile(pattern).matcher(string).matches();
-		} else if (wholeWord) {
+		} else if (wholeWord && !isConsoleMode()) {
 			return Pattern.compile(".*\\b" + pattern + "\\b.*").matcher(string).matches();
 		} else {
 			return string.indexOf(pattern) >= 0;
@@ -1445,7 +1443,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("&emsp;").append(newPath).append("<br>");
 		sb.append("To change directory:<br>");
 		sb.append("&emsp;Double-click in path bar or drag &amp; drop ")
-			.append("a new folder from the file manager<br>");
+				.append("a new folder from the file manager<br>");
 		sb.append("</p></html>");
 		tableHeader.setToolTipText(sb.toString());
 	}
@@ -1483,6 +1481,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("  just by typing abbreviations of filenames. ");
 		sb.append("  It serves two purposes: 1) to expedite the opening of files and 2) to ");
 		sb.append("  produce filtered lists of directory contents.");
+		sb.append(
+				"  <b><span class='kb'>&thinsp;F1&thinsp;</span> is the system-wide shortcut to open/hide Commander</b>");
 		sb.append("  <br /> <br />");
 		sb.append("  <h4>Examples:</h4>");
 		sb.append("  <ol type='A'>");
@@ -1491,13 +1491,13 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("        <li>Type: <span class='cnsl'>!luts</span> &mdash; Enter &mdash; ")
 				.append("<span class='srch'>glas</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
-		sb.append("    <li>Open <i>").append(Utils.getSnippetsDir()).append("Median_Filter.py:</i></li>");
+		sb.append("    <li>Open <i>").append(Utils.getMyRoutinesDir()).append("Median_Filter.py:</i></li>");
 		sb.append("      <ol>");
-		sb.append("        <li>Type: <span class='cnsl'>!snip</span> &mdash; Enter &mdash; ")
+		sb.append("        <li>Type: <span class='cnsl'>!myr</span> &mdash; Enter &mdash; ")
 				.append("<span class='srch'>med</span> &mdash; Enter</li>");
 		sb.append("      </ol>");
-		sb.append("    <li>List the contents of <i>").append(System.getProperty("user.home"))
-				.append(File.separator).append("Desktop").append(File.separator).append(":<i></li>");
+		sb.append("    <li>List the contents of <i>").append(System.getProperty("user.home")).append(File.separator)
+				.append("Desktop").append(File.separator).append(":<i></li>");
 		sb.append("      <ol>");
 		sb.append("        <li>Type: <span class='cnsl'>!home</span> &mdash; Enter &mdash; ")
 				.append("<span class='srch'>desk</span> &mdash; Enter</li>");
@@ -1528,7 +1528,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		sb.append("  <h4>Tips:</h4>");
 		sb.append("  <dl>");
 		sb.append("    <dt>Drag and drop alternatives:</dt>");
-		sb.append("    <dd><i>Go To...</i> (<span class='kb'>&thinsp;").append(metaKey).append("+Shift+G&thinsp;</span>) ")
+		sb.append("    <dd><i>Go To...</i> (<span class='kb'>&thinsp;").append(metaKey)
+				.append("+Shift+G&thinsp;</span>) ")
 				.append("or the console commands <span class='cnsl'>!goto</span> or <span class='cnsl'>!cd</span>.</dd>");
 		sb.append("    <dt>Keyboard navigation in file list:</dt>");
 		sb.append("    <dd>Browse the file list using the arrow keys. Press the first character of a ")
@@ -1536,10 +1537,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				.append("presses of the same letter will cycle through the remaining files starting with ")
 				.append("that initial.</dd>");
 		sb.append("    <dt>Shortcuts and tooltips:</dt>");
-		sb.append("    <dd>Checkboxes and buttons can also be controlled by pressing <span class='kb'>&thinsp;Alt&thinsp;</span> ")
+		sb.append(
+				"    <dd>Checkboxes and buttons can also be controlled by pressing <span class='kb'>&thinsp;Alt&thinsp;</span> ")
 				.append("and the highlighted letter of their labels. E.g.: Pressing <span class='kb'>&thinsp;Alt+R&thinsp;</span> ")
-				.append("toggles the <i>Regex</i> checkbox.<br>A full list of shortcut keys is displayed when pausing the cursor ")
-				.append("over Commanders' components.</dd>");
+				.append("toggles the <i>Regex</i> checkbox.<br>When <i>Tooltips</i> are enabled, a full list of shortcut keys is ")
+				.append("displayed when pausing the cursor over Commanders' components.</dd>");
 		sb.append("  </dl>");
 		sb.append("</body>");
 		sb.append("</div></html>");
@@ -1550,13 +1552,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		log("Prompting for options...");
 		final GenericDialog gd = new GenericDialog("Commander Preferences", frame);
 		gd.addNumericField("Maximum number of items in file list", maxSize, 0);
-		gd.addCheckbox("Close Commander after opening a file", closeOnOpen);
+		gd.addCheckbox("Hide Commander after opening a file", hideOnOpen);
 		gd.addCheckbox("Open IJM files in ImageJ 1 (legacy) editor", ijmLegacy);
+		gd.addCheckbox("Enable Tooltips (toggling requires a restart)", tooltips);
 		gd.addMessage("");
 		gd.addCheckbox("Clear Favorites", false);
 		gd.addCheckbox("Clear Recent folders", false);
 		gd.addCheckbox("Clear Saved searches", false);
-		gd.enableYesNoCancel("OK", "Restore Defaults");
+		gd.enableYesNoCancel("OK", "Defaults...");
 		gd.addHelp(helpMessage());
 		gd.showDialog();
 		if (gd.wasCanceled()) {
@@ -1564,8 +1567,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return;
 		} else if (gd.wasOKed()) {
 			maxSize = (int) Math.max(1, gd.getNextNumber());
-			closeOnOpen = gd.getNextBoolean();
+			hideOnOpen = gd.getNextBoolean();
 			ijmLegacy = gd.getNextBoolean();
+			tooltips = gd.getNextBoolean();
 			if (gd.getNextBoolean())
 				clearBookmarks();
 			if (gd.getNextBoolean())
@@ -1580,13 +1584,15 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	void updateList() {
 		if (isConsoleMode()) {
+			enableSearchCheckBoxes(false);
 			setCommandList();
 			if (!freezeStatusBar)
 				updateConsoleStatus();
 			setStatusTooltip("Double-click to reload console commands.");
 		} else {
+			enableSearchCheckBoxes(true);
 			setFileList();
-			if (filenames.size()==0 && matchingString.isEmpty()) {
+			if (filenames.size() == 0 && matchingString.isEmpty()) {
 				filenames.add("..Folder is empty");
 			}
 			if (!freezeStatusBar)
@@ -1600,7 +1606,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		tableModel.setData(filenames);
 	}
 
-	/** Defines the actions triggered by double-clicking on the status/path bar */
+	/**
+	 * Defines the actions triggered by double-clicking on the status/path bar
+	 */
 	void executeStatusBarActions() {
 		freezeStatusBar = false;
 		if (isConsoleMode()) {
@@ -1628,32 +1636,32 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Defines static tooltips for frame components */
 	void setDefaultTooltips() {
-		final ToolTipManager ttm = ToolTipManager.sharedInstance();
-		ttm.setInitialDelay(2 * ttm.getInitialDelay());
-		ttm.setReshowDelay(2 * ttm.getReshowDelay());
-		ttm.setDismissDelay(2 * ttm.getDismissDelay());
+		// final ToolTipManager ttm = ToolTipManager.sharedInstance();
+		// ttm.setInitialDelay(2 * ttm.getInitialDelay());
+		// ttm.setReshowDelay(2 * ttm.getReshowDelay());
+		// ttm.setDismissDelay(2 * ttm.getDismissDelay());
 		final String metaKey = IJ.isMacOSX() ? "Cmd" : "Ctrl";
-		prompt.setToolTipText("<html>Prompt shortcuts:<br>"
-				+ "&emsp;&uarr; &darr;&ensp; Move to list<br>"
-				+ "&emsp;! &emsp; Console mode<br>"
-				+ "&emsp;&crarr;&ensp; Open filtered item<br>"
-				+ "&emsp;" + metaKey + "+B&ensp;Activate file list<br>"
-				+ "&emsp;" + metaKey + "+L&ensp;Activate search field</html>");
-		table.setToolTipText("<html>Navigation shortcuts:<br>"
-				+ "&emsp;&uarr; &darr;&ensp; Select items<br>"
-				+ "&emsp;&crarr;&emsp; Open item<br>"
-				+ "&emsp;&larr;&emsp; Parent directory<br>"
-				+ "&emsp;&rarr;&emsp; Expand selected folder<br>"
-				+ "&ensp;A-Z&ensp; Alphabetic scroll<br>"
-				+ "&ensp;" + metaKey + "+B&ensp;Activate file list<br>"
-				+ "&ensp;" + metaKey + "+L&ensp;Activate search field</html>");
+		prompt.setToolTipText("<html>Prompt shortcuts:<br>" + "&emsp;&uarr; &darr;&ensp; Move to list<br>"
+				+ "&emsp;! &emsp; Console mode<br>" + "&emsp;&crarr;&ensp; Open filtered item<br>" + "&emsp;" + metaKey
+				+ "+B&ensp;Activate file list<br>" + "&emsp;" + metaKey + "+L&ensp;Activate search field</html>");
+		table.setToolTipText("<html>Navigation shortcuts:<br>" + "&emsp;&uarr; &darr;&ensp; Select items<br>"
+				+ "&emsp;&crarr;&emsp; Open item<br>" + "&emsp;&larr;&emsp; Parent directory<br>"
+				+ "&emsp;&rarr;&emsp; Expand selected folder<br>" + "&ensp;A-Z&ensp; Alphabetic scroll<br>" + "&ensp;"
+				+ metaKey + "+B&ensp;Activate file list<br>" + "&ensp;" + metaKey
+				+ "+L&ensp;Activate search field</html>");
+	}
+
+	void enableSearchCheckBoxes(final boolean enabled) {
+		regexCheckBox.setEnabled(enabled);
+		caseSensitiveCheckBox.setEnabled(enabled);
+		wholeWordCheckBox.setEnabled(enabled);
 	}
 
 	void updateConsoleStatus() {
 		prompt.setForeground(Color.BLUE);
 		statusBar.setForeground(Color.BLUE);
 
-		if (matchingString.equals(CONSOLE_TRIGGER)) {
+		if (isConsoleMode()) {
 			log("Console enabled...");
 			return;
 		}
@@ -1692,7 +1700,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			else
 				log(String.valueOf(hits) + " items");
 		}
-		if (openButton!=null)
+		if (openButton != null)
 			openButton.setEnabled(openFlag);
 	}
 
@@ -1701,13 +1709,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		for (final Component item : optionsMenu.getComponents()) {
 			if (item instanceof JMenuItem) {
 				final String label = ((JMenuItem) item).getText();
-				if (label.equals("Favorites") || label.equals("Reveal Path")
-						|| label.equals("Print Current List")
+				if (label.equals("Favorites") || label.equals("Reveal Path") || label.equals("Print Current List")
 						|| label.equals("Refresh File List")) {
 					item.setEnabled(!isConsoleMode());
 				} else if (label.contains("Console")) {
-					final String cLabel = (isConsoleMode()) ? "Exit Console Mode"
-							: "Enter Console Mode";
+					final String cLabel = (isConsoleMode()) ? "Exit Console Mode" : "Enter Console Mode";
 					((JMenuItem) item).setText(cLabel);
 				}
 			}
@@ -1724,24 +1730,34 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		frame.dispose();
 	}
 
+	void toggleVisibility() {
+		if (frame != null) {
+			frame.setVisible(!frame.isVisible());
+			frame.toFront();
+		}
+	}
+
 	void activateTable() {
 		final int index = table.getSelectedRow();
-		if (index>0)
+		if (index > 0)
 			table.setRowSelectionInterval(index, index);
 		else
 			table.setRowSelectionInterval(0, 0);
 		table.requestFocusInWindow();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	/* ActionEvent Methods */
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		final Object b = e.getSource();
 		if (b == prompt) {
-			//setMatchingString(prompt.getText());
+			// setMatchingString(prompt.getText());
 			if (filenames.size() == 1) {
 				setSelectedItem(0);
 				openItem(selectedItem);
@@ -1750,7 +1766,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			showHistoryMenu();
 		} else if (b == optionsButton) {
 			validateOptionsMenu();
-			optionsMenu.show(optionsButton, optionsButton.getWidth()/2, 0);
+			optionsMenu.show(optionsButton, optionsButton.getWidth() / 2, 0);
 		} else if (b == openButton) {
 			openItem(selectedItem);
 		} else if (b == closeButton) {
@@ -1758,9 +1774,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.
+	 * DocumentEvent)
 	 */
 	/* DocumentListener Methods */
 	@Override
@@ -1772,8 +1790,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.
+	 * DocumentEvent)
 	 */
 	@Override
 	public void removeUpdate(final DocumentEvent ev) {
@@ -1784,8 +1805,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.
+	 * DocumentEvent)
 	 */
 	// Plain text should not trigger this event
 	@Override
@@ -1797,9 +1821,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.
+	 * ListSelectionEvent)
 	 */
 	/* ListSelectionListener Methods */
 	@Override
@@ -1808,10 +1835,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return;
 		final int item = table.getSelectedRow();
 		setSelectedItem(item);
-		openButton.setEnabled(item!=-1 && isOpenable(selectedItem));
+		openButton.setEnabled(item != -1 && isOpenable(selectedItem));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	/* KeyListener Methods */
@@ -1820,15 +1849,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 		final int key = ke.getKeyCode();
 		final Object source = ke.getSource();
-		final boolean meta = (ke.getModifiers() & Toolkit.getDefaultToolkit()
-				.getMenuShortcutKeyMask()) != 0;
+		final boolean meta = (ke.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0;
 		final boolean metaShift = meta && ke.isShiftDown();
 
 		// Close if Esc, Ctrl+W or Cmd+W
 		if (key == KeyEvent.VK_ESCAPE || (key == KeyEvent.VK_W && meta)) {
 			quit();
 
-		// Trigger Menu accelerators
+			// Trigger Menu accelerators
 		} else if (metaShift) {
 			if (key == KeyEvent.VK_C) // Enter/Exit Console
 				toggleConsoleMode();
@@ -1859,7 +1887,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		} else if (source == prompt) {
 
 			// Up or down arrows pressed in prompt: Move the focus to list
-			if (key==KeyEvent.VK_UP || key==KeyEvent.VK_DOWN) {
+			if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
 				activateTable();
 			}
 
@@ -1870,19 +1898,19 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 				selectParentDirectory(path);
 				setSelectedItem(table.getSelectedRow());
 
-			// Focus in list and right arrow key: List sub-directory
+				// Focus in list and right arrow key: List sub-directory
 			} else if (key == KeyEvent.VK_RIGHT) {
 				setSelectedItem(table.getSelectedRow());
 				if (isFolder(selectedItem))
 					selectSubDirectory(selectedItem);
 
-			// Focus in list and enter: Open selected item
+				// Focus in list and enter: Open selected item
 			} else if (key == KeyEvent.VK_ENTER) {
 				ke.consume();
 				setSelectedItem(table.getSelectedRow());
 				openItem(selectedItem);
 
-			// Focus in list and backspace: Switch focus back to prompt
+				// Focus in list and backspace: Switch focus back to prompt
 			} else if (key == KeyEvent.VK_BACK_SPACE) {
 				prompt.requestFocusInWindow();
 				prompt.selectAll();
@@ -1900,22 +1928,27 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
 	@Override
 	public void keyReleased(final KeyEvent ke) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
 	@Override
 	public void keyTyped(final KeyEvent ke) {
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	/* MouseListener Methods */
@@ -1933,36 +1966,48 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mousePressed(final MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseReleased(final MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseEntered(final MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseExited(final MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
 	 */
 	/* WindowListener Methods */
 	@Override
@@ -1970,47 +2015,65 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		quit();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
 	 */
 	@Override
 	public void windowActivated(final WindowEvent e) {
-		//if (IJ.isMacintosh() && frame!=null) {
-		//	IJ.wait(10);
-		//	frame.setMenuBar(Menus.getMenuBar());
-		//}
+		// if (IJ.isMacintosh() && frame!=null) {
+		// IJ.wait(10);
+		// frame.setMenuBar(Menus.getMenuBar());
+		// }
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
 	 */
 	@Override
 	public void windowClosed(final WindowEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.
+	 * WindowEvent)
 	 */
 	@Override
 	public void windowDeactivated(final WindowEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.
+	 * WindowEvent)
 	 */
 	@Override
 	public void windowDeiconified(final WindowEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
 	 */
 	@Override
 	public void windowIconified(final WindowEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
 	 */
 	@Override
 	public void windowOpened(final WindowEvent e) {
@@ -2022,10 +2085,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		public final static int COLUMNS = 1;
 
 		public TableModel() {
-			list = new ArrayList<String>();
+			list = new ArrayList<>();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
 		 */
 		@Override
@@ -2038,7 +2103,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			fireTableDataChanged();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.table.TableModel#getColumnCount()
 		 */
 		@Override
@@ -2046,7 +2113,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return COLUMNS;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
 		 */
 		@Override
@@ -2054,7 +2123,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return path; // single column table
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
 		@Override
@@ -2062,7 +2133,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return list.size();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
 		@Override
@@ -2076,8 +2149,7 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 
 	/** Checks if the specified search term contains a real query */
 	boolean emptyQuery(final String query) {
-		return (query.isEmpty() || query.equals(CONSOLE_TRIGGER)
-				|| query.equals(PROMPT_PLACEHOLDER));
+		return (query.isEmpty() || query.equals(CONSOLE_TRIGGER) || query.equals(PROMPT_PLACEHOLDER));
 	}
 
 	/**
@@ -2095,8 +2167,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Implements ActionListeners for the 'history' dropdown menu. */
 	private class HistoryActionListener implements ActionListener {
 
-		/* (non-Javadoc)
-		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.
+		 * ActionEvent)
 		 */
 		@Override
 		public void actionPerformed(final ActionEvent e) {
@@ -2120,8 +2195,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Implements ActionListeners for the "options" dropdown menu. */
 	private class OptionsActionListener implements ActionListener {
 
-		/* (non-Javadoc)
-		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.
+		 * ActionEvent)
 		 */
 		@Override
 		public void actionPerformed(final ActionEvent e) {
@@ -2152,8 +2230,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	/** Implements ActionListeners for the "recent folders" menu. */
 	private class RecentActionListener implements ActionListener {
 
-		/* (non-Javadoc)
-		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.
+		 * ActionEvent)
 		 */
 		@Override
 		public void actionPerformed(final ActionEvent e) {
@@ -2171,9 +2252,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 	 * and ensuring that table auto-resizes while displaying horizontal
 	 * scroll-bar as necessary. The latter is mainly a hack to bypass some
 	 * historical limitation of JTable and may need to be removed.
-	 * 
-	 * Sources:
-	 * http://stackoverflow.com/a/15015445
+	 *
+	 * Sources: http://stackoverflow.com/a/15015445
 	 * http://www.camick.com/java/source/TableRowRenderingTip.java
 	 * http://www.camick.com/java/source/TableColumnAdjuster.java
 	 */
@@ -2184,30 +2264,34 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		private boolean initiated = false;
 		private boolean ignoreUpdates = false;
 
-		/* (non-Javadoc)
-		 * @see javax.swing.JTable#prepareRenderer(javax.swing.table.TableCellRenderer, int, int)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.JTable#prepareRenderer(javax.swing.table.
+		 * TableCellRenderer, int, int)
 		 */
 		@Override
-		public Component prepareRenderer(final TableCellRenderer renderer,
-				final int row, final int column) {
+		public Component prepareRenderer(final TableCellRenderer renderer, final int row, final int column) {
 			final Component c = super.prepareRenderer(renderer, row, column);
 
 			if (!isRowSelected(row)) {
 
 				// Alternate row colors
-				c.setBackground((row % 2 == 0) ? getBackground() : new Color(
-						245, 245, 245));
+				c.setBackground((row % 2 == 0) ? getBackground() : new Color(245, 245, 245));
 
 				// Differentiate folders from files
 				// final int modelRow = convertRowIndexToModel(row);
-				// final String item = (String) getModel().getValueAt(modelRow,0);
+				// final String item = (String)
+				// getModel().getValueAt(modelRow,0);
 				// if (item.endsWith(File.separator))
 				// c.setFont(c.getFont().deriveFont(Font.BOLD));
 			}
 			return c;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JTable#initializeLocalVars()
 		 */
 		@Override
@@ -2217,7 +2301,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			updateColumnWidth();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JTable#addNotify()
 		 */
 		@Override
@@ -2232,7 +2318,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			});
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JTable#doLayout()
 		 */
 		@Override
@@ -2251,15 +2339,12 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 					int colWidth = 0;
 					for (int row = 0; row < getRowCount(); row++) {
 						final int prefWidth = getCellRenderer(row, col)
-								.getTableCellRendererComponent(this,
-										getValueAt(row, col), false, false,
-										row, col).getPreferredSize().width;
-						colWidth = Math.max(colWidth, prefWidth
-								+ getIntercellSpacing().width);
+								.getTableCellRendererComponent(this, getValueAt(row, col), false, false, row, col)
+								.getPreferredSize().width;
+						colWidth = Math.max(colWidth, prefWidth + getIntercellSpacing().width);
 					}
 
-					final TableColumn tc = getColumnModel().getColumn(
-							convertColumnIndexToModel(col));
+					final TableColumn tc = getColumnModel().getColumn(convertColumnIndexToModel(col));
 					tc.setPreferredWidth(colWidth);
 					width += colWidth;
 				}
@@ -2273,8 +2358,11 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.JTable#tableChanged(javax.swing.event.TableModelEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.JTable#tableChanged(javax.swing.event.TableModelEvent)
 		 */
 		@Override
 		public void tableChanged(final TableModelEvent e) {
@@ -2284,7 +2372,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			}
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JTable#getScrollableTracksViewportWidth()
 		 */
 		@Override
@@ -2292,7 +2382,9 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 			return trackViewportWidth;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JTable#createDefaultColumnModel()
 		 */
 		@Override
@@ -2337,16 +2429,14 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		final DefaultTableCellRenderer renderer;
 
 		public HeaderRenderer(final JTable table) {
-			renderer = (DefaultTableCellRenderer) table.getTableHeader()
-					.getDefaultRenderer();
+			renderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
 		}
 
 		@Override
-		public Component getTableCellRendererComponent(final JTable table,
-				final Object value, final boolean isSelected,
+		public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
 				final boolean hasFocus, final int row, final int col) {
-			final JLabel lbl = (JLabel) renderer.getTableCellRendererComponent(
-					table, value, isSelected, hasFocus, row, col);
+			final JLabel lbl = (JLabel) renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+					col);
 			lbl.setHorizontalAlignment(SwingConstants.LEFT);
 			lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
 			return lbl;
@@ -2363,8 +2453,8 @@ public class Commander implements PlugIn, ActionListener, DocumentListener,
 		private static final String delimiter = "@,";
 
 		/** Default constructor. */
-		public SavedSearch(final String query, final boolean caseSensitive,
-				final boolean wholeWord, final boolean regex) {
+		public SavedSearch(final String query, final boolean caseSensitive, final boolean wholeWord,
+				final boolean regex) {
 			this.query = query;
 			this.caseSensitive = caseSensitive;
 			this.wholeWord = wholeWord;

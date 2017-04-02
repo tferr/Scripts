@@ -1,11 +1,9 @@
-# Tutorials
+# Tools
+IJ macros that are installed in the ImageJ Toolbar. These are installed by means of other
+scripts and commands installed in the BAR menu hierarchy.
 
-These tutorials skim through the basics of BeanShell and Python scripting and were used in
-the workshop
-[Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
-at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
-
-They can be accessed from ImageJ using `BAR> Utilities> Offline Tutorials`
+Single tools are appended to the IJ toolbar. Toolsets typically will replace existing
+tools in the toolbar.
 
 
 

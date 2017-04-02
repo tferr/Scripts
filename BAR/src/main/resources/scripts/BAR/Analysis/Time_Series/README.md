@@ -1,11 +1,10 @@
-# Tutorials
+# Time Series Scripts
 
-These tutorials skim through the basics of BeanShell and Python scripting and were used in
-the workshop
-[Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
-at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
+Scripts that deal with timelapse images including Calcium imaging experiments. For scripts
+dealing with video-tracked data have a look at the scripts installed in the Script Editor
+[templates].
 
-They can be accessed from ImageJ using `BAR> Utilities> Offline Tutorials`
+[templates]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/script_templates
 
 
 

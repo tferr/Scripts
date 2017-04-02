@@ -61,7 +61,7 @@ void customRoutine(double[] values) {
 		rt.setValue(colHeading, i, values[i]);
 	rt.show("Results");
 	runner = new Runner(context);
-	runner.runIJ1Macro("Data_Analysis/Distribution_Plotter.ijm", colHeading);
+	runner.runIJ1Macro("BAR/Data_Analysis/Distribution_Plotter.ijm", colHeading);
 	if (!runner.scriptLoaded())
 		uiService.showDialog("Profile distributions not plotted.\nCheck console for details", "Error");
 }
@@ -85,18 +85,18 @@ Plot getPlot() {
 	// channel to be activated (by ImagePlus.setPositionWithoutUpdate())
 	// which causes an annoying glich in the image canvas/c-slider
 	Color[] colors;
-	boolean[] states;
+	boolean[] states = new boolean[channels];
 	if (imp.isComposite()) {
 		CompositeImage ci = (CompositeImage)imp;
-		states = ci.getActiveChannels();
+		activeChs = ci.getActiveChannels();
 		colors = new Color[channels];
 		for (int c=0; c<channels; c++) {
-			if (!states[c])
-				continue;
+			// Avoid NPE when imp.getNChannels() > CompositeImage.MAX_CHANNELS
+			// (ci.getActiveChannels().length = CompositeImage.MAX_CHANNELS)
+			states[c] = (c<activeChs.length) ? activeChs[c] : true;
 			colors[c] = getLutColor(ci.getChannelLut(c+1));
 		}
 	} else {
-		states = new boolean[channels];
 		Arrays.fill(states, Boolean.TRUE);
 		colors = getUniqueColors(channels);
 	}
@@ -249,11 +249,11 @@ Color getLutColor(IndexColorModel cm) {
 
 /* Returns an array of colors with the specified size */
 Color[] getUniqueColors(int n) {
-	Color[] defaults = {Color.BLACK, Color.DARK_GRAY, Color.RED, Color.GREEN,
-						Color.BLUE, Color.MAGENTA, Color.CYAN, Color.YELLOW};
+	Color[] defaults = {Color.BLACK, Color.RED, Color.GREEN, Color.BLUE,
+						Color.MAGENTA, Color.CYAN, Color.YELLOW};
 	Color[] newcolors = new Color[n];
 	for (int i=0; i<n; i++)
-		newcolors[i] = (i<defaults.length) ? defaults[i] : Color.BLACK;
+		newcolors[i] = (i<defaults.length) ? defaults[i] : Color.LIGHT_GRAY;
 	return newcolors;
 }
 

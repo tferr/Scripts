@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -23,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -46,59 +46,59 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultEditorKit;
 
+import net.imagej.ImageJ;
+import net.imagej.ui.swing.updater.ImageJUpdater;
+
+import org.scijava.command.Command;
+import org.scijava.command.CommandService;
+import org.scijava.platform.PlatformService;
+import org.scijava.plugin.Menu;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+
 import bar.Utils;
-import fiji.Debug;
-import ij.IJ;
-import ij.ImageJ;
-import ij.Menus;
-import ij.WindowManager;
-import ij.plugin.BrowserLauncher;
-import ij.plugin.PlugIn;
 
-/** Implements the {@literal BAR>About BAR...} command */
-public class Help implements PlugIn {
+/** Implements the {@literal About BAR...} command */
+@Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
+		@Menu(label = "About & Resources...") })
+public class Help implements Command {
 
-	/** Parameters **/
-	private JFrame frame;
-	private static String FRAME_TITLE = "About BAR...";
+	@Parameter
+	private CommandService commandService;
 
-	/**
-	 * Calls {@link fiji.Debug#runFilter(String, String, String)
-	 * fiji.Debug.runFilter()} so that the plugin can be debugged from an IDE
-	 */
-	public static void main(final String[] args) {
-		Debug.run(FRAME_TITLE, "");
+	@Parameter
+	private PlatformService platformService;
+
+	private static JFrame frame;
+	private static final String FRAME_TITLE = "About BAR...";
+
+	public static void main(final String... args) throws Exception {
+		final ImageJ ij = net.imagej.Main.launch(args);
+		ij.command().run(Help.class, true);
 	}
 
-	/**
-	 * This method is called when the plugin is loaded. See
-	 * {@link ij.plugin.PlugIn#run(java.lang.String)}. Here it displays "About"
-	 * window.
-	 * 
-	 * @param arg
-	 *            ignored (Otherwise specified in plugins.config).
-	 */
 	@Override
-	public void run(final String arg) {
-
-		Utils.shiftClickWarning();
+	public void run() {
 
 		// Check if "About" window is already being displayed
-		if (WindowManager.getWindow(FRAME_TITLE) == null) {
-			try {
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
-			} catch (final Exception ignored) {
-			}
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					displayGUI();
-				}
-			});
-		} else {
-			IJ.selectWindow(FRAME_TITLE);
+		if (frame != null) {
+			frame.setVisible(true);
+			frame.toFront();
+			return;
 		}
+
+		try {
+			Utils.shiftClickWarning();
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (final Exception ignored) {
+			// ignored
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				displayGUI();
+			}
+		});
 
 	}
 
@@ -110,14 +110,6 @@ public class Help implements PlugIn {
 			@Override
 			public void windowClosing(final WindowEvent we) {
 				quit();
-			}
-
-			@Override
-			public void windowActivated(final WindowEvent we) {
-				if (IJ.isMacintosh() && frame != null) {
-					IJ.wait(10);
-					frame.setMenuBar(Menus.getMenuBar());
-				}
 			}
 		});
 
@@ -168,9 +160,9 @@ public class Help implements PlugIn {
 				+ "<a href='http://imagej.net/User:Tiago'>Tiago Ferreira</a> with vital contributions "
 				+ "from <a href='https://github.com/tferr/Scripts#contributors'>many others</a>."
 				+ "<h3>Citation</h3>"
-				+ "<a href='http://dx.doi.org/10.5281/zenodo.28838'>"
+				+ "<a href='https://zenodo.org/badge/latestdoi/8709403'>"
 				+ "Ferreira et al (" + Utils.BUILD_YEAR +")"
-				+ ". DOI: 10.5281/zenodo.28838</a>"
+				+ ". (Click for Zenodo DOI)</a>"
 				+ "<h3>Development</h3>"
 				+ "<a href='"+ Utils.getSourceURL() + "'>Source</a>" + inLineSpacer
 				+ "<a href='"+ Utils.getSourceURL() + "/releases'>Release History</a>" + inLineSpacer
@@ -189,8 +181,9 @@ public class Help implements PlugIn {
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
 					try {
-						BrowserLauncher.openURL(e.getURL().toString());
+						platformService.open(e.getURL());
 					} catch (final IOException ignored) {
+						// ignored
 					}
 			}
 		});
@@ -221,12 +214,12 @@ public class Help implements PlugIn {
 
 
 		addHeaderLabel(buttonPanel, "Utilities:");
-		button = plainButton("Open BAR Directory");
+		button = plainButton("<html>Open <i>My Routines</i>");
 		buttonPanel.add(button);
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				Utils.revealFile(Utils.getBARDir());
+				Utils.revealFile(Utils.getMyRoutinesDir());
 			}
 		});
 		button = plainButton("Check for Updates...");
@@ -234,26 +227,13 @@ public class Help implements PlugIn {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				quit();
-				IJ.doCommand("Update Fiji");
+				// quit();
+				commandService.run(ImageJUpdater.class, true);
 			}
 		});
 		frame.add(buttonPanel, BorderLayout.WEST);
-
-		// Improve cross-platform rendering
-		final ImageJ ij = IJ.getInstance();
-		if (ij != null && !IJ.isMacOSX()) {
-			final Image img = ij.getIconImage();
-			if (img != null)
-				try {
-					frame.setIconImage(img);
-				} catch (final Exception ignored) {
-				}
-		}
-
 		frame.pack();
 		frame.setVisible(true);
-		WindowManager.addWindow(frame);
 
 	}
 
@@ -271,7 +251,7 @@ public class Help implements PlugIn {
 	 * Constructs a JButton with the specified label that opens the specified
 	 * URL in the user's Browser
 	 */
-	JButton URLButton(final String label, final String URL) {
+	JButton URLButton(final String label, final String url) {
 		final JButton button = new JButton(label);
 		button.setMaximumSize(new Dimension(Integer.MAX_VALUE, button
 				.getMinimumSize().height));
@@ -279,9 +259,9 @@ public class Help implements PlugIn {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
-					BrowserLauncher.openURL(URL);
-				} catch (final Exception localException) {
-					IJ.handleException(localException);
+					platformService.open(new URL(url));
+				} catch (final IOException exc) {
+					exc.printStackTrace();
 				}
 			}
 		});
@@ -354,10 +334,9 @@ public class Help implements PlugIn {
 		pane.setComponentPopupMenu(menu);
 	}
 
-	/** Disposes and unregisters main frame from WindowManager */
+	/** Custom instructions could go here */
 	void quit() {
 		frame.dispose();
-		WindowManager.removeWindow(frame);
 	}
 
 }

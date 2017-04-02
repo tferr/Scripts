@@ -1,9 +1,11 @@
 package bar;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -17,8 +19,11 @@ import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptModule;
 import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
+import org.scijava.ui.swing.script.TextEditor;
+import org.scijava.util.FileUtils;
 
 import ij.IJ;
+import ij.plugin.MacroInstaller;
 import ij.plugin.Macro_Runner;
 
 /** Runs a JARified script **/
@@ -45,6 +50,9 @@ public class Runner {
 
 	@Parameter
 	private String exitStatus;
+
+	@Parameter
+	private URL lastLoadedURL;
 
 	/* exit status */
 	private static final String WAS_CANCELED = "canceled";
@@ -104,7 +112,8 @@ public class Runner {
 	 *            {@code /scripts/BAR/Data_Analysis/Distribution_Plotter.ijm};
 	 */
 	public void runScript(final String path) {
-		final InputStream in = Utils.class.getResourceAsStream(path);
+		lastLoadedURL = getClass().getResource(path);
+		final InputStream in = getClass().getResourceAsStream(path);
 		runScript(in, path, null);
 	}
 
@@ -118,7 +127,8 @@ public class Runner {
 	 *            see {@link ScriptService#run(String, Reader, boolean, Map)}
 	 */
 	public void runScript(final String path, final Map<String, Object> inputMap) {
-		final InputStream in = Utils.class.getResourceAsStream(path);
+		lastLoadedURL = getClass().getResource(path);
+		final InputStream in = getClass().getResourceAsStream(path);
 		runScript(in, path, inputMap);
 	}
 
@@ -181,19 +191,42 @@ public class Runner {
 	 * Ported from {@link Macro_Runner#runMacroFromJar(String, String)}.
 	 *
 	 * @param path
-	 *            the path to the IJ1 macro in the BAR file relative to
-	 *            {@code /scripts/BAR/}
+	 *            the path to the IJ1 macro in the BAR jar file relative to
+	 *            {@code /scripts/}
 	 * @param arg
 	 *            the argument string to be retrieved through the IJ1 built-in
 	 *            macro function {@code getArgument()}
 	 */
 	public void runIJ1Macro(final String path, final String arg) {
-		String macro = null;
+		final String macro = readContents("/scripts/" + path);
+		setStatus((macro == null) ? EXCEPTION : (new Macro_Runner()).runMacro(macro, arg));
+	}
+
+	public void installIJ1Macro(final String path) {
+		installIJ1Macro(path, false);
+	}
+
+	public void installIJ1Macro(final String path, final boolean singleTool) {
+		final String macro = readContents("/scripts/" + path);
+		if (macro != null) {
+			final MacroInstaller mi = new MacroInstaller();
+			if (singleTool) {
+				mi.installSingleTool(macro);
+			} else {
+				mi.install(macro);
+			}
+		}
+		setStatus((macro == null) ? EXCEPTION : path + " installed");
+	}
+
+	private String readContents(final String resourcePath) {
+		String contents = null;
 		try {
-			final InputStream is = Utils.class.getResourceAsStream("/scripts/BAR/" + path);
+			lastLoadedURL = getClass().getResource(resourcePath);
+			final InputStream is = lastLoadedURL.openStream();
 			if (is == null) {
-				error("Could not find " + path, IO_ERROR);
-				return;
+				error("Could not find " + resourcePath, IO_ERROR);
+				return contents;
 			}
 			final InputStreamReader isr = new InputStreamReader(is);
 			setLoaded(true);
@@ -202,12 +235,12 @@ public class Runner {
 			int n;
 			while ((n = isr.read(b)) > 0)
 				sb.append(b, 0, n);
-			macro = sb.toString();
+			contents = sb.toString();
 			is.close();
 		} catch (final IOException e) {
-			error("There was an error reading " + path, IO_ERROR);
+			error("There was an error reading " + resourcePath, IO_ERROR);
 		}
-		setStatus((macro == null) ? EXCEPTION : (new Macro_Runner()).runMacro(macro, arg));
+		return contents;
 	}
 
 	private void error(final String msg, final String status) {
@@ -267,6 +300,20 @@ public class Runner {
 	 */
 	public String getStatus() {
 		return exitStatus;
+	}
+
+	public void openLastLoadedResource() {
+		if (lastLoadedURL == null) {
+			return;
+		}
+		final TextEditor editor = new TextEditor(context);
+		editor.loadTemplate(lastLoadedURL);
+		editor.setTitle(FileUtils.shortenPath(lastLoadedURL.getPath(), 0));
+		editor.setVisible(true);
+	}
+
+	public File getLastLoadedResource() {
+		return FileUtils.urlToFile(lastLoadedURL);
 	}
 
 }

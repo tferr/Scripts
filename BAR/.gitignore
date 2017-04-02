@@ -1,5 +1,6 @@
-/target/
+target/
 .DS_Store
 .classpath
 .project
 .settings
+.checksums

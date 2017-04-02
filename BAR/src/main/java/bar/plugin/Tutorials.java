@@ -31,6 +31,7 @@ import net.imagej.ImageJ;
 import org.scijava.Context;
 import org.scijava.app.StatusService;
 import org.scijava.command.Command;
+import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.DialogPrompt;
@@ -38,7 +39,8 @@ import org.scijava.ui.UIService;
 import org.scijava.ui.swing.script.TextEditor;
 
 /** Loads a new instance of the Script editor with jarified tutorial files */
-@Plugin(type = Command.class, headless = true, menuPath = "BAR > Snippets > Tutorials...")
+@Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
+		@Menu(label = "Open Interactive Tutorials...") })
 public class Tutorials implements Command {
 
 	@Parameter

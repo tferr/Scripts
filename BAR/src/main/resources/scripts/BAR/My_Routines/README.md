@@ -1,11 +1,29 @@
-# Tutorials
+# My Routines
 
-These tutorials skim through the basics of BeanShell and Python scripting and were used in
-the workshop
-[Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
-at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
+_My Routines_ is the place where users can save their own scripts to be easily accessed
+through the BAR menu hierarchy. More details are available on the [BAR wiki page][Wiki].
+The local _My Routines_ directory is not managed by the BAR Update site.
 
-They can be accessed from ImageJ using `BAR> Utilities> Offline Tutorials`
+The `BAR>My Routines>` a menu contains several convenient commands (themselves implemented
+as scripts), including:
+
+
+## Browse
+Points [Commander][Utilities] to the _My Routines_ directory and activates it
+
+
+## List
+Prints the contents of the _My Routines_ directory to a dedicated window. Files can then
+be opened in the Script Editor by double-click. This may be preferable to
+[Shift-clicking](http://imagej.net/BAR#OpeningBAR) the menu bar
+
+
+## Reveal Directory
+Opens _My Routines_ in the file browser of the operating system
+
+
+## Search Routines
+A script that searches for content in this directory.
 
 
 

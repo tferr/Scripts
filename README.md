@@ -1,128 +1,99 @@
-# <a name="scripts"></a>IJ BAR
+# IJ BAR
+
 [![DOI](https://zenodo.org/badge/4622/tferr/Scripts.svg)](https://zenodo.org/badge/latestdoi/4622/tferr/Scripts)
 [![Latest Release](https://img.shields.io/github/release/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/releases)
 [![Issues](https://img.shields.io/github/issues/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/issues)
 [![Jenkins](http://img.shields.io/jenkins/s/http/jenkins.imagej.net/BAR.svg?style=flat-square)](http://jenkins.imagej.net/job/BAR)
 [![GPL License](http://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0)
 
-Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines for
-[ImageJ](http://imagej.net/), the de facto standard in scientific image processing in the life
-sciences.
+Welcome to the **IJ BAR**: A collection of <b>B</b>roadly <b>A</b>pplicable <b>R</b>outines
+for [ImageJ](http://imagej.net/), the de facto standard in scientific image processing in
+the life sciences.
 
-To install BAR, download the latest version of [Fiji](http://imagej.net/Fiji) and subscribe to the
-[BAR update site](http://imagej.net/List_of_update_sites).
-For more details refer to the [BAR documentation page](http://imagej.net/BAR#Installation).
+To install BAR you just need to subscribe to the
+[BAR update site](http://imagej.net/BAR#Installation). To know more about BAR, have a look
+at its [Wiki Page][Wiki]. Below is a lis of some of the BAR routines:
 
 
 ## [Analysis]
-  Routines that complement built-in commands in the ImageJ `Analyze>` menu.
+Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
-  1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#log-dog-spot-counter)
-  2. (groovy) [Multi ROI Profiler](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multi-roi-profiler)
-  3. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
-  4. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
-  5. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
+1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#log-dog-spot-counter)
+1. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
+1. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
+1. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
+1. (groovy) [Multi ROI Profiler](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#multi-roi-profiler)
+1. (groovy) [Normalize Against F0](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#normalize-against-f0)
+1. (groovy) [Register Against Average](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#register-against-average)
 
 
 ## [Data Analysis]
-  Operations related to statistics, profiles, histograms and curve fitting.
+Operations related to statistics, profiles, histograms and curve fitting.
 
-  1. (bsh) [Create Boxplot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-boxplot)
-  2. (bsh) [Create Polar Plot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-polar-plot)
-  3. (ijm) [Distribution Plotter](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#distribution-plotter)
-  4. (bsh) [Find Peaks](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#find-peaks)
-  5. (bsh) [Fit Polynomial](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#fit-polynomial)
-  6. (java) [Interactive Plotting](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#interactive-plotting)
+1. (bsh) [Create Boxplot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-boxplot)
+1. (bsh) [Create Polar Plot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-polar-plot)
+1. (ijm) [Distribution Plotter](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#distribution-plotter)
+1. (bsh) [Find Peaks](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#find-peaks)
+1. (bsh) [Fit Polynomial](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#fit-polynomial)
+1. (java) [Interactive Plotting](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#interactive-plotting)
+1. (py) [NN Distances](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#nn-distances)
+
 
 ## [Image Annotation][Annotation]
-  Aiders for the annotation of scientific images.
+Aiders for the annotation of scientific images.
 
-  1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#combine-orthogonal-views)
-  2. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#cumulative-z-project)
-  3. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder)
+1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#combine-orthogonal-views)
+1. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#cumulative-z-project)
+1. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder)
 
 
 ## [Image Segmentation][Segmentation]
-  Routines for partitioning images into analyzable parts.
+Routines for partitioning images into analyzable parts.
 
-  1. (java) [Shen-Castan Edge Detector](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#shen-castan-edge-detector)
-  2. (ijm) [Apply Threshold To ROI](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#apply-threshold-to-roi)
-  3. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#clear-thresholded-pixels)
-  4. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#remove-isolated-pixels)
-  5. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
-  6. (ijm) [Threshold From Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#threshold-from-background)
-  7. (ijm) [Wipe Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#wipe-background)
-
-
-## [Tools and Toolsets][Tools]
-  Additions to the ImageJ toolbar.
-
-  1. (ijm) [Calibration Menu](./Tools/README.md#calibration-menu)
-  2. (ijm) [List Folder Menu](./Tools/README.md#list-folder-menu)
-  3. (ijm) [Segment Profile Tool](./Tools/README.md#segment-profile-tool)
-  4. (ijm) [Shortcuts Menu](./Tools/README.md#shortcuts-menu)
-  5. (ijm) [ROI Manager Tools](./Tools/README.md#roi-manager-tools)
-  6. (ijm) [Toolset Creator](./Tools/README.md#toolset-creator)
+1. (ijm) [Apply Threshold To ROI](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#apply-threshold-to-roi)
+1. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#clear-thresholded-pixels)
+1. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#remove-isolated-pixels)
+1. (ijm) [Segment Profile Tool](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#segment-profile-tool)
+1. (java) [Shen-Castan Edge Detector](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#shen-castan-edge-detector)
+1. (ijm) [Threshold From Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#threshold-from-background)
+1. (ijm) [Wipe Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#wipe-background)
 
 
-## [Snippets]
-  Example scripts (in several languages) to be used as scripting templates, including:
+## [Utilities]
+Productivity tools.
 
-  1. (py) [Extract Bouts From Tracks](./Snippets/README.md#extract-bouts-from-tracks)
-  2. (groovy) [List BARs](./Snippets/README.md#list-bars)
-  3. (py) [Median Filter](./Snippets/README.md#median-filter)
-  4. (py) [NN Distances](./Snippets/README.md#nn-distances)
-  5. [Batch Processors](./Snippets/README.md#batch-processors)
-    1. (ijm) [Process Folder IJM](./Snippets/README.md#process-folder-ijm)
-    2. (py) [Process Folder PY](./Snippets/README.md#process-folder-py)
-  6. (bsh) [Search BAR](./Snippets/README.md#search-bar)
-
-
-## [lib]
-  User-defined libraries (scripting additions) in a centralized repository. These are methods and
-  functions that can be conveniently shared across files.
-
-  1. [BeanShell library](./lib/README.md#bsh-lib)
-  2. [Clojure library](./lib/README.md#clj-lib)
-  3. [Groovy library](./lib/README.md#gvy-lib)
-  4. [IJ Macro library](./lib/README.md#ijm-lib)
-  5. [JavaScript library](./lib/README.md#js-lib)
-  6. [Python library](./lib/README.md#py-lib)
-  7. [Ruby library](./lib/README.md#rb-lib)
+1. (java) [Commander](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#commander)
+1. (ijm) [Calibration Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
+1. (ijm) [List Folder Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
+1. (java) [New Snippet](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#new-snippet)
+1. (ijm) [Shortcuts Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
+1. (ijm) [ROI Manager Tools](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#load-roi-manager-tools)
+1. (ijm) [Toolset Creator](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#create-toolset)
 
 
-## Utilities
-  Productivity software.
+## [My Routines]
+An infrastructure to help users tinkering with ImageJ.
 
-  1. [BAR Commander](./BAR/src/main/java/bar/plugin/Commander.java), a keyboard-based file browser
-  that produces filtered lists of directory contents. Features include: drag-and-drop support,
-  interaction with native file manager, regex filtering, and built-in console for common operations.
-  ([Documentation page](http://imagej.net/BAR#Commander))
+1. [Multi-language libs](./BAR/src/main/resources/scripts/BAR/lib/README.md#lib):
+   User-defined libraries (BeanShell, Clojure, Groovy, IJ Macro, JavaScript, Python, Ruby)
+1. [Script Templates]((./BAR/src/main/resources/script_templates), multi-language snippets
 
 
-## [Java Classes]
-  Maven project implementing the backbone of BAR, including several [plugins](./BAR/README.md#plugins),
-  [utilities](./BAR/README.md#utilities), [External Ops](./BAR/README.md#external-ops),the structure
-  of the BAR menu and the [BAR API](http://tferr.github.io/Scripts/apidocs/). While BAR is mainly a
-  suite of ImageJ1 add-ons, some [BAR plugins](./BAR/README.md#plugins) explore the scripting
-  capabilities of [ImageJ2](http://imagej.net/ImageJ2).
+## Java Classes
+Maven project implementing the backbone of BAR, including several [IJ1 plugins and IJ2
+commands](./BAR/README.md#commands-and-plugins), [External Ops](./BAR/README.md#external-ops),
+and the[BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 
 ## Tutorials
-  1. [Introduction to Scripting](./BAR/src/main/resources/tutorials/README.md#tutorials) Tutorials used
-      in the workshop [Scripting with BAR](http://imagej.net/Conference_2015_Program#Tiago_Ferreira_-_Scripting_with_BAR),
-     at the [2015 ImageJ User & Developer Conference](http://imagej.net/Conference_2015).
-  1. [External Ops](./BAR/README.md#external-ops): Tutorial exemplifying how to provide
-     [ops](http://imagej.net/ImageJ_Ops).
+1. [Introduction to Scripting](./BAR/src/main/resources/tutorials/README.md#tutorials):
+   101 of (IJ1) scripting using BeanShell and Python (Jython)
 
-## [Misc]
-  Scripts that are not distributed through the BAR update site:
-
-  1. [Capture Window](./misc/README.md#capture-window)
-  2. [Clipboard to Results](./misc/README.md#clipboard-to-results)
+1. [External Ops](./BAR/README.md#external-ops): Advanced tutorial exemplifying how to
+   provide ad-hoc [ops](http://imagej.net/ImageJ_Ops)
 
 
-## Help?
+# Help?
  * Want to Contribute to BAR?
     * Thanks! Please, please do! See [here](https://guides.github.com/activities/contributing-to-open-source/)
     and [here](https://help.github.com/articles/fork-a-repo) for details on how to
@@ -137,7 +108,7 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
       * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
 
 
-## Citations
+# Citations
 
 * To cite BAR:
 
@@ -156,15 +127,13 @@ For more details refer to the [BAR documentation page](http://imagej.net/BAR#Ins
   1. Carnevalli et al. S6K1 plays a critical role in early adipocyte differentiation. Developmental Cell (2010), 18(5):763-74. [PMID 20493810](http://www.ncbi.nlm.nih.gov/pubmed/20493810)
 
 
-License
--------
+# License
 This program is free software: you can redistribute them and/or modify them under the terms of the
 [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later version.
 
 
-Contributors
-------------
+# Contributors
 BAR was created and is maintained by [Tiago Ferreira](http://imagej.net/User:Tiago)
 with contributions from
 Maxime Pinchon,
@@ -181,18 +150,16 @@ Blomquist. This project would not have been possible without the support of the 
 
 
 
+------
+| [Home] | [Analysis] | [Annotation] | [Data Analysis] | [lib] | [My Routines] | [Segmentation] | [Tools] | [Utilities] | [Wiki] |
 
-
-| [Analysis] | [Data Analysis] | [Annotation] | [Segmentation] | [Tools] | [Plugins][Java Classes] | [lib] | [Snippets] | [IJ] |
-|:----------:|:---------------:|:------------:|:--------------:|:-------:|:-----------------------:|:-----:|:----------:|:----:|
-
-[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis#analysis
-[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis#data-analysis
-[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation#annotation
-[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation#segmentation
-[Tools]: https://github.com/tferr/Scripts/tree/master/Tools#tools-and-toolsets
-[Java Classes]: https://github.com/tferr/Scripts/tree/master/BAR#java-classes
-[lib]: https://github.com/tferr/Scripts/tree/master/lib#lib
-[Snippets]: https://github.com/tferr/Scripts/tree/master/Snippets#snippets
-[IJ]: http://imagej.net/BAR
-[Misc]:https://github.com/tferr/Scripts/tree/master/misc#misc
+[Home]: https://github.com/tferr/Scripts
+[Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis
+[Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation
+[Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis
+[lib]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/lib
+[My Routines]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/My_Routines
+[Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation
+[Tools]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/tools
+[Utilities]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/Utilities
+[Wiki]: https://imagej.net/BAR
