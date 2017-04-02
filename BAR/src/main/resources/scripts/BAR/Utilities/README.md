@@ -19,15 +19,15 @@ tools (such as drawing tools) in custom toolsets. It is part of ImageJ1 distribu
 ## Install Productivity Menus
 Appends Menus to the IJ toolbar, including:
 
-1. *Calibration Menu Tool*: Provides shortcuts for spatial calibration of images lacking
+1. **Calibration Menu Tool**: Provides shortcuts for spatial calibration of images lacking
    metadata.
 
-1. *List Folder Menu Tool*: Provides a drop-down-list of the contents of a specified directory
-   that is remembered across restarts.
+1. **List Folder Menu Tool**: Provides a drop-down-list of the contents of a specified
+   directory that is remembered across restarts.
    Offers commands to reveal directories in the native file browser and commands to list
    directory contents to dedicated windows.
 
-1. *Shortcuts Menu Tool*: Lists the user's most used commands. List is remembered across
+1. **Shortcuts Menu Tool**: Lists the user's most used commands. List is remembered across
    restarts.
 
 

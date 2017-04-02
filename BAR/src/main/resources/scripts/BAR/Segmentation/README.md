@@ -8,7 +8,7 @@ Routines for partitioning images into analyzable parts.
 ### Shen-Castan Edge Detector
 Java plugin implementing an Edge-detection filter according to Shen and Castan, CVGIP,
 1992, 54 (2)
-112-133([DOI: 10.1016/1049-9652(92)90060-B](http://dx.doi.org/10.1016/1049-9652(92)90060-B)).
+112-133 ([DOI: 10.1016/1049-9652(92)90060-B](http://dx.doi.org/10.1016/1049-9652(92)90060-B)).
 
 It is a re-write of the
 [initial plugin](http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html)
