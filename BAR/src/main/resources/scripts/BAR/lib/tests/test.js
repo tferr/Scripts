@@ -1,4 +1,4 @@
-// Test-JavaScript.js
+// test.js
 // IJ BAR: https://github.com/tferr/Scripts#scripts
 //
 // Tests correct loading of BARlib
