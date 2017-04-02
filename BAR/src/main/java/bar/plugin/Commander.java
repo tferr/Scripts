@@ -152,7 +152,7 @@ public class Commander implements Command, ActionListener, DocumentListener, Key
 	private static final int DEF_FRAME_Y = 0;
 
 	/** Parameters **/
-	private String startupString;
+	private final String startupString;
 
 	private static int frameX, frameY, frameWidth, frameHeight, maxSize;
 	private boolean hideOnOpen, ijmLegacy, tooltips, caseSensitive, regex, wholeWord;
@@ -179,7 +179,7 @@ public class Commander implements Command, ActionListener, DocumentListener, Key
 		this("");
 	}
 
-	public Commander(String startupString) {
+	public Commander(final String startupString) {
 		this.startupString = startupString;
 	}
 
@@ -202,10 +202,10 @@ public class Commander implements Command, ActionListener, DocumentListener, Key
 			clearPreferences();
 
 		// Initialize file list, favorites and history. Set defaults
-		filenames = new ArrayList<String>();
-		bookmarks = new ArrayList<String>();
-		recentPaths = new ArrayList<String>();
-		prevSearches = new ArrayList<SavedSearch>();
+		filenames = new ArrayList<>();
+		bookmarks = new ArrayList<>();
+		recentPaths = new ArrayList<>();
+		prevSearches = new ArrayList<>();
 		loadPreferences();
 
 		// Check if a path has been specified in plugins.config
