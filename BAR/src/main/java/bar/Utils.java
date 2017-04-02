@@ -76,10 +76,6 @@ public class Utils implements PlugIn {
 	/** The URL to BAR's GitHub repository */
 	static final String API_URL = "http://tferr.github.io/Scripts/apidocs/";
 
-	/** The absolute path to the /BAR directory prior to v2.0.0 */
-	private static final String OLD_BAR_DIR = IJ.getDirectory("plugins") + "Scripts" + File.separator + "BAR"
-			+ File.separator;
-
 	/** The absolute path to the /BAR directory */
 	private static final String BAR_DIR = Prefs.getImageJDir() + "scripts" + File.separator + "BAR" + File.separator;
 
