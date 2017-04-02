@@ -10,19 +10,19 @@
  */
 package bar.plugin;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
 import net.imagej.ImageJ;
 
+import org.scijava.ItemVisibility;
 import org.scijava.app.StatusService;
 import org.scijava.command.Command;
+import org.scijava.command.CommandService;
 import org.scijava.display.DisplayService;
 import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
@@ -31,31 +31,55 @@ import org.scijava.text.TextService;
 import org.scijava.ui.DialogPrompt;
 import org.scijava.ui.UIService;
 
-/** Loads jarified markdown files (offline documentation of BAR) */
-@Plugin(type = Command.class, menuPath = "BAR > Help > Open Offline Help...")
+import bar.Utils;
+
+/**
+ * Renders GitHub README.md files as HTML files that once JARified are used as
+ * offline documentation of BAR)
+ */
 @Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
 		@Menu(label = "Offline Help...") })
 public class READMEReader implements Command {
 
 	@Parameter
-	private static DisplayService displayService;
+	private CommandService commandService;
 
 	@Parameter
-	private static StatusService statusService;
+	private DisplayService displayService;
 
 	@Parameter
-	private static TextService textService;
+	private StatusService statusService;
 
 	@Parameter
-	private static UIService uiService;
+	private TextService textService;
 
-	@Parameter(label = "Which markdown file?", choices = { "Analysis", "Analysis/Time Series", "Annotation",
-			"Data Analysis", "lib", "lib/tests", "My Routines", "Segmentation", "tools", "Utilities" })
+	@Parameter
+	private UIService uiService;
+
+	@Parameter(visibility = ItemVisibility.MESSAGE)
+	private final String help = helpMsg();
+
+	@Parameter(label = "Help on which topic?", choices = { "Analysis", "Analysis/Time Series", "Annotation",
+			"Data Analysis", "lib", "lib/tests", "My Routines", "Segmentation", "tools", "Utilities", "Other..." })
 	private String resourceDir;
+
+	private String helpMsg() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("<html>").append("<body><div WIDTH=400>")
+				.append("This command displays the markdown documentation of BAR. ")
+				.append("These are the same files displayed by GitHub when browsing the ").append("<a href='")
+				.append(Utils.getSourceURL()).append("'> BAR repository</a>. ")
+				.append("Note that while files are accessed locally, proper display of embeded ")
+				.append("images requires an internet connection.");
+		return sb.toString();
+	}
 
 	@Override
 	public void run() {
-		openREADME(resourceDir.replace(" ", "_"));
+		if (("Other...").equals(resourceDir))
+			commandService.run(Help.class, true);
+		else
+			openREADME(resourceDir.replace(" ", "_"));
 	}
 
 	public void openREADME(final String resourceDirectory) {
@@ -65,25 +89,30 @@ public class READMEReader implements Command {
 
 		String contents = null;
 		try {
-			final URI uri = READMEReader.class.getResource(resourcePath).toURI();
-			FileSystem fileSystem = null;
-			Path path;
-			if ("jar".equals(uri.getScheme())) {
-				fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-				path = fileSystem.getPath(resourcePath);
-			} else {
-				path = Paths.get(uri);
+			final URL url = getClass().getResource(resourcePath);
+			final InputStream is = url.openStream();
+			final File file = File.createTempFile(resourceDirectory + "README", ".md");
+			final OutputStream os = new FileOutputStream(file);
+			final byte[] buffer = new byte[1024];
+
+			// copy file content in bytes
+			int length;
+			while ((length = is.read(buffer)) > 0) {
+				os.write(buffer, 0, length);
 			}
-			contents = textService.asHTML(path.toFile());
-		} catch (IOException | URISyntaxException exc) {
+			os.close();
+			contents = textService.asHTML(file);
+
+		} catch (SecurityException | IOException | UnsupportedOperationException exc) {
+			exc.printStackTrace();
 			contents = null;
 		}
 
 		if (contents == null) {
-			uiService.showDialog("Could not open file.", DialogPrompt.MessageType.ERROR_MESSAGE);
-			return;
+			uiService.showDialog("Could not open file. See Console for details.", "An Error Ocurred",
+					DialogPrompt.MessageType.ERROR_MESSAGE);
 		} else {
-			displayService.createDisplay(resourceDirectory, cleanseRelativeImagePaths(contents));
+			displayService.createDisplay("BAR/" + resourceDirectory + " Routines", cleanseRelativeImagePaths(contents));
 		}
 		statusService.clearStatus();
 
