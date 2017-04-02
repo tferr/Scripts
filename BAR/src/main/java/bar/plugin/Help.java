@@ -49,17 +49,14 @@ import javax.swing.text.DefaultEditorKit;
 import net.imagej.ImageJ;
 import net.imagej.ui.swing.updater.ImageJUpdater;
 
-import org.scijava.app.StatusService;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
 import org.scijava.platform.PlatformService;
 import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
 
 import bar.Utils;
-
 
 /** Implements the {@literal About BAR...} command */
 @Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
@@ -67,20 +64,13 @@ import bar.Utils;
 public class Help implements Command {
 
 	@Parameter
-	private static CommandService commandService;
+	private CommandService commandService;
 
 	@Parameter
-	private static StatusService statusService;
+	private PlatformService platformService;
 
-	@Parameter
-	private static PlatformService platformService;
-
-	@Parameter
-	private static UIService uiService;
-
-	/** Parameters **/
 	private static JFrame frame;
-	private static String FRAME_TITLE = "About BAR...";
+	private static final String FRAME_TITLE = "About BAR...";
 
 	public static void main(final String... args) throws Exception {
 		final ImageJ ij = net.imagej.Main.launch(args);
@@ -90,25 +80,25 @@ public class Help implements Command {
 	@Override
 	public void run() {
 
-		Utils.shiftClickWarning();
-
 		// Check if "About" window is already being displayed
-		if (frame == null) {
-			try {
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
-			} catch (final Exception ignored) {
-			}
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					displayGUI();
-				}
-			});
-		} else {
+		if (frame != null) {
 			frame.setVisible(true);
 			frame.toFront();
+			return;
 		}
+
+		try {
+			Utils.shiftClickWarning();
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (final Exception ignored) {
+			// ignored
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				displayGUI();
+			}
+		});
 
 	}
 
@@ -237,7 +227,7 @@ public class Help implements Command {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				quit();
+				// quit();
 				commandService.run(ImageJUpdater.class, true);
 			}
 		});
