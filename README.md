@@ -63,11 +63,11 @@ Routines for partitioning images into analyzable parts.
 Productivity tools.
 
 1. (java) [Commander](./BAR/src/main/resources/scripts/BAR/Utilities#commander)
-1. (ijm) [Calibration Menu](./BAR/src/main/resources/scripts/BAR/Utilities#install-productivity-menus)
-1. (ijm) [List Folder Menu](./BAR/src/main/resources/scripts/BAR/Utilities#install-productivity-menus)
+1. (ijm) [Calibration Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
+1. (ijm) [List Folder Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
 1. (java) [New Snippet](./BAR/src/main/resources/scripts/BAR/Utilities#new-snippet)
-1. (ijm) [Shortcuts Menu](./BAR/src/main/resources/scripts/BAR/Utilities#install-productivity-menus)
-1. (ijm) [ROI Manager Tools](./BAR/src/main/resources/scripts/BAR/Utilities#load-roi-manager-tools)
+1. (ijm) [Shortcuts Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
+1. (ijm) [ROI Manager Tools](./BAR/src/main/resources/scripts/BAR/Utilities#roi-manager-tools)
 1. (ijm) [Toolset Creator](./BAR/src/main/resources/scripts/BAR/Utilities#create-toolset)
 
 

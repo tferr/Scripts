@@ -26,7 +26,7 @@ import org.scijava.ui.UIService;
 import org.scijava.util.FileUtils;
 
 /** Installs lib files in the user's local installation */
-@Plugin(type = Command.class, headless = true, menuPath = "BAR > My Routines > Install lib Files...")
+@Plugin(type = Command.class, headless = true, menuPath = "BAR > Utilities > Install Multi-language libs...")
 public class Installer implements Command {
 
 	/* exit status */
