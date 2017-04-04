@@ -39,7 +39,7 @@ import bar.Utils;
  */
 @Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
 		@Menu(label = "Offline Help...") })
-public class READMEReader implements Command {
+public class MDReader implements Command {
 
 	@Parameter
 	private CommandService commandService;
@@ -56,7 +56,7 @@ public class READMEReader implements Command {
 	@Parameter
 	private UIService uiService;
 
-	@Parameter(visibility = ItemVisibility.MESSAGE, persist=false)
+	@Parameter(visibility = ItemVisibility.MESSAGE, persist = false)
 	private final String help = helpMsg();
 
 	@Parameter(label = "Help on which topic?", choices = { "Analysis", "Analysis/Time Series", "Annotation",
@@ -129,7 +129,7 @@ public class READMEReader implements Command {
 
 	public static void main(final String... args) {
 		final ImageJ ij = net.imagej.Main.launch(args);
-		ij.command().run(READMEReader.class, true);
+		ij.command().run(MDReader.class, true);
 	}
 
 }
