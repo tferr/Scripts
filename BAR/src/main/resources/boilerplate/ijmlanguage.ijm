@@ -2,7 +2,7 @@
 //@ScriptService script
 //@DisplayService display
 
-// <header>
+//header
 
 // Load BARlib.ijm. NB: functions may only be available once
 // a new instance of the macro interpreter is initiated. See
