@@ -60,7 +60,8 @@ public class READMEReader implements Command {
 	private final String help = helpMsg();
 
 	@Parameter(label = "Help on which topic?", choices = { "Analysis", "Analysis/Time Series", "Annotation",
-			"Data Analysis", "lib", "lib/tests", "My Routines", "Segmentation", "tools", "Utilities", "Other..." })
+			"Data Analysis", "My Routines", "Segmentation", "Utilities", "boilerplate", "lib", "tools", "tutorials",
+			"Other..." })
 	private String resourceDir;
 
 	private String helpMsg() {
@@ -78,13 +79,15 @@ public class READMEReader implements Command {
 	public void run() {
 		if (("Other...").equals(resourceDir))
 			commandService.run(Help.class, true);
-		else
-			openREADME(resourceDir.replace(" ", "_"));
+		else {
+			final String parent = (Character.isUpperCase(resourceDir.charAt(0))) ? "/scripts/BAR/" : "/";
+			openREADME(parent + resourceDir.replace(" ", "_"));
+		}
 	}
 
 	public void openREADME(final String resourceDirectory) {
 
-		final String resourcePath = "/scripts/BAR/" + resourceDirectory + "/README.md";
+		final String resourcePath = resourceDirectory + "/README.md";
 		statusService.showStatus("Opening " + resourcePath + "...");
 
 		String contents = null;
@@ -103,7 +106,7 @@ public class READMEReader implements Command {
 			os.close();
 			contents = textService.asHTML(file);
 
-		} catch (SecurityException | IOException | UnsupportedOperationException exc) {
+		} catch (NullPointerException | SecurityException | IOException | UnsupportedOperationException exc) {
 			exc.printStackTrace();
 			contents = null;
 		}
