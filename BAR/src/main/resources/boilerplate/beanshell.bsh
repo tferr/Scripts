@@ -1,0 +1,33 @@
+//@ImageJ ij
+//@UIService ui
+//@LogService log
+//@ScriptService script
+//@DisplayService display
+
+// <header>
+import bar.Utils;
+
+
+main() {
+
+	// Add BeanShell files in BAR/lib to class path and load template
+	// BAR lib (see 'BAR>Utilities>Install Multi-language libs...').
+	// Exit if file cannot be found
+	file = new File(Utils.getLibDir() + "BARlib.bsh");
+	if (!file.exists()) {
+		ui.showDialog(file.getPath(), "File Does Not Exist");
+		return;
+	}
+	addClassPath(file.getParentFile().getParent());
+	importCommands(file.getParentFile().getName());
+
+	// load desired class (BeanShell file)
+	BARlib();
+	lib = new BARlib();
+
+	// Your code here... Eg, we could confirm access to loaded file
+	lib.confirmLoading();
+
+}
+
+main();

@@ -76,6 +76,8 @@ An infrastructure to help users tinkering with ImageJ.
 
 1. [Multi-language libs](./BAR/src/main/resources/scripts/BAR/lib#lib):
    User-defined libraries (BeanShell, Clojure, Groovy, IJ Macro, JavaScript, Python, Ruby)
+1. [Boilerplate Scripts](./BAR/src/main/resources/boilerplate/), multi-language skeletons
+   for new scripts
 1. [Script Templates](./BAR/src/main/resources/script_templates), multi-language snippets
 
 
