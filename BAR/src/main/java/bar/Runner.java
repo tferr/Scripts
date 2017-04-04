@@ -245,7 +245,7 @@ public class Runner {
 				sb.append(b, 0, n);
 			contents = sb.toString();
 			is.close();
-		} catch (final IOException e) {
+		} catch (final NullPointerException | IOException ignored) {
 			if (setGlobalFlags)
 				error("There was an error reading " + resourcePath, IO_ERROR);
 		}

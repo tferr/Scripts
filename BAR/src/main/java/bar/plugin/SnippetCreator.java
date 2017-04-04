@@ -145,6 +145,8 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	private static String header(final String boilerplateName, final int lang) {
 		final String boilerplate = runner.readContents("/boilerplate/" + boilerplateName);
+		if (boilerplate == null)
+			return commonHeader(lang).toString();
 		final String placeholder = C_CHARS[lang] +"header\n";
 		if (boilerplate.indexOf(placeholder) == -1)
 			return boilerplate;
@@ -251,7 +253,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		gd = new NonBlockingGenericDialog("New Snippet");
 		addButtons(gd);
 		gd.setInsets(0, 0, 0);
-		gd.addTextAreas(sContents, null, 12, 67);
+		gd.addTextAreas(sContents, null, 20, 80);
 		ta = gd.getTextArea1();
 		ta.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		gd.addStringField("Filename:", sFilename, 16);
