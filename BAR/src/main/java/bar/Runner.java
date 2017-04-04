@@ -207,7 +207,7 @@ public class Runner {
 	}
 
 	public void installIJ1Macro(final String path, final boolean singleTool) {
-		final String macro = readContents("/scripts/" + path);
+		final String macro = readContents(path);
 		if (macro != null) {
 			final MacroInstaller mi = new MacroInstaller();
 			if (singleTool) {
