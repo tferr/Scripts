@@ -482,25 +482,10 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Opens the specified file in the IJ2 Script Editor or in the IJ1 built-in
-	 * Editor, if the former cannot be found (vanilla IJ1). No tests assessing
-	 * the existence of specified file/directory are performed.
-	 *
-	 * @param dir
-	 *            the directory containing the file to be opened
-	 * @param filename
-	 *            the filename of the file to be opened
-	 *
-	 * @see #openIJ2Script(File)
-	 * @see #openIJ1Script(String, String)
+	 * Alias for {@link #openIJ2Script(File)}
 	 */
 	public static void openScript(final String dir, final String filename) {
-		try {
-			Class.forName("net.imagej.ui.swing.script.TextEditor");
-			openIJ2Script(new File(dir+filename));
-		} catch (final ClassNotFoundException e) {
-			openIJ1Script(dir, filename);
-		}
+		openIJ2Script(new File(dir + filename));
 	}
 
 	/**
@@ -513,7 +498,6 @@ public class Utils implements PlugIn {
 	 *            the filename of the file to be opened
 	 *
 	 * @see #openScript(String, String)
-	 * @see #openIJ2Script(File)
 	 */
 	public static void openIJ1Script(final String dir, final String filename) {
 		final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");

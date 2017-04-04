@@ -198,7 +198,7 @@ public class Runner {
 	 *            macro function {@code getArgument()}
 	 */
 	public void runIJ1Macro(final String path, final String arg) {
-		final String macro = readContents("/scripts/" + path);
+		final String macro = readContents("/scripts/" + path, true);
 		setStatus((macro == null) ? EXCEPTION : (new Macro_Runner()).runMacro(macro, arg));
 	}
 
@@ -207,7 +207,7 @@ public class Runner {
 	}
 
 	public void installIJ1Macro(final String path, final boolean singleTool) {
-		final String macro = readContents("/scripts/" + path);
+		final String macro = readContents(path, true);
 		if (macro != null) {
 			final MacroInstaller mi = new MacroInstaller();
 			if (singleTool) {
@@ -219,13 +219,21 @@ public class Runner {
 		setStatus((macro == null) ? EXCEPTION : path + " installed");
 	}
 
-	private String readContents(final String resourcePath) {
+	public String readContents(final String resourcePath) {
+		return readContents(resourcePath, false);
+	}
+
+	private String readContents(final String resourcePath, final boolean setGlobalFlags) {
 		String contents = null;
 		try {
-			lastLoadedURL = getClass().getResource(resourcePath);
-			final InputStream is = lastLoadedURL.openStream();
+			
+			final URL url = getClass().getResource(resourcePath);
+			if (setGlobalFlags)
+				lastLoadedURL =  url;
+			final InputStream is = url.openStream();
 			if (is == null) {
-				error("Could not find " + resourcePath, IO_ERROR);
+				if (setGlobalFlags)
+					error("Could not find " + resourcePath, IO_ERROR);
 				return contents;
 			}
 			final InputStreamReader isr = new InputStreamReader(is);
@@ -237,8 +245,9 @@ public class Runner {
 				sb.append(b, 0, n);
 			contents = sb.toString();
 			is.close();
-		} catch (final IOException e) {
-			error("There was an error reading " + resourcePath, IO_ERROR);
+		} catch (final NullPointerException | IOException ignored) {
+			if (setGlobalFlags)
+				error("There was an error reading " + resourcePath, IO_ERROR);
 		}
 		return contents;
 	}

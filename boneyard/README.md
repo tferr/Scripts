@@ -1,5 +1,9 @@
-# lib Tests
-These scripts test the successful loading of [lib] files once installed locally.
+# Boneyard
+
+This directory contains miscellaneous scripts that are excluded from BAR (e.g., because
+they  are of not general interest or because they became deprecated). They remain here for
+archive purposes, and in case someone finds them useful.
+
 
 
 ------

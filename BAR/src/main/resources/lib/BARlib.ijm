@@ -1,9 +1,9 @@
 /* BARlib.ijm
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
- * placed in BAR/lib. This file can host functions to be used across your macros.
- * To load these scripting additions, append the following to your macro files:
+ * Common BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib.
+ * This file can host functions to be used across your scripts. To load these
+ * scripting additions, append the following to your macro files:
  *
  *     libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
  *     libContents = File.openAsString(libPath);
@@ -16,7 +16,6 @@
  */
 
 
-///////////  UTILITIES  ///////////
 /** Acknowledges accessibility to this file */
 function confirmLoading() {
 	showMessage("BAR lib successfully loaded!");
@@ -49,7 +48,6 @@ function randomUUID() {
 }
 
 
-///////////  CALCULATIONS  ///////////
 /** Smooths 1D data according to the specified window */
 function getSimpleMovingAverage(values, window) {
 	if (window<1) return values;

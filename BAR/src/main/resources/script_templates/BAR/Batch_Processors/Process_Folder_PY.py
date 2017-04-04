@@ -3,7 +3,7 @@
 # @String(label="Process filenames containing",description="Clear for no filtering",value=".tif") filenameFilter
 
 # Process_Folder_PY.py
-# IJ BAR snippet https://github.com/tferr/Scripts/tree/master/Snippets
+# IJ BAR https://github.com/tferr/Scripts/tree/master/
 #
 # This python script implements a reusable batch processor[1] that processes a
 # folder of files of a certain type (Jython alternative to the IJ1 built-in

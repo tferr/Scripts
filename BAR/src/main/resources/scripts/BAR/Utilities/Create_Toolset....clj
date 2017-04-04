@@ -2,7 +2,7 @@
 ;@UIService uiService
 
 (let [runner (bar.Runner. context)]
-	(.runIJ1Macro runner "BAR/tools/ToolsetCreator.ijm" "")
+	(.runIJ1Macro runner "/tools/ToolsetCreator.ijm" "")
 	(if-not (.scriptLoaded runner)
 		(.showDialog uiService "File could not be installed. See Console for details" "Error"))
 

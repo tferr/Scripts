@@ -3,8 +3,8 @@ The lib directory is a local centralized repository of user-defined libraries th
 shared across files. These libraries serve as scripting additions to user scripts
 (namely for [My Routines]).
 
-Use `BAR>My Routines>Install lib Files...` to populate your local lib directory. lib files
-are not synchronized with the BAR update site.
+Use `BAR>Utilities>Install Multi-language libs...` to populate your local lib directory.
+lib files are not synchronized with the BAR update site.
 
 
 ## BeanShell (BSH lib)

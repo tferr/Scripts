@@ -1,6 +1,6 @@
 # IJ BAR
 
-[![DOI](https://zenodo.org/badge/4622/tferr/Scripts.svg)](https://zenodo.org/badge/latestdoi/4622/tferr/Scripts)
+[![DOI](https://zenodo.org/badge/8709403.svg)](https://zenodo.org/badge/latestdoi/8709403)
 [![Latest Release](https://img.shields.io/github/release/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/releases)
 [![Issues](https://img.shields.io/github/issues/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/issues)
 [![Jenkins](http://img.shields.io/jenkins/s/http/jenkins.imagej.net/BAR.svg?style=flat-square)](http://jenkins.imagej.net/job/BAR)
@@ -18,79 +18,81 @@ at its [Wiki Page][Wiki]. Below is a lis of some of the BAR routines:
 ## [Analysis]
 Routines that complement built-in commands in the ImageJ `Analyze>` menu.
 
-1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#log-dog-spot-counter)
-1. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-plot-profile)
-1. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#multichannel-zt-axis-profile)
-1. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis/README.md#smoothed-plot-profile)
-1. (groovy) [Multi ROI Profiler](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#multi-roi-profiler)
-1. (groovy) [Normalize Against F0](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#normalize-against-f0)
-1. (groovy) [Register Against Average](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series/README.md#register-against-average)
+1. (py) [LoG-DoG Spot Counter](./BAR/src/main/resources/scripts/BAR/Analysis#log-dog-spot-counter)
+1. (bsh) [Multichannel Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis#multichannel-plot-profile)
+1. (bsh) [Multichannel ZT-axis Profile](./BAR/src/main/resources/scripts/BAR/Analysis#multichannel-zt-axis-profile)
+1. (bsh) [Smoothed Plot Profile](./BAR/src/main/resources/scripts/BAR/Analysis#smoothed-plot-profile)
+1. (groovy) [Multi ROI Profiler](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series#multi-roi-profiler)
+1. (groovy) [Normalize Against F0](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series#normalize-against-f0)
+1. (groovy) [Register Against Average](./BAR/src/main/resources/scripts/BAR/Analysis/Time_Series#register-against-average)
 
 
 ## [Data Analysis]
 Operations related to statistics, profiles, histograms and curve fitting.
 
-1. (bsh) [Create Boxplot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-boxplot)
-1. (bsh) [Create Polar Plot](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#create-polar-plot)
-1. (ijm) [Distribution Plotter](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#distribution-plotter)
-1. (bsh) [Find Peaks](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#find-peaks)
-1. (bsh) [Fit Polynomial](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#fit-polynomial)
-1. (java) [Interactive Plotting](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#interactive-plotting)
-1. (py) [NN Distances](./BAR/src/main/resources/scripts/BAR/Data_Analysis/README.md#nn-distances)
+1. (bsh) [Create Boxplot](./BAR/src/main/resources/scripts/BAR/Data_Analysis#create-boxplot)
+1. (bsh) [Create Polar Plot](./BAR/src/main/resources/scripts/BAR/Data_Analysis#create-polar-plot)
+1. (ijm) [Distribution Plotter](./BAR/src/main/resources/scripts/BAR/Data_Analysis#distribution-plotter)
+1. (bsh) [Find Peaks](./BAR/src/main/resources/scripts/BAR/Data_Analysis#find-peaks)
+1. (bsh) [Fit Polynomial](./BAR/src/main/resources/scripts/BAR/Data_Analysis#fit-polynomial)
+1. (java) [Interactive Plotting](./BAR/src/main/resources/scripts/BAR/Data_Analysis#interactive-plotting)
+1. (py) [NN Distances](./BAR/src/main/resources/scripts/BAR/Data_Analysis#nn-distances)
 
 
 ## [Image Annotation][Annotation]
 Aiders for the annotation of scientific images.
 
-1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#combine-orthogonal-views)
-1. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#cumulative-z-project)
-1. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation/README.md#roi-color-coder)
+1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation#combine-orthogonal-views)
+1. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation#cumulative-z-project)
+1. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation#roi-color-coder)
 
 
 ## [Image Segmentation][Segmentation]
 Routines for partitioning images into analyzable parts.
 
-1. (ijm) [Apply Threshold To ROI](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#apply-threshold-to-roi)
-1. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#clear-thresholded-pixels)
-1. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#remove-isolated-pixels)
-1. (ijm) [Segment Profile Tool](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#segment-profile-tool)
-1. (java) [Shen-Castan Edge Detector](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#shen-castan-edge-detector)
-1. (ijm) [Threshold From Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#threshold-from-background)
-1. (ijm) [Wipe Background](./BAR/src/main/resources/scripts/BAR/Segmentation/README.md#wipe-background)
+1. (ijm) [Apply Threshold To ROI](./BAR/src/main/resources/scripts/BAR/Segmentation#apply-threshold-to-roi)
+1. (ijm) [Clear Thresholded Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation#clear-thresholded-pixels)
+1. (bsh) [Remove Isolated Pixels](./BAR/src/main/resources/scripts/BAR/Segmentation#remove-isolated-pixels)
+1. (ijm) [Segment Profile Tool](./BAR/src/main/resources/scripts/BAR/Segmentation#segment-profile-tool)
+1. (java) [Shen-Castan Edge Detector](./BAR/src/main/resources/scripts/BAR/Segmentation#shen-castan-edge-detector)
+1. (ijm) [Threshold From Background](./BAR/src/main/resources/scripts/BAR/Segmentation#threshold-from-background)
+1. (ijm) [Wipe Background](./BAR/src/main/resources/scripts/BAR/Segmentation#wipe-background)
 
 
 ## [Utilities]
 Productivity tools.
 
-1. (java) [Commander](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#commander)
-1. (ijm) [Calibration Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
-1. (ijm) [List Folder Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
-1. (java) [New Snippet](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#new-snippet)
-1. (ijm) [Shortcuts Menu](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#install-productivity-menus)
-1. (ijm) [ROI Manager Tools](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#load-roi-manager-tools)
-1. (ijm) [Toolset Creator](./BAR/src/main/resources/scripts/BAR/Utilities/README.md#create-toolset)
+1. (java) [Commander](./BAR/src/main/resources/scripts/BAR/Utilities#commander)
+1. (ijm) [Calibration Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
+1. (ijm) [List Folder Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
+1. (java) [New Snippet](./BAR/src/main/resources/scripts/BAR/Utilities#new-snippet)
+1. (ijm) [Shortcuts Menu](./BAR/src/main/resources/scripts/BAR/Utilities#productivity-menus)
+1. (ijm) [ROI Manager Tools](./BAR/src/main/resources/scripts/BAR/Utilities#roi-manager-tools)
+1. (ijm) [Toolset Creator](./BAR/src/main/resources/scripts/BAR/Utilities#create-toolset)
 
 
 ## [My Routines]
 An infrastructure to help users tinkering with ImageJ.
 
-1. [Multi-language libs](./BAR/src/main/resources/scripts/BAR/lib/README.md#lib):
+1. [Multi-language libs](./BAR/src/main/resources/scripts/BAR/lib#lib):
    User-defined libraries (BeanShell, Clojure, Groovy, IJ Macro, JavaScript, Python, Ruby)
-1. [Script Templates]((./BAR/src/main/resources/script_templates), multi-language snippets
+1. [Boilerplate Scripts](./BAR/src/main/resources/boilerplate/), multi-language skeletons
+   for new scripts
+1. [Script Templates](./BAR/src/main/resources/script_templates), multi-language snippets
 
 
-## Java Classes
+## [Java Classes]
 Maven project implementing the backbone of BAR, including several [IJ1 plugins and IJ2
-commands](./BAR/README.md#commands-and-plugins), [External Ops](./BAR/README.md#external-ops),
-and the[BAR API](http://tferr.github.io/Scripts/apidocs/).
+commands](./BAR#commands-and-plugins), [External Ops](./BAR#external-ops),
+and the [BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 
-## Tutorials
-1. [Introduction to Scripting](./BAR/src/main/resources/tutorials/README.md#tutorials):
+## [Tutorials]
+1. [Introduction to Scripting](./BAR/src/main/resources/tutorials#tutorials):
    101 of (IJ1) scripting using BeanShell and Python (Jython)
 
-1. [External Ops](./BAR/README.md#external-ops): Advanced tutorial exemplifying how to
-   provide ad-hoc [ops](http://imagej.net/ImageJ_Ops)
+1. [External Ops](./BAR#external-ops): Advanced tutorial exemplifying how to
+   provide external [ops](http://imagej.net/ImageJ_Ops)
 
 
 # Help?
@@ -112,7 +114,7 @@ and the[BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 * To cite BAR:
 
-  [![DOI](https://zenodo.org/badge/4622/tferr/Scripts.svg)](https://zenodo.org/badge/latestdoi/4622/tferr/Scripts)
+[![DOI](https://zenodo.org/badge/8709403.svg)](https://zenodo.org/badge/latestdoi/8709403)
 
 * BAR scripts have contributed to the following publications:
 
@@ -135,18 +137,18 @@ Foundation, either version 3 of the License, or (at your option) any later versi
 
 # Contributors
 BAR was created and is maintained by [Tiago Ferreira](http://imagej.net/User:Tiago)
-with contributions from
-Maxime Pinchon,
-[Johannes Schindelin](https://github.com/dscho),
-[Wayne Rasband](http://imagej.nih.gov/ij/),
-[Mark Hiner](https://github.com/hinerm),
-[Jerome Mutterer](https://github.com/mutterer),
-[Kota Miura](https://github.com/cmci),
-Nicolas Vanderesse, Peter J. Lee
-and [Jan Eglinger](https://github.com/imagejan).
-BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java) from Robert Harder and Nathan
-Blomquist. This project would not have been possible without the support of the outstanding
-[ImageJ community](http://imagej.net/Mailing_Lists).
+with contributions from Maxime Pinchon, [Johannes Schindelin](https://github.com/dscho),
+[Wayne Rasband](http://imagej.nih.gov/ij/), [Mark Hiner](https://github.com/hinerm),
+[Jerome Mutterer](https://github.com/mutterer), [Kota Miura](https://github.com/cmci),
+Nicolas Vanderesse, Peter J. Lee, [Jan Eglinger](https://github.com/imagejan) and
+[others](https://github.com/tferr/Scripts/graphs/contributors).
+BAR uses public domain [code](./BAR/src/main/java/bar/FileDrop.java) from Robert Harder
+and Nathan Blomquist. This project would not have been possible without the support of the
+outstanding [ImageJ community](http://imagej.net/Mailing_Lists).
+
+
+[Java Classes]: https://github.com/tferr/Scripts/tree/master/BAR
+[Tutorials]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/tutorials
 
 
 

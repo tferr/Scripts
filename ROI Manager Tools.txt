@@ -7,4 +7,4 @@ site[2]. Alternatively, the file can also be downloaded from Github[3].
 
 [1] http://imagej.net/BAR
 [2] http://imagej.net/BAR#Installation
-[3] https://github.com/tferr/Scripts/blob/master/Tools/Toolsets/ROI%20Manager%20Tools.ijm
+[3] https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/tools

@@ -16,18 +16,18 @@ tools (such as drawing tools) in custom toolsets. It is part of ImageJ1 distribu
 (since IJ 1.41).
 
 
-## Install Productivity Menus
+## Productivity Menus
 Appends Menus to the IJ toolbar, including:
 
-1. *Calibration Menu Tool*: Provides shortcuts for spatial calibration of images lacking
+1. **Calibration Menu Tool**: Provides shortcuts for spatial calibration of images lacking
    metadata.
 
-1. *List Folder Menu Tool*: Provides a drop-down-list of the contents of a specified directory
-   that is remembered across restarts.
+1. **List Folder Menu Tool**: Provides a drop-down-list of the contents of a specified
+   directory that is remembered across restarts.
    Offers commands to reveal directories in the native file browser and commands to list
    directory contents to dedicated windows.
 
-1. *Shortcuts Menu Tool*: Lists the user's most used commands. List is remembered across
+1. **Shortcuts Menu Tool**: Lists the user's most used commands. List is remembered across
    restarts.
 
 
@@ -35,7 +35,7 @@ Appends Menus to the IJ toolbar, including:
 Produces a list of all BAR scripts (including those not registered in the `BAR>` menu.
 
 
-## Load ROI Manager Tools
+## ROI Manager Tools
 Installs ROI Manager Tools, a toolbar that renames selections stored in the ROI Manager.
 More information can be found on its initial
 [documentation page](http://imagej.net/plugins/roi-manager-tools), that has yet to be

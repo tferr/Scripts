@@ -1,11 +1,14 @@
+//@UIService uiservice
+
 /* BARlib.bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
- * placed in BAR/lib. This file hosts functions to be used across all your scripts.
- * To load these scripting additions, append the following to your BeanShell files:
+ * Common BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+ * can host functions/methods to be used across your scripts. To load these scripting
+ * additions, append the following to your BeanShell files:
  *
- *     addClassPath(bar.Utils.getBARDir());
+ *     import bar.Utils
+ *     addClassPath(Utils.getBARDir());
  *     importCommands("lib/");
  *     BARlib();
  *
@@ -15,17 +18,18 @@
  */
 
 BARlib() {
+
 public class BARlib {
 
-	///////////  UTILITIES  ///////////
 	/** Acknowledges accessibility to this file */
 	void confirmLoading() {
-		ij.IJ.showMessage("BAR lib successfully loaded!");
+		uiservice.showDialog("BAR lib successfully loaded!")
 	}
 
 	/** Returns text from the system clipboard or an empty string if no text was found */
 	String getClipboardText() {
-		return bar.Utils.getClipboardText();
+		import bar.Utils;
+		return Utils.getClipboardText();
 	}
 
 	/** Returns a random uuid */
@@ -34,11 +38,9 @@ public class BARlib {
 		return UUID.randomUUID().toString();
 	}
 
-
-	///////////  CALCULATIONS  ///////////
 	/**
-	 * Smooths 1D data according to the specified window. Returns the original
-	 * data if window is not a positive integrer.
+	 * Smooths 1D data according to the specified window. Returns
+	 * the original data if window is not a positive integrer.
 	 */
 	double[] getSimpleMovingAverage(double[] values, int window) {
 		if (window<1) return values;
@@ -77,7 +79,6 @@ public class BARlib {
 
 	/** Returns surface area and volume of a sphere of radius r */
 	double[] sphereCalc(r) {
-		import java.Math;
 		sph_area = 4 * Math.PI * (r*r);
 		sph_vol = 4/3.0 * Math.PI * (r*r*r);
 		return new double[]{sph_area, sph_vol};

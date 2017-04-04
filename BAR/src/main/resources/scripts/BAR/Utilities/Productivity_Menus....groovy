@@ -7,7 +7,7 @@
 import bar.Runner
 
 runner = new Runner(ij.getContext())
-runner.installIJ1Macro("BAR/tools/${tool.replaceAll(" ", "")}.ijm", true)
+runner.installIJ1Macro("/tools/${tool.replaceAll(" ", "")}.ijm", true)
 if (!runner.scriptLoaded())
 	uiservice.showDialog("Unfortunately installation failed. See console for details", "Error")
 else if (open)

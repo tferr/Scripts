@@ -68,17 +68,22 @@ public class GuiUtils {
 		if (msgTitle == null)
 			msgTitle = "BAR: My Routines Directory...";
 		final String ordinal = (fileCount == 1) ? "file" : "files";
-		final String msg = "<html>The directory <i>My Routines</i> is the place on your local installation where<br>"
+		final String msg = "<html><div WIDTH=400>The <i>My Routines</i> directory is the place on your local installation where<br>"
 				+ "you can save your own scripts to be easily accessed through the BAR<br>"
-				+ "menu hierarchy. The directory is not managed by the BAR Update site.<br> <br>"
-				+ "Currently the directory contains " + fileCount + " " + ordinal + ".";
+				+ "menu hierarchy. Files in this directory are not managed by the BAR Update site.<br> <br>"
+				+ "Currently your <i>My Routines</i> directory at <tt>" + Utils.getMyRoutinesDir() + "</tt> contains "
+				+ fileCount + " " + ordinal + ".";
 		uiService.showDialog(msg, msgTitle, MessageType.INFORMATION_MESSAGE, OptionType.DEFAULT_OPTION);
 	}
 
 	public int getMyRoutinesCount() {
+		return getFileCount(Utils.getMyRoutinesDir());
+	}
+
+	public int getFileCount(String directory) {
 		int count = 0;
 		try {
-			final File dir = new File(Utils.getMyRoutinesDir());
+			final File dir = new File(directory);
 			dir.mkdirs();
 			if (dir.exists()) {
 				final File[] files = dir.listFiles(new FileFilter() {
