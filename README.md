@@ -1,6 +1,6 @@
 # IJ BAR
 
-[![DOI](https://zenodo.org/badge/4622/tferr/Scripts.svg)](https://zenodo.org/badge/latestdoi/4622/tferr/Scripts)
+[![DOI](https://zenodo.org/badge/8709403.svg)](https://zenodo.org/badge/latestdoi/8709403)
 [![Latest Release](https://img.shields.io/github/release/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/releases)
 [![Issues](https://img.shields.io/github/issues/tferr/Scripts.svg?style=flat-square)](https://github.com/tferr/Scripts/issues)
 [![Jenkins](http://img.shields.io/jenkins/s/http/jenkins.imagej.net/BAR.svg?style=flat-square)](http://jenkins.imagej.net/job/BAR)

@@ -1,15 +1,8 @@
-# Misc
+# Boneyard
 
-This directories contain miscellaneous scripts that are not included in BAR releases.
-
-## Capture Window
-A Mac-specific macro that calls the _Grab.app_ (part of the Mac OS) to capture a snapshot
-of an ImageJ window.
-
-## Clipboard to Results
-Imports numeric values (delimiter-separated values), copied to the clipboard into the
-_Results_ table. It was of utility prior to BAR v1.1.7, when BARs that analyzed tabular
-data could only read values from the main IJ "Results" table.
+This directory contains miscellaneous scripts that are excluded from BAR (e.g., because
+they  are of not general interest or because they became deprecated). They remain here for
+archive purposes, and in case someone finds them useful.
 
 
 

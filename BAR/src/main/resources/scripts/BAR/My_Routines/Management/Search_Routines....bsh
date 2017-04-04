@@ -36,7 +36,7 @@ if (searchContents)
   	options+= "search_contents ";
 if (!caseSensitive)
    	options+= "ignore ";
-options += "search=Choose... choose=["+ Utils.getSnippetsDir() +"]";
+options += "search=Choose... choose=["+ Utils.getMyRoutinesDir() +"]";
 
 // Pass the options string to Plugins>Utilies>Search...
 IJ.run("Search...", options);
