@@ -3,7 +3,7 @@
 //@boolean(label="Case sensitive", value=false) caseSensitive
 //@UIService uiservice
 
-/* Search_Snippets.bsh
+/* Search_Routines....bsh
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
  * BeanShell script that instructs the built-in 'Search...' command (Plugins>Utilies>Search...) to

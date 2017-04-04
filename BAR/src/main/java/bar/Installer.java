@@ -104,7 +104,7 @@ public class Installer implements Command {
 
 	public int installLib(final boolean verbose) {
 
-		final String commonPath = "/scripts/BAR/";
+		final String commonPath = "/"; // used to be "/scripts/BAR/"
 		final String resourcePath = commonPath + "lib/";
 		final URL source = getClass().getResource(resourcePath);
 		if (verbose)

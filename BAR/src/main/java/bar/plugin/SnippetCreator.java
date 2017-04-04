@@ -70,7 +70,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 
 	/* Default parameters for new snippet */
 	private String sContents = "";
-	private String sFilename = "My_Snippet";
+	private String sFilename = "My_Routine";
 	private int sType = 0;
 
 	private GenericDialog gd;
