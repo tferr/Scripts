@@ -34,6 +34,7 @@ import org.scijava.Context;
 import org.scijava.command.CommandService;
 
 import bar.Installer;
+import bar.Runner;
 import bar.Utils;
 import bar.gui.GuiUtils;
 import ij.IJ;
@@ -68,14 +69,20 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	private static final int RB = 7;
 
 	/* Default parameters for new snippet */
-	private static String sContents = "";
-	private static String sFilename = "My_Snippet";
-	private static int sType = 0;
+	private String sContents = "";
+	private String sFilename = "My_Snippet";
+	private int sType = 0;
 
-	private static GenericDialog gd;
-	private static Button paste, load, list;
-	private static MultiLineLabel infoMsg;
-	private static TextArea ta;
+	private GenericDialog gd;
+	private Button paste, load, list;
+	private MultiLineLabel infoMsg;
+	private TextArea ta;
+	private static Runner runner;
+
+	public SnippetCreator() {
+		if (runner==null)
+			runner = new Runner(true);
+	}
 
 	/**
 	 * This method is called when the plugin is loaded. See
@@ -124,7 +131,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 			break;
 		default:
 			sb.append(C_CHARS[type])
-				.append(" See 'BAR>About BAR...' for scripting resources\n\n");
+				.append(" See 'BAR>Help>' for scripting resources\n\n");
 			break;
 		}
 		return sb;
@@ -136,12 +143,14 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 		return commonHeader(sb, type);
 	}
 
-//	/* Returns a file header for a language not featured in BAR */
-//	private static StringBuilder unsupportedHeader(final StringBuilder sb, final int type) {
-//		sb.append(C_CHARS[type]).append(" NB: BAR does not yet feature a ")
-//				.append(S_TYPES[type]).append(" lib\n\n");
-//		return sb;
-//	}
+	private static String header(final String boilerplateName, final int lang) {
+		final String boilerplate = runner.readContents("/boilerplate/" + boilerplateName);
+		final String placeholder = C_CHARS[lang] +"header\n";
+		if (boilerplate.indexOf(placeholder) == -1)
+			return boilerplate;
+		final String header = commonHeader(lang).toString();
+		return boilerplate.replace(placeholder, header);
+	}
 
 	/**
 	 * Returns the header for a BSH snippet (BeanShell).
@@ -149,16 +158,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the BeanShell BAR library
 	 */
 	public static String bshHeader() {
-		final StringBuilder sb = commonHeader(BSH);
-		sb.append("// Add BAR/lib to classpath and load BARlib.bsh\n");
-		sb.append("addClassPath(bar.Utils.getBARDir());\n");
-		sb.append("importCommands(\"lib/\");\n");
-		sb.append("BARlib();\n");
-		sb.append("\n");
-		sb.append("// Initiate BARlib and confirm its availability\n");
-		sb.append("lib = new BARlib();\n");
-		sb.append("lib.confirmLoading();\n");
-		return sb.toString();
+		return header("beanshell.bsh", BSH);
 	}
 
 	/**
@@ -167,13 +167,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the Clojure BAR library
 	 */
 	public static String cljHeader() {
-		final StringBuilder sb = commonHeader(CLJ);
-		sb.append(";; Load BARlib.clj\n");
-		sb.append("(load-file (str (bar.Utils/getLibDir) \"BARlib.clj\"))\n");
-		sb.append("\n");
-		sb.append(";; Confirm BARlib availability\n");
-		sb.append("(confirmLoading)\n");
-		return sb.toString();
+		return header("clojure.clj", CLJ);
 	}
 
 	/**
@@ -182,16 +176,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the Groovy BAR library
 	 */
 	public static String grvHeader() {
-		final StringBuilder sb = commonHeader(GRV);
-		sb.append("// Parse and load BARlib.groovy\n");
-		sb.append("import bar.Utils\n");
-		sb.append("file = new File(Utils.getLibDir() + \"BARlib.groovy\")\n");
-		sb.append("BARlib = new GroovyClassLoader(getClass().getClassLoader()).parseClass(file)\n");
-		sb.append("\n");
-		sb.append("// Initiate BARlib and confirm its availability\n");
-		sb.append("lib = BARlib.newInstance()\n");
-		sb.append("lib.confirmLoading()\n");
-		return sb.toString();
+		return header("groovy.groovy", GRV);
 	}
 
 	/**
@@ -200,17 +185,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the IJM BAR library
 	 */
 	public static String ijmHeader() {
-		final StringBuilder sb = commonHeader(IJM);
-		sb.append("// Load BARlib.ijm. NB: functions may only be available once\n");
-		sb.append("// a new instance of the macro interpreter is initiated. See\n");
-		sb.append("// http://imagej.net/BAR#FAQ for details\n");
-		sb.append("libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';\n");
-		sb.append("libContents = File.openAsString(libPath);\n");
-		sb.append("call('ij.macro.Interpreter.setAdditionalFunctions', libContents);\n");
-		sb.append("\n");
-		sb.append("// Confirm availability of new additions\n");
-		sb.append("confirmLoading();");
-		return sb.toString();
+		return header("ijmlanguage.ijm", IJM);
 	}
 
 	/**
@@ -219,15 +194,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the JavaScript BAR library
 	 */
 	public static String jsHeader() {
-		final StringBuilder sb = commonHeader(JS);
-		sb.append("// Load BARlib.js\n");
-		sb.append("importClass(Packages.bar.Utils);\n");
-		sb.append("load(Utils.getLibDir() +\"BARlib.js\");\n");
-		sb.append("\n");
-		sb.append("// Initiate BARlib and confirm its availability\n");
-		sb.append("lib = new BARlib();\n");
-		sb.append("lib.confirmLoading();\n");
-		return sb.toString();
+		return header("javascript.js", JS);
 	}
 
 	/**
@@ -236,19 +203,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the Python BAR library
 	 */
 	public static String pyHeader() {
-		final StringBuilder sb = commonHeader(PY);
-		sb.append("# Load BARlib.py\n");
-		sb.append("import sys\n");
-		sb.append("from bar import Utils as barUtils\n");
-		sb.append("sys.path.append(barUtils.getLibDir())\n");
-		sb.append("import BARlib as lib\n");
-		sb.append("\n");
-		sb.append("# Ignore pre-existing binaries of the lib\n");
-		sb.append("barUtils.zapCompiledLibs()\n");
-		sb.append("\n");
-		sb.append("# Confirm availability of BARlib\n");
-		sb.append("lib.confirmLoading()\n");
-		return sb.toString();
+		return header("python.py", PY);
 	}
 
 	/**
@@ -257,19 +212,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	 * @return the lines of code required to load the Ruby BAR library
 	 */
 	public static String rbHeader() {
-		StringBuilder sb = new StringBuilder();
-		//sb.append("# @AppService appService\n");
-		//sb.append("require_relative \"#{$appService.getApp.getBaseDirectory}/plugins/JRuby/imagej.rb\"\n");
-		//sb.append("\n");
-		sb = commonHeader(sb, RB);
-		sb.append("# Load BARlib.rb\n");
-		sb.append("java_import \"bar.Utils\"\n");
-		sb.append("require \"#{Utils.getLibDir}\" + \"BARlib.rb\"\n");
-		sb.append("\n");
-		sb.append("# Initiate BARlib and confirm its availability\n");
-		sb.append("lib = BARlib.new()\n");
-		sb.append("lib.confirmLoading\n");
-		return sb.toString();
+		return header("ruby.rb", RB);
 	}
 
 	/**
