@@ -56,7 +56,7 @@ public class READMEReader implements Command {
 	@Parameter
 	private UIService uiService;
 
-	@Parameter(visibility = ItemVisibility.MESSAGE)
+	@Parameter(visibility = ItemVisibility.MESSAGE, persist=false)
 	private final String help = helpMsg();
 
 	@Parameter(label = "Help on which topic?", choices = { "Analysis", "Analysis/Time Series", "Annotation",

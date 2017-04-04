@@ -46,7 +46,7 @@ public class Installer implements Command {
 	@Parameter
 	private UIService uiService;
 
-	@Parameter(visibility = ItemVisibility.MESSAGE)
+	@Parameter(visibility = ItemVisibility.MESSAGE, persist=false)
 	private final String help = helpMsg();
 
 	@Parameter(label = "Action:", choices = { "Install files silently", "Install files in debug mode",
@@ -58,10 +58,10 @@ public class Installer implements Command {
 		sb.append("<html>").append("<body><div WIDTH=400>")
 				.append("This command (re)installs <i>BAR libs</i> on your ImageJ installation. ")
 				.append("These are are centralized multi-language (IJM, Clojure, Groovy, JavaScript, ")
-				.append("Jython, etc.) template libraries implementing reusable functions and methods ")
-				.append("that you can customize and share across your macros and scripts.<br> <br>")
-				.append("For more details have a look at the BAR <a href='").append(HELP_URL)
-				.append("'> documentation page</a>.");
+				.append("JRuby, Jython, etc.) template libraries exemplifying how to implement ")
+				.append("reusable functions and methods that you can customize and share across your ")
+				.append("macros and scripts.<br> <br>").append("For more details have a look at the BAR <a href='")
+				.append(HELP_URL).append("'> documentation page</a>.");
 		return sb.toString();
 	}
 
