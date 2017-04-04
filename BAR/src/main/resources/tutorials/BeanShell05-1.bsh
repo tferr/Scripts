@@ -6,20 +6,21 @@
  * *************************************************
  */
 
-// BAR libs (stored in the /BAR/lib/ directory) are
-// centralized libraries (BeanShell, IJM and Python,
-// etc.) that can be shared across files.
-// "BAR>Snippets>New Snippet..." exemplifies how to
-// use the main BeanShell lib distributed with BAR.
+// BAR libs (stored in your local scripts/BAR/lib/ directory)
+// are centralized libraries (BeanShell, IJM, Python, etc.)
+// that can be shared across files.
+// "BAR>Utilities>New Snippet..." exemplifies how to load template
+// libs distributed with BAR. These are installed using "BAR>
+// "Utilities> Install Multi-language libs..."
 //
-// Let's create a new snippet and run "BAR>lib>Reveal
-// /lib" so that we can browse lib files. If you press
-// <<Run>>, I'll run the commands for you:
+// Let's install template libs, reveal the location of installed files
+// and create a new snippet. If you press <<Run>>, I'll run the command
+// for you:
+
 
 import ij.IJ;
-IJ.run("Reveal /lib", "");
+IJ.run("Install Multi-language libs...", "logservice=[org.scijava.log.StderrLogService] platformservice=[org.scijava.platform.DefaultPlatformService] uiservice=[org.scijava.ui.DefaultUIService] help=[ ] action=[Install files silently]");
 IJ.run("New Snippet...");
 
-
 // Further reading:
-// BAR>lib>lib Help... and http://imagej.net/BAR#BAR_lib
+// BAR>Help>Offline Help... and http://imagej.net/BAR#BAR_lib
