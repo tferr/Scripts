@@ -4,8 +4,8 @@ _My Routines_ is the place where users can save their own scripts to be easily a
 through the BAR menu hierarchy. More details are available on the [BAR wiki page][Wiki].
 The local _My Routines_ directory is not managed by the BAR Update site.
 
-The `BAR>My Routines>` a menu contains several convenient commands (themselves implemented
-as scripts), including:
+The `BAR>My Routines>Management>` menu contains several convenient commands (themselves
+implemented as scripts), including:
 
 
 ## Browse
