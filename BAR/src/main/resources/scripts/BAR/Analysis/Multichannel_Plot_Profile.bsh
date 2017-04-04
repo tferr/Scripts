@@ -47,16 +47,16 @@ Plot getPlot() {
 	Plot plot = new Plot("Plot of "+ imp.getTitle(), "Distance ("+ cal.getUnits() +")", "Value");
 	plot.setLimits(xvalues[0], xvalues[n-1], p.getMin(), p.getMax());
 
-	states = ci.getActiveChannels();
+	states = ci.getActiveChannels(); // can be less than actual n. of channels (max 7. IJ1.51)
 	c = imp.getC(); z = imp.getZ(); t = imp.getT();
 	for (ch=1; ch<=imp.getNChannels(); ch++) {
-		if (states[ch-1]) {
-			imp.setPositionWithoutUpdate(ch, z, t);
-			plot.setColor(ci.getChannelColor());
-			yvalues = getProfilePlot().getProfile();
-			n = Math.min(xvalues.length, yvalues.length);
-			plot.addPoints(Arrays.copyOf(xvalues,n), Arrays.copyOf(yvalues,n), Plot.LINE);
-		}
+		if (ch-1 < states.length && !states[ch-1])
+			continue;
+		imp.setPositionWithoutUpdate(ch, z, t);
+		plot.setColor(ci.getChannelColor());
+		yvalues = getProfilePlot().getProfile();
+		n = Math.min(xvalues.length, yvalues.length);
+		plot.addPoints(Arrays.copyOf(xvalues,n), Arrays.copyOf(yvalues,n), Plot.LINE);
 	}
 	imp.setPositionWithoutUpdate(c, z, t);
 

@@ -135,13 +135,6 @@ if (invalidRoi(imp.getRoi())) {
 	return;
 }
 
-// Ask user for moving avg. window
-if (super.interactive) {
-	window = getWindow();
-	if (window==IJ.CANCELED) return;
-}
-
-
 firstRun = true;
 cal = getSpatialCalibration();
 plot = getPlot();
