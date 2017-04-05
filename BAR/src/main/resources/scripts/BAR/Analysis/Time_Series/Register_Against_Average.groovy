@@ -12,7 +12,7 @@ def loadLib(resourcePath) {
 	(GroovyObject) cls.newInstance()
 }
 
-utils = loadLib("scripts/BAR/Utils.groovy")
+utils = loadLib("shared/Utils.groovy")
 if (!utils.isSingleChannelTimeseq(imp, uiservice))
 	return
 

@@ -117,7 +117,7 @@ if (!rois) {
     return
 }
 
-utils = loadLib("scripts/BAR/Utils.groovy")
+utils = loadLib("shared/Utils.groovy")
 if (!utils.isTimeSeq(imp, uiservice))
 	return
 
