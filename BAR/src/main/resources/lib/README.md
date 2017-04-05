@@ -36,7 +36,7 @@ lib.confirmLoading();
 // Parse and load BARlib.groovy
 import bar.Utils
 file = new File(Utils.getLibDir() + "BARlib.groovy")
-BARlib = new GroovyClassLoader(getClass().getClassLoader()).parseClass(file)
+BARlib = new GroovyClassLoader().parseClass(file)
 
 // Initiate BARlib and confirm its availability
 lib = BARlib.newInstance()

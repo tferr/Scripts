@@ -33,8 +33,8 @@ import java.util.Random;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.scijava.ui.swing.script.TextEditor;
 import org.scijava.Context;
+import org.scijava.ui.swing.script.TextEditor;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -84,8 +84,9 @@ public class Utils implements PlugIn {
 	/** The absolute path to the /BAR/lib/ directory */
 	static final String LIB_DIR = BAR_DIR + "lib" + File.separator;
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ij.plugin.PlugIn#run(java.lang.String)
 	 */
 	@Override
@@ -94,7 +95,8 @@ public class Utils implements PlugIn {
 		shiftClickWarning();
 
 		final String[] args = arg.split(":");
-		if (args.length==1) return;
+		if (args.length == 1)
+			return;
 
 		// Instructions related to snippets
 		if (args[0].equalsIgnoreCase("myroutine")) {
@@ -106,16 +108,15 @@ public class Utils implements PlugIn {
 			} else // TODO implement a "reload snippets" command
 				openSnippet(arg);
 
-		// Instructions related to Menu transfers
+			// Instructions related to Menu transfers
 		} else if (args[0].equalsIgnoreCase("moveMenu")) {
 
 			moveSubmenu(args[1]);
 
-		// Instructions related to tools and toolsets
+			// Instructions related to tools and toolsets
 		} else if (args[0].startsWith("tools")) {
 
-			final String dir = IJ.getDirectory("macros") + args[0]
-					+ File.separator;
+			final String dir = IJ.getDirectory("macros") + args[0] + File.separator;
 			if (args[1].equalsIgnoreCase("reveal")) {
 				revealFile(dir);
 			} else if (IJ.shiftKeyDown()) {
@@ -125,7 +126,7 @@ public class Utils implements PlugIn {
 				installMacroFile(dir, args[1]);
 			}
 
-		// Instructions related to lib files
+			// Instructions related to lib files
 		} else if (arg.startsWith("lib:")) {
 
 			if (args[1].equalsIgnoreCase("reveal")) {
@@ -222,29 +223,29 @@ public class Utils implements PlugIn {
 
 		final Integer popmenuPos = getMenuItem(popMenu, subMenu);
 		final Integer barmenuPos = getMenuItem(barMenu, subMenu);
-		if (popmenuPos==null || barmenuPos==null) {
-			IJ.error("BAR v"+ VERSION +" Error", "Some menu items are not accessible.\n"
-					+"Perhaps the image's context menu is disabled?");
+		if (popmenuPos == null || barmenuPos == null) {
+			IJ.error("BAR v" + VERSION + " Error",
+					"Some menu items are not accessible.\n" + "Perhaps the image's context menu is disabled?");
 			return;
 		}
 
-		if (popmenuPos==-1) { // parent is MenuBar
+		if (popmenuPos == -1) { // parent is MenuBar
 
-			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount()-1);
+			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount() - 1);
 			if (!(lastItem instanceof Menu))
 				popMenu.addSeparator();
 			popMenu.add(barMenu.getItem(barmenuPos));
 			barMenu.insert(placeHolder, barmenuPos);
 			if (!IJ.macroRunning())
-				IJ.showMessage("BAR v"+ VERSION, ""+ subMenu +"> transferred to context menu.\n"
-						+"Right-click on the image canvas to access it.");
+				IJ.showMessage("BAR v" + VERSION, "" + subMenu + "> transferred to context menu.\n"
+						+ "Right-click on the image canvas to access it.");
 
 		} else { // parent is PopupMenu
 
 			final Integer placeholderPos = getMenuItem(barMenu, placeHolderString);
 			barMenu.remove(placeholderPos);
 			barMenu.insert(popMenu.getItem(popmenuPos), placeholderPos);
-			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount()-1);
+			final MenuItem lastItem = popMenu.getItem(popMenu.getItemCount() - 1);
 			if (lastItem.getLabel().equals("-"))
 				popMenu.remove(lastItem);
 			if (!IJ.macroRunning())
@@ -265,10 +266,10 @@ public class Utils implements PlugIn {
 	 */
 	private Integer getMenuItem(final Menu menu, final String label) {
 		int position = -1;
-		if (menu==null) {
+		if (menu == null) {
 			return null;
 		}
-		for (int i=0; i<menu.getItemCount(); i++) {
+		for (int i = 0; i < menu.getItemCount(); i++) {
 			if (menu.getItem(i).getLabel().equals(label)) {
 				position = i;
 				break;
@@ -288,9 +289,9 @@ public class Utils implements PlugIn {
 		try {
 			final Toolkit toolkit = Toolkit.getDefaultToolkit();
 			final Clipboard clipboard = toolkit.getSystemClipboard();
-			text = (String)clipboard.getData(DataFlavor.stringFlavor);
+			text = (String) clipboard.getData(DataFlavor.stringFlavor);
 		} catch (final Exception e) {
-			//if (IJ.debugMode) IJ.handleException(e);
+			// if (IJ.debugMode) IJ.handleException(e);
 		}
 		return text;
 	}
@@ -308,13 +309,13 @@ public class Utils implements PlugIn {
 	 * the method can be triggered by dragging and dropping files from the
 	 * native file manager.
 	 * <p>
-	 * Some system files (hidden files, {@code Thumbs.db}) are excluded
-	 * from the list. If the directory is empty, users are prompted with the
-	 * option to reveal the file in the native file browser (see
+	 * Some system files (hidden files, {@code Thumbs.db}) are excluded from the
+	 * list. If the directory is empty, users are prompted with the option to
+	 * reveal the file in the native file browser (see
 	 * {@link #revealFile(String)}).
 	 * <p>
 	 * Users can double click on a listed file path to have it open by ImageJ.
-	 * 
+	 *
 	 * @param dir
 	 *            Path of the directory to be listed
 	 * @param xPos
@@ -349,8 +350,7 @@ public class Utils implements PlugIn {
 		// Retrieve file list
 		final File[] files = f.listFiles(filter);
 		if (files.length == 0) {
-			if (IJ.showMessageWithCancel("Empty Directory", dir
-					+ "\nis empty. Open it?"))
+			if (IJ.showMessageWithCancel("Empty Directory", dir + "\nis empty. Open it?"))
 				revealFile(dir);
 			return;
 		}
@@ -371,11 +371,9 @@ public class Utils implements PlugIn {
 			@Override
 			public void filesDropped(final java.io.File[] files) {
 				try {
-					final String dir = (files[0].isDirectory()) ? files[0]
-							.getCanonicalPath() : files[0].getParent();
+					final String dir = (files[0].isDirectory()) ? files[0].getCanonicalPath() : files[0].getParent();
 					if (dir == null) {
-						IJ.error("BAR " + VERSION,
-								"Error: Drag and Drop failed...");
+						IJ.error("BAR " + VERSION, "Error: Drag and Drop failed...");
 						return;
 					}
 					int xPos, yPos;
@@ -389,8 +387,7 @@ public class Utils implements PlugIn {
 					listDirectory(dir, xPos, yPos);
 
 				} catch (final Exception e) {
-					IJ.error("BAR " + VERSION,
-							"Error: Drag and Drop failed...");
+					IJ.error("BAR " + VERSION, "Error: Drag and Drop failed...");
 					return;
 				}
 			}
@@ -398,21 +395,19 @@ public class Utils implements PlugIn {
 
 		// Populate TextPanel
 		final TextPanel tp = tw.getTextPanel();
-		final String HEADING = "Double-click on a filename to open it. Drag & "
-				+ "drop a folder to generate new lists";
+		final String HEADING = "Double-click on a filename to open it. Drag & " + "drop a folder to generate new lists";
 		tp.setColumnHeadings(HEADING);
 
 		final int padDigits = (int) (Math.log10(files.length) + 1);
 		for (int i = 0; i < files.length; i++) {
-			final String fname = (files[i].isDirectory()) ? files[i].getName()
-					+ File.separator : files[i].getName();
+			final String fname = (files[i].isDirectory()) ? files[i].getName() + File.separator : files[i].getName();
 			tp.appendWithoutUpdate("" + IJ.pad((i + 1), padDigits) + ": " + dir + fname);
 		}
 
-		// Hack: create an empty row as wide as heading to ensure heading is fully visible
+		// Hack: create an empty row as wide as heading to ensure heading is
+		// fully visible
 		final String spacer = "                                                 "
-				+ "                                                             "
-				+ "                          ";
+				+ "                                                             " + "                          ";
 		tp.appendWithoutUpdate(spacer);
 
 		tp.updateDisplay();
@@ -446,15 +441,16 @@ public class Utils implements PlugIn {
 	 *            if {@code true} {@link ij.text.TextWindow TextWindow}
 	 *            "cascades" from ImageJ's
 	 *            {@link ij.WindowManager#getFrontWindow() frontmost} window. If
-	 *            {@code false}, TextWidow is displayed in the center of
-	 *            the screen
+	 *            {@code false}, TextWidow is displayed in the center of the
+	 *            screen
 	 *
 	 * @see #listDirectory(String, int, int)
 	 * @see #listDirectory(String)
 	 */
 	public static void listDirectory(final String dir, final boolean cascade) {
 		final java.awt.Frame frame = WindowManager.getFrontWindow();
-		int xPos = -1; int yPos = -1;
+		int xPos = -1;
+		int yPos = -1;
 		if (cascade && frame != null) {
 			final java.awt.Point pos = frame.getLocationOnScreen();
 			xPos = (int) pos.getX() + 20;
@@ -475,10 +471,12 @@ public class Utils implements PlugIn {
 	 * @see #fileExists(File)
 	 */
 	void installMacroFile(final String directory, final String filename) {
-		if (directory==null || filename==null) return;
+		if (directory == null || filename == null)
+			return;
 		final String path = directory + File.separator + filename;
 		final File f = new File(path);
-		if (!fileExists(f)) return;
+		if (!fileExists(f))
+			return;
 		final MacroInstaller mi = new MacroInstaller();
 		mi.installFile(path);
 	}
@@ -502,8 +500,9 @@ public class Utils implements PlugIn {
 	 * @see #openScript(String, String)
 	 */
 	public static void openIJ1Script(final String dir, final String filename) {
-		final Editor ed = (Editor)IJ.runPlugIn("ij.plugin.frame.Editor", "");
-		if (ed!=null) ed.open(dir, filename);
+		final Editor ed = (Editor) IJ.runPlugIn("ij.plugin.frame.Editor", "");
+		if (ed != null)
+			ed.open(dir, filename);
 	}
 
 	/**
@@ -516,14 +515,14 @@ public class Utils implements PlugIn {
 	 * @see #openScript(String, String)
 	 * @see #openIJ1Script(String, String)
 	 */
-	public static void openIJ2Script(final File file){
+	public static void openIJ2Script(final File file) {
 		// retrieve the ImageJ application context
 		// https://github.com/imagej/imagej-tutorials/tree/master/call-modern-from-legacy
-		final Context context = (Context)IJ.runPlugIn("org.scijava.Context", "");
+		final Context context = (Context) IJ.runPlugIn("org.scijava.Context", "");
 		final TextEditor editor = new TextEditor(context);
 		editor.createNewFromTemplate(file, null);
-		//final TextEditor.Tab tab = editor.open(file);
-		//tab.setVisible(true); // TODO. Allow document to be opened in tabs!
+		// final TextEditor.Tab tab = editor.open(file);
+		// tab.setVisible(true); // TODO. Allow document to be opened in tabs!
 		editor.setVisible(true);
 	}
 
@@ -694,28 +693,32 @@ public class Utils implements PlugIn {
 
 			String cmd;
 			if (IJ.isLinux())
-				cmd = "xdg-open "; //gnome-open should also be tried?
+				cmd = "xdg-open "; // gnome-open should also be tried?
 			else if (IJ.isMacOSX())
 				cmd = "open ";
 			else if (IJ.isWindows())
 				cmd = "cmd /c start ";
 			else {
-				IJ.error("This command does not support your OS. Please report this bug at\n"
-						+ SRC_URL);
+				IJ.error("This command does not support your OS. Please report this bug at\n" + SRC_URL);
 				return;
 			}
 
-			// URIs seem to be the most cross-platform effective way of dealing with
-			// spaces in file paths. However, triple slashes seem to be required for
-			// proper handling of local files (at least in ubuntu 14.10). This does
-			// not seem to be the case with MW (wine) or Mac OS that seem to accept
+			// URIs seem to be the most cross-platform effective way of dealing
+			// with
+			// spaces in file paths. However, triple slashes seem to be required
+			// for
+			// proper handling of local files (at least in ubuntu 14.10). This
+			// does
+			// not seem to be the case with MW (wine) or Mac OS that seem to
+			// accept
 			// 'file:/' just fine. Since we are dealing with URIs we could use
-			// ij.plugin.BrowserLauncher.openURL(uri). Unfortunately that does not
+			// ij.plugin.BrowserLauncher.openURL(uri). Unfortunately that does
+			// not
 			// seem to work with linux, at least in Ubuntu 14.10 (fresh install)
 			String path = file.getPath();
 			if (path.contains(" ")) {
 				path = file.toURI().normalize().toString();
-				if (path.indexOf("file:///")==-1)
+				if (path.indexOf("file:///") == -1)
 					path = path.replace("file:/", "file:///");
 			}
 
@@ -831,7 +834,7 @@ public class Utils implements PlugIn {
 	/**
 	 * Variant of {@link #getTable(boolean, WindowListener)} that ignores
 	 * WindowListeners.
-	 * 
+	 *
 	 * @return A reference to the chosen {@code ResultsTable} or {@code null} if
 	 *         chosen source did not contain valid data
 	 *
@@ -857,7 +860,7 @@ public class Utils implements PlugIn {
 	 */
 	public static ResultsTable getTable(final String textWindowTitle) {
 		ResultsTable rt = null;
-		final TextWindow window = (TextWindow)WindowManager.getFrame(textWindowTitle);
+		final TextWindow window = (TextWindow) WindowManager.getFrame(textWindowTitle);
 		if (window != null)
 			rt = window.getTextPanel().getResultsTable();
 		if (rt == null)
@@ -896,7 +899,8 @@ public class Utils implements PlugIn {
 		return getTable(null, displayInResults, true, listener);
 	}
 
-	public static ResultsTable getTable(final Component relativeComponent, final boolean displayInResults, final boolean offerSampleChoice, final WindowListener listener) {
+	public static ResultsTable getTable(final Component relativeComponent, final boolean displayInResults,
+			final boolean offerSampleChoice, final WindowListener listener) {
 
 		ResultsTable rt = null;
 		final ArrayList<ResultsTable> tables = new ArrayList<>();
@@ -965,7 +969,7 @@ public class Utils implements PlugIn {
 		gd.addRadioButtonGroup(subtitle, tableTitles.toArray(new String[tableTitles.size()]), rows, cols,
 				tableTitles.get(0));
 		// gd.hideCancelButton();
-		if (relativeComponent!=null)
+		if (relativeComponent != null)
 			gd.setLocationRelativeTo(relativeComponent);
 		gd.showDialog();
 		if (gd.wasCanceled())
@@ -1076,7 +1080,8 @@ public class Utils implements PlugIn {
 	 * @see #getTable()
 	 * @see ij.io.Opener#openTable(String)
 	 */
-	public static ResultsTable openAndDisplayTable(final String path, final String title, final WindowListener listener, final boolean silent) {
+	public static ResultsTable openAndDisplayTable(final String path, final String title, final WindowListener listener,
+			final boolean silent) {
 		try {
 			return openAndDisplayTable(path, title, listener);
 		} catch (final IOException exc) {
@@ -1084,7 +1089,7 @@ public class Utils implements PlugIn {
 				IJ.handleException(exc);
 			return null;
 		}
-		
+
 	}
 
 	/**
@@ -1099,9 +1104,9 @@ public class Utils implements PlugIn {
 	 *            windows with duplicated titles, title is made unique by
 	 *            {@link WindowManager} .
 	 * @param listener
-	 *            The {@link WindowListener} to be
-	 *            added to the window containing data if retrieval was
-	 *            successful. It is ignored when {@code null}.
+	 *            The {@link WindowListener} to be added to the window
+	 *            containing data if retrieval was successful. It is ignored
+	 *            when {@code null}.
 	 * @throws IOException
 	 *             if file could not be opened
 	 * @return A reference to the opened {link ResultsTable} or {@code null} if
@@ -1127,8 +1132,8 @@ public class Utils implements PlugIn {
 	}
 
 	/**
-	 * Returns a {@link ResultsTable} containing
-	 * Gaussian ("normally") distributed values without displaying it.
+	 * Returns a {@link ResultsTable} containing Gaussian ("normally")
+	 * distributed values without displaying it.
 	 *
 	 * @return the {link ResultsTable} containing the demo data
 	 *

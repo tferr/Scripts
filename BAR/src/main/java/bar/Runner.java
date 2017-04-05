@@ -92,11 +92,11 @@ public class Runner {
 		runner.runScript("Data_Analysis", "Distribution_Plotter.ijm");
 	}
 
-	private void runScript(URL url, final String filename, final Map<String, Object> inputMap) {
+	private void runScript(final URL url, final String filename, final Map<String, Object> inputMap) {
 		try {
 			runScript(url.openStream(), filename, inputMap);
 			lastLoadedURL = url;
-		} catch (IOException exc) {
+		} catch (final IOException exc) {
 			error("Could not run " + url.toString(), IO_ERROR);
 			exc.printStackTrace();
 		}

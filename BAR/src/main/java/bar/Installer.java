@@ -46,7 +46,7 @@ public class Installer implements Command {
 	@Parameter
 	private UIService uiService;
 
-	@Parameter(visibility = ItemVisibility.MESSAGE, persist=false)
+	@Parameter(visibility = ItemVisibility.MESSAGE, persist = false)
 	private final String help = helpMsg();
 
 	@Parameter(label = "Action:", choices = { "Install files silently", "Install files in debug mode",
@@ -87,9 +87,9 @@ public class Installer implements Command {
 
 		if (status != CLEAN_EXIT) {
 			msgType = MessageType.WARNING_MESSAGE;
-			msg = "An error occurred when copying files\n";
+			msg = "An error occurred when copying files.\n";
 			msg += (verbose) ? "Check Console for details" : "Turn on debugging for details";
-			msg += "\nAttempt to open lib Directory?";
+			msg += ".\nAttempt to open lib Directory?";
 		}
 		final Result choice = uiService.showDialog(msg, "BAR libs", msgType, optionType);
 		if (choice == Result.YES_OPTION) {

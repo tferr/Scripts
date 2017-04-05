@@ -1,13 +1,13 @@
 package bar;
 
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.script.ScriptService;
-
 import net.imagej.ops.AbstractNamespace;
 import net.imagej.ops.Namespace;
 import net.imagej.ops.Op;
 import net.imagej.ops.OpMethod;
+
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 
 @Plugin(type = Namespace.class)
 public class BAR extends AbstractNamespace {
@@ -37,7 +37,8 @@ public class BAR extends AbstractNamespace {
 	// Built-in methods provide type-safe methods for accessing Ops
 	// in a namespace.
 
-	// We always provide an Object... constructor that can be passed directly to the
+	// We always provide an Object... constructor that can be passed directly to
+	// the
 	// OpService.run method
 
 	@OpMethod(op = bar.BAR.GCD.class)
@@ -45,7 +46,8 @@ public class BAR extends AbstractNamespace {
 		return ops().run(bar.BAR.GCD.class, args);
 	}
 
-	// But we can also type-narrow our inputs and returns with our knowledge of the Op
+	// But we can also type-narrow our inputs and returns with our knowledge of
+	// the Op
 	// implementations
 
 	@OpMethod(op = bar.BAR.GCD.class)
