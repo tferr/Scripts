@@ -50,7 +50,7 @@ def appendCommandList(string) {
 def appendResources(string, directories) {
 	string += "\n## Resources\n"
 	for (dir in directories) {	
-		url = Utils.class.getResource("/$dir/")
+		url = Utils.getBARresource("$dir/")
 		list = FileUtils.listContents(url)
 		string += "\n 1. **$dir**\n"
 		if (!list) {

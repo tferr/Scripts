@@ -1,12 +1,12 @@
 //@ImagePlus imp
 //@UIService uiservice
 
-import bar.BAR
+import bar.Utils
 import ij.IJ
 
 
 def loadLib(resourcePath) {
-	url = BAR.getClass().getResource(resourcePath)
+	url = Utils.getBARresource(resourcePath)
 	gcl = new GroovyClassLoader()
 	cls = gcl.parseClass(new GroovyCodeSource(url))
 	(GroovyObject) cls.newInstance()

@@ -92,7 +92,7 @@ public class MDReader implements Command {
 
 		String contents = null;
 		try {
-			final URL url = getClass().getResource(resourcePath);
+			final URL url = Utils.getBARresource(resourcePath);
 			final InputStream is = url.openStream();
 			final File file = File.createTempFile(resourceDirectory + "README", ".md");
 			final OutputStream os = new FileOutputStream(file);

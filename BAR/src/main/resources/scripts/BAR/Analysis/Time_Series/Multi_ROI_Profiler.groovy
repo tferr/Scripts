@@ -19,7 +19,7 @@
  * Multi Plot command to multichannel images and ROIs of any type.
  */
 
-import bar.BAR
+import bar.Utils
 import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.measure.Measurements;
@@ -31,7 +31,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 def loadLib(resourcePath) {
-	url = BAR.getClass().getResource(resourcePath)
+	url = Utils.getBARresource(resourcePath)
 	gcl = new GroovyClassLoader()
 	cls = gcl.parseClass(new GroovyCodeSource(url))
 	(GroovyObject) cls.newInstance()

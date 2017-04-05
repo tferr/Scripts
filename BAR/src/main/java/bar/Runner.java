@@ -92,6 +92,16 @@ public class Runner {
 		runner.runScript("Data_Analysis", "Distribution_Plotter.ijm");
 	}
 
+	private void runScript(URL url, final String filename, final Map<String, Object> inputMap) {
+		try {
+			runScript(url.openStream(), filename, inputMap);
+			lastLoadedURL = url;
+		} catch (IOException exc) {
+			error("Could not run " + url.toString(), IO_ERROR);
+			exc.printStackTrace();
+		}
+	}
+
 	/**
 	 * Runs a script from an InputStream.
 	 *
@@ -112,9 +122,7 @@ public class Runner {
 	 *            {@code /scripts/BAR/Data_Analysis/Distribution_Plotter.ijm};
 	 */
 	public void runScript(final String path) {
-		lastLoadedURL = getClass().getResource(path);
-		final InputStream in = getClass().getResourceAsStream(path);
-		runScript(in, path, null);
+		runScript(Utils.getBARresource(path), path, null);
 	}
 
 	/**
@@ -127,9 +135,7 @@ public class Runner {
 	 *            see {@link ScriptService#run(String, Reader, boolean, Map)}
 	 */
 	public void runScript(final String path, final Map<String, Object> inputMap) {
-		lastLoadedURL = getClass().getResource(path);
-		final InputStream in = getClass().getResourceAsStream(path);
-		runScript(in, path, inputMap);
+		runScript(Utils.getBARresource(path), path, inputMap);
 	}
 
 	/**
@@ -145,7 +151,7 @@ public class Runner {
 	 */
 	public void runScript(final String dir, final String file, final Map<String, Object> inputMap) {
 		final String path = "/scripts/BAR/" + dir + "/" + file;
-		runScript(path, inputMap);
+		runScript(Utils.getBARresource(path), file, inputMap);
 	}
 
 	/**
@@ -220,20 +226,20 @@ public class Runner {
 	}
 
 	public String readContents(final String resourcePath) {
-		return readContents(resourcePath, false);
+		return readContents(Utils.getBARresource(resourcePath), false);
 	}
 
 	private String readContents(final String resourcePath, final boolean setGlobalFlags) {
+		return readContents(Utils.getBARresource(resourcePath), setGlobalFlags);
+	}
+
+	public String readContents(final URL url, final boolean setGlobalFlags) {
 		String contents = null;
 		try {
-			
-			final URL url = getClass().getResource(resourcePath);
-			if (setGlobalFlags)
-				lastLoadedURL =  url;
 			final InputStream is = url.openStream();
 			if (is == null) {
 				if (setGlobalFlags)
-					error("Could not find " + resourcePath, IO_ERROR);
+					error("Could not find " + url, IO_ERROR);
 				return contents;
 			}
 			final InputStreamReader isr = new InputStreamReader(is);
@@ -247,7 +253,10 @@ public class Runner {
 			is.close();
 		} catch (final NullPointerException | IOException ignored) {
 			if (setGlobalFlags)
-				error("There was an error reading " + resourcePath, IO_ERROR);
+				error("There was an error reading " + url, IO_ERROR);
+		} finally {
+			if (setGlobalFlags)
+				lastLoadedURL = url;
 		}
 		return contents;
 	}

@@ -104,19 +104,22 @@ public class Installer implements Command {
 
 	public int installLib(final boolean verbose) {
 
-		final String commonPath = "/"; // used to be "/scripts/BAR/"
+		final String commonPath = ""; // We'll keep it empty for now in case it
+										// parent of the lib directory changes
+										// again (eg, in some previous BAR
+										// versions "lib" was not on the root of
+										// resources but at "scripts/BAR/")
 		final String resourcePath = commonPath + "lib/";
-		final URL source = getClass().getResource(resourcePath);
-		if (verbose)
-			logService.info("Recursively copying resources at " + resourcePath);
-
-		// Define destination path
-		final String sourceFilename = source.getFile();
-		final int startOfBasename = sourceFilename.indexOf("!") + commonPath.length() + 1;
-		final String destinationPath = Utils.getBARDir() + sourceFilename.substring(startOfBasename);
-
 		exitStatus = CLEAN_EXIT;
 		try {
+			final URL source = Utils.getBARresource(resourcePath);
+			if (verbose)
+				logService.info("Recursively copying resources from " + source);
+
+			// Define destination path
+			final String sourceFilename = source.getFile();
+			final int startOfBasename = sourceFilename.indexOf("!") + commonPath.length() + 1;
+			final String destinationPath = Utils.getBARDir() + sourceFilename.substring(startOfBasename);
 
 			final Collection<URL> urlList = FileUtils.listContents(source, true, false);
 			for (final URL url : urlList) {
@@ -163,7 +166,7 @@ public class Installer implements Command {
 
 			}
 
-		} catch (IOException | SecurityException exc) {
+		} catch (NullPointerException | IndexOutOfBoundsException | IOException | SecurityException exc) {
 			if (verbose)
 				exc.printStackTrace();
 			exitStatus = ERROR;

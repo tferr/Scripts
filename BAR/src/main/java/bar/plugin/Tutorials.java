@@ -38,6 +38,8 @@ import org.scijava.ui.DialogPrompt;
 import org.scijava.ui.UIService;
 import org.scijava.ui.swing.script.TextEditor;
 
+import bar.Utils;
+
 /** Loads a new instance of the Script editor with jarified tutorial files */
 @Plugin(type = Command.class, menu = { @Menu(label = "BAR"), @Menu(label = "Help", weight = 0.01d),
 		@Menu(label = "Open Interactive Tutorials...") })
@@ -102,7 +104,7 @@ public class Tutorials implements Command {
 		final ArrayList<URL> urlList = new ArrayList<>();
 		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(getMatcherPattern(language));
 		try {
-			final URI uri = Tutorials.class.getResource(dir).toURI();
+			final URI uri = Utils.getBARresource(dir).toURI();
 			FileSystem fileSystem = null;
 			Path path;
 			if ("jar".equals(uri.getScheme())) {

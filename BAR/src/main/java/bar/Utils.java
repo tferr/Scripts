@@ -25,8 +25,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -1161,6 +1163,33 @@ public class Utils implements PlugIn {
 			rt.setValue("Y", i, xyMeanSD[0] + new Random().nextGaussian() * xyMeanSD[1]);
 		}
 		return rt;
+	}
+
+	public static URL getBARresource(final String resourcePath) {
+		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		URL resource = null;
+		try {
+			final Enumeration<URL> resources = loader.getResources(resourcePath);
+			while (resources.hasMoreElements()) {
+				resource = resources.nextElement();
+				final String path = urlPath(resource);
+				if (path == null)
+					continue;
+				if (path.contains("BAR"))
+					return resource;
+			}
+		} catch (final IOException exc) {
+			// proceed with return null;
+		}
+		return resource;
+	}
+
+	private static String urlPath(final URL url) {
+		try {
+			return url.toURI().toString();
+		} catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 }
