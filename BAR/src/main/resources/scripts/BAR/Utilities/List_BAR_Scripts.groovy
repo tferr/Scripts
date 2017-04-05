@@ -4,10 +4,11 @@
 //@CommandService commandservice
 //@DisplayService displayservice
 //@TextService textservice
-
+//@UIService uiservice
 
 import bar.Runner
 import bar.Utils
+import groovy.io.FileType
 import org.scijava.util.FileUtils;
 
 def cleanIdentifier(identifier, prefix) {
@@ -49,7 +50,7 @@ def appendCommandList(string) {
 
 def appendResources(string, directories) {
 	string += "\n## Resources\n"
-	for (dir in directories) {	
+	for (dir in directories) {
 		url = Utils.getBARresource("$dir/")
 		list = FileUtils.listContents(url)
 		string += "\n 1. **$dir**\n"
@@ -82,22 +83,38 @@ def appendIJ1plugins(string) {
 	return string
 }
 
-// Append all lists
-text = appendScriptList("# List of BAR Files")
+def appendLocalFiles(string) {
+	def header = FileUtils.shortenPath(Utils.getBARDir())
+	string += "\n## Local Files ($header)\n"
+	def dir = new File(Utils.getBARDir())
+	dir.eachFileRecurse(FileType.FILES) {
+		string += " 1. ${it.path - dir.path}\n"
+	}
+	return string
+}
+
+// List resources in BAR jar file
+text = appendScriptList("# BAR Files")
 text = appendCommandList(text)
 text = appendIJ1plugins(text)
 text = appendResources(text, ["boilerplate", "lib", "script_templates",
 		"tools", "tutorials"])
 
-// Include remaining sources
-text += "\n## This List Does Not Include:\n"
-text += " * Unregistered scripts in your local directories, including:\n"
-for (item in [Utils.getBARDir(), Utils.getLibDir(), Utils.getMyRoutinesDir()])
-	text += "  * ${item}\n"
-
+// List user files on local installation
+text = appendLocalFiles(text)
 
 // Render markdown list
 temp = File.createTempFile('barlist', '.md')
 temp.write(text)
-displayservice.createDisplay("List of BAR Files", textservice.asHTML(temp))
+displayservice.createDisplay("BAR Files", textservice.asHTML(temp))
 temp.delete()
+
+// Check for legacy installation files
+if (new File(Utils.getPluginsBasedBARDir()).list()) {
+	uiservice.showDialog("<html><div WIDTH=450>With BAR v1.5 and newer, local files are no "
+		+ "longer rooted in the plugins directory. The new, much more convenient directory "
+		+ "for your local files is <b>${Utils.getBARDir()}</b>. You should move any files "
+		+ "in the old location to the new one (and safely delete the old directory).<br><br>"
+		+ "Old location: <i>${Utils.getPluginsBasedBARDir()}</i><br>"
+		+ "New location: <i>${Utils.getBARDir()}</i>", "Legacy Warning")
+}

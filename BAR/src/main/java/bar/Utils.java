@@ -750,6 +750,17 @@ public class Utils implements PlugIn {
 	}
 
 	/**
+	 * The absolute path to the legacy /BAR directory on the "plugins" folder.
+	 * It is no longer used but it was used prior to BAR v1.5. Included here for
+	 * convenience.
+	 *
+	 * @return the absolute path to the root directory of BAR prior to v1.5
+	 */
+	public static String getPluginsBasedBARDir() {
+		return IJ.getDirectory("plugins") + "Scripts" + File.separator + "BAR" + File.separator;
+	}
+
+	/**
 	 * Returns the path to {@code BAR/My_Routines/}, creating it .
 	 *
 	 * @return the absolute path to the "My Routines" directory
