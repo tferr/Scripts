@@ -203,8 +203,22 @@ public class Runner {
 	 *            the argument string to be retrieved through the IJ1 built-in
 	 *            macro function {@code getArgument()}
 	 */
+	public void runBARMacro(final String path, final String arg) {
+		runIJ1Macro("scripts/BAR/" + path, arg);
+	}
+
+	/**
+	 * Legacy method that supports IJ1 macros that do not use script parameters.
+	 * Ported from {@link Macro_Runner#runMacroFromJar(String, String)}.
+	 *
+	 * @param path
+	 *            the path to the IJ1 macro in the BAR jar file
+	 * @param arg
+	 *            the argument string to be retrieved through the IJ1 built-in
+	 *            macro function {@code getArgument()}
+	 */
 	public void runIJ1Macro(final String path, final String arg) {
-		final String macro = readContents("/scripts/" + path, true);
+		final String macro = readContents(path, true);
 		setStatus((macro == null) ? EXCEPTION : (new Macro_Runner()).runMacro(macro, arg));
 	}
 

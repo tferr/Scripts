@@ -17,7 +17,7 @@ import ij.measure.ResultsTable as RT
 def plot_distributions():
     from bar import Runner
     runner = Runner(context)
-    runner.runIJ1Macro("BAR/Data_Analysis/Distribution_Plotter.ijm", "NN distance")
+    runner.runBARMacro("Data_Analysis/Distribution_Plotter.ijm", "NN distance")
     if not runner.scriptLoaded():
         uiService.showDialog("Distribution of NN distances not plotted.\n"
                            + "Check console for details", "Error")
