@@ -144,7 +144,7 @@ public class SnippetCreator implements PlugIn, DialogListener, ActionListener {
 	}
 
 	private static String header(final String boilerplateName, final int lang) {
-		final String boilerplate = runner.readContents("/boilerplate/" + boilerplateName);
+		final String boilerplate = runner.readContents("boilerplate/" + boilerplateName);
 		if (boilerplate == null)
 			return commonHeader(lang).toString();
 		final String placeholder = C_CHARS[lang] +"header\n";

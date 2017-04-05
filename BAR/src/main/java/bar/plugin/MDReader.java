@@ -80,7 +80,7 @@ public class MDReader implements Command {
 		if (("Other...").equals(resourceDir))
 			commandService.run(Help.class, true);
 		else {
-			final String parent = (Character.isUpperCase(resourceDir.charAt(0))) ? "/scripts/BAR/" : "/";
+			final String parent = (Character.isUpperCase(resourceDir.charAt(0))) ? "scripts/BAR/" : "";
 			openREADME(parent + resourceDir.replace(" ", "_"));
 		}
 	}

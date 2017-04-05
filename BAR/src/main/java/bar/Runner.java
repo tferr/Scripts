@@ -119,7 +119,7 @@ public class Runner {
 	 *
 	 * @param path
 	 *            the path of the BAR script to be executed, e.g,
-	 *            {@code /scripts/BAR/Data_Analysis/Distribution_Plotter.ijm};
+	 *            {@code scripts/BAR/Data_Analysis/Distribution_Plotter.ijm};
 	 */
 	public void runScript(final String path) {
 		runScript(Utils.getBARresource(path), path, null);
@@ -143,14 +143,14 @@ public class Runner {
 	 *
 	 * @param dir
 	 *            the script directory, i.e., the subdirectory in the BAR jar
-	 *            relative to {@code /scripts/BAR/}
+	 *            relative to {@code scripts/BAR/}
 	 * @param file
-	 *            the script filename
+	 *            the script filename (or at least its extension)
 	 * @param inputMap
 	 *            see {@link ScriptService#run(String, Reader, boolean, Map)}
 	 */
 	public void runScript(final String dir, final String file, final Map<String, Object> inputMap) {
-		final String path = "/scripts/BAR/" + dir + "/" + file;
+		final String path = "scripts/BAR/" + dir + "/" + file;
 		runScript(Utils.getBARresource(path), file, inputMap);
 	}
 
@@ -159,12 +159,12 @@ public class Runner {
 	 *
 	 * @param dir
 	 *            the script directory, i.e., the subdirectory in the BAR jar
-	 *            relative to {@code /scripts/BAR/}
+	 *            relative to {@code scripts/BAR/}
 	 * @param file
 	 *            the script filename
 	 */
 	public void runScript(final String dir, final String file) {
-		final String path = "/scripts/BAR/" + dir + "/" + file;
+		final String path = "scripts/BAR/" + dir + "/" + file;
 		runScript(path);
 	}
 
@@ -198,7 +198,7 @@ public class Runner {
 	 *
 	 * @param path
 	 *            the path to the IJ1 macro in the BAR jar file relative to
-	 *            {@code /scripts/}
+	 *            {@code scripts/}
 	 * @param arg
 	 *            the argument string to be retrieved through the IJ1 built-in
 	 *            macro function {@code getArgument()}

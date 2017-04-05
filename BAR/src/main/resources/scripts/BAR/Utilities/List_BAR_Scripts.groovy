@@ -67,7 +67,7 @@ def appendResources(string, directories) {
 
 def appendIJ1plugins(string) {
 	string += "\n## IJ1 Plugins\n"
-	config = new Runner(ij.getContext()).readContents("/plugins.config")
+	config = new Runner(ij.getContext()).readContents("plugins.config")
 	if (!config) {
 		string += " - Could not find any plugins\n"
 		return string

@@ -100,7 +100,7 @@ public class Tutorials implements Command {
 
 	/* See http://stackoverflow.com/a/28057735 for details */
 	private ArrayList<URL> getTutorialFiles(final String language) {
-		final String dir = "/tutorials";
+		final String dir = "tutorials";
 		final ArrayList<URL> urlList = new ArrayList<>();
 		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(getMatcherPattern(language));
 		try {

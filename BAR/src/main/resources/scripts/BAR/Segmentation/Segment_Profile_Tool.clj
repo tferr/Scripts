@@ -2,7 +2,7 @@
 ;@UIService uiService
 
 (let [runner (bar.Runner. context)]
-	(.installIJ1Macro runner "/tools/SegmentProfile.ijm" true)
+	(.installIJ1Macro runner "tools/SegmentProfile.ijm" true)
 	(if-not (.scriptLoaded runner)
 		(.showDialog uiService "File could not be installed. See Console for details" "Error"))
 
