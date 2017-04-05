@@ -98,7 +98,7 @@ text = appendScriptList("# BAR Files")
 text = appendCommandList(text)
 text = appendIJ1plugins(text)
 text = appendResources(text, ["boilerplate", "lib", "script_templates",
-		"tools", "tutorials"])
+		"shared", "tools", "tutorials"])
 
 // List user files on local installation
 text = appendLocalFiles(text)
