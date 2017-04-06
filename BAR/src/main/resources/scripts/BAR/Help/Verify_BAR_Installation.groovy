@@ -83,14 +83,18 @@ def appendIJ1plugins(string) {
 	return string
 }
 
-def appendLocalFiles(string) {
-	def header = FileUtils.shortenPath(Utils.getBARDir())
-	string += "\n## Local Files ($header)\n"
-	def dir = new File(Utils.getBARDir())
-	dir.eachFileRecurse(FileType.FILES) {
-		string += " 1. ${it.path - dir.path}\n"
+def appendLocalFiles(string, path) {
+	def dir = new File(path)
+	files = []
+	if (dir.exists()) {
+		def header = FileUtils.shortenPath(path)
+		string += "\n### $header\n"
+		dir.eachFileRecurse(FileType.FILES) {
+			files << it.path - dir.path
+			string += "  1. ${files.last()}\n"
+		}
 	}
-	return string
+	return new Tuple(string, files.size())
 }
 
 // List resources in BAR jar file
@@ -101,7 +105,9 @@ text = appendResources(text, ["boilerplate", "lib", "script_templates",
 		"shared", "tools", "tutorials"])
 
 // List user files on local installation
-text = appendLocalFiles(text)
+text += "\n## Local Files\n"
+text = appendLocalFiles(text, Utils.getBARDir()).get(0)
+(text, nfiles) = appendLocalFiles(text, Utils.getPluginsBasedBARDir())
 
 // Render markdown list
 temp = File.createTempFile('barlist', '.md')
@@ -110,11 +116,12 @@ displayservice.createDisplay("BAR Files", textservice.asHTML(temp))
 temp.delete()
 
 // Check for legacy installation files
-if (new File(Utils.getPluginsBasedBARDir()).list()) {
+if (nfiles > 0) {
 	uiservice.showDialog("<html><div WIDTH=450>With BAR v1.5 and newer, local files are no "
 		+ "longer rooted in the plugins directory. The new, much more convenient directory "
 		+ "for your local files is <b>${Utils.getBARDir()}</b>. You should move any files "
 		+ "in the old location to the new one (and safely delete the old directory).<br><br>"
 		+ "Old location: <i>${Utils.getPluginsBasedBARDir()}</i><br>"
-		+ "New location: <i>${Utils.getBARDir()}</i>", "Legacy Warning")
+		+ "New location: <i>${Utils.getBARDir()}</i><br>", "Legacy Warning")
+	Utils.revealFile(Utils.getPluginsBasedBARDir())
 }
