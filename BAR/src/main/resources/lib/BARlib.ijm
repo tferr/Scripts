@@ -1,9 +1,9 @@
 /* BARlib.ijm
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
- * Common BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib.
- * This file can host functions to be used across your scripts. To load these
- * scripting additions, append the following to your macro files:
+ * Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+ * demonstrates how functions/methods in a common file can be shared across your scripts.
+ * To load such scripting additions, append the following to your IJM files:
  *
  *     libPath = call('bar.Utils.getLibDir') + 'BARlib.ijm';
  *     libContents = File.openAsString(libPath);
@@ -13,6 +13,8 @@
  * you can confirm the availability of new additions by running:
  *
  *     confirmLoading();
+ *
+ * (See resources in BAR>Help for more details)
  */
 
 
@@ -26,7 +28,7 @@ function getClipboardText() {
 	return String.paste; //IJM already has a built-in function for this task
 }
 
-/** 
+/**
  *  Returns a random string of the specified length. If the boolean flag spacers
  *  is true, hyphens are used to improve readability of randomized sequence
  */

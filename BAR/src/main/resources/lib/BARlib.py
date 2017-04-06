@@ -1,31 +1,32 @@
+#@UIService uiservice
+
 # BARlib.py
-# IJ BAR: https://github.com/tferr/Scripts#scripts
+# IJ BAR: https://github.com/tferr/Scripts
 #
-# Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
-# placed in BAR/lib. This file can host functions to be used across your scripts.
-# To load these scripting additions, append the following to your Jython files:
+# Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+# demonstrates how functions/methods in a common file can be shared across your scripts.
+# To load such scripting additions, append the following to your Jython files:
 #
 #    import bar, sys
 #    sys.path.append(bar.Utils.getLibDir())
-#    import BARlib as lib
+#    import BARlib as lib  # In which BARlib is the name of the file
 #
 # Then, call functions as usual:
 #    lib.confirmLoading()
 #
-# NB: Jython modules will be compiled when loaded. Compiled files are static and
-# will not be recompiled automatically when the respective source is modified.
-# If you change this file (BARlib.py), you'll have to delete the respective binary
-#(BARlib$py.class) to force a new compilation. You can do so, using:
+# NB: Jython modules will be compiled when loaded. Compiled files are static and will not
+# be recompiled automatically when the respective source is modified. Every time you
+# change your lib files, you'll have to delete the respective binary (<filename>$py.class)
+# to force a new compilation. You can do so, using:
 #
-#    barUtils.zapCompiledLibs()
+#    barUtils.zapCompiledLibs() n
 #
-# (See BAR API ("BAR>About BAR...") for more details)
+# Which will delete all binary files from the lib directory, effectively forcing files to
+# be recompiled next time they are loaded (See resources in BAR>Help for more details)
 
-##### Utilities #####
 def confirmLoading():
     """Acknowledges accessibility to this file"""
-    from ij import IJ
-    IJ.showMessage("BAR lib successfully loaded!")
+    uiservice.showDialog("BAR lib successfully loaded!")
 
 def getClipboardText():
     """Returns text from the system clipboard or an empty string if no text was found"""
@@ -37,8 +38,6 @@ def randomString():
     import uuid
     return str(uuid.uuid4())
 
-
-##### CALCULATIONS #####
 def getSimpleMovingAverage(values, window):
     """Smooths 1D data according to the specified window"""
     if (window<1): return values

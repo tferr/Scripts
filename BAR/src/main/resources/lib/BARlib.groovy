@@ -1,11 +1,11 @@
 //@UIService uiservice
 
 /* BARlib.groovy
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
- * Common BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
- * can host functions/methods to be used across your scripts. To load these scripting
- * additions, append the following to your Groovy files:
+ * Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+ * demonstrates how functions/methods in a common file can be shared across your scripts.
+ * To load such scripting additions, append the following to your Groovy files:
  *
  *    import bar.Utils
  *    file = new File(Utils.getLibDir() + "BARlib.groovy")
@@ -14,6 +14,8 @@
  * Then, initiate the BARlib class, calling methods as usual:
  *    lib = BARlib.newInstance()
  *    lib.confirmLoading()
+ *
+ * (See resources in BAR>Help for more details)
  */
 
 import bar.Utils

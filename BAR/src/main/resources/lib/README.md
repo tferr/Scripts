@@ -3,9 +3,19 @@ The lib directory is a local centralized repository of user-defined libraries th
 shared across files. These libraries serve as scripting additions to user scripts
 (namely for [My Routines]).
 
-Use `BAR>Utilities>Install Multi-language libs...` to populate your local lib directory.
-lib files are not synchronized with the BAR update site.
+Use `BAR>Utilities>Install Multi-language libs...` to populate your local lib directory
+with some template libs that exemplify the process and serve as a starting point for
+building your own libraries. Note that any files in the local _/scripts/BAR/_ directory
+are not synchronized with the BAR update site.
 
+Below are some examples on how lib files can be access from other scripts (the default
+template `BARlib` files are assumed (to load your own files, simply replace
+_`BARlib.<lang>`_ when appropriate). Also, the `BAR> Utilities> New Snippet...` generates
+some [boilerplate] functions and methods that simplify the access to lib files.
+
+You can also have a look at the files in BAR's
+[internal lib](https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/shared)
+(these are shared by BAR built-in commands) for further examples.
 
 ## BeanShell (BSH lib)
 
@@ -13,7 +23,7 @@ lib files are not synchronized with the BAR update site.
 // Add BAR/lib to classpath and load BARlib.bsh
 addClassPath(bar.Utils.getBARDir());
 importCommands("lib/");
-BARlib();
+BARlib(); //name of lib class file
 
 // Initiate BARlib and confirm its availability
 lib = new BARlib();
@@ -65,7 +75,7 @@ importClass(Packages.bar.Utils);
 load(Utils.getLibDir() +"BARlib.js");
 
 // Initiate BARlib and confirm its availability
-lib = new BARlib();
+lib = new BARlib(); // name of JS function
 lib.confirmLoading();
 ```
 
@@ -76,7 +86,7 @@ lib.confirmLoading();
 import sys
 from bar import Utils as barUtils
 sys.path.append(barUtils.getLibDir())
-import BARlib as lib
+import BARlib as lib // name of file
 
 # Confirm availability of BARlib
 lib.confirmLoading()
@@ -104,6 +114,7 @@ lib.confirmLoading
  * Use the provided test files to debug your customizations
 
 
+[boilerplate]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/boilerplate
 
 ------
 | [Home] | [Analysis] | [Annotation] | [Data Analysis] | [lib] | [My Routines] | [Segmentation] | [Tools] | [Utilities] | [Wiki] |
@@ -112,9 +123,9 @@ lib.confirmLoading
 [Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis
 [Annotation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Annotation
 [Data Analysis]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Data_Analysis
-[lib]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/lib
+[lib]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/lib
 [My Routines]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/My_Routines
 [Segmentation]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Segmentation
-[Tools]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/tools
-[Utilities]: https://github.com/tferr/Scripts/tree/master//BAR/src/main/resources/scripts/BAR/Utilities
+[Tools]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/tools
+[Utilities]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Utilities
 [Wiki]: https://imagej.net/BAR

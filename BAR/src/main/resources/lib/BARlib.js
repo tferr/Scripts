@@ -1,9 +1,11 @@
+//@UIService uiservice
+
 /* BARlib.js
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
- * Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
- * placed in BAR/lib. This file can host functions to be used across your scripts.
- * To load these scripting additions, append the following to your JavaScript files:
+ * Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+ * demonstrates how functions/methods in a common file can be shared across your scripts.
+ * To load such scripting additions, append the following to your JavaScript files:
  *
  *     importClass(Packages.bar.Utils);
  *     load(Utils.getLibDir() + "BARlib.js");
@@ -11,15 +13,16 @@
  *
  * Then, call functions using, e.g.:
  *     lib.confirmLoading();
+ *
+ * (See resources in BAR>Help for more details)
  */
 
 function BARlib() {
 
-	///////////  UTILITIES  ///////////
 	/** Acknowledges accessibility to this file */
 	this.confirmLoading = function() {
 		importClass(Packages.ij.IJ);
-		IJ.showMessage("BAR lib successfully loaded!");
+		uiservice.showDialog("BAR lib successfully loaded!")
 	}
 
 	/** Returns text from the system clipboard or an empty string if no text was found */
@@ -33,7 +36,6 @@ function BARlib() {
 		return java.util.UUID.randomUUID().toString();
 	}
 
-	///////////  CALCULATIONS  ///////////
 	/** Smooths 1D data according to the specified window */
 	this.getSimpleMovingAverage = function(values, window) {
 		if (window<1) return values;

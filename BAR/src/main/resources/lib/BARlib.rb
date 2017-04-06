@@ -1,9 +1,11 @@
+#@UIService uiservice
+
 # BARlib.rb
-# IJ BAR: https://github.com/tferr/Scripts#scripts
+# IJ BAR: https://github.com/tferr/Scripts
 #
-# Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
-# placed in BAR/lib. This file can host functions to be used across your scripts.
-# To load these scripting additions, append the following to your JRuby files:
+# Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+# demonstrates how functions/methods in a common file can be shared across your scripts.
+# To load such scripting additions, append the following to your JRuby files:
 #
 #    java_import "bar.Utils"
 #    require "#{Utils.getLibDir}" + "BARlib.rb"
@@ -12,13 +14,14 @@
 #    lib = BARlib.new()
 #    lib.confirmLoading
 #
+# (See resources in BAR>Help for more details)
+
 
 class BARlib
-	##### Utilities #####
+
 	# Acknowledges accessibility to this file
 	def confirmLoading
-		java_import "ij.IJ"
-		IJ.showMessage "BAR lib successfully loaded!"
+		uiservice.showDialog "BAR lib successfully loaded!"
 	end
 
 	# Returns text from the system clipboard or an empty string if no text was found
@@ -33,8 +36,6 @@ class BARlib
 		UUID.randomUUID().toString()
 	end
 
-
-	##### CALCULATIONS #####
 	# Smooths 1D data according to the specified window. Returns the original data
 	# if window is not a positive integer
 	def getSimpleMovingAverage(values, window)

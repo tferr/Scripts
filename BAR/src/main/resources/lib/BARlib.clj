@@ -1,21 +1,24 @@
+;@UIService uiservice
+
 ; BARlib.clj
-; IJ BAR: https://github.com/tferr/Scripts#scripts
+; IJ BAR: https://github.com/tferr/Scripts
 ;
-; Common BAR library (https://github.com/tferr/Scripts/tree/master/lib#lib) to be
-; placed in BAR/lib. This file can host functions to be used across your scripts.
-; To load these scripting additions, append the following to your Clojure files:
+; Template BAR library (http://imagej.net/BAR#BAR_lib) to be placed in BAR/lib. This file
+; demonstrates how functions/methods in a common file can be shared across your scripts.
+; To load such scripting additions, append the following to your Clojure files:
 ;
 ;     (load-file (str (bar.Utils/getLibDir) "BARlib.clj"))
 ;
 ; Then, call functions as usual:
 ;     (confirmLoading)
+;
+; (See resources in BAR>Help for more details)
 
 (import '(org.apache.commons.math3.util ArithmeticUtils))
 
-;;;;;;;;;;;  UTILITIES  ;;;;;;;;;;;
 (defn confirmLoading []
   "Acknowledges accessibility to this file"
-  (ij.IJ/showMessage "BAR lib successfully loaded!"))
+  (uiservice/showDialog "BAR lib successfully loaded!"))
 
 (defn getClipboardText []
   "Returns text from the system clipboard or an empty string if no text was found"
@@ -25,8 +28,6 @@
   "Returns a random uuid"
   (str (java.util.UUID/randomUUID)))
 
-
-;;;;;;;;;;;  CALCULATIONS  ;;;;;;;;;;;
 (defn gcd [a b]
   "Returns the greatest common divisor between 2 numbers"
   (if (= b 0)
