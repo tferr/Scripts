@@ -1,16 +1,12 @@
 # Analysis
 
-Scripts that complement built-in commands related to image analysis.
+Scripts that complement built-in commands related to image analysis. Scripts that deal
+with timelapse images are grouped under [Time Series].
 
 
 ## LoG-DoG Spot Counter
 Detects particles in a multichannel image using [TrackMate](http://imagej.net/TrackMate)'s
 LoG/DoG (Laplacian/Difference of Gaussian) segmentation
-
-
-## Multi ROI Profiler
-Groovy script that plots ROI intensities over time. Extends ROI Manager's _Multi Plot_
-command to multichannel images and ROIs of any type.
 
 
 ## Multichannel Plot Profile
@@ -65,6 +61,9 @@ _Live mode_, and with profiled image as the frontmost window, press press <kbd>C
 to readjust the number of data points to be used in the SMA calculation.
 
 ![smoothed plot profile](../../../../../../../images/smoothed-plot-profile.png)
+
+
+[Time Series]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/scripts/BAR/Analysis/Time_Series
 
 
 
