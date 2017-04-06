@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>BAR_</artifactId>
-	<version>1.5.1</version>
+	<version>1.5.2-SNAPSHOT</version>
 
 	<name>BAR</name>
 	<description>BAR: A curated collection of Broadly Applicable Routines for ImageJ.</description>
