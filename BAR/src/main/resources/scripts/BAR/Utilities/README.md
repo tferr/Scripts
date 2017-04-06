@@ -9,6 +9,8 @@ Features include: drag-and-drop support, interaction with native file manager, r
 filtering, built-in console for common operations, and ability to produces filtered lists
 of directory contents ([Documentation page](http://imagej.net/BAR#Commander)).
 
+![commander overview](../../../../../../../images/commander-overview.png)
+
 
 ## Create Toolset
 Creates toolbar menus for running plugins, macros and scripts. It can also group built-in
@@ -43,10 +45,14 @@ transferred to [imagej.net](http://imagej.net/).
 
 
 ## New Snippet
-A Java plugin implementing a convenient way to generate new scripts. The prompt features a
-drop-down menu containing source code that pre-loads scripting additions stored in [lib].
+A Java plugin implementing a convenient way to generate new scripts and access
+[boilerplate] code that generates functions and methods that simplify the access to [lib]
+files. More details on the [documentation page](http://imagej.net/BAR#Snippets).
 
-[![SnippetCreator](http://imagej.net/_images/d/de/SnippetCreator.png)](http://imagej.net/BAR#Snippets)
+![snippet creator](../../../../../../../images/snippet-creator.png)
+
+
+[boilerplate]: https://github.com/tferr/Scripts/tree/master/BAR/src/main/resources/boilerplate
 
 
 
