@@ -27,6 +27,9 @@ has yet to be transferred to [imagej.net](http://imagej.net/).
    ![ROI Color Coder Output](../../../../../../../images/roi-color-coder-prompt.png)
 
 
+## ROI Magnifier Tool
+Magnifies the contents of a rectangular ROI and renders it inside the image canvas.
+
 
 
 ------
