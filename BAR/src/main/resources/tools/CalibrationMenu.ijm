@@ -12,7 +12,6 @@
 // Editable variables
 var prmpt= false;  // With stacks and hyperstacks, should you be prompted for voxel depth?
 var cpath= getDirectory("imagej") +"Microscope Profiles Collection/"; // Path to calibration files
-var tpath= getDirectory("macros") +"tools"+ File.separator +"Calibration_Menu.ijm"; // Path to this file
 
 // Fixed variables
 var cFile= call("ij.Prefs.get", "qcm.file", " ");
@@ -127,10 +126,11 @@ function getCSVchoice() {
       open(cpath+file);
   if (file!=cFile) {
       call("ij.Prefs.set", "qcm.file", file);
-      if (File.exists(tpath))
-          run("Install...", "install=["+ tpath +"]");
-      else
-          showMessage("Tool could not be reloaded", tpath
-                     +"\nwas not found. You must install the tool manually to reload the new settings.");
+      autoReload();
   }
+}
+
+function autoReload() {
+	run("Productivity Menus...", "tool=[Calibration Menu] open=false"); // BAR command
+	exit();
 }

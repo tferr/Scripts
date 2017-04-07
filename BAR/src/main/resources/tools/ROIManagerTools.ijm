@@ -5,7 +5,7 @@
  * 'Rename and Save ROI Set.txt' macro. Save this file in ImageJ/macros/toolsets/,
  * then use the '>>' drop down menu to activate it. Requires IJ 1.50b or newer.
  *
- * TF, 2015.08, Change log: See https://github.com/tferr/Scripts/releases
+ * TF, 2017 Change log: See https://github.com/tferr/Scripts/releases
  */
 
 var labels= getPrefList("labels");
@@ -212,19 +212,8 @@ function createNewList(type, prompt) {
       createNewList(type, prompt);  // Display appended list
   }
 
-  // Reload toolset. When downloaded independently from BAR, this file may have
-  // ".ijm", ".txt", or a ".ijm.txt", so we'll try to find the file w/o extension
-  path= getDirectory("macros")+"toolsets/";
-  list= getFileList(path);
-  for (i=0; i<list.length; i++)
-      if (startsWith(list[i], "ROI Manager Tools"))
-          { path+= list[i]; break; }
-  if (File.exists(path))
-      run("Install...", "install=["+ path +"]");
-  else
-      showMessage("ROI Manager Tools could not be reloaded as it was not\n"
-                 +"found in the /macros/toolset directory. You must\n"
-                 +"re-install the file manually to reload the new settings.");
+  // Reload toolset
+  autoReload();
 
 }
 
@@ -340,4 +329,10 @@ function parseRange(string) {
     if (min>max || max==0)
         exit("Invalid ROI range.");
     return newArray(min, max);
+}
+
+
+function autoReload() {
+	run("ROI Manager Tools"); // BAR command
+	exit();
 }

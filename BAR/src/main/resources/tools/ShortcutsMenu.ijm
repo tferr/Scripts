@@ -1,16 +1,12 @@
 /* Shortcuts_Menu.ijm
  * IJ BAR: https://github.com/tferr/Scripts#scripts
  *
- * An IJ1 Menu Tool listing the user's most used commands. List is remembered across restarts
- *
- * Non-BAR users: place this file in ImageJ/plugins/Tools/. Rename the variable "path" below
- * and re-start ImageJ. Load it using the ">>"
- * drop-down menu in the main ImageJ window
+ * An IJ1 Menu Tool listing the user's most used commands.
+ * List is remembered across restarts
  */
 
 var cmdList = getMenuPrefs();
 var dCmds = newMenu("Shortcuts Menu Tool", cmdList);
-var path= getDirectory("macros") +"tools"+ File.separator +"Shortcuts_Menu.ijm"; // Path to this file
 
 
 macro "Shortcuts Menu Tool - C037 D1fD2fD3fD4fD9fDafDbfDcfD2eD3eD4eD9eDaeDbeDdfD3dD4dD9dDadD4aD9aDbdD3cD4cD9cDacD0fD19D59D5fD89D8fDc9D29D4bD9bDb9D18D28D58D5eD68D78D88D8eDb8Dc8D69D79D1eD27D2dD57D5dD67D77D87D8dDb7DceD26D36D46D56D5cD66D76D86D8cD96Da6Db6D49D99D25D35D3bD45D55D5bD65D75D85D8bD95Da5DabDb5D34D44D54D5aD64D74D84D8aD94Da4D33D43D53D63D73D83D93Da3D62D72D2cDbcD61D71D52D82D42D92D60D70D17D24D32Da2Db4Dc7" {
@@ -71,11 +67,9 @@ function shortcutInstaller() {
       if (add) {
           call("ij.Prefs.set", "sMenu.list", newitems+", , , ,");
           shortcutInstaller();
-      } else if (File.exists(path))
-          run("Install...", "install=["+ path +"]");
-      else
-          showMessage("Tool could not be reloaded", path +" not found.\n"
-                     +"You must install the tool manually to reload the new settings.");
+      } else {
+      	autoReload();
+      }
   }
 }
 
@@ -95,3 +89,9 @@ function blankString(string) {
             return false;
     return true;
 }
+
+function autoReload() {
+	run("Productivity Menus...", "tool=[Shortcuts Menu] open=false");  // BAR command
+	exit();
+}
+

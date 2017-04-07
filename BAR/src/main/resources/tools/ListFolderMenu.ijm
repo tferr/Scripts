@@ -8,8 +8,6 @@
  * This Menu tool improves file browsing within ImageJ. It offers commands to reveal directories in
  * the native file browser (including the directory from which the active image was loaded) and
  * commands to list directory contents to dedicated windows.
- *
- * TF, 2014.10
  */
 
 var lflist = listFiles();
@@ -41,13 +39,7 @@ macro "List Folder Menu Tool - C037F06f7L04e4L03e3L1262L2151" {
 }
 
 function autoReload() {
-	pathToThisFile = getDirectory("macros") + "tools"+ File.separator +"List_Folder_Menu.ijm";
-	if (File.exists(pathToThisFile))
-		run("Install...", "install=["+ pathToThisFile +"]");
-	else
-		showMessage("List Folder Menu Tool", "<html><div WIDTH=400>"
-			+ "File not found:<br><i>"+ pathToThisFile +"</i><br><br>"
-			+ "You must reinstall the tool manually to reload the new settings.</div>");
+	run("Productivity Menus...", "tool=[List Folder Menu] open=false");  // BAR command
 	exit();
 }
 
