@@ -2,6 +2,7 @@
 #@String(label="Column heading for X-coordinates", description="Header of column containing X positions. Case sensitive.", value="X", required=true) xHeading
 #@String(label="Column heading for Y-coordinates", description="Header of column containing Y positions. Case sensitive.", value="Y", required=true) yHeading
 #@String(label="Column heading for Z-coordinates", description="Only required when retrieving 3D distances. Case sensitive.", value="Z", required=false) zHeading
+#@boolean(label="Case sensitive", value=false) case_sensitive
 #@Context context
 #@UIService uiService
 #@LogService logService
@@ -67,6 +68,8 @@ def main():
     rt = Utils.getTable()
     if rt is None:
         return
+    if not case_sensitive:
+        x, y, z = x.lower(), y.lower(), z.lower()
     x, y, z = getXYZPositons(rt, xHeading, yHeading, zHeading)
     if not None in (x, y):
         # Do the calculations and display appended results
