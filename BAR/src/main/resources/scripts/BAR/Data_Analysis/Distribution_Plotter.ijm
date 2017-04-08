@@ -3,13 +3,20 @@
  *
  * Plots cumulative and relative frequencies from data in the Results table. A Gaussian
  * curve (normal distribution) is fitted to the histogram. Can be called from other
- * scripts, e.g.:
- * IJ.runMacroFile(path/to/this/file, "Area|Relative frequency (%)|Sturges");
- *
+ * scripts using BAR. Python example:
+
+#@Context context
+
+from bar import Runner
+runner = Runner(context)
+args =  "Area|Relative frequency (%)|Sturges"
+runner.runBARMacro("Data_Analysis/Distribution_Plotter.ijm", args)
+print("Macro exited: %s " % runner.scriptLoaded())
+
  * Distribution tables can be accessed through the 'List' button of the plot window:
  * X0: Bin start, Y0: Relative frequencies; X1: Values, Y1: Cumulative frequencies.
  *
- * TF, 2016.11
+ * TF, 2017.04
  */
 
 plotSize = 300;     // Size (in pixels) of histogram canvas
