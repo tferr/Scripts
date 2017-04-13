@@ -57,29 +57,30 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
     selectImage(imgID);
     run("Canvas Size...", "width=&newW height=&newH position=Center");   
 
-    // remove previous overlays and highlight initial selection
-    Overlay.remove;
+    // highlight initial selection
     Overlay.drawRect(x+xOffset, y+yOffset, wROI, hROI);
+    Overlay.show;
 
     // this block is from Gilles Carpentier Zoom in Images and Stacks macro tool:
     // http://imagej.nih.gov/ij/macros/tools/Zoom_in_Images_and_Stacks.txt
     x2=-1; y2=-1; z2=-1; flags2=-1; xzo=0; yzo=0; click=0; leftButton=16;
     Overlay.drawRect(xzo, yzo, wMagROI, hMagROI);
-    Overlay.show;
+    lastItemInOverlay = Overlay.size - 1;
     while (click!=1) {          
         getCursorLoc(xzo, yzo, z, flags);
         if (xzo!=x2 || yzo!=y2 || z!=z2 || flags!=flags2) {
-            Overlay.removeSelection(1);
-            if (flags&leftButton!=0) click= 1;
+            Overlay.removeSelection(lastItemInOverlay);
+            if (flags&leftButton!=0)
+            	click = 1;
             Overlay.drawRect(xzo, yzo, wMagROI, hMagROI);
-            Overlay.show;
         }
         x2= xzo; y2= yzo; z2= z; flags2= flags;
         wait(5);
     }
-    Overlay.remove;
+    Overlay.removeSelection(lastItemInOverlay);
 
     // copy the insert to the specified ranges
+    saveSettings();
     setPasteMode("Copy");
     for (i=ch[0]; i<=ch[ch.length-1]; i++) {
         for (j=sl[0]; j<=sl[sl.length-1]; j++) {
@@ -99,6 +100,7 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
             }
         }
     }
+    restoreSettings();
 
     // crop the canvas, trimming all the extra space. Since stroke width is not being considered
     // frame may be partially cropped on edges. On certain machines a hyperstack is cropped 
