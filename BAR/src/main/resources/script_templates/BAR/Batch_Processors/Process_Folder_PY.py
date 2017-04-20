@@ -2,29 +2,28 @@
 # @File(label="Output directory",style="directory") out_dir
 # @String(label="Process filenames containing",description="Clear for no filtering",value=".tif") filenameFilter
 
-# Process_Folder_PY.py
-# IJ BAR https://github.com/tferr/Scripts/tree/master/
-#
-# This python script implements a reusable batch processor[1] that processes a
-# folder of files of a certain type (Jython alternative to the IJ1 built-in
-# command Process>Batch>Macro).
-#
-# It is composed of two functions:
-#   1. getFileList(<directory>, <filteringString>):
-#      Retrieves the recursive list of files in <directory>, excluding all files
-#      whose filenames that do not contain <filteringString>
-#   2. myRoutines(<image>):
-#      Container function that holds the image processing routines to be applied
-#      to individual files
-#
-# Processed images are saved as .tif in a sub-directory of the chosen input
-# directory named after <OUT_SUBDIR>.
-#
-# Resources:
-# [1] http://imagej.net/BAR#Batch_Processors
-# https://github.com/tferr/Scripts/tree/master/Snippets#batch-processors
-# https://github.com/tferr/Scripts/tree/master/Snippets#python
+"""
+  Process_Folder_PY.py
+  IJ BAR https://github.com/tferr/Scripts
 
+  This python script implements yet one more reusable batch processor that
+  processes of certain type. It is a more flexible alternative to the IJ1
+  built-in command Process>Batch>Macro). See also other IJ1 batch processors
+  in Templates>ImageJ 1.x>Examples>
+
+  It is composed of two functions:
+    1. getFileList(<directory>, <filteringString>):
+       Retrieves the recursive list of files in <directory>, excluding all files
+       whose filenames that do not contain <filteringString>
+    2. myRoutines(<image>):
+       Container function that holds the image processing routines to be applied
+       to individual files
+
+  Processed images are saved as .tif in a sub-directory of the chosen input
+  directory named after <OUT_SUBDIR>.
+
+  http://imagej.net/BAR#Batch_Processors
+"""
 
 import csv, os
 from ij import IJ, ImagePlus
