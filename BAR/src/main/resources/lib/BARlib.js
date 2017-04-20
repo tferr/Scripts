@@ -22,7 +22,7 @@ function BARlib() {
 	/** Acknowledges accessibility to this file */
 	this.confirmLoading = function() {
 		importClass(Packages.ij.IJ);
-		uiservice.showDialog("BAR lib successfully loaded!")
+		uiservice.showDialog("BAR lib successfully loaded!");
 	}
 
 	/** Returns text from the system clipboard or an empty string if no text was found */
