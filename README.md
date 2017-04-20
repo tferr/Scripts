@@ -45,6 +45,7 @@ Aiders for the annotation of scientific images.
 1. (ijm) [Combine Orthogonal Views](./BAR/src/main/resources/scripts/BAR/Annotation#combine-orthogonal-views)
 1. (bsh) [Cumulative Z-Project](./BAR/src/main/resources/scripts/BAR/Annotation#cumulative-z-project)
 1. (ijm) [ROI Color Coder](./BAR/src/main/resources/scripts/BAR/Annotation#roi-color-coder)
+1. (ijm) [ROI Magnifier Tool](./BAR/src/main/resources/scripts/BAR/Annotation#roi-magnifier-tool)
 
 
 ## [Image Segmentation][Segmentation]
@@ -92,7 +93,7 @@ and the [BAR API](http://tferr.github.io/Scripts/apidocs/).
    101 of (IJ1) scripting using BeanShell and Python (Jython)
 
 1. [External Ops](./BAR#external-ops): Advanced tutorial exemplifying how to
-   provide external [ops](http://imagej.net/ImageJ_Ops)
+   provide [ImageJ Ops](http://imagej.net/ImageJ_Ops)
 
 
 # Help?
@@ -102,12 +103,12 @@ and the [BAR API](http://tferr.github.io/Scripts/apidocs/).
     [fork](https://github.com/tferr/Scripts/fork) BAR or
     [here](https://help.github.com/articles/using-pull-requests) on how to initiate a
     [pull request](https://github.com/tferr/Scripts/pulls)
-    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][IJ]
+    * Documentation updates are also welcome, so go ahead and improve the [BAR documentation page][Wiki]
  * Having problems? Found a bug? Need to ask a question?
-    * See the BAR [FAQs](http://imagej.net/BAR#FAQ), Fiji [FAQs](http://imagej.net/Frequently_Asked_Questions)
+    * See the [BAR FAQs](http://imagej.net/BAR#FAQ), [IJ FAQs](http://imagej.net/Frequently_Asked_Questions)
     and [Bug reporting best practices](http://imagej.net/Bug_reporting_best_practices). Then, you can either:
       * [Open an issue](https://github.com/tferr/Scripts/issues) on this repository
-      * Report it on the [ImageJ mailing list](http://imagej.nih.gov/ij/list.html)
+      * Report it on the [ImageJ forum](http://forum.imagej.net)
 
 
 # Citations
@@ -116,8 +117,10 @@ and the [BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 [![DOI](https://zenodo.org/badge/8709403.svg)](https://zenodo.org/badge/latestdoi/8709403)
 
-* BAR scripts have contributed to the following publications:
+* BAR scripts are known to have contributed to the following publications:
 
+  1. Parinejad et al. Disruption of an EAAT-Mediated Chloride Channel in a Drosophila Model of Ataxia (2016), 36(29):7640-7. [PMID 27445142](http://www.ncbi.nlm.nih.gov/pubmed/27445142)
+  1. Bouvier et al. High Resolution Dissection of Reactive Glial Nets in Alzheimer's Disease (2016), 19;6:24544. [PMID 27090093](http://www.ncbi.nlm.nih.gov/pubmed/27090093)
   1. Ferreira et al. Neuronal morphometry directly from bitmap images. Nature Methods (2014), 11(10):982–984. [PMID 25264773](http://www.ncbi.nlm.nih.gov/pubmed/25264773)
   1. Pope and Voigt. Peripheral glia have a pivotal role in the initial response to axon degeneration of peripheral sensory neurons in zebrafish. PLoS ONE (2014), 9(7):e103283. [PMID 25058656](http://www.ncbi.nlm.nih.gov/pubmed/25058656)
   1. Medda et al. Investigation of early cell-surface interactions of human mesenchymal stem cells on nanopatterned β-type titanium-niobium alloy surfaces. Interface Focus (2014), 4(1):20130046. [PMID 24501674](http://www.ncbi.nlm.nih.gov/pubmed/24501674)
@@ -130,9 +133,10 @@ and the [BAR API](http://tferr.github.io/Scripts/apidocs/).
 
 
 # License
-This program is free software: you can redistribute them and/or modify them under the terms of the
-[GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute them and/or modify them under the
+terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.txt) as
+published bythe Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
 
 # Contributors
