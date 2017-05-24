@@ -1,4 +1,4 @@
-//@UIService uiservice
+//@UIService ui
 
 /* BARlib.js
  * IJ BAR: https://github.com/tferr/Scripts

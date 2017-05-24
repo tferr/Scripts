@@ -1,4 +1,4 @@
-//@UIService uiservice
+//@UIService ui
 
 /* BARlib.groovy
  * IJ BAR: https://github.com/tferr/Scripts
@@ -74,4 +74,3 @@ class BARlib {
 	}
 
 }
-
