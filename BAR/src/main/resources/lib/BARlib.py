@@ -19,7 +19,7 @@
 # change your lib files, you'll have to delete the respective binary (<filename>$py.class)
 # to force a new compilation. You can do so, using:
 #
-#    barUtils.zapCompiledLibs() n
+#    barUtils.zapCompiledLibs()
 #
 # Which will delete all binary files from the lib directory, effectively forcing files to
 # be recompiled next time they are loaded (See resources in BAR>Help for more details)

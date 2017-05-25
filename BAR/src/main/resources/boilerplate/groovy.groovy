@@ -16,7 +16,7 @@ import bar.Utils
  */
 def loadBARLib(filename) {
 	file = new File(Utils.getLibDir() + filename)
-	lib = null;
+	lib = null
 	if (file.exists()) {
 		loader = new GroovyClassLoader()
 		lib = loader.parseClass(file).newInstance()
@@ -35,7 +35,7 @@ def main() {
 		return
 	}
 
-	// Your code here... e.g/, confirm access to loaded file
+	// Your code here... e.g., confirm access to loaded file
 	//lib.metaClass.respondsTo(lib, "confirmLoading")
 	lib.confirmLoading()
 
