@@ -18,7 +18,7 @@
 
 (defn confirmLoading []
   "Acknowledges accessibility to this file"
-  (uiservice/showDialog "BAR lib successfully loaded!"))
+  (ui/showDialog "BAR lib successfully loaded!"))
 
 (defn getClipboardText []
   "Returns text from the system clipboard or an empty string if no text was found"
