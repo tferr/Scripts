@@ -1,13 +1,15 @@
 /* Threshold_From_Background.ijm
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
- * Sets the threshold as the ROI average plus a factor of its standard deviation. To call it from
- * other scripts (see http://imagej.net/BAR for details):
+ * Sets the threshold as the ROI average plus a factor of its standard deviation.
+ * Python example on how to call it from other scripts (see http://imagej.net/BAR for details):
  *
- *   tfbpath = call("bar.Utils.getSegmentationDir")+"Threshold_From_Background.ijm";
- *   runMacro(tfbpath, 3);
- *
- * TF 2014.06
+ * #@Context context
+ * from bar import Runner
+ * runner = Runner(context)
+ * arg = "3"
+ * runner.runBARMacro("Segmentation/Threshold_From_Background.ijm", arg)
+ * print("Macro exited: %s " % runner.scriptLoaded())
  */
 
 if (selectionType==-1)

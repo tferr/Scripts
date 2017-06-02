@@ -1,5 +1,5 @@
 /* Clear_Thresholded_Pixels.ijm
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
  * IJ1 macro that sets to zero thresholded pixels inside the active area ROI, or the entire image if
  * no ROI exists. Useful for semi-automated segmentation, complementing 'Apply Threshold To ROI' and
@@ -7,15 +7,15 @@
  *
  * Works with grayscale images but in the case of multi-dimensional stacks threshold is only applied
  * to the Z-dimension of the active channel/frame.
- * Examples on how to call it from other scripts (see http://imagej.net/BAR for details):
+ * Python example on how to call it from other scripts (see http://imagej.net/BAR for details):
  *
- *   ctp = call("bar.Utils.getSegmentationDir")+"Clear_Thresholded_Pixels.ijm";
- *   IJ.runMacroFile(ctp, "");          // show dialog prompt
- *   IJ.runMacroFile(ctp, "current")    // only active slice is considered
- *   IJ.runMacroFile(ctp, "preceding")  // clear pixels until active slice
- *   IJ.runMacroFile(ctp, "subsequent") // clear pixels from active slice
+ * #@Context context
+ * from bar import Runner
+ * runner = Runner(context)
+ * arg = "all slices"  # "current slice only", "preceding slices", "subsequent slices"
+ * runner.runBARMacro("Segmentation/Clear_Thresholded_Pixels.ijm", arg)
+ * print("Macro exited: %s " % runner.scriptLoaded())
  *
- * TF 2014.10
  */
 
 getThreshold(lower, upper);

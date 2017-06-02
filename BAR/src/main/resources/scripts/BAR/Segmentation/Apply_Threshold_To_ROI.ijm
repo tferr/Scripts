@@ -1,5 +1,5 @@
 /* Apply_Threshold_To_ROI.ijm
- * IJ BAR: https://github.com/tferr/Scripts#scripts
+ * IJ BAR: https://github.com/tferr/Scripts
  *
  * IJ1 macro that applies threshold levels to the active area ROI, or the entire image if none
  * exists. Useful when an image can only be segmented in a stepwise manner through application of
@@ -9,15 +9,15 @@
  * Works with grayscale images but in the case of multi-dimensional stacks, threshold is only
  * applied to the Z-dimension of the active channel/frame. With 8-bit images thresholded values
  * are set to to 255, with 16/32-bit images to 65535.
- * Examples on how to call it from other scripts (see http://imagej.net/BAR for details):
+ * Python example on how to call it from other scripts (see http://imagej.net/BAR for details):
  *
- *   attr = call("bar.Utils.getSegmentationDir")+"Apply_Threshold_To_ROI.ijm";
- *   IJ.runMacroFile(attr, "");          // show dialog prompt
- *   IJ.runMacroFile(attr, "current")    // only active slice is considered
- *   IJ.runMacroFile(attr, "preceding")  // apply threshold up to active slice
- *   IJ.runMacroFile(attr, "subsequent") // apply threshold after active slice
+ * #@Context context
+ * from bar import Runner
+ * runner = Runner(context)
+ * arg = "current"  # "", "preceding", "subsequent"
+ * runner.runBARMacro("Segmentation/Apply_Threshold_To_ROI.ijm", arg)
+ * print("Macro exited: %s " % runner.scriptLoaded())
  *
- * TF 2014.10
  */
 
 getThreshold(lower, upper);
