@@ -36,11 +36,22 @@ def getXYZPositons(rt, xcol_header, ycol_header, zcol_header):
     """ Retrieves valid data from the Results table """
     try:
         x = y = z = None
-        x = rt.getColumn(rt.getColumnIndex(xcol_header))
-        y = rt.getColumn(rt.getColumnIndex(ycol_header))
-        z = rt.getColumn(rt.getColumnIndex(zcol_header))
+        x = rt.getColumn(getColumnIndex(rt, xcol_header, case_sensitive))
+        y = rt.getColumn(getColumnIndex(rt, ycol_header, case_sensitive))
+        z = rt.getColumn(getColumnIndex(rt, zcol_header, case_sensitive))
     finally:
         return x, y, z
+
+
+def getColumnIndex(rt, col_heading, strict_match):
+    if strict_match:
+        return rt.getColumnIndex(xcol_header)
+    titles = [col_heading.upper(), col_heading.title(), col_heading.lower()]
+    for title in titles:
+        idx = rt.getColumnIndex(title)
+        if (idx != RT.COLUMN_NOT_FOUND):
+            return idx
+    return RT.COLUMN_NOT_FOUND
 
 
 def calcNNDistances(rt, x, y, z=None):
@@ -68,8 +79,6 @@ def main():
     rt = Utils.getTable()
     if rt is None:
         return
-    if not case_sensitive:
-        x, y, z = x.lower(), y.lower(), z.lower()
     x, y, z = getXYZPositons(rt, xHeading, yHeading, zHeading)
     if not None in (x, y):
         # Do the calculations and display appended results
