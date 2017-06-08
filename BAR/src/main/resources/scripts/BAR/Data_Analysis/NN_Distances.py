@@ -65,6 +65,7 @@ def calcNNDistances(rt, x, y, z=None):
 
 
 def main():
+    global xHeading, yHeading, zHeading
     rt = Utils.getTable()
     if rt is None:
         return
