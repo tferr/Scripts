@@ -65,11 +65,12 @@ def calcNNDistances(rt, x, y, z=None):
 
 
 def main():
+    global xHeading, yHeading, zHeading
     rt = Utils.getTable()
     if rt is None:
         return
     if not case_sensitive:
-        x, y, z = x.lower(), y.lower(), z.lower()
+        xHeading, yHeading, zHeading = xHeading.lower(), yHeading.lower(), zHeading.lower()
     x, y, z = getXYZPositons(rt, xHeading, yHeading, zHeading)
     if not None in (x, y):
         # Do the calculations and display appended results
