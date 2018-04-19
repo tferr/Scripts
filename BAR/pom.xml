@@ -88,8 +88,8 @@
 		<url>https://github.com/tferr/Scripts/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>None</system>
-		<url>http://jenkins.imagej.net/job/BAR/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/tferr/Scripts</url>
 	</ciManagement>
 
 	<properties>
