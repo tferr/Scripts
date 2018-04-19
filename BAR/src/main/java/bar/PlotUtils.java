@@ -25,9 +25,9 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.jfree.chart.JFreeChart;
 import org.w3c.dom.DOMImplementation;
 
+import com.itextpdf.awt.DefaultFontMapper;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.DefaultFontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
