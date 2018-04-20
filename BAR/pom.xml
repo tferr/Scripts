@@ -96,7 +96,6 @@
 		<license.licenseName>GPL_3</license.licenseName>
 		<license.copyrightOwners>Tiago Ferreira</license.copyrightOwners>
 		<delete.other.versions>true</delete.other.versions>
-		<enforcer.skip>true</enforcer.skip>
 	</properties>
 
 	<repositories>
