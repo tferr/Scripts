@@ -5,10 +5,11 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>14.0.0</version>
+		<version>19.2.0</version>
 		<relativePath />
 	</parent>
 
+	<groupId>com.github.tferr</groupId>
 	<artifactId>BAR_</artifactId>
 	<version>1.5.2-SNAPSHOT</version>
 
@@ -87,15 +88,14 @@
 		<url>https://github.com/tferr/Scripts/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>None</system>
-		<url>http://jenkins.imagej.net/job/BAR/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/tferr/Scripts</url>
 	</ciManagement>
 
 	<properties>
 		<license.licenseName>GPL_3</license.licenseName>
 		<license.copyrightOwners>Tiago Ferreira</license.copyrightOwners>
 		<delete.other.versions>true</delete.other.versions>
-		<enforcer.skip>true</enforcer.skip>
 	</properties>
 
 	<repositories>
