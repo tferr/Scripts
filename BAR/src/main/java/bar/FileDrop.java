@@ -12,12 +12,12 @@ import java.io.Reader;
  * a Java program. Any <tt>java.awt.Component</tt> can be dropped onto, but only
  * <tt>javax.swing.JComponent</tt>s will indicate the drop event with a changed
  * border.
- * <p/>
+ * <p>
  * To use this class, construct a new <tt>FileDrop</tt> by passing it the target
  * component and a <tt>Listener</tt> to receive notification when file(s) have
  * been dropped. Here is an example:
- * <p/>
- * <code><pre>
+ * </p>
+ * <pre>
  *      JPanel myPanel = new JPanel();
  *      new FileDrop( myPanel, new FileDrop.Listener()
  *      {   public void filesDropped( java.io.File[] files )
@@ -26,17 +26,18 @@ import java.io.Reader;
  *              ...
  *          }   // end filesDropped
  *      }); // end FileDrop.Listener
- * </pre></code>
- * <p/>
+ * </pre>
+ * <p>
  * You can specify the border that will appear when files are being dragged by
  * calling the constructor with a <tt>javax.swing.border.Border</tt>. Only
  * <tt>JComponent</tt>s will show any indication with a border.
- * <p/>
+ * </p>
+ * <p>
  * You can turn on some debugging features by passing a <tt>PrintStream</tt>
  * object (such as <tt>System.out</tt>) into the full constructor. A
  * <tt>null</tt> value will result in no extra debugging information being
  * output.
- * <p/>
+ * </p>
  *
  * <p>
  * I'm releasing this code into the Public Domain. Enjoy.
@@ -629,7 +630,8 @@ public class FileDrop {
 
 	/**
 	 * Implement this inner interface to listen for when files are dropped. For
-	 * example your class declaration may begin like this: <code><pre>
+	 * example your class declaration may begin like this:
+	 * <pre>
 	 *      public class MyClass implements FileDrop.Listener
 	 *      ...
 	 *      public void filesDropped( java.io.File[] files )
@@ -637,7 +639,7 @@ public class FileDrop {
 	 *          ...
 	 *      }   // end filesDropped
 	 *      ...
-	 * </pre></code>
+	 * </pre>
 	 *
 	 * @since 1.1
 	 */
@@ -712,12 +714,10 @@ public class FileDrop {
 	 * your object. For example:
 	 * 
 	 * <pre>
-	 * <code>
 	 *      ...
 	 *      MyCoolClass myObj = new MyCoolClass();
 	 *      Transferable xfer = new TransferableObject( myObj );
 	 *      ...
-	 * </code>
 	 * </pre>
 	 * 
 	 * Or if you need to know when the data was actually dropped, like when
@@ -726,7 +726,6 @@ public class FileDrop {
 	 * in Time. For example:
 	 * 
 	 * <pre>
-	 * <code>
 	 *      ...
 	 *      final MyCoolClass myObj = new MyCoolClass();
 	 * 
@@ -736,7 +735,6 @@ public class FileDrop {
 	 * 
 	 *      Transferable xfer = new TransferableObject( fetcher );
 	 *      ...
-	 * </code>
 	 * </pre>
 	 *
 	 * The {@link java.awt.datatransfer.DataFlavor} associated with
