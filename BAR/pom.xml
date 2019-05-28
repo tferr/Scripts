@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>19.2.0</version>
+		<version>26.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -15,7 +15,7 @@
 
 	<name>BAR</name>
 	<description>BAR: A curated collection of Broadly Applicable Routines for ImageJ.</description>
-	<url>http://imagej.net/BAR</url>
+	<url>https://imagej.net/BAR</url>
 	<inceptionYear>2014</inceptionYear>
 	<organization>
 		<name>Fiji</name>
@@ -49,21 +49,21 @@
 	<contributors>
 		<contributor>
 			<name>Mark Hiner</name>
-			<url>http://imagej.net/User:Hinerm</url>
+			<url>https://imagej.net/User:Hinerm</url>
 			<properties>
 				<id>hinerm</id>
 			</properties>
 		</contributor>
 		<contributor>
 			<name>Kota Miura</name>
-			<url>http://imagej.net/User:Miura</url>
+			<url>https://imagej.net/User:Miura</url>
 			<properties>
 				<id>cmci</id>
 			</properties>
 		</contributor>
 		<contributor>
 			<name>Jan Eglinger</name>
-			<url>http://imagej.net/User:Eglinger</url>
+			<url>https://imagej.net/User:Eglinger</url>
 			<properties>
 				<id>imagejan</id>
 			</properties>
@@ -72,8 +72,8 @@
 
 	<mailingLists>
 		<mailingList>
-			<name>ImageJ Forum</name>
-			<archive>http://forum.imagej.net/</archive>
+			<name>Image.sc Forum</name>
+			<archive>https://forum.image.sc/tags/bar-scripts</archive>
 		</mailingList>
 	</mailingLists>
 
@@ -99,10 +99,9 @@
 	</properties>
 
 	<repositories>
-		<!-- NB: for project parent -->
 		<repository>
-			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
 		</repository>
 	</repositories>
 

@@ -30,8 +30,8 @@ import ij.process.ImageProcessor;
  * original manuscript: Shen and Castan, CVGIP, 1992, 54 (2) 112-133. <a
  * href="http://dx.doi.org/10.1016/1049-9652(92)90060-B">DOI:
  * 10.1016/1049-9652(92)90060-B</a>
- * <p>
- * <code><pre>
+ *
+ * <pre>
  * 2014.06-2015.07, Tiago Ferreira
  *      - Extended API
  *      - Works with 16-bit and 32-bit images and stacks (multithreaded)
@@ -42,7 +42,7 @@ import ij.process.ImageProcessor;
  *      - Algorithm implementation[1]. This initial version no longer works with IJ
  * 
  * [1] http://imagej.nih.gov/ij/plugins/inserm514/Documentation/Shen_Castan_514/Shen_Castan_514.html
- * </pre></code>
+ * </pre>
  */
 public class ShenCastan implements ExtendedPlugInFilter, DialogListener {
 
