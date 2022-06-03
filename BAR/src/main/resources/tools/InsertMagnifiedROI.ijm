@@ -32,12 +32,14 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
         Dialog.addMessage(msg);
         Dialog.addSlider("Zoom factor:", 1, 10, maxZoom);
         Dialog.addSlider("       Width of frame:", 0, 20, stroke);
+        Dialog.addCheckbox("Allow image canvas to enlarge", true);
         if (channels>1) Dialog.addString("range: Channels (c):", "1-"+channels);
         if (slices>1) Dialog.addString("Slices (z):", "1-"+slices);
         if (frames>1) Dialog.addString("Frames (t):", "1-"+frames);
       Dialog.show();
     zoom= Dialog.getNumber();
     stroke= Dialog.getNumber();
+    enlargeCanvas = Dialog.getCheckbox();
     if (channels>1) ch= split(Dialog.getString,"-");
     if (slices>1) sl= split(Dialog.getString,"-");
     if (frames>1) fr= split(Dialog.getString,"-");
@@ -54,8 +56,10 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
     xOffset= (newW-width)/2; yOffset= (newH-height)/2;
 
     // resize the canvas
-    selectImage(imgID);
-    run("Canvas Size...", "width=&newW height=&newH position=Center");   
+    if (enlargeCanvas) {
+        selectImage(imgID);
+        run("Canvas Size...", "width=&newW height=&newH position=Center");
+    }
 
     // highlight initial selection
     Overlay.drawRect(x+xOffset, y+yOffset, wROI, hROI);
@@ -71,7 +75,7 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
         if (xzo!=x2 || yzo!=y2 || z!=z2 || flags!=flags2) {
             Overlay.removeSelection(lastItemInOverlay);
             if (flags&leftButton!=0)
-            	click = 1;
+                click = 1;
             Overlay.drawRect(xzo, yzo, wMagROI, hMagROI);
         }
         x2= xzo; y2= yzo; z2= z; flags2= flags;
@@ -85,7 +89,7 @@ macro "Insert Magnified ROI Action Tool - C037 R01fb R2397" {
     for (i=ch[0]; i<=ch[ch.length-1]; i++) {
         for (j=sl[0]; j<=sl[sl.length-1]; j++) {
             for (k=fr[0]; k<=fr[sl.length-1]; k++) {
-            	selectImage(magID);
+                selectImage(magID);
                 Stack.setPosition(i, j, k);
                 run("Copy");
                 selectImage(imgID);
