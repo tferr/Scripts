@@ -182,7 +182,7 @@ function loadLutColors(lut) {
 }
 
 function pad(n) {
-  n= toString(n); if (lengthOf(n)==1) n= "0"+n; return n;
+  if (lengthOf(""+n)==1) n= "0"+n; return n;
 }
 
 function cleanLabel(string) {
